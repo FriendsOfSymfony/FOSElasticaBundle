@@ -22,7 +22,7 @@ With clone:
 
     $loader->registerPrefixes(array(
         ...
-        'elastica' => __DIR__.'/../vendor/elastica/lib',
+        'Elastica' => __DIR__.'/../vendor/elastica/lib',
     ));
 
 ### Install ElasticaBundle
