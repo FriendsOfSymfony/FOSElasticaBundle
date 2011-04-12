@@ -31,8 +31,7 @@ class PopulateCommand extends Command
     {
         $output->writeln('Populating indexes');
 
-        $populator = $this->container->get('foq_elastica.populator');
-        $populator->populate();
+        $populator = $this->container->get('foq_elastica.populator')->populate();
 
         $output->writeln('Done');
     }

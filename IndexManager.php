@@ -2,13 +2,17 @@
 
 namespace FOQ\ElasticaBundle;
 
+use InvalidArgumentException;
+
 class IndexManager
 {
     protected $indexes;
+    protected $defaultIndex;
 
-    public function __construct(array $indexes)
+    public function __construct(array $indexes, $defaultIndex)
     {
-        $this->indexes = $indexes;
+        $this->indexes      = $indexes;
+        $this->defaultIndex = $defaultIndex;
     }
 
     /**
@@ -22,14 +26,29 @@ class IndexManager
     }
 
     /**
-     * Destroys and creates all registered indexes
+     * Gets an index by its name
      *
-     * @return null
-     */
-    public function createAllIndexes()
+     * @return Elastica_Index
+     **/
+    public function getIndex($name)
     {
-        foreach ($this->getAllIndexes() as $index) {
-            $index->create();
+        if (!$name) {
+            return $this->getDefaultIndex();
         }
+        if (!isset($this->indexes[$name])) {
+            throw new InvalidArgumentException(sprintf('The index "%s" does not exist', $name));
+        }
+
+        return $this->indexes[$name];
+    }
+
+    /**
+     * Gets the default index
+     *
+     * @return Elastica_Index
+     **/
+    public function getDefaultIndex()
+    {
+        return $this->defaultIndex;
     }
 }

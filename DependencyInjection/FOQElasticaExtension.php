@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Config\FileLocator;
 
 class FOQElasticaExtension extends Extension
@@ -33,7 +34,7 @@ class FOQElasticaExtension extends Extension
 
         $clientsByName = $this->loadClients($config['clients'], $container);
         $indexesByName = $this->loadIndexes($config['indexes'], $container, $clientsByName, $config['default_client']);
-        $this->loadIndexManager($indexesByName, $container);
+        $this->loadIndexManager($indexesByName, $config['default_index'], $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
@@ -93,9 +94,10 @@ class FOQElasticaExtension extends Extension
      *
      * @return null
      **/
-    public function loadIndexManager(array $indexDefs, ContainerBuilder $container)
+    public function loadIndexManager(array $indexDefs, $defaultIndexId, ContainerBuilder $container)
     {
         $managerDef = $container->getDefinition('foq_elastica.index_manager');
         $managerDef->setArgument(0, $indexDefs);
+        $managerDef->setArgument(1, new Reference('foq_elastica.index'));
     }
 }
