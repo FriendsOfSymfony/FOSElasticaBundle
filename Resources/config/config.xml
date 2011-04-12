@@ -7,8 +7,16 @@
     <parameters>
         <parameter key="foq_elastica.client.class">Elastica_Client</parameter>
         <parameter key="foq_elastica.index.class">Elastica_Index</parameter>
-
-        <parameter key="foq_elastica.index_manager.class">FOQ\ElasticaBundle\IndexManager</parameter>
     </parameters>
+
+
+    <services>
+        <service id="foq_elastica.index_manager" class="FOQ\ElasticaBundle\IndexManager">
+            <argument /> <!-- indexes -->
+        </service>
+        <service id="foq_elastica.populator" class="FOQ\ElasticaBundle\Populator">
+            <argument /> <!-- providers -->
+        </service>
+    </services>
 
 </container>
