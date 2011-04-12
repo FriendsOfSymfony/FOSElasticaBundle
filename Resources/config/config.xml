@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="foq_elastica.client.class">Elastica_Client</parameter>
         <parameter key="foq_elastica.index.class">Elastica_Index</parameter>
+        <parameter key="foq_elastica.type.class">Elastica_Type</parameter>
     </parameters>
 
 

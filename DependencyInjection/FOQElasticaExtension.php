@@ -32,8 +32,8 @@ class FOQElasticaExtension extends Extension
             $config['default_index'] = reset($keys);
         }
 
-        $clientsByName = $this->loadClients($config['clients'], $container);
-        $indexesByName = $this->loadIndexes($config['indexes'], $container, $clientsByName, $config['default_client']);
+        $clientIdsByName = $this->loadClients($config['clients'], $container);
+        $indexIdsByName = $this->loadIndexes($config['indexes'], $container, $clientsByName, $config['default_client']);
         $this->loadIndexManager($indexesByName, $config['default_index'], $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
@@ -48,18 +48,19 @@ class FOQElasticaExtension extends Extension
      */
     protected function loadClients(array $clients, ContainerBuilder $container)
     {
-        $clientDefs = array();
+        $clientIds = array();
         foreach ($clients as $name => $client) {
             $clientDefArgs = array(
                 isset($client['host']) ? $client['host'] : null,
                 isset($client['port']) ? $client['port'] : array(),
             );
             $clientDef = new Definition('%foq_elastica.client.class%', $clientDefArgs);
-            $container->setDefinition(sprintf('foq_elastica.client.%s', $name), $clientDef);
-            $clientDefs[$name] = $clientDef;
+            $clientId = sprintf('foq_elastica.client.%s', $name);
+            $container->setDefinition($clientId, $clientDef);
+            $clientIds[$name] = $cliendId;
         }
 
-        return $clientDefs;
+        return $clientId;
     }
 
     /**
@@ -68,25 +69,42 @@ class FOQElasticaExtension extends Extension
      * @param array $config An array of indexes configurations
      * @param ContainerBuilder $container A ContainerBuilder instance
      */
-    protected function loadIndexes(array $indexes, ContainerBuilder $container, array $clientsByName, $defaultClientName)
+    protected function loadIndexes(array $indexes, ContainerBuilder $container, array $clientIdsByName, $defaultClientName)
     {
-        $indexDefs = array();
+        $indexIds = array();
         foreach ($indexes as $name => $index) {
             if (isset($index['client'])) {
                 $clientName = $index['client'];
-                if (!isset($clientsByName[$clientName])) {
+                if (!isset($clientIdsByName[$clientName])) {
                     throw new InvalidArgumentException(sprintf('The elastica client with name "%s" is not defined', $clientName));
                 }
             } else {
                 $clientName = $defaultClientName;
             }
-            $indexDefArgs = array($clientsByName[$clientName], $name);
+            $indexId = sprintf('foq_elastica.index.%s', $name);
+            $indexDefArgs = array($clientIdsByName[$clientName], $name);
             $indexDef = new Definition('%foq_elastica.index.class%', $indexDefArgs);
-            $container->setDefinition(sprintf('foq_elastica.index.%s', $name), $indexDef);
-            $indexDefs[$name] = $indexDef;
+            $container->setDefinition($indexId, $indexDefArgs);
+            $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $indexId);
+            $indexIds[$name] = $indexId;
         }
 
-        return $indexDefs;
+        return $indexIds;
+    }
+
+    /**
+     * Loads the configured types.
+     *
+     * @param array $config An array of types configurations
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     */
+    protected function loadTypes(array $types, ContainerBuilder $container, $baseId)
+    {
+        foreach ($types as $name => $type) {
+            $typeDefArgs = array();
+            $typeDef = new Definition('%foq_elastica.type.class%', $typeDefArgs);
+            $container->setDefinition(sprintf('%s.%s', $baseId, $name), $typeDef);
+        }
     }
 
     /**
