@@ -26,8 +26,10 @@ class CreateIndexesCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        foreach ($this->container->get('foq_elastica.index_manager')->getAllIndexes() as $index) {
-
+        foreach ($this->container->get('foq_elastica.index_manager')->getAllIndexes() as $name => $index) {
+            $output->writeLn(sprintf('Reset index "%s"', $name));
+            $index->delete();
+            $index->create();
         }
     }
 }
