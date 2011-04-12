@@ -13,9 +13,13 @@
     <services>
         <service id="foq_elastica.index_manager" class="FOQ\ElasticaBundle\IndexManager">
             <argument /> <!-- indexes -->
+            <argument /> <!-- default index -->
         </service>
         <service id="foq_elastica.populator" class="FOQ\ElasticaBundle\Populator">
             <argument /> <!-- providers -->
+        </service>
+        <service id="foq_elastica.reseter" class="FOQ\ElasticaBundle\Reseter">
+            <argument type="service" id="foq_elastica.index_manager" />
         </service>
     </services>
 

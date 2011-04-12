@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
 
-class CreateIndexesCommand extends BaseCommand
+class ResetCommand extends BaseCommand
 {
     /**
      * @see Command
@@ -26,10 +26,10 @@ class CreateIndexesCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        foreach ($this->container->get('foq_elastica.index_manager')->getAllIndexes() as $name => $index) {
-            $output->writeLn(sprintf('Reset index "%s"', $name));
-            $index->delete();
-            $index->create();
-        }
+        $output->writeLn('Reset all indexes');
+
+        $this->container->get('foq_elastica.reseter')->reset();
+
+        $output->writeln('Done');
     }
 }
