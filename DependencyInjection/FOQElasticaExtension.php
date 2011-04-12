@@ -26,11 +26,17 @@ class FOQElasticaExtension extends Extension
             $config['default_client'] = reset($keys);
         }
 
+        if (empty ($config['default_index'])) {
+            $keys = array_keys($config['indexes']);
+            $config['default_index'] = reset($keys);
+        }
+
         $clientsByName = $this->loadClients($config['clients'], $container);
         $indexesByName = $this->loadIndexes($config['indexes'], $container, $clientsByName, $config['default_client']);
         $this->loadIndexManager($indexesByName, $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
+        $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
     }
 
     /**
@@ -89,7 +95,7 @@ class FOQElasticaExtension extends Extension
      **/
     public function loadIndexManager(array $indexDefs, ContainerBuilder $container)
     {
-        $managerDef = new Definition('%foq_elastica.index_manager.class%', $indexDefs);
-        $container->setDefinition('fos_elastica.index_manager', $managerDef);
+        $managerDef = $container->getDefinition('foq_elastica.index_manager');
+        $managerDef->setArgument(0, $indexDefs);
     }
 }

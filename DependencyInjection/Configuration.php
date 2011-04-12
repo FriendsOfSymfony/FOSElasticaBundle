@@ -23,6 +23,7 @@ class Configuration
         $rootNode
             ->children()
                 ->scalarNode('default_client')->end()
+                ->scalarNode('default_index')->end()
             ->end()
         ;
 
