@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Config\FileLocator;
+use InvalidArgumentException;
 
 class FOQElasticaExtension extends Extension
 {
@@ -33,8 +34,12 @@ class FOQElasticaExtension extends Extension
         }
 
         $clientIdsByName = $this->loadClients($config['clients'], $container);
-        $indexIdsByName = $this->loadIndexes($config['indexes'], $container, $clientsByName, $config['default_client']);
-        $this->loadIndexManager($indexesByName, $config['default_index'], $container);
+        $indexIdsByName = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
+        $indexDefsByName = array_map(function($id) use ($container) {
+            return $container->getDefinition($id);
+        }, $indexIdsByName);
+
+        $this->loadIndexManager($indexDefsByName, $container->getDefinition($indexIdsByName[$config['default_index']]), $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
@@ -57,10 +62,10 @@ class FOQElasticaExtension extends Extension
             $clientDef = new Definition('%foq_elastica.client.class%', $clientDefArgs);
             $clientId = sprintf('foq_elastica.client.%s', $name);
             $container->setDefinition($clientId, $clientDef);
-            $clientIds[$name] = $cliendId;
+            $clientIds[$name] = $clientId;
         }
 
-        return $clientId;
+        return $clientIds;
     }
 
     /**
@@ -81,10 +86,14 @@ class FOQElasticaExtension extends Extension
             } else {
                 $clientName = $defaultClientName;
             }
+            $clientId = $clientIdsByName[$clientName];
+            $clientDef = $container->getDefinition($clientId);
             $indexId = sprintf('foq_elastica.index.%s', $name);
-            $indexDefArgs = array($clientIdsByName[$clientName], $name);
+            $indexDefArgs = array($name);
             $indexDef = new Definition('%foq_elastica.index.class%', $indexDefArgs);
-            $container->setDefinition($indexId, $indexDefArgs);
+            $indexDef->setFactoryService($clientId);
+            $indexDef->setFactoryMethod('getIndex');
+            $container->setDefinition($indexId, $indexDef);
             $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $indexId);
             $indexIds[$name] = $indexId;
         }
@@ -98,12 +107,14 @@ class FOQElasticaExtension extends Extension
      * @param array $config An array of types configurations
      * @param ContainerBuilder $container A ContainerBuilder instance
      */
-    protected function loadTypes(array $types, ContainerBuilder $container, $baseId)
+    protected function loadTypes(array $types, ContainerBuilder $container, $indexId)
     {
         foreach ($types as $name => $type) {
-            $typeDefArgs = array();
+            $typeDefArgs = array($name);
             $typeDef = new Definition('%foq_elastica.type.class%', $typeDefArgs);
-            $container->setDefinition(sprintf('%s.%s', $baseId, $name), $typeDef);
+            $typeDef->setFactoryService($indexId);
+            $typeDef->setFactoryMethod('getType');
+            $container->setDefinition(sprintf('%s.%s', $indexId, $name), $typeDef);
         }
     }
 

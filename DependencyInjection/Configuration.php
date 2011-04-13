@@ -61,15 +61,36 @@ class Configuration
             ->fixXmlConfig('index')
             ->children()
                 ->arrayNode('indexes')
-                    ->useAttributeAsKey('id')
+                    ->useAttributeAsKey('name')
                     ->prototype('array')
                         ->performNoDeepMerging()
                         ->children()
                             ->scalarNode('client')->end()
                         ->end()
+                        ->append($this->getTypesNode())
                     ->end()
                 ->end()
             ->end()
         ;
+    }
+
+    /**
+     * Returns the array node used for "types".
+     */
+    protected function getTypesNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('types');
+
+        $node
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+                ->treatNullLike(array())
+                ->children()
+                ->end()
+            ->end()
+        ;
+
+        return $node;
     }
 }
