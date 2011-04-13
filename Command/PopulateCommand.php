@@ -29,9 +29,11 @@ class PopulateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('Populating indexes');
+        $output->writeln('Reseting indexes');
+        $this->container->get('foq_elastica.reseter')->reset();
 
-        $populator = $this->container->get('foq_elastica.populator')->populate();
+        $output->writeln('Populating indexes');
+        $this->container->get('foq_elastica.populator')->populate();
 
         $output->writeln('Done');
     }
