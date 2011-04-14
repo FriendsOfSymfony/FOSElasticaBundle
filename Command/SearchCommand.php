@@ -40,7 +40,7 @@ class SearchCommand extends Command
 
         $resultSet = $type->search($query);
 
-        $output->writeLn(sprintf('Found %d results', $resultSet->count()));
+        $output->writeLn(sprintf('Found %d results', $type->count($query)));
         foreach ($resultSet->getResults() as $result) {
             $source = $result->getSource();
             $output->writeLn(sprintf('[%0.2f] %s', $result->getScore(), var_export(reset($source), true)));
