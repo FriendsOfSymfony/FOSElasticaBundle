@@ -13,6 +13,8 @@ use InvalidArgumentException;
 
 class FOQElasticaExtension extends Extension
 {
+    protected $typeMappings = array();
+
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
@@ -40,6 +42,7 @@ class FOQElasticaExtension extends Extension
         }, $indexIdsByName);
 
         $this->loadIndexManager($indexDefsByName, $container->getDefinition($indexIdsByName[$config['default_index']]), $container);
+        $this->loadMappingSetter($this->typeMappings, $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
@@ -110,11 +113,18 @@ class FOQElasticaExtension extends Extension
     protected function loadTypes(array $types, ContainerBuilder $container, $indexId)
     {
         foreach ($types as $name => $type) {
+            $typeId = sprintf('%s.%s', $indexId, $name);
             $typeDefArgs = array($name);
             $typeDef = new Definition('%foq_elastica.type.class%', $typeDefArgs);
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
-            $container->setDefinition(sprintf('%s.%s', $indexId, $name), $typeDef);
+            $container->setDefinition($typeId, $typeDef);
+            if (isset($type['mappings'])) {
+                $this->typeMappings[] = array(
+                    new Reference($typeId),
+                    $type['mappings']
+                );
+            }
         }
     }
 
@@ -128,5 +138,16 @@ class FOQElasticaExtension extends Extension
         $managerDef = $container->getDefinition('foq_elastica.index_manager');
         $managerDef->setArgument(0, $indexDefs);
         $managerDef->setArgument(1, new Reference('foq_elastica.index'));
+    }
+
+    /**
+     * Loads the mapping setter
+     *
+     * @return null
+     **/
+    public function loadMappingSetter(array $mappings, ContainerBuilder $container)
+    {
+        $managerDef = $container->getDefinition('foq_elastica.mapping_setter');
+        $managerDef->setArgument(0, $mappings);
     }
 }

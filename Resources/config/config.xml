@@ -22,6 +22,9 @@
         <service id="foq_elastica.reseter" class="FOQ\ElasticaBundle\Reseter">
             <argument type="service" id="foq_elastica.index_manager" />
         </service>
+        <service id="foq_elastica.mapping_setter" class="FOQ\ElasticaBundle\MappingSetter">
+            <argument /> <!-- mappings -->
+        </service>
     </services>
 
 </container>

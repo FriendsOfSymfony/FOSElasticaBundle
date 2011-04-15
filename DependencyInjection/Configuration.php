@@ -86,7 +86,30 @@ class Configuration
             ->useAttributeAsKey('name')
             ->prototype('array')
                 ->treatNullLike(array())
+                ->append($this->getMappingsNode())
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * Returns the array node used for "mappings".
+     */
+    protected function getMappingsNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('mappings');
+
+        $node
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+                ->treatNullLike(array())
                 ->children()
+                    ->scalarNode('type')->end()
+                    ->scalarNode('boost')->end()
+                    ->scalarNode('store')->end()
+                    ->scalarNode('index')->end()
                 ->end()
             ->end()
         ;
