@@ -27,15 +27,26 @@ class DoctrineMapper implements MapperInterface
     protected $identifier = null;
 
     /**
+     * Optional parameters
+     *
+     * @var array
+     */
+    protected $options = array(
+        'hydrate' => true
+    );
+
+    /**
      * Instanciates a new Mapper
      *
      * @param ObjectRepository objectRepository
      * @param string $identifier
+     * @param array $options
      */
-    public function __construct(ObjectRepository $objectRepository, $identifier = 'id')
+    public function __construct(ObjectRepository $objectRepository, $identifier = 'id', array $options = array())
     {
         $this->objectRepository = $objectRepository;
         $this->identifier       = $identifier;
+        $this->options          = array_merge($this->options, $options);
     }
 
     /**
@@ -53,6 +64,7 @@ class DoctrineMapper implements MapperInterface
         return $this->objectRepository
             ->createQueryBuilder()
             ->field($this->identifier)->in($ids)
+            ->hydrate($this->options['hydrate'])
             ->getQuery()
             ->execute();
     }
