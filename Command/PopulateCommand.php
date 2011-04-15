@@ -32,8 +32,13 @@ class PopulateCommand extends Command
         $output->writeln('Reseting indexes');
         $this->container->get('foq_elastica.reseter')->reset();
 
+        $output->writeln('Setting mappings');
+        $this->container->get('foq_elastica.mapping_setter')->setMappings();
+
         $output->writeln('Populating indexes');
-        $this->container->get('foq_elastica.populator')->populate();
+        $this->container->get('foq_elastica.populator')->populate(function($text) use ($output) {
+            $output->writeLn($text);
+        });
 
         $output->writeln('Done');
     }

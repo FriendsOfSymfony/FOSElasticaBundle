@@ -2,7 +2,9 @@
 
 namespace FOQ\ElasticaBundle;
 
+use Closure;
+
 interface ProviderInterface
 {
-    function populate();
+    function populate(Closure $loggerClosure);
 }

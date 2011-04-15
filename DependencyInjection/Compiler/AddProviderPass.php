@@ -19,7 +19,7 @@ class AddProviderPass implements CompilerPassInterface
 
         $providers = array();
         foreach ($container->findTaggedServiceIds('foq_elastica.provider') as $id => $attributes) {
-            $providers[] = new Reference($id);
+            $providers[$id] = new Reference($id);
         }
 
         $container->getDefinition('foq_elastica.populator')->setArgument(0, $providers);
