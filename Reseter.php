@@ -2,6 +2,8 @@
 
 namespace FOQ\ElasticaBundle;
 
+use Elastica_Exception_Response;
+
 /**
  * Deletes and recreates indexes
  **/
@@ -22,7 +24,11 @@ class Reseter
     public function reset()
     {
         foreach ($this->indexManager->getAllIndexes() as $index) {
-            $index->delete();
+            try {
+                $index->delete();
+            } catch (Elastica_Exception_Response $e) {
+                // The index does not exist
+            }
             $index->create();
         }
     }
