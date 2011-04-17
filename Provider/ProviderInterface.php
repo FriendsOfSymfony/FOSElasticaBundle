@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle;
+namespace FOQ\ElasticaBundle\Provider;
 
 use Closure;
 
