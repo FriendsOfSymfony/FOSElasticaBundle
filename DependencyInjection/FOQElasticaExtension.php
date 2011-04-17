@@ -25,12 +25,16 @@ class FOQElasticaExtension extends Extension
 
         $config = $processor->process($configuration->getConfigTree(), $configs);
 
-        if (empty ($config['default_client'])) {
+        if (empty($config['clients']) || empty($config['indexes'])) {
+            throw new InvalidArgumentException('You must define at least one client and one index');
+        }
+
+        if (empty($config['default_client'])) {
             $keys = array_keys($config['clients']);
             $config['default_client'] = reset($keys);
         }
 
-        if (empty ($config['default_index'])) {
+        if (empty($config['default_index'])) {
             $keys = array_keys($config['indexes']);
             $config['default_index'] = reset($keys);
         }
