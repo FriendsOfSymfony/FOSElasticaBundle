@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
+use Elastica_Query;
 
 /**
  * Searches a type
@@ -25,6 +26,7 @@ class SearchCommand extends Command
                 new InputArgument('query', InputArgument::REQUIRED, 'The text to search'),
             ))
             ->addOption('index', null, InputOption::VALUE_NONE, 'The index to search in')
+            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'The maximum number of documents to return', 20)
             ->setName('foq:elastica:search')
             ->setDescription('Searches documents in a given type and index');
     }
@@ -34,9 +36,10 @@ class SearchCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $index  = $this->container->get('foq_elastica.index_manager')->getIndex($input->getOption('index'));
-        $type   = $index->getType($input->getArgument('type'));
-        $query  = $input->getArgument('query');
+        $index = $this->container->get('foq_elastica.index_manager')->getIndex($input->getOption('index'));
+        $type  = $index->getType($input->getArgument('type'));
+        $query = Elastica_Query::create($input->getArgument('query'));
+        $query->setLimit($input->getOption('limit'));
 
         $resultSet = $type->search($query);
 
