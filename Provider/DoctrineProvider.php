@@ -14,8 +14,9 @@ class DoctrineProvider implements ProviderInterface
     protected $objectManager;
     protected $objectClass;
     protected $options = array(
-        'batch_size' => 100,
-        'clear_object_manager' => true
+        'batch_size'                  => 100,
+        'clear_object_manager'        => true,
+        'create_query_builder_method' => 'createQueryBuilder'
     );
 
     public function __construct(Elastica_Type $type,  ObjectManager $objectManager, $objectClass, array $options = array())
@@ -43,7 +44,7 @@ class DoctrineProvider implements ProviderInterface
 
             $this->type->addDocuments(array_map(function($object) use ($getters) {
                 return new Elastica_Document($object->getId(), array_map(function($getter) use ($object) {
-                    return $object->$getter();
+                    return (string) $object->$getter();
                 }, $getters));
             }, $queryBuilder->limit($this->options['batch_size'])->skip($offset)->getQuery()->execute()->toArray()));
 
@@ -85,6 +86,6 @@ class DoctrineProvider implements ProviderInterface
      **/
     protected function createQueryBuilder()
     {
-        return $this->objectManager->createQueryBuilder($this->objectClass);
+        return $this->objectManager->getRepository($this->objectClass)->{$this->options['create_query_builder_method']}();
     }
 }
