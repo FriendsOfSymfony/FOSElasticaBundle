@@ -2,6 +2,8 @@
 
 namespace FOQ\ElasticaBundle\Transformer;
 
+use RuntimeException;
+
 /**
  * AutomaticObjectToArrayTransformer
  * Tries to convert objects by generating getters
@@ -23,7 +25,7 @@ class ObjectToArrayAutomaticTransformer implements ObjectToArrayTransformerInter
         foreach ($requiredKeys as $key) {
             $getter = 'get'.ucfirst($key);
             if (!method_exists($class, $getter)) {
-                throw new InvalidArgumentException(sprintf('The getter %s::%s does not exist', $this->objectClass, $getter));
+                throw new RuntimeException(sprintf('The getter %s::%s does not exist', $class, $getter));
             }
             $array[$key] = $object->$getter();
         }

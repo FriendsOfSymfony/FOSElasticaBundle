@@ -12,20 +12,31 @@
 
 
     <services>
+
         <service id="foq_elastica.index_manager" class="FOQ\ElasticaBundle\IndexManager">
             <argument /> <!-- indexes -->
             <argument /> <!-- default index -->
         </service>
+
         <service id="foq_elastica.populator" class="FOQ\ElasticaBundle\Populator">
             <argument /> <!-- providers -->
         </service>
+
         <service id="foq_elastica.reseter" class="FOQ\ElasticaBundle\Reseter">
             <argument type="service" id="foq_elastica.index_manager" />
         </service>
+
         <service id="foq_elastica.mapping_setter" class="FOQ\ElasticaBundle\MappingSetter">
             <argument /> <!-- mappings -->
         </service>
+
         <service id="foq_elastica.transformer.auto" class="FOQ\ElasticaBundle\Transformer\ObjectToArrayAutomaticTransformer" public="false" />
+
+        <service id="foq_elastica.finder.prototype" class="FOQ\ElasticaBundle\Finder\MappedFinder" public="true" abstract="true">
+            <argument /> <!-- index -->
+            <argument /> <!-- mapper -->
+        </service>
+
     </services>
 
 </container>

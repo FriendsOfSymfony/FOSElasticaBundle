@@ -16,9 +16,10 @@ class DoctrineProvider implements ProviderInterface
     protected $objectClass;
     protected $transformer;
     protected $options = array(
-        'batch_size'                  => 100,
-        'clear_object_manager'        => true,
-        'create_query_builder_method' => 'createQueryBuilder'
+        'batch_size'           => 100,
+        'clear_object_manager' => true,
+		'query_builder_method' => 'createQueryBuilder',
+		'identifier'           => 'id'
     );
 
     public function __construct(Elastica_Type $type,  ObjectManager $objectManager, ObjectToArrayTransformerInterface $transformer, $objectClass, array $options = array())
@@ -40,16 +41,18 @@ class DoctrineProvider implements ProviderInterface
         $queryBuilder = $this->createQueryBuilder();
         $nbObjects    = $queryBuilder->getQuery()->count();
         $fields       = $this->extractTypeFields();
+		$identifierGetter = 'get'.ucfirst($this->options['identifier']);
 
         for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
 
-            $loggerClosure(sprintf('%0.1f%% (%d/%d)', 100*$offset/$nbObjects, $offset, $nbObjects));
-
-            $objects = $queryBuilder->limit($this->options['batch_size'])->skip($offset)->getQuery()->execute()->toArray();
             $documents = array();
+            $objects = $queryBuilder->limit($this->options['batch_size'])->skip($offset)->getQuery()->execute()->toArray();
+            $stepCount = (count($objects)+$offset);
+            $loggerClosure(sprintf('%0.1f%% (%d/%d)', 100*$stepCount/$nbObjects, $stepCount, $nbObjects));
+
             foreach ($objects as $object) {
                 $data = $this->transformer->transform($object, $fields);
-                $documents[] = new Elastica_Document($object->getId(), $data);
+                $documents[] = new Elastica_Document($object->$identifierGetter(), $data);
             }
             $this->type->addDocuments($documents);
 
@@ -66,7 +69,7 @@ class DoctrineProvider implements ProviderInterface
      **/
     protected function createQueryBuilder()
     {
-        return $this->objectManager->getRepository($this->objectClass)->{$this->options['create_query_builder_method']}();
+        return $this->objectManager->getRepository($this->objectClass)->{$this->options['query_builder_method']}();
     }
 
     protected function extractTypeFields()
@@ -77,6 +80,9 @@ class DoctrineProvider implements ProviderInterface
         // skip type name
         $mappings = reset($mappings);
         $mappings = $mappings['properties'];
+        if (array_key_exists('__isInitialized__', $mappings)) {
+            unset($mappings['__isInitialized__']);
+        }
 
         return array_keys($mappings);
     }

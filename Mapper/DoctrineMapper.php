@@ -3,7 +3,7 @@
 namespace FOQ\ElasticaBundle\Mapper;
 
 use FOQ\ElasticaBundle\MapperInterface;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -15,16 +15,16 @@ class DoctrineMapper implements MapperInterface
     /**
      * Repository to fetch the objects from
      *
-     * @var ObjectRepository
+     * @var ObjectManager
      */
-    protected $objectRepository = null;
+    protected $objectManager = null;
 
     /**
-     * Doctrine identifier field
+     * Class of the model to map to the elastica documents
      *
      * @var string
      */
-    protected $identifier = null;
+    protected $objectClass = null;
 
     /**
      * Optional parameters
@@ -32,21 +32,22 @@ class DoctrineMapper implements MapperInterface
      * @var array
      */
     protected $options = array(
-        'hydrate' => true
+        'hydrate'    => true,
+		'identifier' => 'id'
     );
 
     /**
      * Instanciates a new Mapper
      *
-     * @param ObjectRepository objectRepository
-     * @param string $identifier
+     * @param ObjectManager objectManager
+     * @param string $objectClass
      * @param array $options
      */
-    public function __construct(ObjectRepository $objectRepository, $identifier = 'id', array $options = array())
+    public function __construct(ObjectManager $objectManager, $objectClass, array $options = array())
     {
-        $this->objectRepository = $objectRepository;
-        $this->identifier       = $identifier;
-        $this->options          = array_merge($this->options, $options);
+        $this->objectManager = $objectManager;
+        $this->objectClass   = $objectClass;
+        $this->options       = array_merge($this->options, $options);
     }
 
     /**
@@ -61,13 +62,12 @@ class DoctrineMapper implements MapperInterface
             return $elasticaObject->getId();
         }, $elasticaObjects);
 
-        return $this->objectRepository
-            ->createQueryBuilder()
-            ->field($this->identifier)->in($ids)
+        return $this->objectManager
+            ->createQueryBuilder($this->objectClass)
+            ->field($this->options['identifier'])->in($ids)
             ->hydrate($this->options['hydrate'])
             ->getQuery()
             ->execute()
             ->toArray();
     }
-
 }

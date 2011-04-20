@@ -2,6 +2,7 @@
 
 namespace FOQ\ElasticaBundle;
 
+use FOQ\ElasticaBundle\Provider\ProviderInterface;
 use Closure;
 
 class Populator
@@ -11,6 +12,11 @@ class Populator
     public function __construct(array $providers)
     {
         $this->providers = $providers;
+    }
+
+    public function addProvider($name, ProviderInterface $provider)
+    {
+        $this->providers[$name] = $provider;
     }
 
     public function populate(Closure $loggerClosure)
