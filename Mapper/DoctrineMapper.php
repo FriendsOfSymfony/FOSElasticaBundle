@@ -66,7 +66,8 @@ class DoctrineMapper implements MapperInterface
             ->field($this->identifier)->in($ids)
             ->hydrate($this->options['hydrate'])
             ->getQuery()
-            ->execute();
+            ->execute()
+            ->toArray();
     }
 
 }
