@@ -2,6 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Provider;
 
+use FOQ\ElasticaBundle\Transformer\ObjectToArrayTransformerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Elastica_Type;
 use Elastica_Document;
@@ -13,17 +14,19 @@ class DoctrineProvider implements ProviderInterface
     protected $type;
     protected $objectManager;
     protected $objectClass;
+    protected $transformer;
     protected $options = array(
         'batch_size'                  => 100,
         'clear_object_manager'        => true,
         'create_query_builder_method' => 'createQueryBuilder'
     );
 
-    public function __construct(Elastica_Type $type,  ObjectManager $objectManager, $objectClass, array $options = array())
+    public function __construct(Elastica_Type $type,  ObjectManager $objectManager, ObjectToArrayTransformerInterface $transformer, $objectClass, array $options = array())
     {
         $this->type          = $type;
         $this->objectManager = $objectManager;
         $this->objectClass   = $objectClass;
+        $this->transformer   = $transformer;
         $this->options       = array_merge($this->options, $options);
     }
 
@@ -36,47 +39,24 @@ class DoctrineProvider implements ProviderInterface
     {
         $queryBuilder = $this->createQueryBuilder();
         $nbObjects    = $queryBuilder->getQuery()->count();
-        $getters      = $this->buildGetters();
+        $fields       = $this->extractTypeFields();
 
         for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
 
             $loggerClosure(sprintf('%0.1f%% (%d/%d)', 100*$offset/$nbObjects, $offset, $nbObjects));
 
-            $this->type->addDocuments(array_map(function($object) use ($getters) {
-                return new Elastica_Document($object->getId(), array_map(function($getter) use ($object) {
-                    return (string) $object->$getter();
-                }, $getters));
-            }, $queryBuilder->limit($this->options['batch_size'])->skip($offset)->getQuery()->execute()->toArray()));
+            $objects = $queryBuilder->limit($this->options['batch_size'])->skip($offset)->getQuery()->execute()->toArray();
+            $documents = array();
+            foreach ($objects as $object) {
+                $data = $this->transformer->transform($object, $fields);
+                $documents[] = new Elastica_Document($object->getId(), $data);
+            }
+            $this->type->addDocuments($documents);
 
             if ($this->options['clear_object_manager']) {
                 $this->objectManager->clear();
             }
         }
-    }
-
-    /**
-     * Preprocesses getters based on the type mappings
-     *
-     * @return null
-     **/
-    public function buildGetters()
-    {
-        $getters = array();
-        $mappings = $this->type->getMapping();
-        // skip index name
-        $mappings = reset($mappings);
-        // skip type name
-        $mappings = reset($mappings);
-        $mappings = $mappings['properties'];
-        foreach ($mappings as $property => $mappingOptions) {
-            $getter = 'get'.ucfirst($property);
-            if (!method_exists($this->objectClass, $getter)) {
-                throw new InvalidArgumentException(sprintf('The getter %s::%s does not exist', $this->objectClass, $getter));
-            }
-            $getters[$property] = $getter;
-        }
-
-        return $getters;
     }
 
     /**
@@ -87,5 +67,17 @@ class DoctrineProvider implements ProviderInterface
     protected function createQueryBuilder()
     {
         return $this->objectManager->getRepository($this->objectClass)->{$this->options['create_query_builder_method']}();
+    }
+
+    protected function extractTypeFields()
+    {
+        $mappings = $this->type->getMapping();
+        // skip index name
+        $mappings = reset($mappings);
+        // skip type name
+        $mappings = reset($mappings);
+        $mappings = $mappings['properties'];
+
+        return array_keys($mappings);
     }
 }

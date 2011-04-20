@@ -25,6 +25,7 @@
         <service id="foq_elastica.mapping_setter" class="FOQ\ElasticaBundle\MappingSetter">
             <argument /> <!-- mappings -->
         </service>
+        <service id="foq_elastica.transformer.auto" class="FOQ\ElasticaBundle\Transformer\ObjectToArrayAutomaticTransformer" public="false" />
     </services>
 
 </container>
