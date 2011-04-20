@@ -47,7 +47,7 @@ class MappedFinder implements FinderInterface, PaginatedFinderInterface
 		$paginatorAdapter = $this->createPaginatorAdapter($queryObject);
 		$paginator = new Paginator($paginatorAdapter);
 
-		return $this->createPaginator($queryObject);
+		return $paginator;
     }
 
     /**
