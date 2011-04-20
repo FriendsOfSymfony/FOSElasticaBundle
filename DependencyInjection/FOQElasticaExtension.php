@@ -152,9 +152,9 @@ class FOQElasticaExtension extends Extension
 			$abstractProviderId = sprintf('foq_elastica.provider.prototype.%s', $config['driver']);
 			$providerId = sprintf('foq_elastica.provider.%s.%s', $indexName, $typeName);
 			$providerDef = new DefinitionDecorator($abstractProviderId);
-			$providerDef->setArgument(0, $typeDef);
-			$providerDef->setArgument(3, $config['model']);
-			$providerDef->setArgument(4, array_merge($config['provider'], array(
+			$providerDef->replaceArgument(0, $typeDef);
+			$providerDef->replaceArgument(3, $config['model']);
+			$providerDef->replaceArgument(4, array_merge($config['provider'], array(
 				'identifier' => $config['identifier']
 			)));
 			$container->setDefinition($providerId, $providerDef);
@@ -165,16 +165,16 @@ class FOQElasticaExtension extends Extension
 			$abstractMapperId = sprintf('foq_elastica.mapper.prototype.%s', $config['driver']);
 			$mapperId = sprintf('foq_elastica.mapper.%s.%s', $indexName, $typeName);
 			$mapperDef = new DefinitionDecorator($abstractMapperId);
-			$mapperDef->setArgument(1, $config['model']);
-			$mapperDef->setArgument(2, array_merge($config['finder'], array(
+			$mapperDef->replaceArgument(1, $config['model']);
+			$mapperDef->replaceArgument(2, array_merge($config['finder'], array(
 				'identifier' => $config['identifier']
 			)));
 			$container->setDefinition($mapperId, $mapperDef);
 			$abstractFinderId = 'foq_elastica.finder.prototype';
 			$finderId = sprintf('foq_elastica.finder.%s.%s', $indexName, $typeName);
 			$finderDef = new DefinitionDecorator($abstractFinderId);
-			$finderDef->setArgument(0, $typeDef);
-			$finderDef->setArgument(1, new Reference($mapperId));
+			$finderDef->replaceArgument(0, $typeDef);
+			$finderDef->replaceArgument(1, new Reference($mapperId));
 			$container->setDefinition($finderId, $finderDef);
 		}
 	}
@@ -187,8 +187,8 @@ class FOQElasticaExtension extends Extension
 	public function loadIndexManager(array $indexDefs, $defaultIndexId, ContainerBuilder $container)
 	{
 		$managerDef = $container->getDefinition('foq_elastica.index_manager');
-		$managerDef->setArgument(0, $indexDefs);
-		$managerDef->setArgument(1, new Reference('foq_elastica.index'));
+		$managerDef->replaceArgument(0, $indexDefs);
+		$managerDef->replaceArgument(1, new Reference('foq_elastica.index'));
 	}
 
 	/**
@@ -199,7 +199,7 @@ class FOQElasticaExtension extends Extension
 	public function loadMappingSetter(array $mappings, ContainerBuilder $container)
 	{
 		$managerDef = $container->getDefinition('foq_elastica.mapping_setter');
-		$managerDef->setArgument(0, $mappings);
+		$managerDef->replaceArgument(0, $mappings);
 	}
 
 	protected function loadDoctrineDriver(ContainerBuilder $container, $driver)

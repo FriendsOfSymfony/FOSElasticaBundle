@@ -22,6 +22,6 @@ class AddProviderPass implements CompilerPassInterface
             $providers[$id] = new Reference($id);
         }
 
-        $container->getDefinition('foq_elastica.populator')->setArgument(0, $providers);
+        $container->getDefinition('foq_elastica.populator')->replaceArgument(0, $providers);
     }
 }
