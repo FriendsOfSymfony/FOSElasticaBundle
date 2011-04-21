@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
 use Elastica_Query;
+use Elastica_Result;
 
 /**
  * Searches a type
@@ -27,6 +28,7 @@ class SearchCommand extends Command
             ))
             ->addOption('index', null, InputOption::VALUE_NONE, 'The index to search in')
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'The maximum number of documents to return', 20)
+            ->addOption('show-source', null, InputOption::VALUE_NONE, 'Show the documents sources')
             ->setName('foq:elastica:search')
             ->setDescription('Searches documents in a given type and index');
     }
@@ -45,8 +47,19 @@ class SearchCommand extends Command
 
         $output->writeLn(sprintf('Found %d results', $type->count($query)));
         foreach ($resultSet->getResults() as $result) {
-            $source = $result->getSource();
-            $output->writeLn(sprintf('[%0.2f] %s', $result->getScore(), var_export(reset($source), true)));
+            $output->writeLn($this->formatResult($result, $input->getOption('show-source')));
         }
+    }
+
+    protected function formatResult(Elastica_Result $result, $showSource)
+    {
+        $source = $result->getSource();
+        if ($showSource) {
+            $string = sprintf('[%0.2f] %s %s', $result->getScore(), var_export(reset($source), true), json_encode($source));
+        } else {
+            $string = sprintf('[%0.2f] %s', $result->getScore(), var_export(reset($source), true));
+        }
+
+        return $string;
     }
 }
