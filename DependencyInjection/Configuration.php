@@ -88,7 +88,6 @@ class Configuration
                 ->treatNullLike(array())
                 ->children()
                     ->arrayNode('doctrine')
-                        ->addDefaultsIfNotSet()
                         ->children()
                             ->scalarNode('driver')->end()
                             ->scalarNode('model')->end()
