@@ -3,6 +3,7 @@
 namespace FOQ\ElasticaBundle\Transformer;
 
 use RuntimeException;
+use Traversable;
 
 /**
  * AutomaticObjectToArrayTransformer
@@ -27,9 +28,23 @@ class ObjectToArrayAutomaticTransformer implements ObjectToArrayTransformerInter
             if (!method_exists($class, $getter)) {
                 throw new RuntimeException(sprintf('The getter %s::%s does not exist', $class, $getter));
             }
-            $array[$key] = $object->$getter();
+            $array[$key] = $this->normalizeValue($object->$getter());
         }
 
-        return $array;
+        return array_filter($array);
+    }
+
+    public function normalizeValue($value)
+    {
+        if (is_array($value) || $value instanceof Traversable) {
+            $normalized = '';
+            foreach ($value as $v) {
+                $normalized .= (string) $v;
+            }
+        } else {
+            $value = (string) $value;
+        }
+
+        return $value;
     }
 }
