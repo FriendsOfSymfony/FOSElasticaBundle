@@ -14,7 +14,7 @@ use InvalidArgumentException;
 
 class FOQElasticaExtension extends Extension
 {
-	protected $supportedProviderDrivers = array('mongodb');
+	protected $supportedProviderDrivers = array('mongodb', 'orm');
 	protected $typeMappings = array();
 	protected $loadedDoctrineDrivers = array();
 
