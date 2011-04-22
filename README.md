@@ -10,13 +10,9 @@ http://www.elasticsearch.org/guide/reference/setup/installation.html
 
 #### Download
 
-With submodule:
+With submodule: `git submodule add git://github.com/ruflin/Elastica vendor/elastica`
 
-    git submodule add git://github.com/ruflin/Elastica vendor/elastica
-
-With clone:
-
-    git clone git://github.com/ruflin/Elastica vendor/elastica
+With clone: `git clone git://github.com/ruflin/Elastica vendor/elastica`
 
 #### Register autoloading
 
@@ -31,11 +27,9 @@ With clone:
 
 #### Download
 
-With submodule:
-    git submodule add git://github.com/Exercise/ElasticaBundle src/Exercise/ElasticaBundle
+With submodule: `git submodule add git://github.com/Exercise/ElasticaBundle src/Exercise/ElasticaBundle`
 
-With clone:
-    git clone git://github.com/Exercise/ElasticaBundle src/Exercise/ElasticaBundle
+With clone: `git clone git://github.com/Exercise/ElasticaBundle src/Exercise/ElasticaBundle`
 
 #### Register autoloading
 
@@ -85,7 +79,7 @@ Most of the time, you will need only one.
 
 Here we created a "website" index, that uses our "default" client.
 
-Our index is now available as a service: `foq_elastica.index.website`
+Our index is now available as a service: `foq_elastica.index.website`. It is an instance of `Elastica_Index`.
 
 #### Declare a type
 
@@ -105,13 +99,13 @@ Elasticsearch type is comparable to doctrine entity repository.
                             lastName: { boost: 3 }
                             aboutMe: 
 
-Our type is now available as a service: `foq_elastica.index.website.user`
+Our type is now available as a service: `foq_elastica.index.website.user`. It is an instance of `Elastica_Type`.
 
 ### Populate the types
 
     php app/console foq:elastica:populate
 
-This command deletes recreates the declared indexes and types.
+This command deletes and creates the declared indexes and types.
 It applies the configured mappings to the types.
 
 This command needs providers to insert new documents in the elasticsearch types.
@@ -122,7 +116,7 @@ Or, for complete flexibility, go for manual provider.
 #### Doctrine automatic provider
 
 If we want to index the entities from a doctrine repository,
-a little bit a configuration will let ElasticaBundle do it for us.
+some configuration will let ElasticaBundle do it for us.
 
     foq_elastica:
         clients:
