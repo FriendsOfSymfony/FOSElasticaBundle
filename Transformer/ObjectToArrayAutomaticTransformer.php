@@ -4,6 +4,7 @@ namespace FOQ\ElasticaBundle\Transformer;
 
 use RuntimeException;
 use Traversable;
+use ArrayAccess;
 
 /**
  * AutomaticObjectToArrayTransformer
@@ -36,15 +37,14 @@ class ObjectToArrayAutomaticTransformer implements ObjectToArrayTransformerInter
 
     public function normalizeValue($value)
     {
-        if (is_array($value) || $value instanceof Traversable) {
-            $normalized = '';
+        if (is_array($value) || $value instanceof Traversable || $value instanceof ArrayAccess) {
+            $values = array();
             foreach ($value as $v) {
-                $normalized .= (string) $v;
+                $values[] = (string) $v;
             }
-        } else {
-            $value = (string) $value;
+            $value = implode(', ', $values);
         }
 
-        return $value;
+        return (string) $value;
     }
 }
