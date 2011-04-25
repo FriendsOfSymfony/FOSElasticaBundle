@@ -62,12 +62,21 @@ class DoctrineMapper implements MapperInterface
             return $elasticaObject->getId();
         }, $elasticaObjects);
 
-        return $this->objectManager
+        $objects = $this->objectManager
             ->createQueryBuilder($this->objectClass)
             ->field($this->options['identifier'])->in($ids)
             ->hydrate($this->options['hydrate'])
             ->getQuery()
             ->execute()
             ->toArray();
+
+        // sort objects in the order of ids
+        $idPos = array_flip($ids);
+        usort($objects, function($a, $b) use ($idPos)
+        {
+            return $idPos[$a->getId()] > $idPos[$b->getId()];
+        });
+
+        return $objects;
     }
 }
