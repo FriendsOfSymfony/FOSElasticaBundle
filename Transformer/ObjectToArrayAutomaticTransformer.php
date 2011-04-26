@@ -38,13 +38,13 @@ class ObjectToArrayAutomaticTransformer implements ObjectToArrayTransformerInter
     public function normalizeValue($value)
     {
         if (is_array($value) || $value instanceof Traversable || $value instanceof ArrayAccess) {
-            $values = array();
-            foreach ($value as $v) {
-                $values[] = (string) $v;
-            }
-            $value = implode(', ', $values);
+            $value = array_map(function($v) {
+                return (string) $v;
+            }, is_array($value) ? $value : iterator_to_array($value));
+        } else {
+            $value = (string) $value;
         }
 
-        return (string) $value;
+        return $value;
     }
 }
