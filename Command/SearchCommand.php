@@ -28,6 +28,7 @@ class SearchCommand extends Command
             ))
             ->addOption('index', null, InputOption::VALUE_NONE, 'The index to search in')
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'The maximum number of documents to return', 20)
+            ->addOption('show-field', null, InputOption::VALUE_REQUIRED, 'Field to show, null uses the first field')
             ->addOption('show-source', null, InputOption::VALUE_NONE, 'Show the documents sources')
             ->addOption('show-id', null, InputOption::VALUE_NONE, 'Show the documents ids')
             ->addOption('explain', null, InputOption::VALUE_NONE, 'Enables explanation for each hit on how its score was computed.')
@@ -52,14 +53,19 @@ class SearchCommand extends Command
 
         $output->writeLn(sprintf('Found %d results', $type->count($query)));
         foreach ($resultSet->getResults() as $result) {
-            $output->writeLn($this->formatResult($result, $input->getOption('show-source'), $input->getOption('show-id'), $input->getOption('explain')));
+            $output->writeLn($this->formatResult($result, $input->getOption('show-field'), $input->getOption('show-source'), $input->getOption('show-id'), $input->getOption('explain')));
         }
     }
 
-    protected function formatResult(Elastica_Result $result, $showSource, $showId, $explain)
+    protected function formatResult(Elastica_Result $result, $showField, $showSource, $showId, $explain)
     {
         $source = $result->getSource();
-        $string = sprintf('[%0.2f] %s', $result->getScore(), var_export(reset($source), true));
+        if ($showField) {
+            $toString = isset($source[$showField]) ? $source[$showField] : '-';
+        } else {
+            $toString = reset($source);
+        }
+        $string = sprintf('[%0.2f] %s', $result->getScore(), var_export($toString, true));
         if ($showSource) {
             $string = sprintf('%s %s', $string, json_encode($source));
         }
