@@ -9,12 +9,12 @@
         <service id="foq_elastica.provider.prototype.orm" class="FOQ\ElasticaBundle\Provider\DoctrineProvider" public="false" abstract="true">
             <argument /> <!-- index -->
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="foq_elastica.transformer.auto" />
+            <argument /> <!-- transformer -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
         </service>
 
-		<service id="foq_elastica.mapper.prototype.orm" class="FOQ\ElasticaBundle\Mapper\DoctrineMapper" public="false">
+        <service id="foq_elastica.elastica_to_model_transformer.prototype.orm" class="FOQ\ElasticaBundle\Transformer\ElasticaToModelDoctrineTransformer" public="false">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->

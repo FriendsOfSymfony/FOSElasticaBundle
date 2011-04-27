@@ -2,7 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Paginator;
 
-use FOQ\ElasticaBundle\MapperInterface;
+use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Searchable;
 use Elastica_Query;
 
@@ -13,17 +13,18 @@ use Elastica_Query;
  */
 class DoctrinePaginatorAdapter extends AbstractPaginatorAdapter
 {
-    protected $mapper;
+    protected $transformer;
 
     /**
      * @param Elastica_SearchableInterface the object to search in
      * @param Elastica_Query the query to search
-     * @param MapperInterface the mapper for fetching the results
+     * @param ElasticaToModelTransformerInterface the transformer for fetching the results
      */
-    public function __construct(Elastica_Searchable $searchable, Elastica_Query $query, MapperInterface $mapper)
+    public function __construct(Elastica_Searchable $searchable, Elastica_Query $query, ElasticaToModelTransformerInterface $transformer)
     {
         parent::__construct($searchable, $query);
-        $this->mapper = $mapper;
+
+        $this->transformer = $transformer;
     }
 
     /**
@@ -33,6 +34,6 @@ class DoctrinePaginatorAdapter extends AbstractPaginatorAdapter
     {
         $results = $this->getElasticaResults($offset, $itemCountPerPage);
 
-        return $this->mapper->fromElasticaObjects($results);
+        return $this->transformer->transform($results);
     }
 }

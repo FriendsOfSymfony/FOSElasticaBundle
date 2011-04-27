@@ -1,16 +1,16 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Mapper;
+namespace FOQ\ElasticaBundle\Transformer;
 
-use FOQ\ElasticaBundle\MapperInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Elastica_Document;
 
 /**
  * Maps Elastica documents with Doctrine objects
  * This mapper assumes an exact match between
  * elastica documents ids and doctrine object ids
  */
-class DoctrineMapper implements MapperInterface
+class ElasticaToModelDoctrineTransformer implements ElasticaToModelTransformerInterface
 {
     /**
      * Repository to fetch the objects from
@@ -54,9 +54,10 @@ class DoctrineMapper implements MapperInterface
      * Transforms an array of elastica objects into an array of
      * model objects fetched from the doctrine repository
      *
+     * @param array of elastica objects
      * @return array
      **/
-    public function fromElasticaObjects(array $elasticaObjects)
+    public function transform(array $elasticaObjects)
     {
         $ids = array_map(function($elasticaObject) {
             return $elasticaObject->getId();
@@ -70,11 +71,13 @@ class DoctrineMapper implements MapperInterface
             ->execute()
             ->toArray();
 
+		$identifierGetter = 'get'.ucfirst($this->options['identifier']);
+
         // sort objects in the order of ids
         $idPos = array_flip($ids);
-        usort($objects, function($a, $b) use ($idPos)
+        usort($objects, function($a, $b) use ($idPos, $identifierGetter)
         {
-            return $idPos[$a->getId()] > $idPos[$b->getId()];
+            return $idPos[$a->$identifierGetter()] > $idPos[$b->$identifierGetter()];
         });
 
         return $objects;

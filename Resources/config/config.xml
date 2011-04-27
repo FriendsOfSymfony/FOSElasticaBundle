@@ -30,11 +30,13 @@
             <argument /> <!-- mappings -->
         </service>
 
-        <service id="foq_elastica.transformer.auto" class="FOQ\ElasticaBundle\Transformer\ObjectToArrayAutomaticTransformer" public="false" />
-
-        <service id="foq_elastica.finder.prototype" class="FOQ\ElasticaBundle\Finder\MappedFinder" public="true" abstract="true">
+        <service id="foq_elastica.finder.prototype" class="FOQ\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
             <argument /> <!-- index -->
-            <argument /> <!-- mapper -->
+            <argument /> <!-- transformer -->
+        </service>
+
+        <service id="foq_elastica.model_to_elastica_transformer.prototype.auto" class="FOQ\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer" public="false" abstract="true">
+            <argument /> <!-- options -->
         </service>
 
     </services>

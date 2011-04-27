@@ -2,7 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Provider;
 
-use FOQ\ElasticaBundle\Transformer\ObjectToArrayTransformerInterface;
+use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Elastica_Type;
 use Elastica_Document;
@@ -18,11 +18,10 @@ class DoctrineProvider implements ProviderInterface
     protected $options = array(
         'batch_size'           => 100,
         'clear_object_manager' => true,
-		'query_builder_method' => 'createQueryBuilder',
-		'identifier'           => 'id'
+		'query_builder_method' => 'createQueryBuilder'
     );
 
-    public function __construct(Elastica_Type $type,  ObjectManager $objectManager, ObjectToArrayTransformerInterface $transformer, $objectClass, array $options = array())
+    public function __construct(Elastica_Type $type,  ObjectManager $objectManager, ModelToElasticaTransformerInterface $transformer, $objectClass, array $options = array())
     {
         $this->type          = $type;
         $this->objectManager = $objectManager;
@@ -41,24 +40,30 @@ class DoctrineProvider implements ProviderInterface
         $queryBuilder = $this->createQueryBuilder();
         $nbObjects    = $queryBuilder->getQuery()->count();
         $fields       = $this->extractTypeFields();
-		$identifierGetter = 'get'.ucfirst($this->options['identifier']);
 
         for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
 
+            $stepStartTime = microtime(true);
             $documents = array();
             $objects = $queryBuilder->limit($this->options['batch_size'])->skip($offset)->getQuery()->execute()->toArray();
-            $stepCount = (count($objects)+$offset);
-            $loggerClosure(sprintf('%0.1f%% (%d/%d)', 100*$stepCount/$nbObjects, $stepCount, $nbObjects));
 
             foreach ($objects as $object) {
-                $data = $this->transformer->transform($object, $fields);
-                $documents[] = new Elastica_Document($object->$identifierGetter(), $data);
+                try {
+                    $documents[] = $this->transformer->transform($object, $fields);
+                } catch (NotIndexableException $e) {
+                    // skip document
+                }
             }
             $this->type->addDocuments($documents);
 
             if ($this->options['clear_object_manager']) {
                 $this->objectManager->clear();
             }
+
+            $stepNbObjects = count($objects);
+            $stepCount = $stepNbObjects+$offset;
+            $objectsPerSecond = $stepNbObjects / (microtime(true) - $stepStartTime);
+            $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s', 100*$stepCount/$nbObjects, $stepCount, $nbObjects, $objectsPerSecond));
         }
     }
 

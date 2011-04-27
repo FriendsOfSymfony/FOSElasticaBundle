@@ -2,7 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Finder;
 
-use FOQ\ElasticaBundle\MapperInterface;
+use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOQ\ElasticaBundle\Paginator\DoctrinePaginatorAdapter;
 use Zend\Paginator\Paginator;
 use Elastica_Searchable;
@@ -11,15 +11,15 @@ use Elastica_Query;
 /**
  * Finds elastica documents and map them to persisted objects
  */
-class MappedFinder implements FinderInterface, PaginatedFinderInterface
+class TransformedFinder implements FinderInterface, PaginatedFinderInterface
 {
     protected $searchable;
-    protected $mapper;
+    protected $transformer;
 
-    public function __construct(Elastica_Searchable $searchable, MapperInterface $mapper)
+    public function __construct(Elastica_Searchable $searchable, ElasticaToModelTransformerInterface $transformer)
     {
-        $this->searchable = $searchable;
-        $this->mapper     = $mapper;
+        $this->searchable  = $searchable;
+        $this->transformer = $transformer;
     }
 
     /**
@@ -33,7 +33,7 @@ class MappedFinder implements FinderInterface, PaginatedFinderInterface
         $queryObject->setLimit($limit);
         $results = $this->searchable->search($queryObject)->getResults();
 
-        return $this->mapper->fromElasticaObjects($results);
+        return $this->transformer->transform($results);
     }
 
     /**
@@ -44,6 +44,7 @@ class MappedFinder implements FinderInterface, PaginatedFinderInterface
     public function findPaginated($query)
     {
 		$queryObject = Elastica_Query::create($query);
+        $results = $this->searchable->search($queryObject)->getResults();
 		$paginatorAdapter = $this->createPaginatorAdapter($queryObject);
 		$paginator = new Paginator($paginatorAdapter);
 
@@ -58,6 +59,6 @@ class MappedFinder implements FinderInterface, PaginatedFinderInterface
      */
     protected function createPaginatorAdapter(Elastica_Query $query)
     {
-		return new DoctrinePaginatorAdapter($this->searchable, $query, $this->mapper);
+		return new DoctrinePaginatorAdapter($this->searchable, $query, $this->transformer);
     }
 }
