@@ -2,38 +2,34 @@
 
 namespace FOQ\ElasticaBundle\Finder;
 
-use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use FOQ\ElasticaBundle\Paginator\DoctrinePaginatorAdapter;
+use FOQ\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use Zend\Paginator\Paginator;
 use Elastica_Searchable;
 use Elastica_Query;
 
 /**
- * Finds elastica documents and map them to persisted objects
+ * Finds elastica documents
  */
-class TransformedFinder implements FinderInterface, PaginatedFinderInterface
+class RawFinder implements FinderInterface, PaginatedFinderInterface
 {
     protected $searchable;
-    protected $transformer;
 
-    public function __construct(Elastica_Searchable $searchable, ElasticaToModelTransformerInterface $transformer)
+    public function __construct(Elastica_Searchable $searchable)
     {
-        $this->searchable  = $searchable;
-        $this->transformer = $transformer;
+        $this->searchable = $searchable;
     }
 
     /**
      * Search for a query string
      *
-     * @return array of model objects
+     * @return array of elastica objects
      **/
     public function find($query, $limit)
     {
 		$queryObject = Elastica_Query::create($query);
         $queryObject->setLimit($limit);
-        $results = $this->searchable->search($queryObject)->getResults();
 
-        return $this->transformer->transform($results);
+        return $this->searchable->search($queryObject)->getResults();
     }
 
     /**
@@ -54,10 +50,10 @@ class TransformedFinder implements FinderInterface, PaginatedFinderInterface
      * Creates a paginator adapter for this query
      *
      * @param Elastica_Query $query
-     * @return DoctrinePaginatorAdapter
+     * @return RawPaginatorAdapter
      */
     protected function createPaginatorAdapter(Elastica_Query $query)
     {
-		return new DoctrinePaginatorAdapter($this->searchable, $query, $this->transformer);
+		return new RawPaginatorAdapter($this->searchable, $query);
     }
 }
