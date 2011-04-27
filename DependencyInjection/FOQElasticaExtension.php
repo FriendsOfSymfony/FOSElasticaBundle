@@ -103,7 +103,8 @@ class FOQElasticaExtension extends Extension
             $indexDef->setFactoryService($clientId);
             $indexDef->setFactoryMethod('getIndex');
             $container->setDefinition($indexId, $indexDef);
-            $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId);
+            $typePrototypeConfig = isset($index['type_prototype']) ? $index['type_prototype'] : array();
+            $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig);
             $indexIds[$name] = $indexId;
         }
 
@@ -116,9 +117,10 @@ class FOQElasticaExtension extends Extension
      * @param array $config An array of types configurations
      * @param ContainerBuilder $container A ContainerBuilder instance
      */
-    protected function loadTypes(array $types, ContainerBuilder $container, $indexName, $indexId)
+    protected function loadTypes(array $types, ContainerBuilder $container, $indexName, $indexId, array $typePrototypeConfig)
     {
         foreach ($types as $name => $type) {
+            $type = self::deepArrayUnion($typePrototypeConfig, $type);
             $typeId = sprintf('%s.%s', $indexId, $name);
             $typeDefArgs = array($name);
             $typeDef = new Definition('%foq_elastica.type.class%', $typeDefArgs);
@@ -132,6 +134,27 @@ class FOQElasticaExtension extends Extension
                 $this->loadTypeDoctrineIntegration($type['doctrine'], $container, $typeDef, $indexName, $name);
             }
         }
+    }
+
+    /**
+     * Merges two arrays without reindexing numeric keys.
+     *
+     * @param array $array1 An array to merge
+     * @param array $array2 An array to merge
+     *
+     * @return array The merged array
+     */
+    static protected function deepArrayUnion($array1, $array2)
+    {
+        foreach ($array2 as $key => $value) {
+            if (is_array($value) && isset($array1[$key]) && is_array($array1[$key])) {
+                $array1[$key] = self::deepArrayUnion($array1[$key], $value);
+            } else {
+                $array1[$key] = $value;
+            }
+        }
+
+        return $array1;
     }
 
     /**
