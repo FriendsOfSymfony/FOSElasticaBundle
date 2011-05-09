@@ -7,12 +7,16 @@ class DoctrineORMProvider extends AbstractDoctrineProvider
     /**
      * Counts the objects of a query builder
      *
+     * OMG this implementation is radical. Yes. There seems to be
+     * no easy way to do that with Doctrine ORM 2.0.
+     * Please tell me if you have a better idea.
+     *
      * @param queryBuilder
      * @return int
      **/
     protected function countObjects($queryBuilder)
     {
-        return $queryBuilder->count()->getQuery()->execute();
+        return PHP_INT_MAX;
     }
 
     /**
