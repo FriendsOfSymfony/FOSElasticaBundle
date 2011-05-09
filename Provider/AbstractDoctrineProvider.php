@@ -44,7 +44,7 @@ abstract class AbstractDoctrineProvider implements ProviderInterface
 
             $stepStartTime = microtime(true);
             $documents = array();
-            $objects = $queryBuilder->limit($this->options['batch_size'])->skip($offset)->getQuery()->execute()->toArray();
+            $objects = $this->fetchSlice($queryBuilder, $this->options['batch_size'], $offset);
 
             foreach ($objects as $object) {
                 try {
@@ -69,9 +69,20 @@ abstract class AbstractDoctrineProvider implements ProviderInterface
     /**
      * Counts the objects of a query builder
      *
+     * @param queryBuilder
      * @return int
      **/
     protected abstract function countObjects($queryBuilder);
+
+    /**
+     * Fetches a slice of objects
+     *
+     * @param queryBuilder
+     * @param int limit
+     * @param int offset
+     * @return array of objects
+     **/
+    protected abstract function fetchSlice($queryBuilder, $limit, $offset);
 
     /**
      * Creates the query buider used to fetch the documents to index
