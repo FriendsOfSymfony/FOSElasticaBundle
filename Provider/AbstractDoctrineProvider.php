@@ -44,7 +44,10 @@ abstract class AbstractDoctrineProvider implements ProviderInterface
 
             $stepStartTime = microtime(true);
             $documents = array();
-            $objects = $queryBuilder->limit($this->options['batch_size'])->skip($offset)->getQuery()->execute()->toArray();
+
+            $queryBuilder->setFirstResult($offset);
+            $queryBuilder->setMaxResults($this->options['batch_size']);
+            $objects = $queryBuilder->getQuery()->getArrayResult();
 
             foreach ($objects as $object) {
                 try {
