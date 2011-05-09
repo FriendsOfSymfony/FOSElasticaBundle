@@ -1,14 +1,15 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Provider;
+namespace FOQ\ElasticaBundle\Doctrine;
 
+use FOQ\ElasticaBundle\Provider\ProviderInterface;
 use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Elastica_Type;
 use Elastica_Document;
 use Closure;
 use InvalidArgumentException;
 
-abstract class AbstractDoctrineProvider implements ProviderInterface
+abstract class AbstractProvider implements ProviderInterface
 {
     protected $type;
     protected $objectManager;

@@ -1,7 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Transformer;
+namespace FOQ\ElasticaBundle\Doctrine;
 
+use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Document;
 
 /**
@@ -9,7 +10,7 @@ use Elastica_Document;
  * This mapper assumes an exact match between
  * elastica documents ids and doctrine object ids
  */
-abstract class ElasticaToModelAbstractDoctrineTransformer implements ElasticaToModelTransformerInterface
+abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 {
     /**
      * Repository to fetch the objects from

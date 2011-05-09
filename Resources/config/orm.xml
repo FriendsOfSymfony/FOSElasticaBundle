@@ -6,7 +6,7 @@
 
     <services>
 
-        <service id="foq_elastica.provider.prototype.orm" class="FOQ\ElasticaBundle\Provider\DoctrineORMProvider" public="false" abstract="true">
+        <service id="foq_elastica.provider.prototype.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\Provider" public="false" abstract="true">
             <argument /> <!-- index -->
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument /> <!-- transformer -->
@@ -14,7 +14,7 @@
             <argument type="collection" /> <!-- options -->
         </service>
 
-        <service id="foq_elastica.elastica_to_model_transformer.prototype.orm" class="FOQ\ElasticaBundle\Transformer\ElasticaToModelDoctrineTransformer" public="false">
+        <service id="foq_elastica.elastica_to_model_transformer.prototype.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\Transformer" public="false">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->

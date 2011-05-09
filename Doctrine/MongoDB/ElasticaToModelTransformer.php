@@ -1,7 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Transformer;
+namespace FOQ\ElasticaBundle\Doctrine\MongoDB;
 
+use FOQ\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
 use Elastica_Document;
 
 /**
@@ -9,7 +10,7 @@ use Elastica_Document;
  * This mapper assumes an exact match between
  * elastica documents ids and doctrine object ids
  */
-class ElasticaToModelDoctrineMongoDBTransformer extends ElasticaToModelAbstractDoctrineTransformer
+class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
 {
     /**
      * Fetch objects for theses identifier values

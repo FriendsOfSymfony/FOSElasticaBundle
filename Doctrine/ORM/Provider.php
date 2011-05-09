@@ -1,8 +1,10 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Provider;
+namespace FOQ\ElasticaBundle\Doctrine\ORM;
 
-class DoctrineORMProvider extends AbstractDoctrineProvider
+use FOQ\ElasticaBundle\Doctrine\AbstractProvider;
+
+class Provider extends AbstractProvider
 {
     /**
      * Counts the objects of a query builder

@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Transformer;
+namespace FOQ\ElasticaBundle\Doctrine\ORM;
 
 use Elastica_Document;
 
@@ -9,7 +9,7 @@ use Elastica_Document;
  * This mapper assumes an exact match between
  * elastica documents ids and doctrine object ids
  */
-class ElasticaToModelDoctrineORMTransformer extends ElasticaToModelAbstractDoctrineTransformer
+class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
 {
     /**
      * Fetch objects for theses identifier values
