@@ -2,7 +2,6 @@
 
 namespace FOQ\ElasticaBundle\Transformer;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Elastica_Document;
 use Traversable;
 use ArrayAccess;

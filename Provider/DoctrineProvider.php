@@ -3,7 +3,6 @@
 namespace FOQ\ElasticaBundle\Provider;
 
 use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use Doctrine\Common\Persistence\ObjectManager;
 use Elastica_Type;
 use Elastica_Document;
 use Closure;
@@ -21,7 +20,7 @@ class DoctrineProvider implements ProviderInterface
 		'query_builder_method' => 'createQueryBuilder'
     );
 
-    public function __construct(Elastica_Type $type,  ObjectManager $objectManager, ModelToElasticaTransformerInterface $transformer, $objectClass, array $options = array())
+    public function __construct(Elastica_Type $type, $objectManager, ModelToElasticaTransformerInterface $transformer, $objectClass, array $options = array())
     {
         $this->type          = $type;
         $this->objectManager = $objectManager;

@@ -2,7 +2,6 @@
 
 namespace FOQ\ElasticaBundle\Transformer;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Elastica_Document;
 
 /**
@@ -14,8 +13,6 @@ class ElasticaToModelDoctrineTransformer implements ElasticaToModelTransformerIn
 {
     /**
      * Repository to fetch the objects from
-     *
-     * @var ObjectManager
      */
     protected $objectManager = null;
 
@@ -39,11 +36,11 @@ class ElasticaToModelDoctrineTransformer implements ElasticaToModelTransformerIn
     /**
      * Instanciates a new Mapper
      *
-     * @param ObjectManager objectManager
+     * @param object $objectManager
      * @param string $objectClass
      * @param array $options
      */
-    public function __construct(ObjectManager $objectManager, $objectClass, array $options = array())
+    public function __construct($objectManager, $objectClass, array $options = array())
     {
         $this->objectManager = $objectManager;
         $this->objectClass   = $objectClass;
