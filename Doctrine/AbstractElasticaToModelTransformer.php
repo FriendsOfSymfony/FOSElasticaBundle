@@ -81,7 +81,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      * @param string $class the model class
      * @param string $identifierField like 'id'
      * @param array $identifierValues ids values
-     * @param mixed $hydrate whether or not to hydrate the objects, false returns arrays
+     * @param Boolean $hydrate whether or not to hydrate the objects, false returns arrays
      * @return array of objects or arrays
      */
     protected abstract function findByIdentifiers($class, $identifierField, array $identifierValues, $hydrate);
