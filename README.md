@@ -27,9 +27,9 @@ With clone: `git clone git://github.com/ruflin/Elastica vendor/elastica`
 
 #### Download
 
-With submodule: `git submodule add git://github.com/Exercise/ElasticaBundle src/Exercise/ElasticaBundle`
+With submodule: `git submodule add git://github.com/Exercise/ElasticaBundle src/FOQ/ElasticaBundle`
 
-With clone: `git clone git://github.com/Exercise/ElasticaBundle src/Exercise/ElasticaBundle`
+With clone: `git clone git://github.com/Exercise/ElasticaBundle src/FOQ/ElasticaBundle`
 
 #### Register autoloading
 
@@ -128,10 +128,10 @@ some configuration will let ElasticaBundle do it for us.
                     user:
                         mappings:
                             # your mappings
-                    doctrine:
-                        driver: orm
-                        model: Application\UserBundle\Entity\User
-                        provider:
+                        doctrine:
+                            driver: orm
+                            model: Application\UserBundle\Entity\User
+                            provider:
 
 Two drivers are actually supported: orm and mongodb.
 
@@ -139,11 +139,11 @@ Two drivers are actually supported: orm and mongodb.
 
 You can control which entities will be indexed by specifying a custom query builder method.
 
-                    doctrine:
-                        driver: orm
-                        model: Application\UserBundle\Entity\User
-                        provider:
-                            query_builder_method: createIsActiveQueryBuilder
+                        doctrine:
+                            driver: orm
+                            model: Application\UserBundle\Entity\User
+                            provider:
+                                query_builder_method: createIsActiveQueryBuilder
 
 Your repository must implement this method and return a doctrine query builder.
 
@@ -152,22 +152,22 @@ Your repository must implement this method and return a doctrine query builder.
 By default, ElasticaBundle will index documents by paquets of 100.
 You can change this value in the provider configuration.
 
-                    doctrine:
-                        driver: orm
-                        model: Application\UserBundle\Entity\User
-                        provider:
-                            batch_size: 100
+                        doctrine:
+                            driver: orm
+                            model: Application\UserBundle\Entity\User
+                            provider:
+                                batch_size: 100
 
 ##### Change the document identifier field
 
 By default, ElasticaBundle will use the `id` field of your entities as the elasticsearch document identifier.
 You can change this value in the provider configuration.
 
-                    doctrine:
-                        driver: orm
-                        model: Application\UserBundle\Entity\User
-                        provider:
-                            identifier: id
+                        doctrine:
+                            driver: orm
+                            model: Application\UserBundle\Entity\User
+                            provider:
+                                identifier: id
 
 #### Manual provider
 
@@ -239,11 +239,11 @@ Declare that you want a doctrine finder in your configuration:
                     user:
                         mappings:
                             # your mappings
-                    doctrine:
-                        driver: orm
-                        model: Application\UserBundle\Entity\User
-                        provider:
-                        finder:
+                        doctrine:
+                            driver: orm
+                            model: Application\UserBundle\Entity\User
+                            provider:
+                            finder:
 
 You can now use the `foq_elastica.finder.website.user` service:
 
