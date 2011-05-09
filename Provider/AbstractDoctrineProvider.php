@@ -37,7 +37,7 @@ abstract class AbstractDoctrineProvider implements ProviderInterface
     public function populate(Closure $loggerClosure)
     {
         $queryBuilder = $this->createQueryBuilder();
-        $nbObjects    = $queryBuilder->getQuery()->count();
+        $nbObjects    = $this->countObjects($queryBuilder);
         $fields       = $this->extractTypeFields();
 
         for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
