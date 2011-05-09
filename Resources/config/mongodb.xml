@@ -14,7 +14,7 @@
             <argument type="collection" /> <!-- options -->
         </service>
 
-        <service id="foq_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOQ\ElasticaBundle\Transformer\ElasticaToModelDoctrineTransformer" public="false">
+        <service id="foq_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOQ\ElasticaBundle\Transformer\ElasticaToModelDoctrineMongoDBTransformer" public="false">
             <argument type="service" id="doctrine.odm.mongodb.document_manager" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->

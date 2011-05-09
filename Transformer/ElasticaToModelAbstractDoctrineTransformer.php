@@ -9,7 +9,7 @@ use Elastica_Document;
  * This mapper assumes an exact match between
  * elastica documents ids and doctrine object ids
  */
-class ElasticaToModelDoctrineTransformer implements ElasticaToModelTransformerInterface
+abstract class ElasticaToModelAbstractDoctrineTransformer implements ElasticaToModelTransformerInterface
 {
     /**
      * Repository to fetch the objects from
@@ -60,15 +60,9 @@ class ElasticaToModelDoctrineTransformer implements ElasticaToModelTransformerIn
             return $elasticaObject->getId();
         }, $elasticaObjects);
 
-        $objects = $this->objectManager
-            ->createQueryBuilder($this->objectClass)
-            ->field($this->options['identifier'])->in($ids)
-            ->hydrate($this->options['hydrate'])
-            ->getQuery()
-            ->execute()
-            ->toArray();
+        $objects = $this->findByIdentifiers($this->objectClass, $this->options['identifier'], $ids, $this->options['hydrate']);
 
-		$identifierGetter = 'get'.ucfirst($this->options['identifier']);
+        $identifierGetter = 'get'.ucfirst($this->options['identifier']);
 
         // sort objects in the order of ids
         $idPos = array_flip($ids);
@@ -79,4 +73,15 @@ class ElasticaToModelDoctrineTransformer implements ElasticaToModelTransformerIn
 
         return $objects;
     }
+
+    /**
+     * Fetches objects by theses identifier values
+     *
+     * @param string $class the model class
+     * @param string $identifierField like 'id'
+     * @param array $identifierValues ids values
+     * @param mixed $hydrate whether or not to hydrate the objects, false returns arrays
+     * @return array of objects or arrays
+     */
+    protected abstract function findByIdentifiers($class, $identifierField, array $identifierValues, $hydrate);
 }
