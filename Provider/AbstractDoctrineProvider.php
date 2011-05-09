@@ -85,14 +85,11 @@ abstract class AbstractDoctrineProvider implements ProviderInterface
     protected abstract function fetchSlice($queryBuilder, $limit, $offset);
 
     /**
-     * Creates the query buider used to fetch the documents to index
+     * Creates the query builder used to fetch the documents to index
      *
-     * @return Query
+     * @return query builder
      **/
-    protected function createQueryBuilder()
-    {
-        return $this->objectManager->getRepository($this->objectClass)->{$this->options['query_builder_method']}();
-    }
+    protected abstract function createQueryBuilder();
 
     protected function extractTypeFields()
     {

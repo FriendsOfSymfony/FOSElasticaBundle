@@ -27,4 +27,14 @@ class DoctrineMongoDBProvider extends AbstractDoctrineProvider
     {
         return $queryBuilder->limit($limit)->skip($offset)->getQuery()->execute()->toArray();
     }
+
+    /**
+     * Creates the query builder used to fetch the documents to index
+     *
+     * @return query builder
+     **/
+    protected function createQueryBuilder()
+    {
+        return $this->objectManager->getRepository($this->objectClass)->{$this->options['query_builder_method']}();
+    }
 }

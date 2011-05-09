@@ -16,7 +16,11 @@ class DoctrineORMProvider extends AbstractDoctrineProvider
      **/
     protected function countObjects($queryBuilder)
     {
-        return PHP_INT_MAX;
+        $qb = clone $queryBuilder;
+        $qb->select($qb->expr()->count($queryBuilder->getRootAlias()))
+            ->resetDQLPart('orderBy'); // no need to order the query. It does not change the count and make the query less efficient.
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
@@ -32,6 +36,16 @@ class DoctrineORMProvider extends AbstractDoctrineProvider
         $queryBuilder->setFirstResult($offset);
         $queryBuilder->setMaxResults($limit);
 
-        return $queryBuilder->getQuery()->getArrayResult();
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * Creates the query builder used to fetch the documents to index
+     *
+     * @return query builder
+     **/
+    protected function createQueryBuilder()
+    {
+        return $this->objectManager->getRepository($this->objectClass)->{$this->options['query_builder_method']}();
     }
 }
