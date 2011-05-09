@@ -8,7 +8,7 @@ use Elastica_Document;
 use Closure;
 use InvalidArgumentException;
 
-class DoctrineProvider implements ProviderInterface
+abstract class AbstractDoctrineProvider implements ProviderInterface
 {
     protected $type;
     protected $objectManager;
@@ -65,6 +65,13 @@ class DoctrineProvider implements ProviderInterface
             $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s', 100*$stepCount/$nbObjects, $stepCount, $nbObjects, $objectsPerSecond));
         }
     }
+
+    /**
+     * Counts the objects of a query builder
+     *
+     * @return int
+     **/
+    protected abstract function countObjects($queryBuilder);
 
     /**
      * Creates the query buider used to fetch the documents to index

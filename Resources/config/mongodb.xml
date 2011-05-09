@@ -6,7 +6,7 @@
 
     <services>
 
-        <service id="foq_elastica.provider.prototype.mongodb" class="FOQ\ElasticaBundle\Provider\DoctrineProvider" public="false" abstract="true">
+        <service id="foq_elastica.provider.prototype.mongodb" class="FOQ\ElasticaBundle\Provider\DoctrineMongoDBProvider" public="false" abstract="true">
             <argument /> <!-- index -->
             <argument type="service" id="doctrine.odm.mongodb.document_manager" />
             <argument /> <!-- transformer -->
