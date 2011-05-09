@@ -1,9 +1,10 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Finder;
+namespace FOQ\ElasticaBundle\Doctrine;
 
+use FOQ\ElasticaBundle\Finder\FinderInterface;
+use FOQ\ElasticaBundle\Finder\PaginatedFinderInterface;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use FOQ\ElasticaBundle\Paginator\DoctrinePaginatorAdapter;
 use Zend\Paginator\Paginator;
 use Elastica_Searchable;
 use Elastica_Query;
@@ -11,7 +12,7 @@ use Elastica_Query;
 /**
  * Finds elastica documents and map them to persisted objects
  */
-class TransformedFinder implements FinderInterface, PaginatedFinderInterface
+class Finder implements FinderInterface, PaginatedFinderInterface
 {
     protected $searchable;
     protected $transformer;
@@ -58,6 +59,6 @@ class TransformedFinder implements FinderInterface, PaginatedFinderInterface
      */
     protected function createPaginatorAdapter(Elastica_Query $query)
     {
-		return new DoctrinePaginatorAdapter($this->searchable, $query, $this->transformer);
+		return new PaginatorAdapter($this->searchable, $query, $this->transformer);
     }
 }

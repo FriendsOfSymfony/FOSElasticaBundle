@@ -30,7 +30,7 @@
             <argument /> <!-- mappings -->
         </service>
 
-        <service id="foq_elastica.finder.prototype" class="FOQ\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
+        <service id="foq_elastica.finder.prototype" class="FOQ\ElasticaBundle\Doctrine\Finder" public="true" abstract="true">
             <argument /> <!-- index -->
             <argument /> <!-- transformer -->
         </service>

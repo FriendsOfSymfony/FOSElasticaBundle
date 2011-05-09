@@ -2,6 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Doctrine;
 
+use FOQ\ElasticaBundle\Paginator\AbstractPaginatorAdapter;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Searchable;
 use Elastica_Query;
