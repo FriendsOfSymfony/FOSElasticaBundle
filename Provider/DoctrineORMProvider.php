@@ -11,6 +11,6 @@ class DoctrineORMProvider extends AbstractDoctrineProvider
      **/
     protected function countObjects($queryBuilder)
     {
-        return $queryBuilder->count()->getQuery()->execute();
+        return count($queryBuilder->getQuery()->getArrayResult());
     }
 }
