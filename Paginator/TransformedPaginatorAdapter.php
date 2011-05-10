@@ -1,8 +1,7 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine;
+namespace FOQ\ElasticaBundle\Paginator;
 
-use FOQ\ElasticaBundle\Paginator\AbstractPaginatorAdapter;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Searchable;
 use Elastica_Query;
@@ -12,7 +11,7 @@ use Elastica_Query;
  *
  * Allows pagination of Elastica_Query
  */
-class PaginatorAdapter extends AbstractPaginatorAdapter
+class TransformedPaginatorAdapter extends AbstractPaginatorAdapter
 {
     protected $transformer;
 
