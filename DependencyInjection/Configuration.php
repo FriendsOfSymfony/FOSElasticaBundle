@@ -45,6 +45,8 @@ class Configuration
                         ->children()
                             ->scalarNode('host')->defaultValue('localhost')->end()
                             ->scalarNode('port')->defaultValue('9000')->end()
+                            ->scalarNode('timeout')->end()
+                            ->scalarNode('headers')->end()
                         ->end()
                     ->end()
                 ->end()

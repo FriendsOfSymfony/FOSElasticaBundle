@@ -63,12 +63,8 @@ class FOQElasticaExtension extends Extension
     protected function loadClients(array $clients, ContainerBuilder $container)
     {
         $clientIds = array();
-        foreach ($clients as $name => $client) {
-            $clientDefArgs = array(
-                isset($client['host']) ? $client['host'] : null,
-                isset($client['port']) ? $client['port'] : array(),
-            );
-            $clientDef = new Definition('%foq_elastica.client.class%', $clientDefArgs);
+        foreach ($clients as $name => $clientConfig) {
+            $clientDef = new Definition('%foq_elastica.client.class%', array($clientConfig));
             $clientId = sprintf('foq_elastica.client.%s', $name);
             $container->setDefinition($clientId, $clientDef);
             $clientIds[$name] = $clientId;
