@@ -95,8 +95,7 @@ abstract class AbstractProvider implements ProviderInterface
     protected function extractTypeFields()
     {
         $mappings = $this->type->getMapping();
-        // skip index name
-        $mappings = reset($mappings);
+        
         // skip type name
         $mappings = reset($mappings);
         $mappings = $mappings['properties'];

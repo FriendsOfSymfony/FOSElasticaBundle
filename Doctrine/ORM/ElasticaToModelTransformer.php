@@ -24,7 +24,10 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      */
     protected function findByIdentifiers($class, $identifierField, array $identifierValues, $hydrate)
     {
-        $hydratationMode = $hydrate ? Query::HYDRATE_OBJECT : Query::HYDRATE_ARRAY;
+       if(empty($identifierValues))
+           return array();
+         
+        $hydrationMode = $hydrate ? Query::HYDRATE_OBJECT : Query::HYDRATE_ARRAY;
         $qb = $this->objectManager
             ->getRepository($class)
             ->createQueryBuilder('o');
