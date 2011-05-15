@@ -95,10 +95,12 @@ abstract class AbstractProvider implements ProviderInterface
     protected function extractTypeFields()
     {
         $mappings = $this->type->getMapping();
-        // skip index name
-        $mappings = reset($mappings);
-        // skip type name
-        $mappings = reset($mappings);
+        // skip index and type name
+        // < 0.16.0 has both index and type levels
+        // >= 0.16.0 has only type level
+        do {
+            $mappings = reset($mappings);
+        } while (!isset($mappings['properties']));
         $mappings = $mappings['properties'];
         if (array_key_exists('__isInitialized__', $mappings)) {
             unset($mappings['__isInitialized__']);
