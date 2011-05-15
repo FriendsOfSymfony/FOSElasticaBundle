@@ -248,10 +248,13 @@ Declare that you want a doctrine finder in your configuration:
 You can now use the `foq_elastica.finder.website.user` service:
 
     /** var FOQ\ElasticaBundle\Finder\MappedFinder */
-    $userFinder = $container->get('foq_elastica.finder.website.user');
+    $finder = $container->get('foq_elastica.finder.website.user');
 
     /** var array of Acme\UserBundle\Entity\User */
     $users = $finder->find('bob');
+
+    /** var array of Acme\UserBundle\Entity\User limited to 10 results */
+    $users = $finder->find('bob', 10);
 
 You can even get paginated results!
 
