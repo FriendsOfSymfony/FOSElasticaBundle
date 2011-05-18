@@ -8,6 +8,7 @@ use Elastica_Type;
 use Elastica_Document;
 use Closure;
 use InvalidArgumentException;
+use FOQ\ElasticaBundle\Provider\NotIndexableException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
