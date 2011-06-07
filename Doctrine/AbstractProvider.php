@@ -3,32 +3,53 @@
 namespace FOQ\ElasticaBundle\Doctrine;
 
 use FOQ\ElasticaBundle\Provider\ProviderInterface;
-use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
+use FOQ\ElasticaBundle\Persister\ObjectPersisterInterface;
 use Elastica_Type;
 use Elastica_Document;
 use Closure;
 use InvalidArgumentException;
-use FOQ\ElasticaBundle\Provider\NotIndexableException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
+    /**
+     * Elastica type
+     *
+     * @var Elastica_Type
+     */
     protected $type;
+
+    /**
+     * Domain model object manager
+     *
+     * @var object
+     */
     protected $objectManager;
-    protected $objectClass;
-    protected $transformer;
+
+    /**
+     * Object persister
+     *
+     * @var ObjectPersisterInterface
+     */
+    protected $objectPersister;
+
+    /**
+     * Provider options
+     *
+     * @var array
+     */
     protected $options = array(
         'batch_size'           => 100,
         'clear_object_manager' => true,
 		'query_builder_method' => 'createQueryBuilder'
     );
 
-    public function __construct(Elastica_Type $type, $objectManager, ModelToElasticaTransformerInterface $transformer, $objectClass, array $options = array())
+    public function __construct(Elastica_Type $type, $objectManager, ObjectPersisterInterface $objectPersister, $objectClass, array $options = array())
     {
-        $this->type          = $type;
-        $this->objectManager = $objectManager;
-        $this->objectClass   = $objectClass;
-        $this->transformer   = $transformer;
-        $this->options       = array_merge($this->options, $options);
+        $this->type            = $type;
+        $this->objectManager   = $objectManager;
+        $this->objectClass     = $objectClass;
+        $this->objectPersister = $objectPersister;
+        $this->options         = array_merge($this->options, $options);
     }
 
     /**
@@ -40,7 +61,6 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $queryBuilder = $this->createQueryBuilder();
         $nbObjects    = $this->countObjects($queryBuilder);
-        $fields       = $this->extractTypeFields();
 
         for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
 
@@ -48,14 +68,7 @@ abstract class AbstractProvider implements ProviderInterface
             $documents = array();
             $objects = $this->fetchSlice($queryBuilder, $this->options['batch_size'], $offset);
 
-            foreach ($objects as $object) {
-                try {
-                    $documents[] = $this->transformer->transform($object, $fields);
-                } catch (NotIndexableException $e) {
-                    // skip document
-                }
-            }
-            $this->type->addDocuments($documents);
+            $this->objectPersister->insertMany($objects);
 
             if ($this->options['clear_object_manager']) {
                 $this->objectManager->clear();
@@ -92,21 +105,4 @@ abstract class AbstractProvider implements ProviderInterface
      * @return query builder
      **/
     protected abstract function createQueryBuilder();
-
-    protected function extractTypeFields()
-    {
-        $mappings = $this->type->getMapping();
-        // skip index and type name
-        // < 0.16.0 has both index and type levels
-        // >= 0.16.0 has only type level
-        do {
-            $mappings = reset($mappings);
-        } while (!isset($mappings['properties']));
-        $mappings = $mappings['properties'];
-        if (array_key_exists('__isInitialized__', $mappings)) {
-            unset($mappings['__isInitialized__']);
-        }
-
-        return array_keys($mappings);
-    }
 }

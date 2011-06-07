@@ -30,8 +30,19 @@
             <argument /> <!-- mappings -->
         </service>
 
+        <service id="foq_elastica.type_inspector" class="FOQ\ElasticaBundle\TypeInspector" public="false" />
+
+        <service id="foq_elastica.object_persister.prototype" class="FOQ\ElasticaBundle\Persister\ObjectPersister" public="false" abstract="true">
+            <argument /> <!-- type -->
+            <argument /> <!-- model to elastica transformer -->
+            <argument /> <!-- model -->
+            <argument /> <!-- type inspector -->
+            <argument /> <!-- logger -->
+            <argument>%kernel.debug%</argument>
+        </service>
+
         <service id="foq_elastica.finder.prototype" class="FOQ\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
-            <argument /> <!-- index -->
+            <argument /> <!-- searchable -->
             <argument /> <!-- transformer -->
         </service>
 

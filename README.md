@@ -127,7 +127,9 @@ some configuration will let ElasticaBundle do it for us.
                 types:
                     user:
                         mappings:
-                            # your mappings
+                            username: { boost: 5 }
+                            firstName: { boost: 3 }
+                            # more mappings...
                         doctrine:
                             driver: orm
                             model: Application\UserBundle\Entity\User
@@ -260,3 +262,35 @@ You can even get paginated results!
 
     /** var Zend\Paginator\Paginator */
     $userPaginator = $finder->findPaginated('bob');
+
+### Realtime, selective index update
+
+If you use the doctrine integration, you can let ElasticaBundle update the indexes automatically
+when an object is added, updated or removed. It uses doctrine lifecycle events.
+Declare that you want to update the index in real time:
+
+    foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        indexes:
+            website:
+                client: default
+                types:
+                    user:
+                        mappings:
+                            # your mappings
+                        doctrine:
+                            driver: orm
+                            model: Application\UserBundle\Entity\User
+                            listener: # by default, listens to "insert", "update" and "delete"
+
+Now the index is automatically updated each time the state of the bound doctrine repository changes.
+No need to repopulate the whole "user" index when a new `User` is created.
+
+You can also choose to only listen for some of the events:
+
+                        doctrine:
+                            listener:
+                                insert: true
+                                update: false
+                                delete: true

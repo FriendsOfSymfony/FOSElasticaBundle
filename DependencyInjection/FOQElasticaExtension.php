@@ -167,13 +167,17 @@ class FOQElasticaExtension extends Extension
 
         $elasticaToModelTransformerId = $this->loadElasticaToModelTransformer($typeConfig, $container, $indexName, $typeName);
         $modelToElasticaTransformerId = $this->loadModelToElasticaTransformer($typeConfig, $container, $indexName, $typeName);
+        $objectPersisterId            = $this->loadObjectPersister($typeConfig, $typeDef, $container, $indexName, $typeName, $modelToElasticaTransformerId);
 
         if (isset($typeConfig['provider'])) {
-            $providerId = $this->loadTypeProvider($typeConfig, $container, $modelToElasticaTransformerId, $typeDef, $indexName, $typeName);
+            $providerId = $this->loadTypeProvider($typeConfig, $container, $objectPersisterId, $typeDef, $indexName, $typeName);
             $container->getDefinition('foq_elastica.populator')->addMethodCall('addProvider', array($providerId, new Reference($providerId)));
         }
         if (isset($typeConfig['finder'])) {
             $this->loadTypeFinder($typeConfig, $container, $elasticaToModelTransformerId, $typeDef, $indexName, $typeName);
+        }
+        if (isset($typeConfig['listener'])) {
+            $this->loadTypeListener($typeConfig, $container, $objectPersisterId, $typeDef, $indexName, $typeName);
         }
     }
 
@@ -211,7 +215,22 @@ class FOQElasticaExtension extends Extension
         return $serviceId;
     }
 
-    protected function loadTypeProvider(array $typeConfig, ContainerBuilder $container, $modelToElasticaTransformerId, $typeDef, $indexName, $typeName)
+    protected function loadObjectPersister(array $typeConfig, Definition $typeDef, ContainerBuilder $container, $indexName, $typeName, $transformerId)
+    {
+        $abstractId = sprintf('foq_elastica.object_persister.prototype');
+        $serviceId = sprintf('foq_elastica.object_persister.%s.%s', $indexName, $typeName);
+        $serviceDef = new DefinitionDecorator($abstractId);
+        $serviceDef->replaceArgument(0, $typeDef);
+        $serviceDef->replaceArgument(1, new Reference($transformerId));
+        $serviceDef->replaceArgument(2, $typeConfig['model']);
+        $serviceDef->replaceArgument(3, new Reference('foq_elastica.type_inspector'));
+        $serviceDef->replaceArgument(4, new Reference('logger'));
+        $container->setDefinition($serviceId, $serviceDef);
+
+        return $serviceId;
+    }
+
+    protected function loadTypeProvider(array $typeConfig, ContainerBuilder $container, $objectPersisterId, $typeDef, $indexName, $typeName)
     {
         if (isset($typeConfig['provider']['service'])) {
             return $typeConfig['provider']['service'];
@@ -220,7 +239,7 @@ class FOQElasticaExtension extends Extension
         $providerId = sprintf('foq_elastica.provider.%s.%s', $indexName, $typeName);
         $providerDef = new DefinitionDecorator($abstractProviderId);
         $providerDef->replaceArgument(0, $typeDef);
-        $providerDef->replaceArgument(2, new Reference($modelToElasticaTransformerId));
+        $providerDef->replaceArgument(2, new Reference($objectPersisterId));
         $providerDef->replaceArgument(3, $typeConfig['model']);
         $providerDef->replaceArgument(4, array(
             'query_builder_method' => $typeConfig['provider']['query_builder_method'],
@@ -230,6 +249,33 @@ class FOQElasticaExtension extends Extension
         $container->setDefinition($providerId, $providerDef);
 
         return $providerId;
+    }
+
+    protected function loadTypeListener(array $typeConfig, ContainerBuilder $container, $objectPersisterId, $typeDef, $indexName, $typeName)
+    {
+        if (isset($typeConfig['listener']['service'])) {
+            return $typeConfig['listener']['service'];
+        }
+        $abstractListenerId = sprintf('foq_elastica.listener.prototype.%s', $typeConfig['driver']);
+        $listenerId = sprintf('foq_elastica.listener.%s.%s', $indexName, $typeName);
+        $listenerDef = new DefinitionDecorator($abstractListenerId);
+        $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
+        $listenerDef->replaceArgument(1, $typeConfig['model']);
+        $events = array();
+        $doctrineEvents = array('insert' => 'postPersist', 'update' => 'postUpdate', 'delete' => 'postRemove');
+        foreach ($doctrineEvents as $event => $doctrineEvent) {
+            if (isset($typeConfig['listener'][$event]) && $typeConfig['listener'][$event]) {
+                $events[] = $doctrineEvent;
+            }
+        }
+        $listenerDef->replaceArgument(2, $events);
+        switch ($typeConfig['driver']) {
+            case 'orm': $listenerDef->addTag('doctrine.event_subscriber'); break;
+            case 'mongodb': $listenerDef->addTag('doctrine.common.event_subscriber'); break;
+        }
+        $container->setDefinition($listenerId, $listenerDef);
+
+        return $listenerId;
     }
 
     protected function loadTypeFinder(array $typeConfig, ContainerBuilder $container, $elasticaToModelId, $typeDef, $indexName, $typeName)
