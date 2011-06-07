@@ -37,7 +37,7 @@
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
             <argument /> <!-- type inspector -->
-            <argument /> <!-- logger -->
+            <argument type="service" id="logger" on-invalid="null" />
             <argument>%kernel.debug%</argument>
         </service>
 

@@ -141,7 +141,7 @@ class ObjectPersister implements ObjectPersisterInterface
 
         if ($this->logger) {
             $message = sprintf('Elastica object persister failure (%s: %s)', get_class($exception), $exception->getMessage());
-            $this->logger->addWarning($message);
+            $this->logger->warn($message);
         }
     }
 }

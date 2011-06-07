@@ -224,7 +224,6 @@ class FOQElasticaExtension extends Extension
         $serviceDef->replaceArgument(1, new Reference($transformerId));
         $serviceDef->replaceArgument(2, $typeConfig['model']);
         $serviceDef->replaceArgument(3, new Reference('foq_elastica.type_inspector'));
-        $serviceDef->replaceArgument(4, new Reference('logger'));
         $container->setDefinition($serviceId, $serviceDef);
 
         return $serviceId;
