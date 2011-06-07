@@ -26,17 +26,15 @@
             <argument type="service" id="foq_elastica.index_manager" />
         </service>
 
-        <service id="foq_elastica.mapping_setter" class="FOQ\ElasticaBundle\MappingSetter">
+        <service id="foq_elastica.mapping_registry" class="FOQ\ElasticaBundle\MappingRegistry">
             <argument /> <!-- mappings -->
         </service>
-
-        <service id="foq_elastica.type_inspector" class="FOQ\ElasticaBundle\TypeInspector" public="false" />
 
         <service id="foq_elastica.object_persister.prototype" class="FOQ\ElasticaBundle\Persister\ObjectPersister" public="false" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
-            <argument /> <!-- type inspector -->
+            <argument type="service" id="foq_elastica.mapping_registry" />
             <argument type="service" id="logger" on-invalid="null" />
             <argument>%kernel.debug%</argument>
         </service>

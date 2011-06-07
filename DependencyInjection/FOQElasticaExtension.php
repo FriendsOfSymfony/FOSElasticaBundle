@@ -48,7 +48,7 @@ class FOQElasticaExtension extends Extension
         }, $indexIdsByName);
 
         $this->loadIndexManager($indexDefsByName, $container->getDefinition($indexIdsByName[$config['default_index']]), $container);
-        $this->loadMappingSetter($this->typeMappings, $container);
+        $this->loadMappingRegistry($this->typeMappings, $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
@@ -123,8 +123,9 @@ class FOQElasticaExtension extends Extension
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
             $container->setDefinition($typeId, $typeDef);
+            $key = sprintf('%s/%s', $indexName, $name);
             if (isset($type['mappings'])) {
-                $this->typeMappings[] = array(new Reference($typeId), $type['mappings']);
+                $this->typeMappings[$key] = array(new Reference($typeId), $type['mappings']);
             }
             if (isset($type['doctrine'])) {
                 $this->loadTypeDoctrineIntegration($type['doctrine'], $container, $typeDef, $indexName, $name);
@@ -223,7 +224,6 @@ class FOQElasticaExtension extends Extension
         $serviceDef->replaceArgument(0, $typeDef);
         $serviceDef->replaceArgument(1, new Reference($transformerId));
         $serviceDef->replaceArgument(2, $typeConfig['model']);
-        $serviceDef->replaceArgument(3, new Reference('foq_elastica.type_inspector'));
         $container->setDefinition($serviceId, $serviceDef);
 
         return $serviceId;
@@ -305,13 +305,13 @@ class FOQElasticaExtension extends Extension
     }
 
     /**
-     * Loads the mapping setter
+     * Loads the mapping registry
      *
      * @return null
      **/
-    protected function loadMappingSetter(array $mappings, ContainerBuilder $container)
+    protected function loadMappingRegistry(array $mappings, ContainerBuilder $container)
     {
-        $managerDef = $container->getDefinition('foq_elastica.mapping_setter');
+        $managerDef = $container->getDefinition('foq_elastica.mapping_registry');
         $managerDef->replaceArgument(0, $mappings);
     }
 

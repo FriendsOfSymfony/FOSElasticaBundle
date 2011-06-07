@@ -4,7 +4,7 @@ namespace FOQ\ElasticaBundle\Persister;
 
 use FOQ\ElasticaBundle\Provider\ProviderInterface;
 use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use FOQ\ElasticaBundle\TypeInspector;
+use FOQ\ElasticaBundle\MappingRegistry;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Elastica_Type;
 use Elastica_Document;
@@ -21,17 +21,16 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $type;
     protected $transformer;
     protected $objectClass;
-    protected $typeInspector;
+    protected $mappingRegistry;
     protected $logger;
     protected $throwExceptions;
-    protected $fields;
 
-    public function __construct(Elastica_Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, TypeInspector $typeInspector, LoggerInterface $logger = null, $throwExceptions = true)
+    public function __construct(Elastica_Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, MappingRegistry $mappingRegistry, LoggerInterface $logger = null, $throwExceptions = true)
     {
         $this->type            = $type;
         $this->transformer     = $transformer;
         $this->objectClass     = $objectClass;
-        $this->typeInspector   = $typeInspector;
+        $this->mappingRegistry = $mappingRegistry;
         $this->logger          = $logger;
         $this->throwExceptions = true;
     }
@@ -111,21 +110,7 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     protected function transformToElasticaDocument($object)
     {
-        return $this->transformer->transform($object, $this->getTypeFields());
-    }
-
-    /**
-     * Gets the list of the type fields
-     *
-     * @return array of strings
-     */
-    protected function getTypeFields()
-    {
-        if (null === $this->fields) {
-            $this->fields = $this->typeInspector->getMappingFieldsNames($this->type);
-        }
-
-        return $this->fields;
+        return $this->transformer->transform($object, $this->mappingRegistry->getTypeFieldNames($this->type));
     }
 
     /**
