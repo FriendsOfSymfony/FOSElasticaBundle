@@ -4,10 +4,10 @@ namespace FOQ\ElasticaBundle\Persister;
 
 use FOQ\ElasticaBundle\Provider\ProviderInterface;
 use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
+use FOQ\ElasticaBundle\TypeInspector;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Elastica_Type;
 use Elastica_Document;
-use FOQ\ElasticaBundle\TypeInspector;
-use Monolog\Logger;
 use Exception;
 
 /**
@@ -26,7 +26,7 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $throwExceptions;
     protected $fields;
 
-    public function __construct(Elastica_Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, TypeInspector $typeInspector, Logger $logger, $throwExceptions = true)
+    public function __construct(Elastica_Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, TypeInspector $typeInspector, LoggerInterface $logger = null, $throwExceptions = true)
     {
         $this->type            = $type;
         $this->transformer     = $transformer;
@@ -139,7 +139,9 @@ class ObjectPersister implements ObjectPersisterInterface
             throw $exception;
         }
 
-        $message = sprintf('Elastica object persister failure (%s: %s)', get_class($exception), $exception->getMessage());
-        $this->logger->addWarning($message);
+        if ($this->logger) {
+            $message = sprintf('Elastica object persister failure (%s: %s)', get_class($exception), $exception->getMessage());
+            $this->logger->addWarning($message);
+        }
     }
 }
