@@ -27,12 +27,16 @@ class TransformedFinder implements FinderInterface, PaginatedFinderInterface
     /**
      * Search for a query string
      *
+	 * @param string $query
+	 * @param int $limit
      * @return array of model objects
      **/
-    public function find($query, $limit)
+    public function find($query, $limit = null)
     {
 		$queryObject = Elastica_Query::create($query);
-        $queryObject->setLimit($limit);
+		if (null !== $limit) {
+			$queryObject->setLimit($limit);
+		}
         $results = $this->searchable->search($queryObject)->getResults();
 
         return $this->transformer->transform($results);
