@@ -5,6 +5,7 @@ namespace FOQ\ElasticaBundle\Transformer;
 use Elastica_Document;
 use Traversable;
 use ArrayAccess;
+use RuntimeException;
 
 /**
  * Maps Elastica documents with Doctrine objects
