@@ -33,7 +33,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             ->createQueryBuilder('o');
         /* @var $qb \Doctrine\ORM\QueryBuilder */
         $qb->where($qb->expr()->in('o.'.$identifierField, ':values'))
-            ->setParameter('values', $identifierValues, 'array');
+            ->setParameter('values', $identifierValues);
 
         return $qb->getQuery()->setHydrationMode($hydrationMode)->execute();
     }
