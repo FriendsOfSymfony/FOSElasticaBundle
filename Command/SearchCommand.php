@@ -2,7 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\Command;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,7 +14,7 @@ use Elastica_Result;
 /**
  * Searches a type
  */
-class SearchCommand extends Command
+class SearchCommand extends ContainerAwareCommand
 {
     /**
      * @see Command
@@ -41,7 +41,7 @@ class SearchCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $index = $this->container->get('foq_elastica.index_manager')->getIndex($input->getOption('index'));
+        $index = $this->getContainer()->get('foq_elastica.index_manager')->getIndex($input->getOption('index'));
         $type  = $index->getType($input->getArgument('type'));
         $query = Elastica_Query::create($input->getArgument('query'));
         $query->setLimit($input->getOption('limit'));
