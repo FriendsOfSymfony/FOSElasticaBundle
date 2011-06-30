@@ -13,7 +13,11 @@ class Listener extends AbstractListener implements EventSubscriber
         $document = $eventArgs->getDocument();
 
         if ($document instanceof $this->objectClass) {
-            $this->objectPersister->insertOne($document);
+            try {
+                $this->objectPersister->insertOne($document);
+            } catch (\Elastica_Exception_Abstract $e) {
+                $this->logFailure($e->getMessage());
+            }
         }
     }
 
@@ -22,7 +26,11 @@ class Listener extends AbstractListener implements EventSubscriber
         $document = $eventArgs->getDocument();
 
         if ($document instanceof $this->objectClass) {
-            $this->objectPersister->replaceOne($document);
+            try {
+                $this->objectPersister->replaceOne($document);
+            } catch (\Elastica_Exception_Abstract $e) {
+                $this->logFailure($e->getMessage());
+            }
         }
     }
 
@@ -31,7 +39,11 @@ class Listener extends AbstractListener implements EventSubscriber
         $document = $eventArgs->getDocument();
 
         if ($document instanceof $this->objectClass) {
-            $this->objectPersister->deleteOne($document);
+            try {
+                $this->objectPersister->deleteOne($document);
+            } catch (\Elastica_Exception_Abstract $e) {
+                $this->logFailure($e->getMessage());
+            }
         }
     }
 }

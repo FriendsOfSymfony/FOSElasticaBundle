@@ -3,6 +3,7 @@
 namespace FOQ\ElasticaBundle\Doctrine;
 
 use FOQ\ElasticaBundle\Persister\ObjectPersister;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 abstract class AbstractListener
 {
@@ -27,14 +28,17 @@ abstract class AbstractListener
      */
     protected $events;
 
+    protected $logger;
+
     /**
      * Constructor
      **/
-    public function __construct(ObjectPersister $objectPersister, $objectClass, array $events)
+    public function __construct(ObjectPersister $objectPersister, $objectClass, array $events, LoggerInterface $logger = null)
     {
         $this->objectPersister = $objectPersister;
         $this->objectClass     = $objectClass;
         $this->events          = $events;
+        $this->logger          = $logger;
     }
 
     /**
@@ -43,5 +47,17 @@ abstract class AbstractListener
     public function getSubscribedEvents()
     {
         return $this->events;
+    }
+
+    /**
+     * Log the failure message if a logger is available
+     *
+     * $param string $message
+     */
+    protected function logFailure($message)
+    {
+        if (null !== $this->logger) {
+            $this->logger->err(sprintf('%s: %s', get_class($this), $message));
+        }
     }
 }
