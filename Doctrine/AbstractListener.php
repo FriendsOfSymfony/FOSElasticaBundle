@@ -57,7 +57,7 @@ abstract class AbstractListener
     protected function logFailure($message)
     {
         if (null !== $this->logger) {
-            $this->logger->err(sprintf('%s: %s', get_class($this), $message));
+            $this->logger->warn(sprintf('%s: %s', get_class($this), $message));
         }
     }
 }
