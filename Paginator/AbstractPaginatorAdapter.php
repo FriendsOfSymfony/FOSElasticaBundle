@@ -2,16 +2,16 @@
 
 namespace FOQ\ElasticaBundle\Paginator;
 
-use Zend\Paginator\Adapter;
+use Pagerfanta\Adapter\AdapterInterface;
 use Elastica_Searchable;
 use Elastica_Query;
 
 /**
- * Implements the Zend\Paginator\Adapter Interface for use with Zend\Paginator\Paginator
+ * Implements the Pagerfanta\Adapter\AdapterInterface for use with Pagerfanta\Pagerfanta
  *
  * Allows pagination of Elastica_Query. Does not map results
  */
-abstract class AbstractPaginatorAdapter implements Adapter
+abstract class AbstractPaginatorAdapter implements AdapterInterface
 {
     /**
      * @var Elastica_SearchableInterface the object to search in
@@ -45,9 +45,9 @@ abstract class AbstractPaginatorAdapter implements Adapter
     }
 
     /**
-     * @see Zend\Paginator\Adapter::count
+     * @see Pagerfanta\Adapter\AdapterInterface::getNbResults
      */
-    public function count()
+    public function getNbResults()
     {
 		return $this->searchable->count($this->query);
     }

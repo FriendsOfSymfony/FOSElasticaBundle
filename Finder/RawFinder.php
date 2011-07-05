@@ -3,7 +3,7 @@
 namespace FOQ\ElasticaBundle\Finder;
 
 use FOQ\ElasticaBundle\Paginator\RawPaginatorAdapter;
-use Zend\Paginator\Paginator;
+use Pagerfanta\Pagerfanta;
 use Elastica_Searchable;
 use Elastica_Query;
 

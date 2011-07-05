@@ -260,7 +260,7 @@ You can now use the `foq_elastica.finder.website.user` service:
 
 You can even get paginated results!
 
-    /** var Zend\Paginator\Paginator */
+    /** var Pagerfanta\Pagerfanta */
     $userPaginator = $finder->findPaginated('bob');
 
 ### Realtime, selective index update
