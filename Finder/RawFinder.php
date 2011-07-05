@@ -35,7 +35,7 @@ class RawFinder implements FinderInterface, PaginatedFinderInterface
     /**
      * Gets a paginator wrapping the result of a search
      *
-     * @return Paginator
+     * @return Pagerfanta
      **/
     public function findPaginated($query)
     {
@@ -43,7 +43,7 @@ class RawFinder implements FinderInterface, PaginatedFinderInterface
         $results = $this->searchable->search($queryObject)->getResults();
 		$paginatorAdapter = $this->createPaginatorAdapter($queryObject);
 
-		return new Paginator($paginatorAdapter);
+		return new Pagerfanta($paginatorAdapter);
     }
 
     /**
