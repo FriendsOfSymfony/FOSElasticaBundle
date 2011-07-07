@@ -47,7 +47,7 @@ class ReseterTest extends \PHPUnit_Framework_TestCase
     {
         if (!class_exists('Elastica_Exception_Response') || !class_exists('Elastica_Response'))
         {
-          $this->markTestSkipped('The Elastica library classes are not available');
+           $this->markTestSkipped('The Elastica library classes are not available');
         }
     }
 
