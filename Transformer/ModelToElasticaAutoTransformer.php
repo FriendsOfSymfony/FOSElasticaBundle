@@ -69,6 +69,8 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             $value = array_map(function($v) {
                 return (string) $v;
             }, is_array($value) ? $value : iterator_to_array($value));
+        } elseif ($value instanceof \DateTime) {
+            $value = (string) $value->format("U");
         } else {
             $value = (string) $value;
         }
