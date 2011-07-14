@@ -51,7 +51,6 @@ class MappingRegistry
     public function getTypeFieldNames(Elastica_Type $type)
     {
         $key = sprintf('%s/%s', $type->getIndex()->getName(), $type->getType());
-
         if (!isset($this->mappings[$key])) {
             throw new InvalidArgumentException(sprintf('This type is not registered: "%s".', $key));
         }

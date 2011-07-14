@@ -29,9 +29,32 @@ class PopulatorTest extends \PHPUnit_Framework_TestCase
     {
         $provider = $this->getMock('FOQ\ElasticaBundle\Provider\ProviderInterface', array('populate'));
         $provider->expects($this->once())
-          ->method('populate');
+            ->method('populate');
+        
+        $provider2 = $this->getMock('FOQ\ElasticaBundle\Provider\ProviderInterface', array('populate'));
+        $provider2->expects($this->once())
+            ->method('populate');
   
-        $populator = new Populator(array('l3l0Provider' => $provider));
+        $populator = new Populator(array('l3l0Provider' => $provider, 'secondProvider' => $provider2));
+        $populator->populate(function ($text) { return $text; });
+    }
+
+   /**
+    * @expectedException PHPUnit_Framework_Error
+    */
+    public function testThatAddProviderHaveToImpelementProviderInterface()
+    {
+        $populator = new Populator(array());
+        $populator->addProvider('provider', new \stdClass());
+        $populator->populate(function ($text) { return $text; });
+    }
+   
+   /**
+    * @expectedException PHPUnit_Framework_Error
+    */
+    public function testThatProvidersPassToTheContructorHaveToImpelementProviderInterface()
+    {
+        $populator = new Populator(array('provider' => new \stdClass()));
         $populator->populate(function ($text) { return $text; });
     }
 }
