@@ -3,6 +3,7 @@
 namespace FOQ\ElasticaBundle;
 
 use Elastica_Type;
+use Elastica_Exception_Response;
 use InvalidArgumentException;
 
 /**
@@ -38,7 +39,11 @@ class MappingRegistry
     {
         foreach ($this->mappings as $pair) {
             list($type, $mappings) = $pair;
-            $type->setMapping($mappings);
+            try {
+                $type->setMapping($mappings);
+            } catch (Elastica_Exception_Response $e) {
+                // index doesn't exist, but all goes well anyway?
+            }
         }
     }
 
