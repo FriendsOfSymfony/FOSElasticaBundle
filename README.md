@@ -27,9 +27,9 @@ With clone: `git clone git://github.com/ruflin/Elastica vendor/elastica`
 
 #### Download
 
-With submodule: `git submodule add git://github.com/Exercise/ElasticaBundle src/FOQ/ElasticaBundle`
+With submodule: `git submodule add git://github.com/Exercise/FOQElasticaBundle src/FOQ/ElasticaBundle`
 
-With clone: `git clone git://github.com/Exercise/ElasticaBundle src/FOQ/ElasticaBundle`
+With clone: `git clone git://github.com/Exercise/FOQElasticaBundle src/FOQ/ElasticaBundle`
 
 #### Register autoloading
 
