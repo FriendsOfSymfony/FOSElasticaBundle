@@ -52,7 +52,7 @@ class PopulatorTest extends \PHPUnit_Framework_TestCase
    /**
     * @expectedException PHPUnit_Framework_Error
     */
-    public function testThatProvidersPassToTheContructorHaveToImpelementProviderInterface()
+    public function testThatProvidersPassToTheContructorHaveToImplementProviderInterface()
     {
         $populator = new Populator(array('provider' => new \stdClass()));
         $populator->populate(function ($text) { return $text; });
