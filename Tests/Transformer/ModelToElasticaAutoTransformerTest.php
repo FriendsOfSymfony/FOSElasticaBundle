@@ -36,6 +36,13 @@ class POPO
 
 class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+       if (!class_exists('Elastica_Document')) {;
+           $this->markTestSkipped('The Elastica library classes are not available');
+       }
+    }
+
     public function testThatCanTransformObject()
     {
         $transformer =  new ModelToElasticaAutoTransformer();

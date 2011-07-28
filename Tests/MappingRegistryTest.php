@@ -8,6 +8,13 @@ use Elastica_Index;
 
 class MappingRegistryTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+       if (!class_exists('Elastica_Type') || !class_exists('Elastica_Index')) {
+           $this->markTestSkipped('The Elastica library classes are not available');
+       }
+    }
+
     public function testThatCanApplyMappings()
     {
         $typeMock = $this->getMockBuilder('Elastica_Type')
