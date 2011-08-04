@@ -40,7 +40,6 @@ class RawFinder implements FinderInterface, PaginatedFinderInterface
     public function findPaginated($query)
     {
 		$queryObject = Elastica_Query::create($query);
-        $results = $this->searchable->search($queryObject)->getResults();
 		$paginatorAdapter = $this->createPaginatorAdapter($queryObject);
 
 		return new Pagerfanta($paginatorAdapter);
