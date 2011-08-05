@@ -162,7 +162,7 @@ class FOQElasticaExtension extends Extension
     protected function loadTypeDoctrineIntegration(array $typeConfig, ContainerBuilder $container, Definition $typeDef, $indexName, $typeName)
     {
         if (!in_array($typeConfig['driver'], $this->supportedProviderDrivers)) {
-            throw new InvalidArgumentException(sprintf('The provider driver "%s" is not supported'));
+            throw new InvalidArgumentException(sprintf('The provider driver "%s" is not supported', $typeConfig['driver']));
         }
         $this->loadDoctrineDriver($container, $typeConfig['driver']);
 
