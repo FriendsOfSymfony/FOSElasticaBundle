@@ -15,7 +15,7 @@ class Listener extends AbstractListener implements EventSubscriber
         if ($entity instanceof $this->objectClass) {
             try {
                 $this->objectPersister->insertOne($entity);
-            } catch (\Elastica_Exception_Abstract $e) {
+            } catch (\Exception $e) {
                 $this->logFailure($e->getMessage());
             }
         }
@@ -28,7 +28,7 @@ class Listener extends AbstractListener implements EventSubscriber
         if ($entity instanceof $this->objectClass) {
             try {
                 $this->objectPersister->replaceOne($entity);
-            } catch (\Elastica_Exception_Abstract $e) {
+            } catch (\Exception $e) {
                 $this->logFailure($e->getMessage());
             }
         }
@@ -41,7 +41,7 @@ class Listener extends AbstractListener implements EventSubscriber
         if ($entity instanceof $this->objectClass) {
             try {
                 $this->objectPersister->deleteOne($entity);
-            } catch (\Elastica_Exception_Abstract $e) {
+            } catch (\Exception $e) {
                 $this->logFailure($e->getMessage());
             }
         }
