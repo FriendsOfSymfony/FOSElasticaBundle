@@ -11,7 +11,9 @@ class Populator
 
     public function __construct(array $providers)
     {
-        $this->providers = $providers;
+        foreach ($providers as $name => $provider) {
+            $this->addProvider($name, $provider);
+        }
     }
 
     public function addProvider($name, ProviderInterface $provider)
