@@ -65,14 +65,20 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected function normalizeValue($value)
     {
-        if (is_array($value) || $value instanceof Traversable || $value instanceof ArrayAccess) {
-            $value = array_map(function($v) {
+        $normalizeValue = function($v) {
+            if (is_int($v) || is_float($v) || is_bool($v) || is_null($v)) {
+                return $v;
+            } elseif ($v instanceof \DateTime) {
+                return (int) $v->format("U");
+            } else {
                 return (string) $v;
-            }, is_array($value) ? $value : iterator_to_array($value));
-        } elseif ($value instanceof \DateTime) {
-            $value = (string) $value->format("U");
+            }
+        };
+
+        if (is_array($value) || $value instanceof Traversable || $value instanceof ArrayAccess) {
+            $value = array_map($normalizeValue, is_array($value) ? $value : iterator_to_array($value));
         } else {
-            $value = (string) $value;
+            $value = $normalizeValue($value);
         }
 
         return $value;
