@@ -68,6 +68,8 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         $normalizeValue = function($v) {
             if (is_int($v) || is_float($v) || is_bool($v) || is_null($v)) {
                 return $v;
+            } elseif (is_array($v)) {
+                return json_encode($v);
             } elseif ($v instanceof \DateTime) {
                 return (int) $v->format("U");
             } else {
