@@ -112,7 +112,7 @@ class Configuration
                                     ->end()
                                 ->end()
                             ->end()
-                            ->variableNode('settings')->end()
+                            ->variableNode('settings')->defaultValue(array())->end()
                         ->end()
                         ->append($this->getTypesNode())
                     ->end()
