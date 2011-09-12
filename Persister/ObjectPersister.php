@@ -4,7 +4,6 @@ namespace FOQ\ElasticaBundle\Persister;
 
 use FOQ\ElasticaBundle\Provider\ProviderInterface;
 use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use FOQ\ElasticaBundle\Registry\MappingRegistry;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Elastica_Type;
 use Elastica_Document;
@@ -21,16 +20,16 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $type;
     protected $transformer;
     protected $objectClass;
-    protected $mappingRegistry;
+    protected $fields;
     protected $logger;
     protected $throwExceptions;
 
-    public function __construct(Elastica_Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, MappingRegistry $mappingRegistry, LoggerInterface $logger = null, $throwExceptions = true)
+    public function __construct(Elastica_Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields, LoggerInterface $logger = null, $throwExceptions = true)
     {
         $this->type            = $type;
         $this->transformer     = $transformer;
         $this->objectClass     = $objectClass;
-        $this->mappingRegistry = $mappingRegistry;
+        $this->fields          = $fields;
         $this->logger          = $logger;
         $this->throwExceptions = true;
     }
@@ -110,7 +109,7 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     protected function transformToElasticaDocument($object)
     {
-        return $this->transformer->transform($object, $this->mappingRegistry->getTypeFieldNames($this->type));
+        return $this->transformer->transform($object, $this->fields);
     }
 
     /**

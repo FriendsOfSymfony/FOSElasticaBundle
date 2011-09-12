@@ -9,11 +9,16 @@ use Elastica_Exception_Response;
  **/
 class Reseter
 {
-    protected $indexManager;
+	/**
+	 * Index settings and mappings
+	 *
+	 * @var array
+	 */
+	protected $indexConfigs;
 
-    public function __construct(IndexManager $indexManager)
+    public function __construct(array $indexConfigs)
     {
-        $this->indexManager = $indexManager;
+		$this->indexConfigs = $indexConfigs;
     }
 
     /**
@@ -23,13 +28,8 @@ class Reseter
      **/
     public function reset()
     {
-        foreach ($this->indexManager->getAllIndexes() as $index) {
-            try {
-                $index->delete();
-            } catch (Elastica_Exception_Response $e) {
-                // The index does not exist
-            }
-            $index->create();
+        foreach ($this->indexConfigs as $indexConfig) {
+            $indexConfig['index']->create($indexConfig['config'], true);
         }
     }
 }

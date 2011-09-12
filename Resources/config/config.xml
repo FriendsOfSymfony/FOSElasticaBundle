@@ -23,22 +23,14 @@
         </service>
 
         <service id="foq_elastica.reseter" class="FOQ\ElasticaBundle\Reseter">
-            <argument type="service" id="foq_elastica.index_manager" />
-        </service>
-
-        <service id="foq_elastica.mapping_registry" class="FOQ\ElasticaBundle\Registry\MappingRegistry">
-            <argument /> <!-- mappings -->
-        </service>
-
-        <service id="foq_elastica.setting_registry" class="FOQ\ElasticaBundle\Registry\SettingRegistry">
-            <argument /> <!-- settings -->
+            <argument /> <!-- index configs -->
         </service>
 
         <service id="foq_elastica.object_persister.prototype" class="FOQ\ElasticaBundle\Persister\ObjectPersister" public="false" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
-            <argument type="service" id="foq_elastica.mapping_registry" />
+            <argument /> <!-- properties mapping -->
             <argument type="service" id="logger" on-invalid="null" />
             <argument>%kernel.debug%</argument>
         </service>

@@ -15,8 +15,8 @@ use InvalidArgumentException;
 class FOQElasticaExtension extends Extension
 {
     protected $supportedProviderDrivers = array('mongodb', 'orm');
-    protected $typeMappings = array();
-    protected $indexSettings = array();
+    protected $indexConfigs = array();
+    protected $typeFields = array();
     protected $loadedDoctrineDrivers = array();
 
     public function load(array $configs, ContainerBuilder $container)
@@ -49,8 +49,7 @@ class FOQElasticaExtension extends Extension
         }, $indexIdsByName);
 
         $this->loadIndexManager($indexDefsByName, $container->getDefinition($indexIdsByName[$config['default_index']]), $container);
-        $this->loadMappingRegistry($this->typeMappings, $container);
-        $this->loadSettingRegistry($this->indexSettings, $container);
+        $this->loadReseter($this->indexConfigs, $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
@@ -102,11 +101,15 @@ class FOQElasticaExtension extends Extension
             $indexDef->setFactoryMethod('getIndex');
             $container->setDefinition($indexId, $indexDef);
             $typePrototypeConfig = isset($index['type_prototype']) ? $index['type_prototype'] : array();
-            $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig);
             $indexIds[$name] = $indexId;
-            if (isset($index['settings'])) {
-                $this->indexSettings[$name] = array(new Reference($indexId), $index['settings']);
-            }
+            $this->indexConfigs[$name] = array(
+                'index' => new Reference($indexId),
+                'config' => array(
+                    'settings' => $index['settings'],
+                    'mappings' => array()
+                )
+            );
+            $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig);
         }
 
         return $indexIds;
@@ -128,9 +131,10 @@ class FOQElasticaExtension extends Extension
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
             $container->setDefinition($typeId, $typeDef);
-            $key = sprintf('%s/%s', $indexName, $name);
             if (isset($type['mappings'])) {
-                $this->typeMappings[$key] = array(new Reference($typeId), $type['mappings']);
+                $this->indexConfigs[$indexName]['config']['mappings'][$name] = array('properties' => $type['mappings']);
+                $typeName = sprintf('%s/%s', $indexName, $name);
+                $this->typeFields[$typeName] = array_keys($type['mappings']);
             }
             if (isset($type['doctrine'])) {
                 $this->loadTypeDoctrineIntegration($type['doctrine'], $container, $typeDef, $indexName, $name);
@@ -229,6 +233,7 @@ class FOQElasticaExtension extends Extension
         $serviceDef->replaceArgument(0, $typeDef);
         $serviceDef->replaceArgument(1, new Reference($transformerId));
         $serviceDef->replaceArgument(2, $typeConfig['model']);
+        $serviceDef->replaceArgument(3, $this->typeFields[sprintf('%s/%s', $indexName, $typeName)]);
         $container->setDefinition($serviceId, $serviceDef);
 
         return $serviceId;
@@ -310,25 +315,14 @@ class FOQElasticaExtension extends Extension
     }
 
     /**
-     * Loads the mapping registry
+     * Loads the reseter
      *
      * @return null
      **/
-    protected function loadMappingRegistry(array $mappings, ContainerBuilder $container)
+    protected function loadReseter(array $indexConfigs, ContainerBuilder $container)
     {
-        $managerDef = $container->getDefinition('foq_elastica.mapping_registry');
-        $managerDef->replaceArgument(0, $mappings);
-    }
-
-    /**
-     * Loads the setting registry
-     *
-     * @return null
-     **/
-    protected function loadSettingRegistry(array $settings, ContainerBuilder $container)
-    {
-        $managerDef = $container->getDefinition('foq_elastica.setting_registry');
-        $managerDef->replaceArgument(0, $settings);
+        $reseterDef = $container->getDefinition('foq_elastica.reseter');
+        $reseterDef->replaceArgument(0, $indexConfigs);
     }
 
     protected function loadDoctrineDriver(ContainerBuilder $container, $driver)
