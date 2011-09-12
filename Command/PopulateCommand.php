@@ -32,7 +32,10 @@ class PopulateCommand extends ContainerAwareCommand
         $output->writeln('Reseting indexes');
         $this->getContainer()->get('foq_elastica.reseter')->reset();
 
-        $output->writeln('Setting mappings');
+        $output->writeln('Applying index settings');
+        $this->getContainer()->get('foq_elastica.setting_registry')->applySettings();
+
+        $output->writeln('Applying type mappings');
         $this->getContainer()->get('foq_elastica.mapping_registry')->applyMappings();
 
         $output->writeln('Populating indexes');

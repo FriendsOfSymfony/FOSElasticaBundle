@@ -4,7 +4,7 @@ namespace FOQ\ElasticaBundle\Persister;
 
 use FOQ\ElasticaBundle\Provider\ProviderInterface;
 use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use FOQ\ElasticaBundle\MappingRegistry;
+use FOQ\ElasticaBundle\Registry\MappingRegistry;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Elastica_Type;
 use Elastica_Document;

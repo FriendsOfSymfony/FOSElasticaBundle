@@ -112,6 +112,7 @@ class Configuration
                                     ->end()
                                 ->end()
                             ->end()
+                            ->variableNode('settings')->end()
                         ->end()
                         ->append($this->getTypesNode())
                     ->end()
@@ -200,6 +201,7 @@ class Configuration
                     ->scalarNode('boost')->end()
                     ->scalarNode('store')->end()
                     ->scalarNode('index')->end()
+                    ->scalarNode('analyzer')->end()
                 ->end()
             ->end()
         ;

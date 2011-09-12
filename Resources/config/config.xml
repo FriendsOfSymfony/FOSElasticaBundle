@@ -26,8 +26,12 @@
             <argument type="service" id="foq_elastica.index_manager" />
         </service>
 
-        <service id="foq_elastica.mapping_registry" class="FOQ\ElasticaBundle\MappingRegistry">
+        <service id="foq_elastica.mapping_registry" class="FOQ\ElasticaBundle\Registry\MappingRegistry">
             <argument /> <!-- mappings -->
+        </service>
+
+        <service id="foq_elastica.setting_registry" class="FOQ\ElasticaBundle\Registry\SettingRegistry">
+            <argument /> <!-- settings -->
         </service>
 
         <service id="foq_elastica.object_persister.prototype" class="FOQ\ElasticaBundle\Persister\ObjectPersister" public="false" abstract="true">
