@@ -55,7 +55,7 @@ With clone: `git clone git://github.com/Exercise/FOQElasticaBundle src/FOQ/Elast
 
 ### Basic configuration
 
-#### Declare a client 
+#### Declare a client
 
 Elasticsearch client is comparable to doctrine connection.
 Most of the time, you will need only one.
@@ -97,7 +97,7 @@ Elasticsearch type is comparable to doctrine entity repository.
                             username: { boost: 5 }
                             firstName: { boost: 3 }
                             lastName: { boost: 3 }
-                            aboutMe: 
+                            aboutMe:
 
 Our type is now available as a service: `foq_elastica.index.website.user`. It is an instance of `Elastica_Type`.
 
@@ -294,3 +294,28 @@ You can also choose to only listen for some of the events:
                                 insert: true
                                 update: false
                                 delete: true
+
+### Advanced elasticsearch configuration
+
+Any setting can be specified when declaring a type. For example, to enable a custom analyzer, you could write:
+
+    foq_elastica:
+        indexes:
+            doc:
+                settings: 
+                    index: 
+                        analysis: 
+                            analyzer: 
+                                my_analyzer: 
+                                    type: custom
+                                    tokenizer: lowercase
+                                    filter   : [my_ngram]
+                            filter: 
+                                my_ngram: 
+                                    type: "nGram"
+                                    min_gram: 3
+                                    max_gram: 5
+                types:
+                    blog:
+                        mappings:
+                            title: { boost: 8, analyzer: my_analyzer }
