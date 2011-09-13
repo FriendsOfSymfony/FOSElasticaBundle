@@ -105,10 +105,12 @@ class FOQElasticaExtension extends Extension
             $this->indexConfigs[$name] = array(
                 'index' => new Reference($indexId),
                 'config' => array(
-                    'settings' => $index['settings'],
                     'mappings' => array()
                 )
             );
+            if (!empty($index['settings'])) {
+                $this->indexConfigs[$name]['config']['settings'] = $index['settings'];
+            }
             $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig);
         }
 
