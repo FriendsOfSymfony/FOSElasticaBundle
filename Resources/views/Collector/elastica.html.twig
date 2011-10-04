@@ -38,7 +38,7 @@
                     <strong>Path</strong>: {{ query.path }}<br />
                     <strong>Method</strong>: {{ query.method }}
                     <div>
-                        <code>{{ query.data|json_encode }}</code>
+                        <code>{{ query.data|yaml_encode }}</code>
                     </div>
                     <small>
                         <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS * 1000) }} ms
