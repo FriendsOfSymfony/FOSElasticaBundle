@@ -29,7 +29,6 @@
             <call method="setLogger">
                 <argument type="service" id="elastica.logger" />
             </call>
-            <tag name="monolog.logger" channel="elastica" />
         </service>
 
         <service id="foq_elastica.index_manager" class="FOQ\ElasticaBundle\IndexManager">

@@ -1,4 +1,5 @@
 <?php
+
 namespace FOQ\ElasticaBundle\Logger;
 
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
@@ -70,5 +71,4 @@ class ElasticaLogger
     {
         return $this->queries;
     }
-
 }

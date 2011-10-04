@@ -1,4 +1,5 @@
 <?php
+
 namespace FOQ\ElasticaBundle\DataCollector;
 
 use FOQ\ElasticaBundle\Logger\ElasticaLogger;
