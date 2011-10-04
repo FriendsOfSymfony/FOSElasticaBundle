@@ -31,12 +31,10 @@ class ElasticaLogger
     /**
      * Logs a query.
      *
-     * This method is configured as the logger callable in the service
-     * container.
-     *
-     * @param string $path Path to call
+     * @param string $path   Path to call
      * @param string $method Rest method to use (GET, POST, DELETE, PUT)
-     * @param array  $data OPTIONAL Arguments as array
+     * @param array  $data   arguments
+     * @param float  $time   execution time
      */
     public function logQuery($path, $method, array $data, $time)
     {

@@ -3,6 +3,7 @@
 namespace FOQ\ElasticaBundle;
 
 use Elastica_Client;
+use FOQ\ElasticaBundle\Logger\ElasticaLogger;
 
 /**
  * @author Gordon Franke <info@nevalon.de>
@@ -11,7 +12,7 @@ class Client extends Elastica_Client
 {
     protected $logger;
 
-    public function setLogger($logger)
+    public function setLogger(ElasticaLogger $logger)
     {
         $this->logger = $logger;
     }
