@@ -35,9 +35,14 @@
         <ul class="alt">
             {% for query in collector.queries %}
                 <li class="{{ cycle(['odd', 'even'], loop.index) }}">
+                    <strong>Path</strong>: {{ query.path }}<br />
+                    <strong>Method</strong>: {{ query.method }}
                     <div>
-                        <code>{{ query }}</code>
+                        <code>{{ query.data|json_encode }}</code>
                     </div>
+                    <small>
+                        <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS * 1000) }} ms
+                    </small>
                 </li>
             {% endfor %}
         </ul>

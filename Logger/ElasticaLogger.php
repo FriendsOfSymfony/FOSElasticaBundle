@@ -15,19 +15,16 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
 class ElasticaLogger
 {
     protected $logger;
-    protected $prefix;
     protected $queries;
 
     /**
      * Constructor.
      *
      * @param LoggerInterface $logger The Symfony logger
-     * @param string          $prefix A prefix for messages sent to the Symfony logger
      */
-    public function __construct(LoggerInterface $logger = null, $prefix = 'Elastica')
+    public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
-        $this->prefix = $prefix;
         $this->queries = array();
     }
 
@@ -41,14 +38,18 @@ class ElasticaLogger
      * @param string $method Rest method to use (GET, POST, DELETE, PUT)
      * @param array  $data OPTIONAL Arguments as array
      */
-    public function logQuery($path, $method, array $data = array())
+    public function logQuery($path, $method, array $data, $time)
     {
-        $logInfo = sprintf("%s: %s (%s) \n%s", $this->prefix, $path, $method, json_encode($data));
-
-        $this->queries[] = $logInfo;
+        $this->queries[] = array(
+            'path' => $path,
+            'method' => $method,
+            'data' => $data,
+            'executionMS' => $time
+        );
 
         if (null !== $this->logger) {
-            $this->logger->info($logInfo);
+            $message = sprintf("%s (%s) %0.2f ms", $path, $method, $time * 1000);
+            $this->logger->info($message, $data);
         }
     }
 
