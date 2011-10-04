@@ -65,9 +65,13 @@ class FOQElasticaExtension extends Extension
     {
         $clientIds = array();
         foreach ($clients as $name => $clientConfig) {
-            $clientDef = new Definition('%foq_elastica.client.class%', array($clientConfig));
+            $clientDef = $container->getDefinition('foq_elastica.client');
+            $clientDef->replaceArgument(0, array($clientConfig));
+
             $clientId = sprintf('foq_elastica.client.%s', $name);
+
             $container->setDefinition($clientId, $clientDef);
+
             $clientIds[$name] = $clientId;
         }
 
