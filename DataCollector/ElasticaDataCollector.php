@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Data collector collecting mysqlnd statistics.
+ * Data collector collecting elastica statistics.
  *
- * @author johannes
+ * @author Gordon Franke <info@nevalon.de>
  */
 class ElasticaDataCollector extends DataCollector
 {
