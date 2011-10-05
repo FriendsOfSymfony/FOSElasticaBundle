@@ -36,7 +36,7 @@ class ElasticaLogger
      * @param array  $data   arguments
      * @param float  $time   execution time
      */
-    public function logQuery($path, $method, array $data, $time)
+    public function logQuery($path, $method, $data, $time)
     {
         $this->queries[] = array(
             'path' => $path,
@@ -47,7 +47,7 @@ class ElasticaLogger
 
         if (null !== $this->logger) {
             $message = sprintf("%s (%s) %0.2f ms", $path, $method, $time * 1000);
-            $this->logger->info($message, $data);
+            $this->logger->info($message, (array) $data);
         }
     }
 
