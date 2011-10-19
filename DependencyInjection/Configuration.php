@@ -202,6 +202,7 @@ class Configuration
                     ->scalarNode('store')->end()
                     ->scalarNode('index')->end()
                     ->scalarNode('analyzer')->end()
+                    ->scalarNode('term_vector')->end()
                 ->end()
             ->end()
         ;
