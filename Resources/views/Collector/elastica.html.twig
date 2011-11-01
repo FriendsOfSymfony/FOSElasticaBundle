@@ -1,0 +1,50 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <img width="16" height="20" alt="elastica" style="border-width: 0; vertical-align: middle; margin-right: 5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAUCAQAAAAua3X8AAAAAXNSR0IArs4c6QAAAAJiS0dEAP+Hj8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH2woEDCcGS0MnjgAAAi1JREFUKM9l0UtIVGEYxvHn/c53OqY2ZwJTs5wZDbSNbnJGKnIRJILSIsmWbYKgoIWK2WVpRdFOaJGtWnShRchgdKG0TaQVZZghKdhMGppTOZ0zt3O+722hSNBv++z+D2FdH67hbJFoECep1QjQpByST/uXAVqbe3EdfQG6xUfJsb4ZStnYaX4RPRfihA29cd1R/LLuTUV2E8zyGfvrMSNtNBLQsY0j7lxTCz+03sYeV8JCsLK82Sx69vn1YXHPaLdxnwdooaJT19Q+2pXZLExQBkul0arClJM5IDig9+juwAPaYawGHYskJJlQqcIErW5ZViQ0OMfjg8ukhUFELFjCZMtQM+7HAnwSDM1abud8QgezoeJy0iabJEm5v/KpsFEQKuwHfQ1kr+Rotvm3bUgGg5XjjUbdcPCyEfmkR+jGvHr3vSFd6JqrTq/aCeRmyoaPJKPBya2nqKVHXeK9r94DY9bIxJ9GEyYIWVC+5ENlV3dC5m9Tty4BgCd9dqMLdYdXZKlIJX7MxqcTAGLV0cWm/cDp2jN8nDsTa1Uj9ZGlUDp8CBA+fCgAcijLrnI71rsn1QlYOlZFQkPD8S625Q+6yNwtTLcDAOYzybjOMRZZKCieQ+vNMjhu5uoLf2TjPB72zpfVCAWFkPF8IJuLDY5N4R8FeI7vY3d1/ULdPvwnRHaqtB+QCrC4LRJgyQAUCBoefPws8gNKCJK8wuP6HDTAAAgaPjx48MjP6VHwXxwGAXzUXZKuAAAAAElFTkSuQmCC"/>
+    {% endset %}
+    {% set text %}
+         <span>{{ collector.querycount }}</span>
+    {% endset %}
+    {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
+{% endblock %}
+
+{% block menu %}
+<span class="label">
+    <span class="icon"><img src="{{ asset('bundles/foqelastica/images/elastica.png') }}" alt="" /></span>
+    <strong>Elastica</strong>
+    <span class="count">
+        <span>{{ collector.querycount }}</span>
+    </span>
+</span>
+{% endblock %}
+
+{% block panel %}
+    <h2>Queries</h2>
+
+    {% if not collector.queries %}
+        <p>
+            <em>Query logging is disabled.</em>
+        <p>
+    {% elseif not collector.querycount %}
+        <p>
+            <em>No queries.</em>
+        </p>
+    {% else %}
+        <ul class="alt">
+            {% for query in collector.queries %}
+                <li class="{{ cycle(['odd', 'even'], loop.index) }}">
+                    <strong>Path</strong>: {{ query.path }}<br />
+                    <strong>Method</strong>: {{ query.method }}
+                    <div>
+                        <code>{{ query.data|yaml_encode }}</code>
+                    </div>
+                    <small>
+                        <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS * 1000) }} ms
+                    </small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
