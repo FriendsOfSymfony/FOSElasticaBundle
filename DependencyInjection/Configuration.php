@@ -138,6 +138,7 @@ class Configuration
                         ->children()
                             ->scalarNode('driver')->end()
                             ->scalarNode('model')->end()
+                            ->scalarNode('repository')->end()
                             ->scalarNode('identifier')->defaultValue('id')->end()
                             ->arrayNode('provider')
                                 ->children()

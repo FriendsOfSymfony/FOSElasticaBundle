@@ -305,6 +305,15 @@ class FOQElasticaExtension extends Extension
         $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
         $container->setDefinition($finderId, $finderDef);
 
+        $managerDef = $container->getDefinition('foq_elastica.manager');
+        $arguments = array( $typeConfig['model'], new Reference($finderId));
+        if (isset($typeConfig['repository'])) {
+            $arguments[] = $typeConfig['repository'];
+        }
+
+        $managerDef->addMethodCall('addEntity', $arguments);
+        $container->setDefinition('foq_elastica.manager', $managerDef);
+
         return $finderId;
     }
 
