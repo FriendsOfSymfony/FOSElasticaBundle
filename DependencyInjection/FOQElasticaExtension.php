@@ -97,7 +97,6 @@ class FOQElasticaExtension extends Extension
                 $clientName = $defaultClientName;
             }
             $clientId = $clientIdsByName[$clientName];
-            $clientDef = $container->getDefinition($clientId);
             $indexId = sprintf('foq_elastica.index.%s', $name);
             $indexDefArgs = array($name);
             $indexDef = new Definition('%foq_elastica.index.class%', $indexDefArgs);
