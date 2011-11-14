@@ -50,59 +50,22 @@ class ReseterTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testThatResetMethodDeleteAllIndexes()
-    {
-        $indexManager = new IndexManager(array(
-            'index_1' => new Index(),
-            'index_2' => new Index()
-        ), new Index());
-        
-        $reseter = new Reseter($indexManager);
-        $reseter->reset();
-
-        $this->assertTrue($indexManager->getIndex('index_1')->deleted);
-        $this->assertTrue($indexManager->getIndex('index_2')->deleted);
-    }
-
-    public function testThatResetMethodDoesNotDeleteNewIndexes()
-    {
-        $indexManager = new IndexManager(array(
-            'index_1' => new Index(),
-            'index_2' => new NewIndex()
-        ), new Index());
-        
-        $reseter = new Reseter($indexManager);
-        $reseter->reset();
-
-        $this->assertTrue($indexManager->getIndex('index_1')->deleted);
-        $this->assertFalse($indexManager->getIndex('index_2')->deleted);
-    }
-    
     public function testThatResetMethodRecreateAllIndexes()
     {
-        $indexManager = new IndexManager(array(
-            'index_1' => new Index(),
-            'index_2' => new Index()
-        ), new Index());
-        
-        $reseter = new Reseter($indexManager);
+        $indexConfig = array();
+        $indexConfig['index_1'] = array();
+        $indexConfig['index_1']['index'] = new Index();
+        $indexConfig['index_1']['config'] = array();
+        $indexConfig['index_2'] = array();
+        $indexConfig['index_2']['index'] = new Index();
+        $indexConfig['index_2']['config'] = array();
+
+
+        $reseter = new Reseter($indexConfig);
         $reseter->reset();
 
-        $this->assertTrue($indexManager->getIndex('index_1')->created);
-        $this->assertTrue($indexManager->getIndex('index_2')->created);
+        $this->assertTrue($indexConfig['index_1']['index']->created);
+        $this->assertTrue($indexConfig['index_2']['index']->created);
     }
-    
-    public function testThatResetMethodCreateNewIndexes()
-    {
-        $indexManager = new IndexManager(array(
-           'index_1' => new NewIndex(),
-           'index_2' => new NewIndex()
-        ), new NewIndex());
-        
-        $reseter = new Reseter($indexManager);
-        $reseter->reset();
 
-        $this->assertTrue($indexManager->getIndex('index_1')->created);
-        $this->assertTrue($indexManager->getIndex('index_2')->created);
-    }
 }
