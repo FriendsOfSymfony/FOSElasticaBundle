@@ -10,6 +10,7 @@
         <parameter key="foq_elastica.type.class">Elastica_Type</parameter>
         <parameter key="foq_elastica.logger.class">FOQ\ElasticaBundle\Logger\ElasticaLogger</parameter>
         <parameter key="foq_elastica.data_collector.class">FOQ\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
+        <parameter key="foq_elastica.manager.class">FOQ\ElasticaBundle\Manager</parameter>
     </parameters>
 
 
@@ -61,6 +62,8 @@
         <service id="foq_elastica.model_to_elastica_transformer.prototype.auto" class="FOQ\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer" public="false" abstract="true">
             <argument /> <!-- options -->
         </service>
+
+        <service id="foq_elastica.manager" class="%foq_elastica.manager.class%" />
 
     </services>
 
