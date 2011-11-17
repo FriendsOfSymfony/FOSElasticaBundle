@@ -4,7 +4,8 @@ namespace FOQ\ElasticaBundle\Doctrine\MongoDB;
 
 use FOQ\ElasticaBundle\Finder\FinderInterface;
 use FOQ\ElasticaBundle\Manager\ManagerInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ODM\MongoDB\DocumentManager;
+
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  *
@@ -15,7 +16,7 @@ class Manager implements ManagerInterface
     protected $dm;
     protected $manager;
 
-    public function __construct(ObjectManager $dm, ManagerInterface $manager)
+    public function __construct(DocumentManager $dm, ManagerInterface $manager)
     {
         $this->dm = $dm;
         $this->manager = $manager;

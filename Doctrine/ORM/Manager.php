@@ -4,7 +4,7 @@ namespace FOQ\ElasticaBundle\Doctrine\ORM;
 
 use FOQ\ElasticaBundle\Finder\FinderInterface;
 use FOQ\ElasticaBundle\Manager\ManagerInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  *
@@ -15,7 +15,7 @@ class Manager implements ManagerInterface
     protected $em;
     protected $manager;
 
-    public function __construct(ObjectManager $em, ManagerInterface $manager)
+    public function __construct(EntityManager $em, ManagerInterface $manager)
     {
         $this->em = $em;
         $this->manager = $manager;
