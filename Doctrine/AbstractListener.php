@@ -2,7 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Doctrine;
 
-use FOQ\ElasticaBundle\Persister\ObjectPersister;
+use FOQ\ElasticaBundle\Persister\ObjectPersisterInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 abstract class AbstractListener
@@ -33,7 +33,7 @@ abstract class AbstractListener
     /**
      * Constructor
      **/
-    public function __construct(ObjectPersister $objectPersister, $objectClass, array $events, LoggerInterface $logger = null)
+    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, LoggerInterface $logger = null)
     {
         $this->objectPersister = $objectPersister;
         $this->objectClass     = $objectClass;
