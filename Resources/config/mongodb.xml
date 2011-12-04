@@ -27,6 +27,11 @@
             <argument type="collection" /> <!-- options -->
         </service>
 
+        <service id="foq_elastica.manager.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\Manager">
+            <argument type="service" id="doctrine.odm.mongodb.document_manager"/>
+            <argument type="service" id="foq_elastica.manager.basic"/>
+        </service>
+
     </services>
 
 </container>

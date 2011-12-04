@@ -53,6 +53,13 @@ class FOQElasticaExtension extends Extension
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
+
+        $defaultManager = $this->loadedDoctrineDrivers[0];
+        if (in_array('orm', $this->loadedDoctrineDrivers)) {
+            $defaultManager = 'orm';
+        }
+
+        $container->setAlias('foq_elastica.manager', sprintf('foq_elastica.manager.%s', $defaultManager));
     }
 
     /**
@@ -304,7 +311,7 @@ class FOQElasticaExtension extends Extension
         $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
         $container->setDefinition($finderId, $finderDef);
 
-        $managerDef = $container->getDefinition('foq_elastica.manager');
+        $managerDef = $container->getDefinition('foq_elastica.manager.basic');
         $arguments = array( $typeConfig['model'], new Reference($finderId));
         if (isset($typeConfig['repository'])) {
             $arguments[] = $typeConfig['repository'];

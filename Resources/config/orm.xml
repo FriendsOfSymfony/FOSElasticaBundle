@@ -27,6 +27,11 @@
             <argument type="collection" /> <!-- options -->
         </service>
 
+        <service id="foq_elastica.manager.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\Manager">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="foq_elastica.manager.basic"/>
+        </service>
+
     </services>
 
 </container>
