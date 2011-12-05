@@ -61,24 +61,24 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * Attempts to convert any type to a string or an array of strings
      *
      * @param mixed $value
+     *
      * @return string|array
      */
     protected function normalizeValue($value)
     {
-        $normalizeValue = function($v) {
-            if (is_int($v) || is_float($v) || is_bool($v) || is_null($v)) {
-                return $v;
-            } elseif ($v instanceof \DateTime) {
-                return (int) $v->format("U");
-            } else {
-                return (string) $v;
+        $normalizeValue = function(&$v) {
+            if ($v instanceof \DateTime) {
+                $v = (int) $v->format('U');
+            } elseif (!is_int($v) && !is_float($v) && !is_bool($v) && !is_null($v)) {
+                $v = (string) $v;
             }
         };
 
         if (is_array($value) || $value instanceof Traversable || $value instanceof ArrayAccess) {
-            $value = array_map($normalizeValue, is_array($value) ? $value : iterator_to_array($value));
+            $value = is_array($value) ? $value : iterator_to_array($value);
+            array_walk_recursive($value, $normalizeValue);
         } else {
-            $value = $normalizeValue($value);
+            $normalizeValue($value);
         }
 
         return $value;
