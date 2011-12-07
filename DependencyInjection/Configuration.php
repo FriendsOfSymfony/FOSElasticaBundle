@@ -204,6 +204,7 @@ class Configuration
                     ->scalarNode('index')->end()
                     ->scalarNode('analyzer')->end()
                     ->scalarNode('term_vector')->end()
+                    ->variableNode('fields')->defaultValue(array())->end()
                 ->end()
             ->end()
         ;
