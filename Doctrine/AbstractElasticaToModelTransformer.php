@@ -35,7 +35,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     );
 
     /**
-     * Instanciates a new Mapper
+     * Instantiates a new Mapper
      *
      * @param object $objectManager
      * @param string $objectClass
