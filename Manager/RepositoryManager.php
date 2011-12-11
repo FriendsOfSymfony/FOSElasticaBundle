@@ -2,6 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Manager;
 
+use FOQ\ElasticaBundle\Finder\FinderInterface;
 use FOQ\ElasticaBundle\Repository;
 use RuntimeException;
 
@@ -11,12 +12,12 @@ use RuntimeException;
  * Allows retrieval of basic or custom repository for mapped Doctrine
  * entities/documents.
  */
-class RepositoryManager
+class RepositoryManager implements RepositoryManagerInterface
 {
     protected $entities;
     protected $repositories;
 
-    public function addEntity($entityName, $finder, $repositoryName = null)
+    public function addEntity($entityName, FinderInterface $finder, $repositoryName = null)
     {
         $this->entities[$entityName]= array();
         $this->entities[$entityName]['finder'] = $finder;
