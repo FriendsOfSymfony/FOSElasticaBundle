@@ -1,15 +1,15 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests;
+namespace FOQ\ElasticaBundle\Tests\Manager;
 
-use FOQ\ElasticaBundle\Manager;
+use FOQ\ElasticaBundle\Manager\RepositoryManager;
 
 class CustomRepository{}
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
-class ManagerTest extends \PHPUnit_Framework_TestCase
+class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testThatGetRepositoryReturnsDefaultRepository()
@@ -20,7 +20,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $entityName = 'Test Entity';
 
-        $manager = new Manager($finderMock);
+        $manager = new RepositoryManager($finderMock);
         $manager->addEntity($entityName, $finderMock);
         $repository = $manager->getRepository($entityName);
         $this->assertInstanceOf('FOQ\ElasticaBundle\Repository', $repository);
@@ -34,10 +34,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $entityName = 'Test Entity';
 
-        $manager = new Manager($finderMock);
-        $manager->addEntity($entityName, $finderMock, 'FOQ\ElasticaBundle\Tests\CustomRepository');
+        $manager = new RepositoryManager($finderMock);
+        $manager->addEntity($entityName, $finderMock, 'FOQ\ElasticaBundle\Tests\Manager\CustomRepository');
         $repository = $manager->getRepository($entityName);
-        $this->assertInstanceOf('FOQ\ElasticaBundle\Tests\CustomRepository', $repository);
+        $this->assertInstanceOf('FOQ\ElasticaBundle\Tests\Manager\CustomRepository', $repository);
     }
 
     /**
@@ -51,7 +51,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $entityName = 'Test Entity';
 
-        $manager = new Manager($finderMock);
+        $manager = new RepositoryManager($finderMock);
         $manager->addEntity($entityName, $finderMock);
         $manager->getRepository('Missing Entity');
     }
@@ -67,7 +67,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $entityName = 'Test Entity';
 
-        $manager = new Manager($finderMock);
+        $manager = new RepositoryManager($finderMock);
         $manager->addEntity($entityName, $finderMock, 'FOQ\ElasticaBundle\Tests\MissingRepository');
         $manager->getRepository('Missing Entity');
     }

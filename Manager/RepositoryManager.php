@@ -1,7 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle;
+namespace FOQ\ElasticaBundle\Manager;
 
+use FOQ\ElasticaBundle\Repository;
 use RuntimeException;
 
 /**
@@ -10,7 +11,7 @@ use RuntimeException;
  * Allows retrieval of basic or custom repository for mapped Doctrine
  * entities/documents.
  */
-class Manager
+class RepositoryManager
 {
     protected $entities;
     protected $repositories;

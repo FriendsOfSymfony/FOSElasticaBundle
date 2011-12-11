@@ -10,7 +10,7 @@
         <parameter key="foq_elastica.type.class">Elastica_Type</parameter>
         <parameter key="foq_elastica.logger.class">FOQ\ElasticaBundle\Logger\ElasticaLogger</parameter>
         <parameter key="foq_elastica.data_collector.class">FOQ\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
-        <parameter key="foq_elastica.manager.class">FOQ\ElasticaBundle\Manager</parameter>
+        <parameter key="foq_elastica.manager.class">FOQ\ElasticaBundle\Manager\RepositoryManager</parameter>
     </parameters>
 
 
