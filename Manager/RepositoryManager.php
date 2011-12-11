@@ -14,8 +14,8 @@ use RuntimeException;
  */
 class RepositoryManager implements RepositoryManagerInterface
 {
-    protected $entities;
-    protected $repositories;
+    protected $entities = array();
+    protected $repositories = array();
 
     public function addEntity($entityName, FinderInterface $finder, $repositoryName = null)
     {
