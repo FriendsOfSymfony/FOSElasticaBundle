@@ -65,7 +65,6 @@ abstract class AbstractProvider implements ProviderInterface
         for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
 
             $stepStartTime = microtime(true);
-            $documents = array();
             $objects = $this->fetchSlice($queryBuilder, $this->options['batch_size'], $offset);
 
             $this->objectPersister->insertMany($objects);
