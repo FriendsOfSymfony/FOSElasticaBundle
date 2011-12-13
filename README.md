@@ -1,4 +1,4 @@
-[Elastica](https://github.com/ruflin/Elastica) integration in Symfony2
+﻿[Elastica](https://github.com/ruflin/Elastica) integration in Symfony2
 
 ## Installation
 
@@ -24,6 +24,8 @@ With clone: `git clone git://github.com/ruflin/Elastica vendor/elastica`
     ));
 
 ### Install ElasticaBundle
+
+Use the master branch with Symfony2 master only, use the 2.0 branch with Symfony2.0.x releases.
 
 #### Download
 
