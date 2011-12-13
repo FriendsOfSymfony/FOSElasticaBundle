@@ -10,9 +10,21 @@ http://www.elasticsearch.org/guide/reference/setup/installation.html
 
 #### Download
 
-With submodule: `git submodule add git://github.com/ruflin/Elastica vendor/elastica`
+**With submodule**
 
-With clone: `git clone git://github.com/ruflin/Elastica vendor/elastica`
+ `git submodule add git://github.com/ruflin/Elastica vendor/elastica`
+
+**With clone**
+
+ `git clone git://github.com/ruflin/Elastica vendor/elastica`
+
+**Using the vendors script**
+
+Add the following lines to your deps file:
+
+    [Elastica]
+        git=git://github.com/ruflin/Elastica.git
+        target=elastica
 
 #### Register autoloading
 
@@ -29,10 +41,34 @@ Use the master branch with Symfony2 master only, use the 2.0 branch with Symfony
 
 #### Download
 
-With submodule: `git submodule add git://github.com/Exercise/FOQElasticaBundle src/FOQ/ElasticaBundle`
+**With submodule**
 
-With clone: `git clone git://github.com/Exercise/FOQElasticaBundle src/FOQ/ElasticaBundle`
+ `git submodule add git://github.com/Exercise/FOQElasticaBundle vendor/bundles/FOQ/ElasticaBundle`
 
+**With clone**
+
+ `git clone git://github.com/Exercise/FOQElasticaBundle vendor/bundles/FOQ/ElasticaBundle`
+
+**With the vendors script**
+
+Add the following lines to your deps file:
+
+    [FOQElasticaBundle]
+        git=git://github.com/Exercise/FOQElasticaBundle.git
+        target=bundles/FOQ/ElasticaBundle
+
+For the 2.0 branch for use with Symfony2.0.x releases add the following:
+
+    [FOQElasticaBundle]
+        git=git://github.com/Exercise/FOQElasticaBundle.git
+        target=bundles/FOQ/ElasticaBundle
+        version=origin/2.0
+
+Run the vendors script:
+
+```bash
+$ php bin/vendors install
+```
 #### Register autoloading
 
     // app/autoload.php
