@@ -19,11 +19,11 @@ abstract class AbstractProvider implements ProviderInterface
     protected $type;
 
     /**
-     * Domain model object manager
+     * Manager registry
      *
      * @var object
      */
-    protected $objectManager;
+    protected $registry;
 
     /**
      * Object persister
@@ -43,10 +43,10 @@ abstract class AbstractProvider implements ProviderInterface
 		'query_builder_method' => 'createQueryBuilder'
     );
 
-    public function __construct(Elastica_Type $type, $objectManager, ObjectPersisterInterface $objectPersister, $objectClass, array $options = array())
+    public function __construct(Elastica_Type $type, $registry, ObjectPersisterInterface $objectPersister, $objectClass, array $options = array())
     {
         $this->type            = $type;
-        $this->objectManager   = $objectManager;
+        $this->registry        = $registry;
         $this->objectClass     = $objectClass;
         $this->objectPersister = $objectPersister;
         $this->options         = array_merge($this->options, $options);
@@ -70,7 +70,7 @@ abstract class AbstractProvider implements ProviderInterface
             $this->objectPersister->insertMany($objects);
 
             if ($this->options['clear_object_manager']) {
-                $this->objectManager->clear();
+                $this->registry->getManagerForClass($this->objectClass)->clear();
             }
 
             $stepNbObjects = count($objects);

@@ -13,9 +13,9 @@ use Elastica_Document;
 abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 {
     /**
-     * Repository to fetch the objects from
+     * Manager registry
      */
-    protected $objectManager = null;
+    protected $registry = null;
 
     /**
      * Class of the model to map to the elastica documents
@@ -37,15 +37,15 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     /**
      * Instantiates a new Mapper
      *
-     * @param object $objectManager
+     * @param object $registry
      * @param string $objectClass
      * @param array $options
      */
-    public function __construct($objectManager, $objectClass, array $options = array())
+    public function __construct($registry, $objectClass, array $options = array())
     {
-        $this->objectManager = $objectManager;
-        $this->objectClass   = $objectClass;
-        $this->options       = array_merge($this->options, $options);
+        $this->registry    = $registry;
+        $this->objectClass = $objectClass;
+        $this->options     = array_merge($this->options, $options);
     }
 
     /**
@@ -60,7 +60,6 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         $ids = array_map(function($elasticaObject) {
             return $elasticaObject->getId();
         }, $elasticaObjects);
-
         $objects = $this->findByIdentifiers($this->objectClass, $this->options['identifier'], $ids, $this->options['hydrate']);
 
         $identifierGetter = 'get'.ucfirst($this->options['identifier']);

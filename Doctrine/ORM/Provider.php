@@ -44,6 +44,9 @@ class Provider extends AbstractProvider
      **/
     protected function createQueryBuilder()
     {
-        return $this->objectManager->getRepository($this->objectClass)->{$this->options['query_builder_method']}('a');
+        return $this->registry
+            ->getManagerForClass($this->objectClass)
+            ->getRepository($this->objectClass)
+            ->{$this->options['query_builder_method']}('a');
     }
 }

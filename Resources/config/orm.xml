@@ -8,7 +8,7 @@
 
         <service id="foq_elastica.provider.prototype.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\Provider" public="false" abstract="true">
             <argument /> <!-- type -->
-            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="doctrine" />
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
@@ -22,7 +22,7 @@
         </service>
 
         <service id="foq_elastica.elastica_to_model_transformer.prototype.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" public="false">
-            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="doctrine" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
         </service>

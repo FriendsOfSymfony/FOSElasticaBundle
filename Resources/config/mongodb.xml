@@ -8,7 +8,7 @@
 
         <service id="foq_elastica.provider.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\Provider" public="false" abstract="true">
             <argument /> <!-- type -->
-            <argument type="service" id="doctrine.odm.mongodb.document_manager" />
+            <argument type="service" id="doctrine.odm.mongodb" />
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
@@ -22,7 +22,7 @@
         </service>
 
         <service id="foq_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer" public="false">
-            <argument type="service" id="doctrine.odm.mongodb.document_manager" />
+            <argument type="service" id="doctrine.odm.mongodb" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
         </service>
