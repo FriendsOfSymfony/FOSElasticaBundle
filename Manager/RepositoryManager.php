@@ -2,11 +2,11 @@
 
 namespace FOQ\ElasticaBundle\Manager;
 
+use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use FOQ\ElasticaBundle\Finder\FinderInterface;
 use FOQ\ElasticaBundle\Repository;
 use RuntimeException;
-
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  *
@@ -18,10 +18,12 @@ class RepositoryManager implements RepositoryManagerInterface
     protected $entities = array();
     protected $repositories = array();
     protected $managerRegistry;
+    protected $reader;
 
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(ManagerRegistry $managerRegistry, Reader $reader)
     {
         $this->managerRegistry = $managerRegistry;
+        $this->reader = $reader;
     }
 
     public function addEntity($entityName, FinderInterface $finder, $repositoryName = null)
@@ -53,6 +55,8 @@ class RepositoryManager implements RepositoryManagerInterface
             throw new RuntimeException(sprintf('No search finder configured for %s', $realEntityName));
         }
 
+        $this->setRepositoryFromAnnotation($realEntityName);
+
         if (isset($this->entities[$realEntityName]['repositoryName'])) {
 
             $repositoryName = $this->entities[$realEntityName]['repositoryName'];
@@ -67,6 +71,20 @@ class RepositoryManager implements RepositoryManagerInterface
         $repository = new Repository($this->entities[$realEntityName]['finder']);
         $this->repositories[$realEntityName] = $repository;
         return $repository;
+    }
+
+    private function setRepositoryFromAnnotation($realEntityName)
+    {
+        if (isset($this->entities[$realEntityName]['repositoryName'])) {
+            return;
+        }
+
+        $refClass = new \ReflectionClass($realEntityName);
+        $annotation = $this->reader->getClassAnnotation($refClass, 'FOQ\\ElasticaBundle\\Configuration\\Search');
+        if ($annotation) {
+            $this->entities[$realEntityName]['repositoryName']
+                = $annotation->repositoryClass;
+        }
     }
 
 }
