@@ -2,10 +2,10 @@
 
 namespace FOQ\ElasticaBundle\Manager;
 
+use Doctrine\Common\Annotations\Reader;
 use FOQ\ElasticaBundle\Finder\FinderInterface;
 use FOQ\ElasticaBundle\Repository;
 use RuntimeException;
-
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  *
@@ -16,6 +16,12 @@ class RepositoryManager implements RepositoryManagerInterface
 {
     protected $entities = array();
     protected $repositories = array();
+    protected $reader;
+
+    public function __construct(Reader $reader)
+    {
+        $this->reader = $reader;
+    }
 
     public function addEntity($entityName, FinderInterface $finder, $repositoryName = null)
     {
@@ -40,6 +46,8 @@ class RepositoryManager implements RepositoryManagerInterface
             throw new RuntimeException(sprintf('No search finder configured for %s', $entityName));
         }
 
+        $this->setRepositoryFromAnnotation($entityName);
+
         if (isset($this->entities[$entityName]['repositoryName'])) {
 
             $repositoryName = $this->entities[$entityName]['repositoryName'];
@@ -54,6 +62,20 @@ class RepositoryManager implements RepositoryManagerInterface
         $repository = new Repository($this->entities[$entityName]['finder']);
         $this->repositories[$entityName] = $repository;
         return $repository;
+    }
+
+    private function setRepositoryFromAnnotation($realEntityName)
+    {
+        if (isset($this->entities[$realEntityName]['repositoryName'])) {
+            return;
+        }
+
+        $refClass = new \ReflectionClass($realEntityName);
+        $annotation = $this->reader->getClassAnnotation($refClass, 'FOQ\\ElasticaBundle\\Configuration\\Search');
+        if ($annotation) {
+            $this->entities[$realEntityName]['repositoryName']
+                = $annotation->repositoryClass;
+        }
     }
 
 }

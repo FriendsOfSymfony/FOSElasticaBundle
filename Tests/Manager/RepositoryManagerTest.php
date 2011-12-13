@@ -6,6 +6,8 @@ use FOQ\ElasticaBundle\Manager\RepositoryManager;
 
 class CustomRepository{}
 
+class Entity{}
+
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
@@ -18,9 +20,13 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entityName = 'Test Entity';
+        $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $manager = new RepositoryManager($finderMock);
+        $entityName = 'FOQ\ElasticaBundle\Tests\Manager\Entity';
+
+        $manager = new RepositoryManager($readerMock);
         $manager->addEntity($entityName, $finderMock);
         $repository = $manager->getRepository($entityName);
         $this->assertInstanceOf('FOQ\ElasticaBundle\Repository', $repository);
@@ -32,9 +38,13 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entityName = 'Test Entity';
+        $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $manager = new RepositoryManager($finderMock);
+        $entityName = 'FOQ\ElasticaBundle\Tests\Manager\Entity';
+
+        $manager = new RepositoryManager($readerMock);
         $manager->addEntity($entityName, $finderMock, 'FOQ\ElasticaBundle\Tests\Manager\CustomRepository');
         $repository = $manager->getRepository($entityName);
         $this->assertInstanceOf('FOQ\ElasticaBundle\Tests\Manager\CustomRepository', $repository);
@@ -49,9 +59,13 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entityName = 'Test Entity';
+        $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $manager = new RepositoryManager($finderMock);
+        $entityName = 'FOQ\ElasticaBundle\Tests\Manager\Entity';
+
+        $manager = new RepositoryManager($readerMock);
         $manager->addEntity($entityName, $finderMock);
         $manager->getRepository('Missing Entity');
     }
@@ -65,10 +79,15 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entityName = 'Test Entity';
+        $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $manager = new RepositoryManager($finderMock);
+        $entityName = 'FOQ\ElasticaBundle\Tests\Manager\Entity';
+
+        $manager = new RepositoryManager($readerMock);
         $manager->addEntity($entityName, $finderMock, 'FOQ\ElasticaBundle\Tests\MissingRepository');
         $manager->getRepository('Missing Entity');
     }
+
 }
