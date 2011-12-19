@@ -75,7 +75,7 @@ $ php bin/vendors install
 
     $loader->registerNamespaces(array(
         ...
-        'FOQ' => __DIR__.'/../src',
+        'FOQ' => __DIR__.'/../vendor/bundles',
     ));
 
 #### Register the bundle
@@ -340,16 +340,16 @@ Any setting can be specified when declaring a type. For example, to enable a cus
     foq_elastica:
         indexes:
             doc:
-                settings: 
-                    index: 
-                        analysis: 
-                            analyzer: 
-                                my_analyzer: 
+                settings:
+                    index:
+                        analysis:
+                            analyzer:
+                                my_analyzer:
                                     type: custom
                                     tokenizer: lowercase
                                     filter   : [my_ngram]
-                            filter: 
-                                my_ngram: 
+                            filter:
+                                my_ngram:
                                     type: "nGram"
                                     min_gram: 3
                                     max_gram: 5
