@@ -24,7 +24,7 @@ class InvalidObjectPersister extends ObjectPersister
 {
     protected function transformToElasticaDocument($object)
     {
-        throw new \Exception('Invalid transformation');
+        throw new \BadMethodCallException('Invalid transformation');
     }
 }
 
@@ -57,7 +57,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \BadMethodCallException
      */
     public function testThatErrorIsHandledWhenCannotReplaceObject()
     {
@@ -96,7 +96,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \BadMethodCallException
      */
     public function testThatErrorIsHandledWhenCannotInsertObject()
     {
@@ -135,7 +135,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \BadMethodCallException
      */
     public function testThatErrorIsHandledWhenCannotDeleteObject()
     {
@@ -176,7 +176,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \BadMethodCallException
      */
     public function testThatErrorIsHandledWhenCannotInsertManyObject()
     {
