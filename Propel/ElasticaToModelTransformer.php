@@ -28,7 +28,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      */
     protected $options = array(
         'hydrate'    => true,
-		'identifier' => 'id'
+        'identifier' => 'id'
     );
 
     /**
@@ -49,7 +49,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      *
      * @param array of elastica objects
      * @return array
-     **/
+     */
     public function transform(array $elasticaObjects)
     {
         $ids = array_map(function($elasticaObject) {

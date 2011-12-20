@@ -63,7 +63,7 @@ class Provider implements ProviderInterface
             $objects = $queryClass::create()
                 ->limit($this->options['batch_size'])
                 ->offset($offset)
-		->find();
+                ->find();
 
             $this->objectPersister->insertMany($objects->getArrayCopy());
 

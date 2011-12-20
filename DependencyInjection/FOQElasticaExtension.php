@@ -14,16 +14,15 @@ use InvalidArgumentException;
 
 class FOQElasticaExtension extends Extension
 {
-    protected $supportedProviderDrivers = array('mongodb', 'orm', 'propel');
     protected $indexConfigs     = array();
     protected $typeFields       = array();
     protected $loadedDrivers    = array();
 
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration  = new Configuration();
-        $processor      = new Processor();
-        $config         = $processor->process($configuration->getConfigTree(), $configs);
+        $configuration = new Configuration();
+        $processor     = new Processor();
+        $config        = $processor->process($configuration->getConfigTree(), $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('config.xml');
@@ -42,9 +41,9 @@ class FOQElasticaExtension extends Extension
             $config['default_index'] = reset($keys);
         }
 
-        $clientIdsByName    = $this->loadClients($config['clients'], $container);
-        $indexIdsByName     = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
-        $indexDefsByName    = array_map(function($id) use ($container) {
+        $clientIdsByName = $this->loadClients($config['clients'], $container);
+        $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
+        $indexDefsByName = array_map(function($id) use ($container) {
             return $container->getDefinition($id);
         }, $indexIdsByName);
 
@@ -186,10 +185,6 @@ class FOQElasticaExtension extends Extension
      **/
     protected function loadTypePersistenceIntegration(array $typeConfig, ContainerBuilder $container, Definition $typeDef, $indexName, $typeName)
     {
-        if (!in_array($typeConfig['driver'], $this->supportedProviderDrivers)) {
-            throw new InvalidArgumentException(sprintf('The provider driver "%s" is not supported', $typeConfig['driver']));
-        }
-
         $this->loadDriver($container, $typeConfig['driver']);
 
         $elasticaToModelTransformerId = $this->loadElasticaToModelTransformer($typeConfig, $container, $indexName, $typeName);
@@ -203,7 +198,7 @@ class FOQElasticaExtension extends Extension
         if (isset($typeConfig['finder'])) {
             $this->loadTypeFinder($typeConfig, $container, $elasticaToModelTransformerId, $typeDef, $indexName, $typeName);
         }
-        if ('propel' !== $typeConfig['driver'] && isset($typeConfig['listener'])) {
+        if (isset($typeConfig['listener'])) {
             $this->loadTypeListener($typeConfig, $container, $objectPersisterId, $typeDef, $indexName, $typeName);
         }
     }
@@ -218,11 +213,7 @@ class FOQElasticaExtension extends Extension
         $serviceDef = new DefinitionDecorator($abstractId);
 
         // Doctrine has a mandatory service as first argument
-        if ('propel' === $typeConfig['driver']) {
-            $argPos = 0;
-        } else {
-            $argPos = 1;
-        }
+        $argPos = ('propel' === $typeConfig['driver']) ? 0 : 1;
 
         $serviceDef->replaceArgument($argPos, $typeConfig['model']);
         $serviceDef->replaceArgument($argPos + 1, array(
@@ -275,25 +266,16 @@ class FOQElasticaExtension extends Extension
         $providerDef->replaceArgument(0, $typeDef);
 
         // Doctrine has a mandatory service as second argument
-        if ('propel' === $typeConfig['driver']) {
-            $argPos = 1;
-        } else {
-            $argPos = 2;
-        }
+        $argPos = ('propel' === $typeConfig['driver']) ? 1 : 2;
 
         $providerDef->replaceArgument($argPos, new Reference($objectPersisterId));
         $providerDef->replaceArgument($argPos + 1, $typeConfig['model']);
 
-        if ('propel' === $typeConfig['driver']) {
-            $options = array(
-                'batch_size'           => $typeConfig['provider']['batch_size'],
-            );
-        } else {
-            $options = array(
-                'query_builder_method' => $typeConfig['provider']['query_builder_method'],
-                'batch_size'           => $typeConfig['provider']['batch_size'],
-                'clear_object_manager' => $typeConfig['provider']['clear_object_manager']
-            );
+        $options = array('batch_size' => $typeConfig['provider']['batch_size']);
+
+        if ('propel' !== $typeConfig['driver']) {
+            $options['query_builder_method'] = $typeConfig['provider']['query_builder_method'];
+            $options['clear_object_manager'] = $typeConfig['provider']['clear_object_manager'];
         }
 
         $providerDef->replaceArgument($argPos + 2, $options);

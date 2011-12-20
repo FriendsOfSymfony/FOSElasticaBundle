@@ -7,7 +7,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class Configuration
 {
-    protected $supportedDrivers = array('orm', 'mongodb', 'propel');
+    private $supportedDrivers = array('orm', 'mongodb', 'propel');
 
     /**
      * Generates the configuration tree.
