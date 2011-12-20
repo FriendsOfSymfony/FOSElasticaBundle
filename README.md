@@ -95,7 +95,7 @@ $ php bin/vendors install
 
 #### Declare a client
 
-Elasticsearch client is comparable to doctrine connection.
+Elasticsearch client is comparable to a database connection.
 Most of the time, you will need only one.
 
     #app/config/config.yml
@@ -148,12 +148,12 @@ It applies the configured mappings to the types.
 
 This command needs providers to insert new documents in the elasticsearch types.
 There are 2 ways to create providers.
-If your elasticsearch type matches a doctrine repository, go for the doctrine automatic provider.
+If your elasticsearch type matches a doctrine repository or a Propel query, go for the persistence automatic provider.
 Or, for complete flexibility, go for manual provider.
 
-#### Doctrine automatic provider
+#### Persistence automatic provider
 
-If we want to index the entities from a doctrine repository,
+If we want to index the entities from a doctrine repository or a Propel query,
 some configuration will let ElasticaBundle do it for us.
 
     foq_elastica:
@@ -168,18 +168,18 @@ some configuration will let ElasticaBundle do it for us.
                             username: { boost: 5 }
                             firstName: { boost: 3 }
                             # more mappings...
-                        doctrine:
-                            driver: orm
+                        persistence:
+                            driver: orm # orm, mongodb, propel are available
                             model: Application\UserBundle\Entity\User
                             provider:
 
-Two drivers are actually supported: orm and mongodb.
+Two drivers are actually supported: orm, mongodb, and propel.
 
 ##### Use a custom doctrine query builder
 
 You can control which entities will be indexed by specifying a custom query builder method.
 
-                        doctrine:
+                        persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
                             provider:
@@ -187,12 +187,14 @@ You can control which entities will be indexed by specifying a custom query buil
 
 Your repository must implement this method and return a doctrine query builder.
 
+> **Propel** doesn't support this feature yet.
+
 ##### Change the batch size
 
 By default, ElasticaBundle will index documents by paquets of 100.
 You can change this value in the provider configuration.
 
-                        doctrine:
+                        persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
                             provider:
@@ -203,7 +205,7 @@ You can change this value in the provider configuration.
 By default, ElasticaBundle will use the `id` field of your entities as the elasticsearch document identifier.
 You can change this value in the provider configuration.
 
-                        doctrine:
+                        persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
                             provider:
@@ -251,7 +253,7 @@ Its class must implement `FOQ\ElasticaBundle\Provider\ProviderInterface`.
             }
         }
 
-You will find a more complete implementation example in src/FOQ/ElasticaBundle/Provider/DoctrineProvider.php
+You will find a more complete implementation example in `src/FOQ/ElasticaBundle/Provider/Doctrine/ORM/Provider.php`.
 
 ### Search
 
@@ -265,9 +267,9 @@ You can just use the index and type Elastica objects, provided as services, to p
 
 #### Doctrine finder
 
-If your elasticsearch type is bound to a doctrine entity repository,
+If your elasticsearch type is bound to a doctrine entity repository or a Propel query,
 you can get your entities instead of Elastica results when you perform a search.
-Declare that you want a doctrine finder in your configuration:
+Declare that you want a doctrine/propel finder in your configuration:
 
     foq_elastica:
         clients:
@@ -279,7 +281,7 @@ Declare that you want a doctrine finder in your configuration:
                     user:
                         mappings:
                             # your mappings
-                        doctrine:
+                        persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
                             provider:
@@ -317,7 +319,7 @@ Declare that you want to update the index in real time:
                     user:
                         mappings:
                             # your mappings
-                        doctrine:
+                        persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
                             listener: # by default, listens to "insert", "update" and "delete"
@@ -327,11 +329,13 @@ No need to repopulate the whole "user" index when a new `User` is created.
 
 You can also choose to only listen for some of the events:
 
-                        doctrine:
+                        persistence:
                             listener:
                                 insert: true
                                 update: false
                                 delete: true
+
+> **Propel** doesn't support this feature yet.
 
 ### Advanced elasticsearch configuration
 

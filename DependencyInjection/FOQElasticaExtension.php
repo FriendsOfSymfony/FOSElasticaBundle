@@ -14,16 +14,16 @@ use InvalidArgumentException;
 
 class FOQElasticaExtension extends Extension
 {
-    protected $supportedProviderDrivers = array('mongodb', 'orm');
-    protected $indexConfigs = array();
-    protected $typeFields = array();
-    protected $loadedDoctrineDrivers = array();
+    protected $supportedProviderDrivers = array('mongodb', 'orm', 'propel');
+    protected $indexConfigs     = array();
+    protected $typeFields       = array();
+    protected $loadedDrivers    = array();
 
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-        $processor = new Processor();
-        $config = $processor->process($configuration->getConfigTree(), $configs);
+        $configuration  = new Configuration();
+        $processor      = new Processor();
+        $config         = $processor->process($configuration->getConfigTree(), $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('config.xml');
@@ -42,9 +42,9 @@ class FOQElasticaExtension extends Extension
             $config['default_index'] = reset($keys);
         }
 
-        $clientIdsByName = $this->loadClients($config['clients'], $container);
-        $indexIdsByName = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
-        $indexDefsByName = array_map(function($id) use ($container) {
+        $clientIdsByName    = $this->loadClients($config['clients'], $container);
+        $indexIdsByName     = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
+        $indexDefsByName    = array_map(function($id) use ($container) {
             return $container->getDefinition($id);
         }, $indexIdsByName);
 
@@ -54,11 +54,15 @@ class FOQElasticaExtension extends Extension
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
 
-        $defaultManager = $this->loadedDoctrineDrivers[0];
-        if (in_array('orm', $this->loadedDoctrineDrivers)) {
+        if (0 < count($this->loadedDrivers)) {
+            $defaultManager = $this->loadedDrivers[0];
+        } else {
             $defaultManager = 'orm';
         }
-        $container->setAlias('foq_elastica.manager', sprintf('foq_elastica.manager.%s', $defaultManager));
+
+        if ('propel' !== $defaultManager) {
+            $container->setAlias('foq_elastica.manager', sprintf('foq_elastica.manager.%s', $defaultManager));
+        }
     }
 
     /**
@@ -102,6 +106,7 @@ class FOQElasticaExtension extends Extension
             } else {
                 $clientName = $defaultClientName;
             }
+
             $clientId = $clientIdsByName[$clientName];
             $indexId = sprintf('foq_elastica.index.%s', $name);
             $indexDefArgs = array($name);
@@ -147,8 +152,8 @@ class FOQElasticaExtension extends Extension
                 $typeName = sprintf('%s/%s', $indexName, $name);
                 $this->typeFields[$typeName] = array_keys($type['mappings']);
             }
-            if (isset($type['doctrine'])) {
-                $this->loadTypeDoctrineIntegration($type['doctrine'], $container, $typeDef, $indexName, $name);
+            if (isset($type['persistence'])) {
+                $this->loadTypePersistenceIntegration($type['persistence'], $container, $typeDef, $indexName, $name);
             }
         }
     }
@@ -179,12 +184,13 @@ class FOQElasticaExtension extends Extension
      *
      * @return null
      **/
-    protected function loadTypeDoctrineIntegration(array $typeConfig, ContainerBuilder $container, Definition $typeDef, $indexName, $typeName)
+    protected function loadTypePersistenceIntegration(array $typeConfig, ContainerBuilder $container, Definition $typeDef, $indexName, $typeName)
     {
         if (!in_array($typeConfig['driver'], $this->supportedProviderDrivers)) {
             throw new InvalidArgumentException(sprintf('The provider driver "%s" is not supported', $typeConfig['driver']));
         }
-        $this->loadDoctrineDriver($container, $typeConfig['driver']);
+
+        $this->loadDriver($container, $typeConfig['driver']);
 
         $elasticaToModelTransformerId = $this->loadElasticaToModelTransformer($typeConfig, $container, $indexName, $typeName);
         $modelToElasticaTransformerId = $this->loadModelToElasticaTransformer($typeConfig, $container, $indexName, $typeName);
@@ -197,7 +203,7 @@ class FOQElasticaExtension extends Extension
         if (isset($typeConfig['finder'])) {
             $this->loadTypeFinder($typeConfig, $container, $elasticaToModelTransformerId, $typeDef, $indexName, $typeName);
         }
-        if (isset($typeConfig['listener'])) {
+        if ('propel' !== $typeConfig['driver'] && isset($typeConfig['listener'])) {
             $this->loadTypeListener($typeConfig, $container, $objectPersisterId, $typeDef, $indexName, $typeName);
         }
     }
@@ -210,10 +216,18 @@ class FOQElasticaExtension extends Extension
         $abstractId = sprintf('foq_elastica.elastica_to_model_transformer.prototype.%s', $typeConfig['driver']);
         $serviceId = sprintf('foq_elastica.elastica_to_model_transformer.%s.%s', $indexName, $typeName);
         $serviceDef = new DefinitionDecorator($abstractId);
-        $serviceDef->replaceArgument(1, $typeConfig['model']);
-        $serviceDef->replaceArgument(2, array(
-            'identifier' => $typeConfig['identifier'],
-            'hydrate' => $typeConfig['elastica_to_model_transformer']['hydrate']
+
+        // Doctrine has a mandatory service as first argument
+        if ('propel' === $typeConfig['driver']) {
+            $argPos = 0;
+        } else {
+            $argPos = 1;
+        }
+
+        $serviceDef->replaceArgument($argPos, $typeConfig['model']);
+        $serviceDef->replaceArgument($argPos + 1, array(
+            'identifier'    => $typeConfig['identifier'],
+            'hydrate'       => $typeConfig['elastica_to_model_transformer']['hydrate']
         ));
         $container->setDefinition($serviceId, $serviceDef);
 
@@ -259,13 +273,30 @@ class FOQElasticaExtension extends Extension
         $providerId = sprintf('foq_elastica.provider.%s.%s', $indexName, $typeName);
         $providerDef = new DefinitionDecorator($abstractProviderId);
         $providerDef->replaceArgument(0, $typeDef);
-        $providerDef->replaceArgument(2, new Reference($objectPersisterId));
-        $providerDef->replaceArgument(3, $typeConfig['model']);
-        $providerDef->replaceArgument(4, array(
-            'query_builder_method' => $typeConfig['provider']['query_builder_method'],
-            'batch_size'           => $typeConfig['provider']['batch_size'],
-            'clear_object_manager' => $typeConfig['provider']['clear_object_manager']
-        ));
+
+        // Doctrine has a mandatory service as second argument
+        if ('propel' === $typeConfig['driver']) {
+            $argPos = 1;
+        } else {
+            $argPos = 2;
+        }
+
+        $providerDef->replaceArgument($argPos, new Reference($objectPersisterId));
+        $providerDef->replaceArgument($argPos + 1, $typeConfig['model']);
+
+        if ('propel' === $typeConfig['driver']) {
+            $options = array(
+                'batch_size'           => $typeConfig['provider']['batch_size'],
+            );
+        } else {
+            $options = array(
+                'query_builder_method' => $typeConfig['provider']['query_builder_method'],
+                'batch_size'           => $typeConfig['provider']['batch_size'],
+                'clear_object_manager' => $typeConfig['provider']['clear_object_manager']
+            );
+        }
+
+        $providerDef->replaceArgument($argPos + 2, $options);
         $container->setDefinition($providerId, $providerDef);
 
         return $providerId;
@@ -310,15 +341,17 @@ class FOQElasticaExtension extends Extension
         $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
         $container->setDefinition($finderId, $finderDef);
 
-        $managerId = sprintf('foq_elastica.manager.%s', $typeConfig['driver']);
-        $managerDef = $container->getDefinition($managerId);
-        $arguments = array( $typeConfig['model'], new Reference($finderId));
-        if (isset($typeConfig['repository'])) {
-            $arguments[] = $typeConfig['repository'];
-        }
+        if ('propel' !== $typeConfig['driver']) {
+            $managerId = sprintf('foq_elastica.manager.%s', $typeConfig['driver']);
+            $managerDef = $container->getDefinition($managerId);
+            $arguments = array( $typeConfig['model'], new Reference($finderId));
+            if (isset($typeConfig['repository'])) {
+                $arguments[] = $typeConfig['repository'];
+            }
 
-        $managerDef->addMethodCall('addEntity', $arguments);
-        $container->setDefinition($managerId, $managerDef);
+            $managerDef->addMethodCall('addEntity', $arguments);
+            $container->setDefinition($managerId, $managerDef);
+        }
 
         return $finderId;
     }
@@ -346,13 +379,13 @@ class FOQElasticaExtension extends Extension
         $reseterDef->replaceArgument(0, $indexConfigs);
     }
 
-    protected function loadDoctrineDriver(ContainerBuilder $container, $driver)
+    protected function loadDriver(ContainerBuilder $container, $driver)
     {
-        if (in_array($driver, $this->loadedDoctrineDrivers)) {
+        if (in_array($driver, $this->loadedDrivers)) {
             return;
         }
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load($driver.'.xml');
-        $this->loadedDoctrineDrivers[] = $driver;
+        $this->loadedDrivers[] = $driver;
     }
 }
