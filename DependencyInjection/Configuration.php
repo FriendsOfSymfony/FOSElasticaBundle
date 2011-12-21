@@ -7,6 +7,8 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class Configuration
 {
+    private $supportedDrivers = array('orm', 'mongodb', 'propel');
+
     /**
      * Generates the configuration tree.
      *
@@ -70,9 +72,20 @@ class Configuration
                             ->scalarNode('client')->end()
                             ->arrayNode('type_prototype')
                                 ->children()
-                                    ->arrayNode('doctrine')
+                                    ->arrayNode('persistence')
+                                        ->validate()
+                                            ->ifTrue(function($v) { return 'propel' === $v['driver'] && isset($v['listener']); })
+                                            ->thenInvalid('Propel doesn\'t support listeners')
+                                            ->ifTrue(function($v) { return 'propel' === $v['driver'] && isset($v['repository']); })
+                                            ->thenInvalid('Propel doesn\'t support the "repository" parameter')
+                                        ->end()
                                         ->children()
-                                            ->scalarNode('driver')->end()
+                                            ->scalarNode('driver')
+                                                ->validate()
+                                                    ->ifNotInArray($this->supportedDrivers)
+                                                    ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
+                                                ->end()
+                                            ->end()
                                             ->scalarNode('identifier')->defaultValue('id')->end()
                                             ->arrayNode('provider')
                                                 ->children()
@@ -134,9 +147,20 @@ class Configuration
             ->prototype('array')
                 ->treatNullLike(array())
                 ->children()
-                    ->arrayNode('doctrine')
+                    ->arrayNode('persistence')
+                        ->validate()
+                            ->ifTrue(function($v) { return 'propel' === $v['driver'] && isset($v['listener']); })
+                            ->thenInvalid('Propel doesn\'t support listeners')
+                            ->ifTrue(function($v) { return 'propel' === $v['driver'] && isset($v['repository']); })
+                            ->thenInvalid('Propel doesn\'t support the "repository" parameter')
+                        ->end()
                         ->children()
-                            ->scalarNode('driver')->end()
+                            ->scalarNode('driver')
+                                ->validate()
+                                    ->ifNotInArray($this->supportedDrivers)
+                                    ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
+                                ->end()
+                            ->end()
                             ->scalarNode('model')->end()
                             ->scalarNode('repository')->end()
                             ->scalarNode('identifier')->defaultValue('id')->end()
