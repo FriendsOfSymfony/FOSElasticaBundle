@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="foq_elastica.provider.prototype.propel" class="FOQ\ElasticaBundle\Propel\Provider" public="false" abstract="true">
+            <argument /> <!-- type -->
+            <argument /> <!-- object persister -->
+            <argument /> <!-- model -->
+            <argument type="collection" /> <!-- options -->
+        </service>
+
+        <service id="foq_elastica.elastica_to_model_transformer.prototype.propel" class="FOQ\ElasticaBundle\Propel\ElasticaToModelTransformer" public="false">
+            <argument /> <!-- model -->
+            <argument type="collection" /> <!-- options -->
+        </service>
+
+    </services>
+
+</container>
