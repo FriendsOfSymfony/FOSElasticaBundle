@@ -4,7 +4,6 @@ namespace FOQ\ElasticaBundle\Manager;
 
 use Doctrine\Common\Annotations\Reader;
 use FOQ\ElasticaBundle\Finder\FinderInterface;
-use FOQ\ElasticaBundle\Repository;
 use RuntimeException;
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -46,36 +45,30 @@ class RepositoryManager implements RepositoryManagerInterface
             throw new RuntimeException(sprintf('No search finder configured for %s', $entityName));
         }
 
-        $this->setRepositoryFromAnnotation($entityName);
-
-        if (isset($this->entities[$entityName]['repositoryName'])) {
-
-            $repositoryName = $this->entities[$entityName]['repositoryName'];
-            if (!class_exists($repositoryName)) {
-                throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $entityName));
-            }
-            $repository = new $repositoryName($this->entities[$entityName]['finder']);
-            $this->repositories[$entityName] = $repository;
-            return $repository;
+        $repositoryName = $this->getRepositoryName($entityName);
+        if (!class_exists($repositoryName)) {
+            throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $entityName));
         }
-
-        $repository = new Repository($this->entities[$entityName]['finder']);
+        $repository = new $repositoryName($this->entities[$entityName]['finder']);
         $this->repositories[$entityName] = $repository;
+
         return $repository;
     }
 
-    private function setRepositoryFromAnnotation($realEntityName)
+    protected function getRepositoryName($realEntityName)
     {
         if (isset($this->entities[$realEntityName]['repositoryName'])) {
-            return;
+            return $this->entities[$realEntityName]['repositoryName'];
         }
 
-        $refClass = new \ReflectionClass($realEntityName);
+        $refClass   = new \ReflectionClass($realEntityName);
         $annotation = $this->reader->getClassAnnotation($refClass, 'FOQ\\ElasticaBundle\\Configuration\\Search');
         if ($annotation) {
             $this->entities[$realEntityName]['repositoryName']
                 = $annotation->repositoryClass;
         }
+
+        return 'FOQ\ElasticaBundle\Repository';
     }
 
 }
