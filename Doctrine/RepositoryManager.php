@@ -6,8 +6,6 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use FOQ\ElasticaBundle\Finder\FinderInterface;
 use FOQ\ElasticaBundle\Manager\RepositoryManager as BaseManager;
-use FOQ\ElasticaBundle\Repository;
-use RuntimeException;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -45,7 +43,7 @@ class RepositoryManager extends BaseManager
         return parent::getRepository($realEntityName);
     }
 
-    protected function getCustomRepositoryName($realEntityName)
+    protected function getRepositoryName($realEntityName)
     {
         if (isset($this->entities[$realEntityName]['repositoryName'])) {
             return $this->entities[$realEntityName]['repositoryName'];
@@ -58,6 +56,7 @@ class RepositoryManager extends BaseManager
                 = $annotation->repositoryClass;
             return $annotation->repositoryClass;
         }
+        return 'FOQ\ElasticaBundle\Repository';
     }
 
 }

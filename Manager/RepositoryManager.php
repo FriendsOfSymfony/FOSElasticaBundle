@@ -3,7 +3,6 @@
 namespace FOQ\ElasticaBundle\Manager;
 
 use FOQ\ElasticaBundle\Finder\FinderInterface;
-use FOQ\ElasticaBundle\Repository;
 use RuntimeException;
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -39,27 +38,22 @@ class RepositoryManager implements RepositoryManagerInterface
             throw new RuntimeException(sprintf('No search finder configured for %s', $entityName));
         }
 
-        $repositoryName = $this->getCustomRepositoryName($entityName);
-
-        if ($repositoryName) {
-            if (!class_exists($repositoryName)) {
-                throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $entityName));
-            }
-            $repository = new $repositoryName($this->entities[$entityName]['finder']);
-            $this->repositories[$entityName] = $repository;
-            return $repository;
+        $repositoryName = $this->getRepositoryName($entityName);
+        if (!class_exists($repositoryName)) {
+            throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $entityName));
         }
-
-        $repository = new Repository($this->entities[$entityName]['finder']);
+        $repository = new $repositoryName($this->entities[$entityName]['finder']);
         $this->repositories[$entityName] = $repository;
+
         return $repository;
     }
 
-    protected function getCustomRepositoryName($realEntityName)
+    protected function getRepositoryName($realEntityName)
     {
         if (isset($this->entities[$realEntityName]['repositoryName'])) {
             return $this->entities[$realEntityName]['repositoryName'];
         }
+        return 'FOQ\ElasticaBundle\Repository';
     }
 
 }
