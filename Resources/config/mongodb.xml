@@ -27,7 +27,7 @@
             <argument type="collection" /> <!-- options -->
         </service>
 
-        <service id="foq_elastica.manager.mongodb" class="FOQ\ElasticaBundle\Manager\RepositoryManager">
+        <service id="foq_elastica.manager.mongodb" class="FOQ\ElasticaBundle\Doctrine\RepositoryManager">
             <argument type="service" id="doctrine.odm.mongodb"/>
             <argument type="service" id="annotation_reader"/>
         </service>

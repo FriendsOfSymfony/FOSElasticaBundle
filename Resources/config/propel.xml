@@ -17,6 +17,8 @@
             <argument type="collection" /> <!-- options -->
         </service>
 
+        <service id="foq_elastica.manager.propel" class="%foq_elastica.manager.class%"/>
+
     </services>
 
 </container>

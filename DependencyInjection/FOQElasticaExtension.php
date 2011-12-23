@@ -53,15 +53,7 @@ class FOQElasticaExtension extends Extension
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
 
-        if (0 < count($this->loadedDrivers)) {
-            $defaultManager = $this->loadedDrivers[0];
-        } else {
-            $defaultManager = 'orm';
-        }
-
-        if ('propel' !== $defaultManager) {
-            $container->setAlias('foq_elastica.manager', sprintf('foq_elastica.manager.%s', $defaultManager));
-        }
+        $this->createDefaultManagerAlias($config['default_manager'], $container);
     }
 
     /**
@@ -370,4 +362,22 @@ class FOQElasticaExtension extends Extension
         $loader->load($driver.'.xml');
         $this->loadedDrivers[] = $driver;
     }
+
+    protected function createDefaultManagerAlias($defaultManager, ContainerBuilder $container)
+    {
+        if (0 == count($this->loadedDrivers)) {
+            return;
+        }
+
+        if (count($this->loadedDrivers) > 1
+            && in_array($defaultManager, $this->loadedDrivers)
+        ) {
+            $defaultManagerService = $defaultManager;
+        } else {
+            $defaultManagerService = $this->loadedDrivers[0];
+        }
+
+        $container->setAlias('foq_elastica.manager', sprintf('foq_elastica.manager.%s', $defaultManagerService));
+    }
+    
 }

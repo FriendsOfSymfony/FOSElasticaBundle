@@ -26,6 +26,7 @@ class Configuration
             ->children()
                 ->scalarNode('default_client')->end()
                 ->scalarNode('default_index')->end()
+                ->scalarNode('default_manager')->defaultValue('orm')->end()
             ->end()
         ;
 
