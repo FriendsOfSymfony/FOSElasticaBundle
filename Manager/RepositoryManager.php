@@ -2,6 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Manager;
 
+use Doctrine\Common\Annotations\Reader;
 use FOQ\ElasticaBundle\Finder\FinderInterface;
 use RuntimeException;
 /**
@@ -14,6 +15,12 @@ class RepositoryManager implements RepositoryManagerInterface
 {
     protected $entities = array();
     protected $repositories = array();
+    protected $reader;
+
+    public function __construct(Reader $reader)
+    {
+        $this->reader          = $reader;
+    }
 
     public function addEntity($entityName, FinderInterface $finder, $repositoryName = null)
     {
@@ -53,6 +60,15 @@ class RepositoryManager implements RepositoryManagerInterface
         if (isset($this->entities[$realEntityName]['repositoryName'])) {
             return $this->entities[$realEntityName]['repositoryName'];
         }
+
+        $refClass   = new \ReflectionClass($realEntityName);
+        $annotation = $this->reader->getClassAnnotation($refClass, 'FOQ\\ElasticaBundle\\Configuration\\Search');
+        if ($annotation) {
+            $this->entities[$realEntityName]['repositoryName']
+                = $annotation->repositoryClass;
+            return $annotation->repositoryClass;
+        }
+
         return 'FOQ\ElasticaBundle\Repository';
     }
 

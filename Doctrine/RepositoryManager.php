@@ -18,12 +18,11 @@ class RepositoryManager extends BaseManager
     protected $entities = array();
     protected $repositories = array();
     protected $managerRegistry;
-    protected $reader;
 
     public function __construct(ManagerRegistry $managerRegistry, Reader $reader)
     {
         $this->managerRegistry = $managerRegistry;
-        $this->reader          = $reader;
+        parent::__construct($reader);
     }
 
     /**
@@ -41,22 +40,6 @@ class RepositoryManager extends BaseManager
         }
 
         return parent::getRepository($realEntityName);
-    }
-
-    protected function getRepositoryName($realEntityName)
-    {
-        if (isset($this->entities[$realEntityName]['repositoryName'])) {
-            return $this->entities[$realEntityName]['repositoryName'];
-        }
-
-        $refClass   = new \ReflectionClass($realEntityName);
-        $annotation = $this->reader->getClassAnnotation($refClass, 'FOQ\\ElasticaBundle\\Configuration\\Search');
-        if ($annotation) {
-            $this->entities[$realEntityName]['repositoryName']
-                = $annotation->repositoryClass;
-            return $annotation->repositoryClass;
-        }
-        return 'FOQ\ElasticaBundle\Repository';
     }
 
 }
