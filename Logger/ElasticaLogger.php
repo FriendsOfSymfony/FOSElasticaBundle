@@ -50,6 +50,15 @@ class ElasticaLogger
             $this->logger->info($message, (array) $data);
         }
     }
+    
+    public function logError($message)
+    {    	
+    	if (null == $this->logger) {
+    		return;
+    	}
+    	
+    	$this->logger->err($message);
+    }
 
     /**
      * Returns the number of queries that have been logged.
