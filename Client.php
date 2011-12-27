@@ -25,6 +25,10 @@ class Client extends Elastica_Client
         try {
             $response = parent::request($path, $method, $data);
         } catch(\Exception $e) {
+        	
+            if (null !== $this->logger) {
+                $this->logger->logError($e->getMessage());
+            }        	
             //again, ghetto, but couldnt figure out how to return a default empty Elastica_Response
             return new \Elastica_Response('{"took":0,"timed_out":false,"hits":{"total":0,"max_score":0,"hits":[]}}');
         }
