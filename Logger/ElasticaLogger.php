@@ -53,11 +53,11 @@ class ElasticaLogger
     
     public function logError($message)
     {    	
-    	if (null == $this->logger) {
-    		return;
-    	}
+        if (null == $this->logger) {
+            return;
+        }
     	
-    	$this->logger->err($message);
+        $this->logger->err($message);
     }
 
     /**
