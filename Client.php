@@ -20,14 +20,7 @@ class Client extends Elastica_Client
     public function request($path, $method, $data = array())
     {
         $start = microtime(true);
-        //this is ghetto, but i couldnt figure out another way of making our site continue to behave normally even if ES was not running.
-        //Any improvements on this welcome. Perhaps another parameter that allows you to control if you want to ignore exceptions about ES not running
-        try {
-            $response = parent::request($path, $method, $data);
-        } catch(\Exception $e) {
-            //again, ghetto, but couldnt figure out how to return a default empty Elastica_Response
-            return new \Elastica_Response('{"took":0,"timed_out":false,"hits":{"total":0,"max_score":0,"hits":[]}}');
-        }
+        $response = parent::request($path, $method, $data);
 
         if (null !== $this->logger) {
             $time = microtime(true) - $start;
