@@ -253,7 +253,7 @@ Its class must implement `FOQ\ElasticaBundle\Provider\ProviderInterface`.
             }
         }
 
-You will find a more complete implementation example in `src/FOQ/ElasticaBundle/Provider/Doctrine/ORM/Provider.php`.
+You will find a more complete implementation example in `src/FOQ/ElasticaBundle/Doctrine/AbstractProvider.php`.
 
 ### Search
 
