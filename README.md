@@ -303,6 +303,25 @@ You can even get paginated results!
     /** var Pagerfanta\Pagerfanta */
     $userPaginator = $finder->findPaginated('bob');
 
+##### Index wide finder
+
+You can also define a finder that will work on the entire index. Adjust your index
+configuration as per below:
+
+    foq_elastica:
+        indexes:
+            website:
+                client: default
+                finder:
+
+You can now use the index wide finder service `foq_elastica.finder.website`:
+
+    /** var FOQ\ElasticaBundle\Finder\MappedFinder */
+    $finder = $container->get('foq_elastica.finder.website');
+
+    // Returns a mixed array of any objects mapped
+    $results = $finder->find('bob');
+
 ### Realtime, selective index update
 
 If you use the Doctrine integration, you can let ElasticaBundle update the indexes automatically

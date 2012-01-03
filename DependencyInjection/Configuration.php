@@ -70,6 +70,7 @@ class Configuration
                         ->performNoDeepMerging()
                         ->children()
                             ->scalarNode('client')->end()
+                            ->scalarNode('finder')->end()
                             ->arrayNode('type_prototype')
                                 ->children()
                                     ->arrayNode('persistence')

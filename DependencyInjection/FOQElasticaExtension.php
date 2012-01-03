@@ -111,6 +111,9 @@ class FOQElasticaExtension extends Extension
                     'mappings' => array()
                 )
             );
+            if (isset($index['finder'])) {
+                $this->loadIndexFinder($container, $name, $indexId);
+            }
             if (!empty($index['settings'])) {
                 $this->indexConfigs[$name]['config']['settings'] = $index['settings'];
             }
@@ -118,6 +121,32 @@ class FOQElasticaExtension extends Extension
         }
 
         return $indexIds;
+    }
+
+    /**
+     * Loads the configured index finders.
+     *
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param string $name The index name
+     * @param string $indexId The index service identifier
+     * @return string
+     */
+    protected function loadIndexFinder(ContainerBuilder $container, $name, $indexId)
+    {
+        $abstractTransformerId = 'foq_elastica.elastica_to_model_transformer.collection.prototype';
+        $transformerId = sprintf('foq_elastica.elastica_to_model_transformer.collection.%s', $name);
+        $transformerDef = new DefinitionDecorator($abstractTransformerId);
+        $container->setDefinition($transformerId, $transformerDef);
+
+        $abstractFinderId = 'foq_elastica.finder.prototype';
+        $finderId = sprintf('foq_elastica.finder.%s', $name);
+        $finderDef = new DefinitionDecorator($abstractFinderId);
+        $finderDef->replaceArgument(0, new Reference($indexId));
+        $finderDef->replaceArgument(1, new Reference($transformerId));
+
+        $container->setDefinition($finderId, $finderDef);
+
+        return $finderId;
     }
 
     /**
@@ -201,6 +230,7 @@ class FOQElasticaExtension extends Extension
         $abstractId = sprintf('foq_elastica.elastica_to_model_transformer.prototype.%s', $typeConfig['driver']);
         $serviceId = sprintf('foq_elastica.elastica_to_model_transformer.%s.%s', $indexName, $typeName);
         $serviceDef = new DefinitionDecorator($abstractId);
+        $serviceDef->addTag('foq_elastica.elastica_to_model_transformer', array('type' => $typeName, 'index' => $indexName));
 
         // Doctrine has a mandatory service as first argument
         $argPos = ('propel' === $typeConfig['driver']) ? 0 : 1;

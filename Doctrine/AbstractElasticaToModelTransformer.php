@@ -49,6 +49,16 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     }
 
     /**
+     * Returns the object class that is used for conversion.
+     *
+     * @return string
+     */
+    public function getObjectClass()
+    {
+        return $this->objectClass;
+    }
+
+    /**
      * Transforms an array of elastica objects into an array of
      * model objects fetched from the doctrine repository
      *
