@@ -15,4 +15,11 @@ interface ElasticaToModelTransformerInterface
      * @return array of model objects
      **/
     function transform(array $elasticaObjects);
+
+    /**
+     * Returns the object class used by the transformer.
+     *
+     * @return string
+     */
+    function getObjectClass();
 }

@@ -11,6 +11,10 @@
         <parameter key="foq_elastica.logger.class">FOQ\ElasticaBundle\Logger\ElasticaLogger</parameter>
         <parameter key="foq_elastica.data_collector.class">FOQ\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
         <parameter key="foq_elastica.manager.class">FOQ\ElasticaBundle\Manager\RepositoryManager</parameter>
+<<<<<<< HEAD
+=======
+        <parameter key="foq_elastica.elastica_to_model_transformer.collection.class">FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
+>>>>>>> Added finder capability for an index
     </parameters>
 
 
@@ -63,6 +67,10 @@
             <argument /> <!-- options -->
         </service>
 
+        <service id="foq_elastica.elastica_to_model_transformer.collection.prototype" class="%foq_elastica.elastica_to_model_transformer.collection.class%" public="true" abstract="true">
+            <argument type="collection" /> <!-- transformers -->
+            <argument type="collection" /> <!-- options -->
+        </service>
     </services>
 
 </container>
