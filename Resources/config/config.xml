@@ -14,7 +14,6 @@
         <parameter key="foq_elastica.elastica_to_model_transformer.collection.class">FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
     </parameters>
 
-
     <services>
 
         <service id="foq_elastica.logger" class="%foq_elastica.logger.class%">
