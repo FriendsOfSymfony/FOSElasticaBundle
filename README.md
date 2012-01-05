@@ -253,7 +253,7 @@ Its class must implement `FOQ\ElasticaBundle\Provider\ProviderInterface`.
             }
         }
 
-You will find a more complete implementation example in `src/FOQ/ElasticaBundle/Provider/Doctrine/ORM/Provider.php`.
+You will find a more complete implementation example in `src/FOQ/ElasticaBundle/Doctrine/AbstractProvider.php`.
 
 ### Search
 
@@ -302,6 +302,25 @@ You can even get paginated results!
 
     /** var Pagerfanta\Pagerfanta */
     $userPaginator = $finder->findPaginated('bob');
+
+##### Index wide finder
+
+You can also define a finder that will work on the entire index. Adjust your index
+configuration as per below:
+
+    foq_elastica:
+        indexes:
+            website:
+                client: default
+                finder:
+
+You can now use the index wide finder service `foq_elastica.finder.website`:
+
+    /** var FOQ\ElasticaBundle\Finder\MappedFinder */
+    $finder = $container->get('foq_elastica.finder.website');
+
+    // Returns a mixed array of any objects mapped
+    $results = $finder->find('bob');
 
 ### Realtime, selective index update
 
@@ -361,3 +380,36 @@ Any setting can be specified when declaring a type. For example, to enable a cus
                     blog:
                         mappings:
                             title: { boost: 8, analyzer: my_analyzer }
+
+### Overriding the Client class to suppress exceptions
+
+By default, exceptions from the Elastica client library will propogate through
+the bundle's Client class. For instance, if the elasticsearch server is offline,
+issuing a request will result in an `Elastica_Exception_Client` being thrown.
+Depending on your needs, it may be desirable to suppress these exceptions and
+allow searches to fail silently.
+
+One way to achieve this is to override the `foq_elastica.client.class` service
+container parameter with a custom class. In the following example, we override
+the `Client::request()` method and return the equivalent of an empty search
+response if an exception occurred.
+
+```
+<?php
+
+namespace Acme\ElasticaBundle;
+
+use FOQ\ElasticaBundle\Client as BaseClient;
+
+class Client extends BaseClient
+{
+    public function request($path, $method, $data = array())
+    {
+        try {
+            return parent::request($path, $method, $data);
+        } catch (\Elastica_Exception_Abstract $e) {
+            return new \Elastica_Response('{"took":0,"timed_out":false,"hits":{"total":0,"max_score":0,"hits":[]}}');
+        }
+    }
+}
+```
