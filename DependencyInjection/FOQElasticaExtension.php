@@ -111,7 +111,7 @@ class FOQElasticaExtension extends Extension
                     'mappings' => array()
                 )
             );
-            if (isset($index['finder'])) {
+            if ($index['finder']) {
                 $this->loadIndexFinder($container, $name, $indexId);
             }
             if (!empty($index['settings'])) {
