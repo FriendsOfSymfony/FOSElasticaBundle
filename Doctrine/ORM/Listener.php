@@ -13,11 +13,7 @@ class Listener extends AbstractListener implements EventSubscriber
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof $this->objectClass) {
-            try {
-                $this->objectPersister->insertOne($entity);
-            } catch (\Exception $e) {
-                $this->logFailure($e->getMessage());
-            }
+            $this->objectPersister->insertOne($entity);
         }
     }
 
@@ -26,11 +22,7 @@ class Listener extends AbstractListener implements EventSubscriber
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof $this->objectClass) {
-            try {
-                $this->objectPersister->replaceOne($entity);
-            } catch (\Exception $e) {
-                $this->logFailure($e->getMessage());
-            }
+            $this->objectPersister->replaceOne($entity);
         }
     }
 
@@ -39,11 +31,7 @@ class Listener extends AbstractListener implements EventSubscriber
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof $this->objectClass) {
-            try {
-                $this->objectPersister->deleteOne($entity);
-            } catch (\Exception $e) {
-                $this->logFailure($e->getMessage());
-            }
+            $this->objectPersister->deleteOne($entity);
         }
     }
 }

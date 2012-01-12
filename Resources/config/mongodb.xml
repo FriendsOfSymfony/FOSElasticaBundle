@@ -18,7 +18,6 @@
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- events -->
-            <argument type="service" id="logger" on-invalid="null" />
         </service>
 
         <service id="foq_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer" public="false">
