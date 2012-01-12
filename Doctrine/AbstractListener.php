@@ -28,17 +28,14 @@ abstract class AbstractListener
      */
     protected $events;
 
-    protected $logger;
-
     /**
      * Constructor
      **/
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, LoggerInterface $logger = null)
+    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events)
     {
         $this->objectPersister = $objectPersister;
         $this->objectClass     = $objectClass;
         $this->events          = $events;
-        $this->logger          = $logger;
     }
 
     /**
@@ -49,15 +46,4 @@ abstract class AbstractListener
         return $this->events;
     }
 
-    /**
-     * Log the failure message if a logger is available
-     *
-     * $param string $message
-     */
-    protected function logFailure($message)
-    {
-        if (null !== $this->logger) {
-            $this->logger->warn(sprintf('%s: %s', get_class($this), $message));
-        }
-    }
 }

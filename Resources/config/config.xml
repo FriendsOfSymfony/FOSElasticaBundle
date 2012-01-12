@@ -50,8 +50,6 @@
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
             <argument /> <!-- properties mapping -->
-            <argument type="service" id="logger" on-invalid="null" />
-            <argument>%kernel.debug%</argument>
         </service>
 
         <service id="foq_elastica.finder.prototype" class="FOQ\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
