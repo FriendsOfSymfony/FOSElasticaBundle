@@ -21,17 +21,13 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $transformer;
     protected $objectClass;
     protected $fields;
-    protected $logger;
-    protected $throwExceptions;
 
-    public function __construct(Elastica_Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields, LoggerInterface $logger = null, $throwExceptions = true)
+    public function __construct(Elastica_Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields)
     {
         $this->type            = $type;
         $this->transformer     = $transformer;
         $this->objectClass     = $objectClass;
         $this->fields          = $fields;
-        $this->logger          = $logger;
-        $this->throwExceptions = true;
     }
 
     /**
@@ -42,12 +38,8 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function insertOne($object)
     {
-        try {
-            $document = $this->transformToElasticaDocument($object);
-            $this->type->addDocument($document);
-        } catch (Exception $e) {
-            $this->onError($e);
-        }
+        $document = $this->transformToElasticaDocument($object);
+        $this->type->addDocument($document);
     }
 
     /**
@@ -58,13 +50,9 @@ class ObjectPersister implements ObjectPersisterInterface
      **/
     public function replaceOne($object)
     {
-        try {
-            $document = $this->transformToElasticaDocument($object);
-            $this->type->deleteById($document->getId());
-            $this->type->addDocument($document);
-        } catch (Exception $e) {
-            $this->onError($e);
-        }
+        $document = $this->transformToElasticaDocument($object);
+        $this->type->deleteById($document->getId());
+        $this->type->addDocument($document);
     }
 
     /**
@@ -75,12 +63,8 @@ class ObjectPersister implements ObjectPersisterInterface
      **/
     public function deleteOne($object)
     {
-        try {
-            $document = $this->transformToElasticaDocument($object);
-            $this->type->deleteById($document->getId());
-        } catch (Exception $e) {
-            $this->onError($e);
-        }
+        $document = $this->transformToElasticaDocument($object);
+        $this->type->deleteById($document->getId());
     }
 
     /**
@@ -90,15 +74,11 @@ class ObjectPersister implements ObjectPersisterInterface
      **/
     public function insertMany(array $objects)
     {
-        try {
-            $documents = array();
-            foreach ($objects as $object) {
-                $documents[] = $this->transformToElasticaDocument($object);
-            }
-            $this->type->addDocuments($documents);
-        } catch (Exception $e) {
-            $this->onError($e);
+        $documents = array();
+        foreach ($objects as $object) {
+            $documents[] = $this->transformToElasticaDocument($object);
         }
+        $this->type->addDocuments($documents);
     }
 
     /**
@@ -112,20 +92,4 @@ class ObjectPersister implements ObjectPersisterInterface
         return $this->transformer->transform($object, $this->fields);
     }
 
-    /**
-     * What to do when an error occurs
-     *
-     * @param Exception
-     **/
-    protected function onError(Exception $exception)
-    {
-        if ($this->throwExceptions) {
-            throw $exception;
-        }
-
-        if ($this->logger) {
-            $message = sprintf('Elastica object persister failure (%s: %s)', get_class($exception), $exception->getMessage());
-            $this->logger->warn($message);
-        }
-    }
 }
