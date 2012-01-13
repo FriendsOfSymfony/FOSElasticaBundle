@@ -70,7 +70,7 @@ abstract class AbstractProvider implements ProviderInterface
             $this->objectPersister->insertMany($objects);
 
             if ($this->options['clear_object_manager']) {
-                $this->registry->getManagerForClass($this->objectClass)->clear();
+                $this->registry->getEntityManagerForClass($this->objectClass)->clear();
             }
 
             $stepNbObjects = count($objects);
