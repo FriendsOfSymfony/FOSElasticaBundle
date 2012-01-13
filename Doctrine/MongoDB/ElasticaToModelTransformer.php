@@ -24,7 +24,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
     protected function findByIdentifiers($class, $identifierField, array $identifierValues, $hydrate)
     {
         return $this->registry
-            ->getManagerForClass($class)
+            ->getEntityManagerForClass($class)
             ->createQueryBuilder($class)
             ->field($identifierField)->in($identifierValues)
             ->hydrate($hydrate)

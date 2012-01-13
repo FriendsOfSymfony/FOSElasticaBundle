@@ -38,7 +38,7 @@ class Provider extends AbstractProvider
     protected function createQueryBuilder()
     {
         return $this->registry
-            ->getManagerForClass($this->objectClass)
+            ->getEntityManagerForClass($this->objectClass)
             ->getRepository($this->objectClass)
             ->{$this->options['query_builder_method']}();
     }
