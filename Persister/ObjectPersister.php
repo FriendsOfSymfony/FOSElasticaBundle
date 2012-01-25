@@ -61,11 +61,27 @@ class ObjectPersister implements ObjectPersisterInterface
      * @param object $object
      * @return null
      **/
-    public function deleteOne($object)
+    public function deleteOne($object, $id = null)
     {
-        $document = $this->transformToElasticaDocument($object);
-        $this->type->deleteById($document->getId());
+        if (!$id) {
+            $document = $this->transformToElasticaDocument($object);
+            $id = $document->getId();
+        }
+        $this->type->deleteById($id);
     }
+
+    /**
+     * Deletes one object in the type by id
+     *
+     * @param mixed $id
+     *
+     * @return null
+     **/
+    public function deleteById($id)
+    {
+        $this->type->deleteById($id);
+    }
+
 
     /**
      * Inserts an array of objects in the type

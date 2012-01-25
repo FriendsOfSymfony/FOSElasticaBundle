@@ -316,13 +316,8 @@ class FOQElasticaExtension extends Extension
         $listenerDef = new DefinitionDecorator($abstractListenerId);
         $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
         $listenerDef->replaceArgument(1, $typeConfig['model']);
-        $events = array();
-        $doctrineEvents = array('insert' => 'postPersist', 'update' => 'postUpdate', 'delete' => 'postRemove');
-        foreach ($doctrineEvents as $event => $doctrineEvent) {
-            if (isset($typeConfig['listener'][$event]) && $typeConfig['listener'][$event]) {
-                $events[] = $doctrineEvent;
-            }
-        }
+        $listenerDef->replaceArgument(3, $typeConfig['identifier']);
+        $events = $this->getDoctrineEvents($typeConfig);
         $listenerDef->replaceArgument(2, $events);
         switch ($typeConfig['driver']) {
             case 'orm': $listenerDef->addTag('doctrine.event_subscriber'); break;
@@ -331,6 +326,22 @@ class FOQElasticaExtension extends Extension
         $container->setDefinition($listenerId, $listenerDef);
 
         return $listenerId;
+    }
+
+    private function getDoctrineEvents(array $typeConfig)
+    {
+        $events = array();
+        $eventMapping = array(
+            'insert' => array('postPersist'),
+            'update' => array('postUpdate'),
+            'delete' => array('postRemove', 'preRemove')
+        );
+        foreach ($eventMapping as $event => $doctrineEvents) {
+            if (isset($typeConfig['listener'][$event]) && $typeConfig['listener'][$event]) {
+                $events = array_merge($events, $doctrineEvents);
+            }
+        }
+        return $events;
     }
 
     protected function loadTypeFinder(array $typeConfig, ContainerBuilder $container, $elasticaToModelId, $typeDef, $indexName, $typeName)

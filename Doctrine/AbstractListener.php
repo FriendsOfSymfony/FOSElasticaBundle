@@ -28,14 +28,19 @@ abstract class AbstractListener
      */
     protected $events;
 
+    protected $identifier;
+    protected $scheduledForRemoval;
+
     /**
      * Constructor
      **/
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events)
+    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $identifier = 'id')
     {
-        $this->objectPersister = $objectPersister;
-        $this->objectClass     = $objectClass;
-        $this->events          = $events;
+        $this->objectPersister     = $objectPersister;
+        $this->objectClass         = $objectClass;
+        $this->events              = $events;
+        $this->identifier          = $identifier;
+        $this->scheduledForRemoval = new \SplObjectStorage();
     }
 
     /**
@@ -44,6 +49,19 @@ abstract class AbstractListener
     public function getSubscribedEvents()
     {
         return $this->events;
+    }
+
+    protected function scheduleForRemoval($object)
+    {
+        $getIdentifierMethod = 'get' . ucfirst($this->identifier);
+        $this->scheduledForRemoval[$object] = $object->$getIdentifierMethod();
+    }
+
+    protected function removeIfScheduled($object)
+    {
+        if (isset($this->scheduledForRemoval[$object])) {
+            $this->objectPersister->deleteById($this->scheduledForRemoval[$object]);
+        }
     }
 
 }
