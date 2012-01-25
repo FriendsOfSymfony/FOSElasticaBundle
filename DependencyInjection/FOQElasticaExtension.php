@@ -344,14 +344,15 @@ class FOQElasticaExtension extends Extension
         $container->setDefinition($finderId, $finderDef);
 
         if ('propel' !== $typeConfig['driver']) {
-            $managerDef = $container->getDefinition('foq_elastica.manager');
+            $managerId  = sprintf('foq_elastica.manager.%s', $typeConfig['driver']);
+            $managerDef = $container->getDefinition($managerId);
             $arguments = array( $typeConfig['model'], new Reference($finderId));
             if (isset($typeConfig['repository'])) {
                 $arguments[] = $typeConfig['repository'];
             }
 
             $managerDef->addMethodCall('addEntity', $arguments);
-            $container->setDefinition('foq_elastica.manager', $managerDef);
+            $container->setDefinition($managerId, $managerDef);
         }
 
         return $finderId;

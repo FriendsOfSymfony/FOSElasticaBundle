@@ -26,6 +26,9 @@
             <argument type="collection" /> <!-- options -->
         </service>
 
+        <service id="foq_elastica.manager.mongodb" class="%foq_elastica.manager.class%">
+            <argument type="service" id="annotation_reader"/>
+        </service>
 
     </services>
 
