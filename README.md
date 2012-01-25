@@ -393,7 +393,7 @@ class UserRepository extends Repository
 
 To use the custom repository specify it in the mapping for the entity:
 
-foq_elastica:
+    foq_elastica:
         clients:
             default: { host: localhost, port: 9200 }
         indexes:
