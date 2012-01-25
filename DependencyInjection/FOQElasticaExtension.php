@@ -353,7 +353,6 @@ class FOQElasticaExtension extends Extension
         }
 
         $managerDef->addMethodCall('addEntity', $arguments);
-        $container->setDefinition($managerId, $managerDef);
 
         return $finderId;
     }
