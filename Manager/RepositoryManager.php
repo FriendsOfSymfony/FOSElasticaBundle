@@ -19,7 +19,7 @@ class RepositoryManager implements RepositoryManagerInterface
 
     public function __construct(Reader $reader)
     {
-        $this->reader          = $reader;
+        $this->reader = $reader;
     }
 
     public function addEntity($entityName, FinderInterface $finder, $repositoryName = null)

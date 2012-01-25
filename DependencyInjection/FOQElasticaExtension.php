@@ -409,5 +409,5 @@ class FOQElasticaExtension extends Extension
 
         $container->setAlias('foq_elastica.manager', sprintf('foq_elastica.manager.%s', $defaultManagerService));
     }
-    
+
 }
