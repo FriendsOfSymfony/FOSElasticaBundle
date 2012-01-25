@@ -51,16 +51,16 @@ class RepositoryManager implements RepositoryManagerInterface
         return $repository;
     }
 
-    protected function getRepositoryName($realEntityName)
+    protected function getRepositoryName($entityName)
     {
-        if (isset($this->entities[$realEntityName]['repositoryName'])) {
-            return $this->entities[$realEntityName]['repositoryName'];
+        if (isset($this->entities[$entityName]['repositoryName'])) {
+            return $this->entities[$entityName]['repositoryName'];
         }
 
-        $refClass   = new \ReflectionClass($realEntityName);
+        $refClass   = new \ReflectionClass($entityName);
         $annotation = $this->reader->getClassAnnotation($refClass, 'FOQ\\ElasticaBundle\\Configuration\\Search');
         if ($annotation) {
-            $this->entities[$realEntityName]['repositoryName']
+            $this->entities[$entityName]['repositoryName']
                 = $annotation->repositoryClass;
             return $annotation->repositoryClass;
         }
