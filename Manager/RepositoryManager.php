@@ -66,6 +66,7 @@ class RepositoryManager implements RepositoryManagerInterface
         if ($annotation) {
             $this->entities[$realEntityName]['repositoryName']
                 = $annotation->repositoryClass;
+            return $annotation->repositoryClass;
         }
 
         return 'FOQ\ElasticaBundle\Repository';
