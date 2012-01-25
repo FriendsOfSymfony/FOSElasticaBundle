@@ -45,31 +45,36 @@ class RepositoryManager implements RepositoryManagerInterface
             throw new RuntimeException(sprintf('No search finder configured for %s', $entityName));
         }
 
-        $repositoryName = $this->getRepositoryName($entityName);
-        if (!class_exists($repositoryName)) {
-            throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $entityName));
-        }
-        $repository = new $repositoryName($this->entities[$entityName]['finder']);
+        $repository = $this->createRepository($entityName);
         $this->repositories[$entityName] = $repository;
 
         return $repository;
     }
 
-    protected function getRepositoryName($realEntityName)
+    protected function getRepositoryName($entityName)
     {
-        if (isset($this->entities[$realEntityName]['repositoryName'])) {
-            return $this->entities[$realEntityName]['repositoryName'];
+        if (isset($this->entities[$entityName]['repositoryName'])) {
+            return $this->entities[$entityName]['repositoryName'];
         }
 
-        $refClass   = new \ReflectionClass($realEntityName);
+        $refClass   = new \ReflectionClass($entityName);
         $annotation = $this->reader->getClassAnnotation($refClass, 'FOQ\\ElasticaBundle\\Configuration\\Search');
         if ($annotation) {
-            $this->entities[$realEntityName]['repositoryName']
+            $this->entities[$entityName]['repositoryName']
                 = $annotation->repositoryClass;
             return $annotation->repositoryClass;
         }
 
         return 'FOQ\ElasticaBundle\Repository';
+    }
+
+    private function createRepository($entityName)
+    {
+        $repositoryName = $this->getRepositoryName($entityName);
+        if (!class_exists($repositoryName)) {
+            throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $entityName));
+        }
+        return new $repositoryName($this->entities[$entityName]['finder']);
     }
 
 }

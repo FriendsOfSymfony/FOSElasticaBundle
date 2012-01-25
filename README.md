@@ -265,7 +265,7 @@ You can just use the index and type Elastica objects, provided as services, to p
     /** var Elastica_ResultSet */
     $resultSet = $userType->search('bob');
 
-#### Doctrine finder
+#### Doctrine/Propel finder
 
 If your elasticsearch type is bound to a Doctrine entity repository or a Propel query,
 you can get your entities instead of Elastica results when you perform a search.
@@ -321,6 +321,125 @@ You can now use the index wide finder service `foq_elastica.finder.website`:
 
     // Returns a mixed array of any objects mapped
     $results = $finder->find('bob');
+
+#### Repositories
+
+As well as using the finder service for a particular Doctrine/Propel entity you
+can use a manager service for each driver and get a repository for an entity to search
+against. This allows you to use the same service rather than the particular finder. For
+example:
+
+    /** var FOQ\ElasticaBundle\Manager\RepositoryManager */
+    $repositoryManager = $container->get('foq_elastica.manager.orm');
+
+    /** var FOQ\ElasticaBundle\Repository */
+    $repository = $repositoryManager->getRepository('UserBundle:User');
+
+    /** var array of Acme\UserBundle\Entity\User */
+    $users = $finder->find('bob');
+
+You can also specify the full name of the entity instead of the shortcut syntax:
+
+    /** var FOQ\ElasticaBundle\Repository */
+    $repository = $repositoryManager->getRepository('Application\UserBundle\Entity\User');
+
+> The **2.0**  branch doesn't support using `UserBundle:User` style syntax and you must use the full name of the entity. .
+
+##### Default Manager
+
+If you are only using one driver then its manager service is automatically aliased
+to `foq_elastica.manager`. So the above example could be simplified to:
+
+    /** var FOQ\ElasticaBundle\Manager\RepositoryManager */
+    $repositoryManager = $container->get('foq_elastica.manager');
+
+    /** var FOQ\ElasticaBundle\Repository */
+    $repository = $repositoryManager->getRepository('UserBundle:User');
+
+    /** var array of Acme\UserBundle\Entity\User */
+    $users = $finder->find('bob');
+
+If you use multiple drivers then you can choose which one is aliased to `foq_elastica.manager`
+using the `default_manager` parameter:
+
+    foq_elastica:
+        default_manager: mongodb #defauults to orm
+        clients:
+            default: { host: localhost, port: 9200 }
+        #--
+
+##### Custom Repositories
+
+As well as the default repository you can create a custom repository for an entity and add
+methods for particular searches. These need to extend `FOQ\ElasticaBundle\Repository` to have
+access to the finder:
+
+```
+<?php
+
+namespace Acme\ElasticaBundle\SearchRepository;
+
+use FOQ\ElasticaBundle\Repository;
+
+class UserRepository extends Repository
+{
+    public function findWithCustomQuery($searchText)
+    {
+        // build $query with Elastica objects
+        $this->find($query);
+    }
+}
+```
+
+To use the custom repository specify it in the mapping for the entity:
+
+foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        indexes:
+            website:
+                client: default
+                types:
+                    user:
+                        mappings:
+                            # your mappings
+                        persistence:
+                            driver: orm
+                            model: Application\UserBundle\Entity\User
+                            provider:
+                            finder:
+                            repository: Acme\ElasticaBundle\SearchRepository\UserRepository
+
+Then the custom queries will be available when using the repository returned from the manager:
+
+    /** var FOQ\ElasticaBundle\Manager\RepositoryManager */
+    $repositoryManager = $container->get('foq_elastica.manager');
+
+    /** var FOQ\ElasticaBundle\Repository */
+    $repository = $repositoryManager->getRepository('UserBundle:User');
+
+    /** var array of Acme\UserBundle\Entity\User */
+    $users = $finder->findWithCustomQuery('bob');
+
+Alternatively you can specify the custom repository using an annotation in the entity:
+
+```
+<?php
+
+namespace Application\UserBundle\Entity;
+
+use FOQ\ElasticaBundle\Configuration\Search;
+
+/**
+ * @Search(repositoryClass="Acme\ElasticaBundle\SearchRepository\UserRepository")
+ */
+class User
+{
+
+   //---
+
+}
+```
 
 ### Realtime, selective index update
 
@@ -383,7 +502,7 @@ Any setting can be specified when declaring a type. For example, to enable a cus
 
 ### Overriding the Client class to suppress exceptions
 
-By default, exceptions from the Elastica client library will propogate through
+By default, exceptions from the Elastica client library will propagate through
 the bundle's Client class. For instance, if the elasticsearch server is offline,
 issuing a request will result in an `Elastica_Exception_Client` being thrown.
 Depending on your needs, it may be desirable to suppress these exceptions and
