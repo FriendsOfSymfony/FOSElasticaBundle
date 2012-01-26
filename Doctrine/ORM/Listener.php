@@ -43,5 +43,4 @@ class Listener extends AbstractListener implements EventSubscriber
             $this->removeIfScheduled($entity);
         }
     }
-
 }

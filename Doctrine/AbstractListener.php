@@ -28,19 +28,19 @@ abstract class AbstractListener
      */
     protected $events;
 
-    protected $identifier;
+    protected $esIdentifierField;
     protected $scheduledForRemoval;
 
     /**
      * Constructor
      **/
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $identifier = 'id')
+    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $esIdentifierField = 'id')
     {
         $this->objectPersister     = $objectPersister;
         $this->objectClass         = $objectClass;
         $this->events              = $events;
-        $this->identifier          = $identifier;
-        $this->scheduledForRemoval = new \SplObjectStorage();
+        $this->esIdentifierField   = $esIdentifierField;
+        $this->scheduledForRemoval = array();
     }
 
     /**
@@ -53,15 +53,16 @@ abstract class AbstractListener
 
     protected function scheduleForRemoval($object)
     {
-        $getIdentifierMethod = 'get' . ucfirst($this->identifier);
-        $this->scheduledForRemoval[$object] = $object->$getIdentifierMethod();
+        $getEsIdentifierMethod = 'get' . ucfirst($this->esIdentifierField);
+        $this->scheduledForRemoval[spl_object_hash($object)] = $object->$getEsIdentifierMethod();
     }
 
     protected function removeIfScheduled($object)
     {
-        if (isset($this->scheduledForRemoval[$object])) {
-            $this->objectPersister->deleteById($this->scheduledForRemoval[$object]);
+        $objectHash = spl_object_hash($object);
+        if (isset($this->scheduledForRemoval[$objectHash])) {
+            $this->objectPersister->deleteById($this->scheduledForRemoval[$objectHash]);
+            unset($this->scheduledForRemoval[$objectHash]);
         }
     }
-
 }

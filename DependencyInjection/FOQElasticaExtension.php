@@ -317,8 +317,7 @@ class FOQElasticaExtension extends Extension
         $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
         $listenerDef->replaceArgument(1, $typeConfig['model']);
         $listenerDef->replaceArgument(3, $typeConfig['identifier']);
-        $events = $this->getDoctrineEvents($typeConfig);
-        $listenerDef->replaceArgument(2, $events);
+        $listenerDef->replaceArgument(2, $this->getDoctrineEvents($typeConfig));
         switch ($typeConfig['driver']) {
             case 'orm': $listenerDef->addTag('doctrine.event_subscriber'); break;
             case 'mongodb': $listenerDef->addTag('doctrine.common.event_subscriber'); break;
@@ -336,11 +335,13 @@ class FOQElasticaExtension extends Extension
             'update' => array('postUpdate'),
             'delete' => array('postRemove', 'preRemove')
         );
+
         foreach ($eventMapping as $event => $doctrineEvents) {
             if (isset($typeConfig['listener'][$event]) && $typeConfig['listener'][$event]) {
                 $events = array_merge($events, $doctrineEvents);
             }
         }
+
         return $events;
     }
 

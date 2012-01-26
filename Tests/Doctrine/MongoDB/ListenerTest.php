@@ -6,7 +6,6 @@ use FOQ\ElasticaBundle\Doctrine\MongoDB\Listener;
 
 class Document
 {
-
     public function getId()
     {
         return ListenerTest::DOCUMENT_ID;
@@ -16,7 +15,6 @@ class Document
     {
         return ListenerTest::DOCUMENT_IDENTIFIER;
     }
-
 }
 
 /**
@@ -24,7 +22,6 @@ class Document
  */
 class ListenerTest extends \PHPUnit_Framework_TestCase
 {
-
     const DOCUMENT_ID = 78;
     const DOCUMENT_IDENTIFIER = 826;
 
@@ -129,5 +126,4 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener->preRemove($eventArgsMock);
         $listener->postRemove($eventArgsMock);
     }
-
 }

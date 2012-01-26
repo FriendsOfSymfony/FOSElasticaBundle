@@ -61,13 +61,10 @@ class ObjectPersister implements ObjectPersisterInterface
      * @param object $object
      * @return null
      **/
-    public function deleteOne($object, $id = null)
+    public function deleteOne($object)
     {
-        if (!$id) {
-            $document = $this->transformToElasticaDocument($object);
-            $id = $document->getId();
-        }
-        $this->type->deleteById($id);
+        $document = $this->transformToElasticaDocument($object);
+        $this->type->deleteById($document->getId());
     }
 
     /**
@@ -107,5 +104,4 @@ class ObjectPersister implements ObjectPersisterInterface
     {
         return $this->transformer->transform($object, $this->fields);
     }
-
 }

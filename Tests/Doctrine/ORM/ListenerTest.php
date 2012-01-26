@@ -6,7 +6,6 @@ use FOQ\ElasticaBundle\Doctrine\ORM\Listener;
 
 class Entity
 {
-
     public function getId()
     {
         return ListenerTest::ENTITY_ID;
@@ -16,7 +15,6 @@ class Entity
     {
         return ListenerTest::ENTITY_IDENTIFIER;
     }
-
 }
 
 /**
@@ -24,7 +22,6 @@ class Entity
  */
 class ListenerTest extends \PHPUnit_Framework_TestCase
 {
-
     const ENTITY_ID = 21;
     const ENTITY_IDENTIFIER = 912;
 
@@ -129,5 +126,4 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener->preRemove($eventArgsMock);
         $listener->postRemove($eventArgsMock);
     }
-
 }
