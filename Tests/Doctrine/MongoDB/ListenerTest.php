@@ -4,27 +4,13 @@ namespace FOQ\ElasticaBundle\Tests\Doctrine\MongoDB;
 
 use FOQ\ElasticaBundle\Doctrine\MongoDB\Listener;
 
-class Document
-{
-    public function getId()
-    {
-        return ListenerTest::DOCUMENT_ID;
-    }
-
-    public function getIdentifier()
-    {
-        return ListenerTest::DOCUMENT_IDENTIFIER;
-    }
-}
+class Document{}
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
 class ListenerTest extends \PHPUnit_Framework_TestCase
 {
-    const DOCUMENT_ID = 78;
-    const DOCUMENT_IDENTIFIER = 826;
-
     public function testObjectInsertedOnPersist()
     {
         $persisterMock = $this->getMockBuilder('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface')
@@ -85,16 +71,38 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $documentManagerMock = $this->getMockBuilder('Doctrine\ODM\MongoDB\DocumentManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $metadataMock = $this->getMockBuilder('Doctrine\ODM\MongoDB\Mapping\ClassMetadata')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $objectName = 'FOQ\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
-        $document     = new Document();
+        $document   = new Document();
+        $documentId = 78;
 
         $eventArgsMock->expects($this->any())
             ->method('getDocument')
             ->will($this->returnValue($document));
 
+        $eventArgsMock->expects($this->any())
+            ->method('getDocumentManager')
+            ->will($this->returnValue($documentManagerMock));
+
+        $documentManagerMock->expects($this->any())
+            ->method('getClassMetadata')
+            ->will($this->returnValue($metadataMock));
+
+        $metadataMock->expects($this->any())
+            ->method('getFieldValue')
+            ->with($this->equalTo($document), $this->equalTo('id'))
+            ->will($this->returnValue($documentId));
+
         $persisterMock->expects($this->once())
             ->method('deleteById')
-            ->with($this->equalTo(self::DOCUMENT_ID));
+            ->with($this->equalTo($documentId));
 
         $listener = new Listener($persisterMock, $objectName, array());
         $listener->preRemove($eventArgsMock);
@@ -111,16 +119,39 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $documentManagerMock = $this->getMockBuilder('Doctrine\ODM\MongoDB\DocumentManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $metadataMock = $this->getMockBuilder('Doctrine\ODM\MongoDB\Mapping\ClassMetadata')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $objectName = 'FOQ\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
         $document   = new Document();
+        $documentIdentifier = 826;
+        $identifierField = 'identifier';
 
         $eventArgsMock->expects($this->any())
             ->method('getDocument')
             ->will($this->returnValue($document));
 
+        $eventArgsMock->expects($this->any())
+            ->method('getDocumentManager')
+            ->will($this->returnValue($documentManagerMock));
+
+        $documentManagerMock->expects($this->any())
+            ->method('getClassMetadata')
+            ->will($this->returnValue($metadataMock));
+
+        $metadataMock->expects($this->any())
+            ->method('getFieldValue')
+            ->with($this->equalTo($document), $this->equalTo($identifierField))
+            ->will($this->returnValue($documentIdentifier));
+
         $persisterMock->expects($this->once())
             ->method('deleteById')
-            ->with($this->equalTo(self::DOCUMENT_IDENTIFIER));
+            ->with($this->equalTo($documentIdentifier));
 
         $listener = new Listener($persisterMock, $objectName, array(), 'identifier');
         $listener->preRemove($eventArgsMock);

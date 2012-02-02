@@ -31,7 +31,7 @@ class Listener extends AbstractListener implements EventSubscriber
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof $this->objectClass) {
-            $this->scheduleForRemoval($entity);
+            $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
         }
     }
 

@@ -51,10 +51,11 @@ abstract class AbstractListener
         return $this->events;
     }
 
-    protected function scheduleForRemoval($object)
+    protected function scheduleForRemoval($object, $objectManager)
     {
-        $getEsIdentifierMethod = 'get' . ucfirst($this->esIdentifierField);
-        $this->scheduledForRemoval[spl_object_hash($object)] = $object->$getEsIdentifierMethod();
+        $metadata = $objectManager->getClassMetadata($this->objectClass);
+        $esId = $metadata->getFieldValue($object, $this->esIdentifierField);
+        $this->scheduledForRemoval[spl_object_hash($object)] = $esId;
     }
 
     protected function removeIfScheduled($object)

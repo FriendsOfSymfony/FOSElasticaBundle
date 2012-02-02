@@ -31,7 +31,7 @@ class Listener extends AbstractListener implements EventSubscriber
         $document = $eventArgs->getDocument();
 
         if ($document instanceof $this->objectClass) {
-            $this->scheduleForRemoval($document);
+            $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
         }
     }
 
