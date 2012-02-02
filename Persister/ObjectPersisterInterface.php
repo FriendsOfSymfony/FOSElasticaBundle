@@ -33,6 +33,15 @@ interface ObjectPersisterInterface
     function deleteOne($object);
 
     /**
+     * Deletes one object in the type by id
+     *
+     * @param mixed $id
+     *
+     * @return null
+     **/
+    function deleteById($id);
+
+    /**
      * Inserts an array of objects in the type
      *
      * @param array of domain model objects

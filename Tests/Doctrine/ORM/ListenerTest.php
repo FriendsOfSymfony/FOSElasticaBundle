@@ -11,7 +11,6 @@ class Entity{}
  */
 class ListenerTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testObjectInsertedOnPersist()
     {
         $persisterMock = $this->getMockBuilder('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface')
@@ -33,7 +32,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
             ->method('insertOne')
             ->with($this->equalTo($entity));
 
-        $listener = new Listener($persisterMock, $objectName, array(), null);
+        $listener = new Listener($persisterMock, $objectName, array());
         $listener->postPersist($eventArgsMock);
     }
 
@@ -58,7 +57,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
             ->method('replaceOne')
             ->with($this->equalTo($entity));
 
-        $listener = new Listener($persisterMock, $objectName, array(), null);
+        $listener = new Listener($persisterMock, $objectName, array());
         $listener->postUpdate($eventArgsMock);
     }
 
@@ -72,19 +71,90 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $entityManagerMock = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $metadataMock = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $objectName = 'FOQ\ElasticaBundle\Tests\Doctrine\ORM\Entity';
         $entity     = new Entity;
+        $entityId   = 21;
 
-        $eventArgsMock->expects($this->once())
+        $eventArgsMock->expects($this->any())
             ->method('getEntity')
             ->will($this->returnValue($entity));
 
-        $persisterMock->expects($this->once())
-            ->method('deleteOne')
-            ->with($this->equalTo($entity));
+        $eventArgsMock->expects($this->any())
+            ->method('getEntityManager')
+            ->will($this->returnValue($entityManagerMock));
 
-        $listener = new Listener($persisterMock, $objectName, array(), null);
+        $entityManagerMock->expects($this->any())
+            ->method('getClassMetadata')
+            ->will($this->returnValue($metadataMock));
+
+        $metadataMock->expects($this->any())
+            ->method('getFieldValue')
+            ->with($this->equalTo($entity), $this->equalTo('id'))
+            ->will($this->returnValue($entityId));
+
+        $persisterMock->expects($this->once())
+            ->method('deleteById')
+            ->with($this->equalTo($entityId));
+
+        $listener = new Listener($persisterMock, $objectName, array());
+        $listener->preRemove($eventArgsMock);
         $listener->postRemove($eventArgsMock);
     }
 
+    public function testObjectWithNonStandardIdentifierDeletedOnRemove()
+    {
+        $persisterMock = $this->getMockBuilder('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $eventArgsMock = $this->getMockBuilder('Doctrine\ORM\Event\LifecycleEventArgs')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $entityManagerMock = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $metadataMock = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $objectName       = 'FOQ\ElasticaBundle\Tests\Doctrine\ORM\Entity';
+        $entity           = new Entity;
+        $entityIdentifier = 924;
+        $identifierField  = 'identifier';
+
+        $eventArgsMock->expects($this->any())
+            ->method('getEntity')
+            ->will($this->returnValue($entity));
+
+        $eventArgsMock->expects($this->any())
+            ->method('getEntityManager')
+            ->will($this->returnValue($entityManagerMock));
+
+        $entityManagerMock->expects($this->any())
+            ->method('getClassMetadata')
+            ->will($this->returnValue($metadataMock));
+
+        $metadataMock->expects($this->any())
+            ->method('getFieldValue')
+            ->with($this->equalTo($entity), $this->equalTo($identifierField))
+            ->will($this->returnValue($entityIdentifier));
+
+        $persisterMock->expects($this->once())
+            ->method('deleteById')
+            ->with($this->equalTo($entityIdentifier));
+
+        $listener = new Listener($persisterMock, $objectName, array(), $identifierField);
+        $listener->preRemove($eventArgsMock);
+        $listener->postRemove($eventArgsMock);
+    }
 }
