@@ -68,6 +68,19 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
+     * Deletes one object in the type by id
+     *
+     * @param mixed $id
+     *
+     * @return null
+     **/
+    public function deleteById($id)
+    {
+        $this->type->deleteById($id);
+    }
+
+
+    /**
      * Inserts an array of objects in the type
      *
      * @param array of domain model objects
@@ -91,5 +104,4 @@ class ObjectPersister implements ObjectPersisterInterface
     {
         return $this->transformer->transform($object, $this->fields);
     }
-
 }
