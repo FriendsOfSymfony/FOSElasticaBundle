@@ -26,12 +26,21 @@ class Listener extends AbstractListener implements EventSubscriber
         }
     }
 
+    public function preRemove(LifecycleEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+
+        if ($entity instanceof $this->objectClass) {
+            $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
+        }
+    }
+
     public function postRemove(LifecycleEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof $this->objectClass) {
-            $this->objectPersister->deleteOne($entity);
+            $this->removeIfScheduled($entity);
         }
     }
 }
