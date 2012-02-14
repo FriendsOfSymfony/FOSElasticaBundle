@@ -54,7 +54,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         $identifierGetter = 'get'.ucfirst($this->options['identifier']);
         $identifier = $object->$identifierGetter();
 
-        return new Elastica_Document($identifier, array_filter($array));
+        return new Elastica_Document($identifier, $this->filterOutStrictlyNullValues($array));
     }
 
     /**
@@ -83,4 +83,12 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         return $value;
     }
+
+    protected function filterOutStrictlyNullValues(array $unfiltered)
+    {
+        return array_filter($unfiltered, function($value) {
+            return $value !== null;
+        });
+    }
+
 }
