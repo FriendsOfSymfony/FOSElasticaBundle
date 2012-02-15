@@ -49,12 +49,14 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             if (!method_exists($class, $getter)) {
                 throw new RuntimeException(sprintf('The getter %s::%s does not exist', $class, $getter));
             }
-            $array[$key] = $this->normalizeValue($object->$getter());
+            if ($value = $this->normalizeValue($object->$getter()) !== null) {
+                $array[$key] = $this->normalizeValue($object->$getter());
+            }
         }
         $identifierGetter = 'get'.ucfirst($this->options['identifier']);
         $identifier = $object->$identifierGetter();
 
-        return new Elastica_Document($identifier, $this->filterOutStrictlyNullValues($array));
+        return new Elastica_Document($identifier, $array);
     }
 
     /**
@@ -82,13 +84,6 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         }
 
         return $value;
-    }
-
-    protected function filterOutStrictlyNullValues(array $unfiltered)
-    {
-        return array_filter($unfiltered, function($value) {
-            return $value !== null;
-        });
     }
 
 }
