@@ -6,12 +6,14 @@ use FOQ\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 
 class POPO
 {
-    public $id    = 123;
-    public $name  = 'someName';
-    public $desc  = 'desc';
-    public $float = 7.2;
-    public $bool  = true;
+    public $id        = 123;
+    public $name      = 'someName';
+    public $desc      = 'desc';
+    public $float     = 7.2;
+    public $bool      = true;
+    public $falseBool = false;
     public $date;
+    public $nullValue;
 
     public function __construct()
     {
@@ -54,6 +56,11 @@ class POPO
         return $this->bool;
     }
 
+    public function getFalseBool()
+    {
+        return $this->falseBool;
+    }
+
     public function getFloat()
     {
         return $this->float;
@@ -62,6 +69,11 @@ class POPO
     public function getDate()
     {
         return $this->date;
+    }
+
+    public function getNullValue()
+    {
+        return $this->nullValue;
     }
 
 }
@@ -89,7 +101,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatCanTransformObjectWithCorrectTypes()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-        $document    = $transformer->transform(new POPO(), array('name', 'float', 'bool', 'date'));
+        $document    = $transformer->transform(new POPO(), array('name', 'float', 'bool', 'date', 'falseBool'));
         $data        = $document->getData();
 
         $this->assertInstanceOf('Elastica_Document', $document);
@@ -97,6 +109,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('someName', $data['name']);
         $this->assertEquals(7.2, $data['float']);
         $this->assertEquals(true, $data['bool']);
+        $this->assertEquals(false, $data['falseBool']);
         $expectedDate = new \DateTime('1979-05-05');
         $this->assertEquals($expectedDate->format('U'), $data['date']);
     }
@@ -133,6 +146,17 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
                  'key2'  => array('value2', false, 123, 8.9, $expectedDate->format('U')),
             ), $data['multiArray']
         );
+    }
+
+    public function testThatNullValuesAreFilteredOut()
+    {
+        $transformer = new ModelToElasticaAutoTransformer();
+        $document    = $transformer->transform(new POPO(), array('nullValue'));
+        $data        = $document->getData();
+
+        $this->assertInstanceOf('Elastica_Document', $document);
+        $this->assertEquals(123, $document->getId());
+        $this->assertFalse(array_key_exists('nullValue', $data));
     }
 
     /**
