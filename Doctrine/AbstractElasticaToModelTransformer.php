@@ -2,6 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Doctrine;
 
+use FOQ\ElasticaBundle\HybridResult;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Document;
 
@@ -83,6 +84,18 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         });
 
         return $objects;
+    }
+
+    public function hybridTransform(array $elasticaObjects)
+    {
+        $objects = $this->transform($elasticaObjects);
+
+        $result = array();
+        for ($i = 0; $i < count($elasticaObjects); $i++) {
+            $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
+        }
+
+        return $result;
     }
 
     /**
