@@ -33,14 +33,29 @@ class TransformedFinder implements FinderInterface, PaginatedFinderInterface
      **/
     public function find($query, $limit = null)
     {
+        $results = $this->search($query, $limit);
+
+        return $this->transformer->transform($results);
+    }
+
+    public function findHybrid($query, $limit = null)
+    {
+        $results = $this->search($query, $limit);
+
+        return $this->transformer->hybridTransform($results);
+    }
+
+    protected function search($query, $limit = null)
+    {
         $queryObject = Elastica_Query::create($query);
         if (null !== $limit) {
             $queryObject->setLimit($limit);
         }
         $results = $this->searchable->search($queryObject)->getResults();
 
-        return $this->transformer->transform($results);
+        return $results;
     }
+
 
     /**
      * Gets a paginator wrapping the result of a search

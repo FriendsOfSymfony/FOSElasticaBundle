@@ -16,6 +16,8 @@ interface ElasticaToModelTransformerInterface
      **/
     function transform(array $elasticaObjects);
 
+    function hybridTransform(array $elasticaObjects);
+
     /**
      * Returns the object class used by the transformer.
      *
