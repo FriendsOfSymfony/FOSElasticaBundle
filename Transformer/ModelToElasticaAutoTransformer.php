@@ -49,9 +49,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             if (!method_exists($class, $getter)) {
                 throw new RuntimeException(sprintf('The getter %s::%s does not exist', $class, $getter));
             }
-            if (null !== $value = $this->normalizeValue($object->$getter())) {
-                $array[$key] = $value;
-            }
+            $array[$key] = $this->normalizeValue($object->$getter());
         }
         $identifierGetter = 'get'.ucfirst($this->options['identifier']);
         $identifier = $object->$identifierGetter();

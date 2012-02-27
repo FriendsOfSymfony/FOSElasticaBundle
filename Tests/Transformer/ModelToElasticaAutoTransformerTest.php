@@ -148,15 +148,13 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testThatNullValuesAreFilteredOut()
+    public function testThatNullValuesAreNotFilteredOut()
     {
         $transformer = new ModelToElasticaAutoTransformer();
         $document    = $transformer->transform(new POPO(), array('nullValue'));
         $data        = $document->getData();
 
-        $this->assertInstanceOf('Elastica_Document', $document);
-        $this->assertEquals(123, $document->getId());
-        $this->assertFalse(array_key_exists('nullValue', $data));
+        $this->assertTrue(array_key_exists('nullValue', $data));
     }
 
     /**
@@ -165,6 +163,6 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatCannotTransformObjectWhenGetterDoesNotExists()
     {
         $transformer =  new ModelToElasticaAutoTransformer();
-        $document    = $transformer->transform(new POPO(), array('desc'));
+        $transformer->transform(new POPO(), array('desc'));
     }
 }
