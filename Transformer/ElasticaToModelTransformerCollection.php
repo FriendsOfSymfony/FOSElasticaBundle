@@ -2,6 +2,8 @@
 
 namespace FOQ\ElasticaBundle\Transformer;
 
+use FOQ\ElasticaBundle\HybridResult;
+
 /**
  * Holds a collection of transformers for an index wide transformation.
  *
@@ -54,6 +56,18 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
         });
 
         return $transformed;
+    }
+
+    public function hybridTransform(array $elasticaObjects)
+    {
+        $objects = $this->transform($elasticaObjects);
+
+        $result = array();
+        for ($i = 0; $i < count($elasticaObjects); $i++) {
+            $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
+        }
+
+        return $result;
     }
 
     protected function getTypeToClassMap()
