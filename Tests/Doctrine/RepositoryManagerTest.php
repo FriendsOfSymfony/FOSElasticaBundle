@@ -13,6 +13,12 @@ class Entity{}
  */
 class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+       if (!interface_exists('Doctrine\Common\Persistence\ManagerRegistry')) {
+           $this->markTestSkipped('Doctrine Common is not available.');
+       }
+    }
 
     public function testThatGetRepositoryReturnsDefaultRepository()
     {

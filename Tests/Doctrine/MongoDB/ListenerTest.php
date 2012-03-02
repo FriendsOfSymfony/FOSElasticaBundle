@@ -11,6 +11,13 @@ class Document{}
  */
 class ListenerTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+       if (!class_exists('Doctrine\ODM\MongoDB\DocumentManager')) {
+           $this->markTestSkipped('Doctrine MongoDB ODM is not available.');
+       }
+    }
+
     public function testObjectInsertedOnPersist()
     {
         $persisterMock = $this->getMockBuilder('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface')
