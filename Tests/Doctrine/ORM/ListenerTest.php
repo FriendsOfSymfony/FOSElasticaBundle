@@ -11,6 +11,13 @@ class Entity{}
  */
 class ListenerTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+       if (!class_exists('Doctrine\ORM\EntityManager')) {
+           $this->markTestSkipped('Doctrine ORM is not available.');
+       }
+    }
+
     public function testObjectInsertedOnPersist()
     {
         $persisterMock = $this->getMockBuilder('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface')
