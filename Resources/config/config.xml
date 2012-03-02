@@ -41,7 +41,7 @@
             <argument /> <!-- providers -->
         </service>
 
-        <service id="foq_elastica.reseter" class="FOQ\ElasticaBundle\Reseter">
+        <service id="foq_elastica.resetter" class="FOQ\ElasticaBundle\Resetter">
             <argument /> <!-- index configs -->
         </service>
 

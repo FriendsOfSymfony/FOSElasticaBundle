@@ -48,7 +48,7 @@ class FOQElasticaExtension extends Extension
         }, $indexIdsByName);
 
         $this->loadIndexManager($indexRefsByName, $container);
-        $this->loadReseter($this->indexConfigs, $container);
+        $this->loadResetter($this->indexConfigs, $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
@@ -382,14 +382,14 @@ class FOQElasticaExtension extends Extension
     }
 
     /**
-     * Loads the reseter
+     * Loads the resetter
      *
      * @return null
      **/
-    protected function loadReseter(array $indexConfigs, ContainerBuilder $container)
+    protected function loadResetter(array $indexConfigs, ContainerBuilder $container)
     {
-        $reseterDef = $container->getDefinition('foq_elastica.reseter');
-        $reseterDef->replaceArgument(0, $indexConfigs);
+        $resetterDef = $container->getDefinition('foq_elastica.resetter');
+        $resetterDef->replaceArgument(0, $indexConfigs);
     }
 
     protected function loadDriver(ContainerBuilder $container, $driver)

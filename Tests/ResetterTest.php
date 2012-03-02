@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Reseter;
+namespace FOQ\ElasticaBundle\Tests\Resetter;
 
-use FOQ\ElasticaBundle\Reseter;
+use FOQ\ElasticaBundle\Resetter;
 use FOQ\ElasticaBundle\IndexManager;
 use Elastica_Exception_Response;
 use Elastica_Response;
@@ -41,7 +41,7 @@ class NewIndex
     }
 }
 
-class ReseterTest extends \PHPUnit_Framework_TestCase
+class ResetterTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -61,8 +61,8 @@ class ReseterTest extends \PHPUnit_Framework_TestCase
         $indexConfig['index_2']['config'] = array();
 
 
-        $reseter = new Reseter($indexConfig);
-        $reseter->reset();
+        $resetter = new Resetter($indexConfig);
+        $resetter->reset();
 
         $this->assertTrue($indexConfig['index_1']['index']->created);
         $this->assertTrue($indexConfig['index_2']['index']->created);

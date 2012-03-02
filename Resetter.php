@@ -2,12 +2,10 @@
 
 namespace FOQ\ElasticaBundle;
 
-use Elastica_Exception_Response;
-
 /**
  * Deletes and recreates indexes
  **/
-class Reseter
+class Resetter
 {
 	/**
 	 * Index settings and mappings
