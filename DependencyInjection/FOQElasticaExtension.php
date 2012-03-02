@@ -43,11 +43,11 @@ class FOQElasticaExtension extends Extension
 
         $clientIdsByName = $this->loadClients($config['clients'], $container);
         $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
-        $indexDefsByName = array_map(function($id) use ($container) {
-            return $container->getDefinition($id);
+        $indexRefsByName = array_map(function($id) {
+            return new Reference($id);
         }, $indexIdsByName);
 
-        $this->loadIndexManager($indexDefsByName, $container->getDefinition($indexIdsByName[$config['default_index']]), $container);
+        $this->loadIndexManager($indexRefsByName, $container);
         $this->loadReseter($this->indexConfigs, $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
@@ -371,12 +371,13 @@ class FOQElasticaExtension extends Extension
     /**
      * Loads the index manager
      *
-     * @return null
+     * @param array            $indexRefsByName
+     * @param ContainerBuilder $container
      **/
-    protected function loadIndexManager(array $indexDefs, $defaultIndexId, ContainerBuilder $container)
+    protected function loadIndexManager(array $indexRefsByName, ContainerBuilder $container)
     {
         $managerDef = $container->getDefinition('foq_elastica.index_manager');
-        $managerDef->replaceArgument(0, $indexDefs);
+        $managerDef->replaceArgument(0, $indexRefsByName);
         $managerDef->replaceArgument(1, new Reference('foq_elastica.index'));
     }
 

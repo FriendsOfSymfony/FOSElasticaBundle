@@ -2,17 +2,21 @@
 
 namespace FOQ\ElasticaBundle;
 
-use InvalidArgumentException;
-
 class IndexManager
 {
-    protected $indexes;
-    protected $defaultIndex;
+    protected $indexesByName;
+    protected $defaultIndexName;
 
-    public function __construct(array $indexes, $defaultIndex)
+    /**
+     * Constructor.
+     *
+     * @param array  $indexesByName
+     * @param string $defaultIndexName
+     */
+    public function __construct(array $indexesByName, $defaultIndexName)
     {
-        $this->indexes      = $indexes;
-        $this->defaultIndex = $defaultIndex;
+        $this->indexesByName = $indexesByName;
+        $this->defaultIndexName = $defaultIndexName;
     }
 
     /**
@@ -22,33 +26,36 @@ class IndexManager
      */
     public function getAllIndexes()
     {
-        return $this->indexes;
+        return $this->indexesByName;
     }
 
     /**
      * Gets an index by its name
      *
+     * @param string $name Index to return, or the default index if null
      * @return Elastica_Index
-     **/
-    public function getIndex($name)
+     * @throws InvalidArgumentException if no index exists for the given name
+     */
+    public function getIndex($name = null)
     {
-        if (!$name) {
-            return $this->getDefaultIndex();
-        }
-        if (!isset($this->indexes[$name])) {
-            throw new InvalidArgumentException(sprintf('The index "%s" does not exist', $name));
+        if (null === $name) {
+            $name = $this->defaultIndexName;
         }
 
-        return $this->indexes[$name];
+        if (!isset($this->indexesByName[$name])) {
+            throw new \InvalidArgumentException(sprintf('The index "%s" does not exist', $name));
+        }
+
+        return $this->indexesByName[$name];
     }
 
     /**
      * Gets the default index
      *
      * @return Elastica_Index
-     **/
+     */
     public function getDefaultIndex()
     {
-        return $this->defaultIndex;
+        return $this->getIndex($this->defaultIndexName);
     }
 }
