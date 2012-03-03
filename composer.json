@@ -1,0 +1,23 @@
+{
+    "name": "exercise/elastica-bundle",
+    "type": "symfony-bundle",
+    "description": "Integration of the ruflin/elastica with Symfony2",
+    "keywords": ["elastica", "search", "doctrine2", "extensions", "exercise", "mongodb", "propel"],
+    "homepage": "https://github.com/Exercise/FOQElasticaBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeremy Mikola",
+            "email": "jmikola@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "2.1.*",
+        "ruflin/elastica": "*"
+    },
+    "autoload": {
+        "psr-0": { "FOQ\\ElasticaBundle": "" }
+    },
+    "target-dir": "FOQ/ElasticaBundle"
+}
