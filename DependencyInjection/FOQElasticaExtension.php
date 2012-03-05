@@ -213,8 +213,7 @@ class FOQElasticaExtension extends Extension
         $objectPersisterId            = $this->loadObjectPersister($typeConfig, $typeDef, $container, $indexName, $typeName, $modelToElasticaTransformerId);
 
         if (isset($typeConfig['provider'])) {
-            $providerId = $this->loadTypeProvider($typeConfig, $container, $objectPersisterId, $typeDef, $indexName, $typeName);
-            $container->getDefinition('foq_elastica.populator')->addMethodCall('addProvider', array($providerId, new Reference($providerId)));
+            $this->loadTypeProvider($typeConfig, $container, $objectPersisterId, $typeDef, $indexName, $typeName);
         }
         if (isset($typeConfig['finder'])) {
             $this->loadTypeFinder($typeConfig, $container, $elasticaToModelTransformerId, $typeDef, $indexName, $typeName);
@@ -285,6 +284,7 @@ class FOQElasticaExtension extends Extension
         $abstractProviderId = sprintf('foq_elastica.provider.prototype.%s', $typeConfig['driver']);
         $providerId = sprintf('foq_elastica.provider.%s.%s', $indexName, $typeName);
         $providerDef = new DefinitionDecorator($abstractProviderId);
+        $providerDef->addTag('foq_elastica.provider', array('index' => $indexName, 'type' => $typeName));
         $providerDef->replaceArgument(0, $typeDef);
 
         // Doctrine has a mandatory service as second argument
