@@ -281,26 +281,14 @@ class FOQElasticaExtension extends Extension
         if (isset($typeConfig['provider']['service'])) {
             return $typeConfig['provider']['service'];
         }
-        $abstractProviderId = sprintf('foq_elastica.provider.prototype.%s', $typeConfig['driver']);
+
         $providerId = sprintf('foq_elastica.provider.%s.%s', $indexName, $typeName);
-        $providerDef = new DefinitionDecorator($abstractProviderId);
+        $providerDef = new DefinitionDecorator('foq_elastica.provider.prototype.' . $typeConfig['driver']);
         $providerDef->addTag('foq_elastica.provider', array('index' => $indexName, 'type' => $typeName));
-        $providerDef->replaceArgument(0, $typeDef);
-
-        // Doctrine has a mandatory service as second argument
-        $argPos = ('propel' === $typeConfig['driver']) ? 1 : 2;
-
-        $providerDef->replaceArgument($argPos, new Reference($objectPersisterId));
-        $providerDef->replaceArgument($argPos + 1, $typeConfig['model']);
-
-        $options = array('batch_size' => $typeConfig['provider']['batch_size']);
-
-        if ('propel' !== $typeConfig['driver']) {
-            $options['query_builder_method'] = $typeConfig['provider']['query_builder_method'];
-            $options['clear_object_manager'] = $typeConfig['provider']['clear_object_manager'];
-        }
-
-        $providerDef->replaceArgument($argPos + 2, $options);
+        $providerDef->replaceArgument(0, new Reference($objectPersisterId));
+        $providerDef->replaceArgument(1, $typeConfig['model']);
+        // Propel provider can simply ignore Doctrine-specific options
+        $providerDef->replaceArgument(2, array_diff_key($typeConfig['provider'], array('service' => 1)));
         $container->setDefinition($providerId, $providerDef);
 
         return $providerId;

@@ -6,7 +6,6 @@
     <services>
 
         <service id="foq_elastica.provider.prototype.propel" class="FOQ\ElasticaBundle\Propel\Provider" public="false" abstract="true">
-            <argument /> <!-- type -->
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->

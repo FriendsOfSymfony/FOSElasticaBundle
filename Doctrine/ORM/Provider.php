@@ -2,51 +2,59 @@
 
 namespace FOQ\ElasticaBundle\Doctrine\ORM;
 
+use Doctrine\ORM\QueryBuilder;
 use FOQ\ElasticaBundle\Doctrine\AbstractProvider;
+use FOQ\ElasticaBundle\Exception\InvalidArgumentTypeException;
 
 class Provider extends AbstractProvider
 {
     /**
-     * Counts the objects of a query builder
-     *
-     * @param queryBuilder
-     * @return int
-     **/
+     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
+     */
     protected function countObjects($queryBuilder)
     {
-        $qb = clone $queryBuilder;
-        $qb->select($qb->expr()->count($queryBuilder->getRootAlias()))
-            ->resetDQLPart('orderBy'); // no need to order the query. It does not change the count and make the query less efficient.
+        if (!$queryBuilder instanceof QueryBuilder) {
+            throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ORM\QueryBuilder');
+        }
 
-        return $qb->getQuery()->getSingleScalarResult();
+        /* Clone the query builder before altering its field selection and DQL,
+         * lest we leave the query builder in a bad state for fetchSlice().
+         */
+        $qb = clone $queryBuilder;
+
+        return $qb
+            ->select($qb->expr()->count($queryBuilder->getRootAlias()))
+            // Remove ordering for efficiency; it doesn't affect the count
+            ->resetDQLPart('orderBy')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
-     * Fetches a slice of objects
-     *
-     * @param queryBuilder
-     * @param int limit
-     * @param int offset
-     * @return array of objects
-     **/
+     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
+     */
     protected function fetchSlice($queryBuilder, $limit, $offset)
     {
-        $queryBuilder->setFirstResult($offset);
-        $queryBuilder->setMaxResults($limit);
+        if (!$queryBuilder instanceof QueryBuilder) {
+            throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ORM\QueryBuilder');
+        }
 
-        return $queryBuilder->getQuery()->getResult();
+        return $queryBuilder
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
-     * Creates the query builder used to fetch the documents to index
-     *
-     * @return query builder
-     **/
+     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::createQueryBuilder()
+     */
     protected function createQueryBuilder()
     {
-        return $this->registry
+        return $this->managerRegistry
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass)
+            // ORM query builders require an alias argument
             ->{$this->options['query_builder_method']}('a');
     }
 }
