@@ -3,69 +3,136 @@
 namespace FOQ\ElasticaBundle\Tests\Resetter;
 
 use FOQ\ElasticaBundle\Resetter;
-use FOQ\ElasticaBundle\IndexManager;
-use Elastica_Exception_Response;
-use Elastica_Response;
-
-class Index
-{
-    public $deleted = false;
-    public $created = false;
-
-    public function delete()
-    {
-        $this->deleted = true;
-    }
-
-    public function create()
-    {
-       $this->created = true;
-    }
-}
-
-class NewIndex
-{
-    public $deleted = false;
-    public $created = false;
-
-    public function delete()
-    {
-        $jsonResponse = json_encode(array('index' => 'is_new'));
-
-        throw new Elastica_Exception_Response(new Elastica_Response($jsonResponse));
-    }
-
-    public function create()
-    {
-       $this->created = true;
-    }
-}
 
 class ResetterTest extends \PHPUnit_Framework_TestCase
 {
+    private $indexConfigsByName;
+
     public function setUp()
     {
-        if (!class_exists('Elastica_Exception_Response') || !class_exists('Elastica_Response')) {
-           $this->markTestSkipped('The Elastica library classes are not available');
-        }
+        $this->indexConfigsByName = array(
+            'foo' => array(
+                'index' => $this->getMockElasticaIndex(),
+                'config' => array(
+                    'mappings' => array(
+                        'a' => $this->getMockElasticaTypeMapping(),
+                        'b' => $this->getMockElasticaTypeMapping(),
+                    ),
+                ),
+            ),
+            'bar' => array(
+                'index' => $this->getMockElasticaIndex(),
+                'config' => array(
+                    'mappings' => array(
+                        'a' => $this->getMockElasticaTypeMapping(),
+                        'b' => $this->getMockElasticaTypeMapping(),
+                    ),
+                ),
+            ),
+        );
     }
 
-    public function testThatResetMethodRecreateAllIndexes()
+    public function testResetAllIndexes()
     {
-        $indexConfig = array();
-        $indexConfig['index_1'] = array();
-        $indexConfig['index_1']['index'] = new Index();
-        $indexConfig['index_1']['config'] = array();
-        $indexConfig['index_2'] = array();
-        $indexConfig['index_2']['index'] = new Index();
-        $indexConfig['index_2']['config'] = array();
+        $this->indexConfigsByName['foo']['index']->expects($this->once())
+            ->method('create')
+            ->with($this->indexConfigsByName['foo']['config'], true);
 
+        $this->indexConfigsByName['bar']['index']->expects($this->once())
+            ->method('create')
+            ->with($this->indexConfigsByName['bar']['config'], true);
 
-        $resetter = new Resetter($indexConfig);
-        $resetter->reset();
-
-        $this->assertTrue($indexConfig['index_1']['index']->created);
-        $this->assertTrue($indexConfig['index_2']['index']->created);
+        $resetter = new Resetter($this->indexConfigsByName);
+        $resetter->resetAllIndexes();
     }
 
+    public function testResetIndex()
+    {
+        $this->indexConfigsByName['foo']['index']->expects($this->once())
+            ->method('create')
+            ->with($this->indexConfigsByName['foo']['config'], true);
+
+        $this->indexConfigsByName['bar']['index']->expects($this->never())
+            ->method('create');
+
+        $resetter = new Resetter($this->indexConfigsByName);
+        $resetter->resetIndex('foo');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testResetIndexShouldThrowExceptionForInvalidIndex()
+    {
+        $resetter = new Resetter($this->indexConfigsByName);
+        $resetter->resetIndex('baz');
+    }
+
+    public function testResetIndexType()
+    {
+        $type = $this->getMockElasticaType();
+
+        $this->indexConfigsByName['foo']['index']->expects($this->once())
+            ->method('getType')
+            ->with('a')
+            ->will($this->returnValue($type));
+
+        $type->expects($this->once())
+            ->method('delete');
+
+        $type->expects($this->once())
+            ->method('setMapping')
+            ->with($this->indexConfigsByName['foo']['config']['mappings']['a']);
+
+        $resetter = new Resetter($this->indexConfigsByName);
+        $resetter->resetIndexType('foo', 'a');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testResetIndexTypeShouldThrowExceptionForInvalidIndex()
+    {
+        $resetter = new Resetter($this->indexConfigsByName);
+        $resetter->resetIndexType('baz', 'a');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testResetIndexTypeShouldThrowExceptionForInvalidType()
+    {
+        $resetter = new Resetter($this->indexConfigsByName);
+        $resetter->resetIndexType('foo', 'c');
+    }
+
+    /**
+     * @return Elastica_Index
+     */
+    private function getMockElasticaIndex()
+    {
+        return $this->getMockBuilder('Elastica_Index')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * @return Elastica_Type
+     */
+    private function getMockElasticaType()
+    {
+        return $this->getMockBuilder('Elastica_Type')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * @return Elastica_Type_Mapping
+     */
+    private function getMockElasticaTypeMapping()
+    {
+        return $this->getMockBuilder('Elastica_Type_Mapping')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
 }
