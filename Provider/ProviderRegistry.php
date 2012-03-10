@@ -34,15 +34,17 @@ class ProviderRegistry implements ContainerAwareInterface
     /**
      * Gets all registered providers.
      *
+     * Providers will be indexed by "index/type" strings in the returned array.
+     *
      * @return array of ProviderInterface instances
      */
     public function getAllProviders()
     {
         $providers = array();
 
-        foreach ($this->providers as $indexProviders) {
-            foreach ($indexProviders as $providerId) {
-                $providers[] = $this->container->get($providerId);
+        foreach ($this->providers as $index => $indexProviders) {
+            foreach ($indexProviders as $type => $providerId) {
+                $providers[sprintf('%s/%s', $index, $type)] = $this->container->get($providerId);
             }
         }
 
@@ -52,7 +54,9 @@ class ProviderRegistry implements ContainerAwareInterface
     /**
      * Gets all providers for an index.
      *
-     * @param string $index
+     * Providers will be indexed by "type" strings in the returned array.
+     *
+     * @param string  $index
      * @return array of ProviderInterface instances
      * @throws InvalidArgumentException if no providers were registered for the index
      */
@@ -64,8 +68,8 @@ class ProviderRegistry implements ContainerAwareInterface
 
         $providers = array();
 
-        foreach ($this->providers[$index] as $providerId) {
-            $providers[] = $this->container->get($providerId);
+        foreach ($this->providers[$index] as $type => $providerId) {
+            $providers[$type] = $this->container->get($providerId);
         }
 
         return $providers;

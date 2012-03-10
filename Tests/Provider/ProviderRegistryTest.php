@@ -31,27 +31,32 @@ class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAllProviders()
     {
-        $this->assertEquals(array(
-            'provider.foo.a',
-            'provider.foo.b',
-            'provider.foo.c',
-            'provider.bar.a',
-            'provider.bar.b',
-        ), $this->registry->getAllProviders());
+        $allProviders = array(
+            'foo/a' => 'provider.foo.a',
+            'foo/b' => 'provider.foo.b',
+            'foo/c' => 'provider.foo.c',
+            'bar/a' => 'provider.bar.a',
+            'bar/b' => 'provider.bar.b',
+        );
+
+        $this->assertEquals($allProviders, $this->registry->getAllProviders());
     }
 
     public function testGetIndexProviders()
     {
-        $this->assertEquals(array(
-            'provider.foo.a',
-            'provider.foo.b',
-            'provider.foo.c',
-        ), $this->registry->getIndexProviders('foo'));
+        $fooProviders = array(
+            'a' => 'provider.foo.a',
+            'b' => 'provider.foo.b',
+            'c' => 'provider.foo.c',
+        );
 
-        $this->assertEquals(array(
-            'provider.bar.a',
-            'provider.bar.b',
-        ), $this->registry->getIndexProviders('bar'));
+        $barProviders = array(
+            'a' => 'provider.bar.a',
+            'b' => 'provider.bar.b',
+        );
+
+        $this->assertEquals($fooProviders, $this->registry->getIndexProviders('foo'));
+        $this->assertEquals($barProviders, $this->registry->getIndexProviders('bar'));
     }
 
     /**
