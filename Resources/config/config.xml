@@ -38,10 +38,6 @@
             <argument /> <!-- default index -->
         </service>
 
-        <service id="foq_elastica.populator" class="FOQ\ElasticaBundle\Populator">
-            <argument /> <!-- providers -->
-        </service>
-
         <service id="foq_elastica.resetter" class="FOQ\ElasticaBundle\Resetter">
             <argument /> <!-- index configs -->
         </service>
