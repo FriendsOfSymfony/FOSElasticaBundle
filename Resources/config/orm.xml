@@ -6,7 +6,7 @@
 
     <services>
 
-        <service id="foq_elastica.provider.prototype.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\Provider" public="false" abstract="true">
+        <service id="foq_elastica.provider.prototype.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->

@@ -6,7 +6,7 @@
 
     <services>
 
-        <service id="foq_elastica.provider.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\Provider" public="false" abstract="true">
+        <service id="foq_elastica.provider.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
