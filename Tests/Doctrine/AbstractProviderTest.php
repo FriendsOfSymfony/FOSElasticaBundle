@@ -86,7 +86,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testPopulateShouldNotClearsObjectManager()
+    public function testPopulateShouldNotClearObjectManager()
     {
         $nbObjects = 1;
         $objects = array(1);
