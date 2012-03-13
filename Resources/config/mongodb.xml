@@ -6,12 +6,11 @@
 
     <services>
 
-        <service id="foq_elastica.provider.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\Provider" public="false" abstract="true">
-            <argument /> <!-- type -->
-            <argument type="service" id="doctrine.odm.mongodb" />
+        <service id="foq_elastica.provider.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
+            <argument type="service" id="doctrine.odm.mongodb" />
         </service>
 
         <service id="foq_elastica.listener.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\Listener" public="false" abstract="true">

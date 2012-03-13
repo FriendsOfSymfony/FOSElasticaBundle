@@ -2,8 +2,6 @@
 
 namespace FOQ\ElasticaBundle\Provider;
 
-use Closure;
-
 /**
  * Insert application domain objects into elastica types
  *
@@ -12,9 +10,9 @@ use Closure;
 interface ProviderInterface
 {
     /**
-     * Add all domain objects of a repository to the elastica type
+     * Persists all domain objects to ElasticSearch for this provider.
      *
      * @param Closure $loggerClosure
      */
-    function populate(Closure $loggerClosure);
+    function populate(\Closure $loggerClosure = null);
 }

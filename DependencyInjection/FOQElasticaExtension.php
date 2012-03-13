@@ -43,12 +43,12 @@ class FOQElasticaExtension extends Extension
 
         $clientIdsByName = $this->loadClients($config['clients'], $container);
         $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
-        $indexDefsByName = array_map(function($id) use ($container) {
-            return $container->getDefinition($id);
+        $indexRefsByName = array_map(function($id) {
+            return new Reference($id);
         }, $indexIdsByName);
 
-        $this->loadIndexManager($indexDefsByName, $container->getDefinition($indexIdsByName[$config['default_index']]), $container);
-        $this->loadReseter($this->indexConfigs, $container);
+        $this->loadIndexManager($indexRefsByName, $container);
+        $this->loadResetter($this->indexConfigs, $container);
 
         $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
@@ -213,8 +213,7 @@ class FOQElasticaExtension extends Extension
         $objectPersisterId            = $this->loadObjectPersister($typeConfig, $typeDef, $container, $indexName, $typeName, $modelToElasticaTransformerId);
 
         if (isset($typeConfig['provider'])) {
-            $providerId = $this->loadTypeProvider($typeConfig, $container, $objectPersisterId, $typeDef, $indexName, $typeName);
-            $container->getDefinition('foq_elastica.populator')->addMethodCall('addProvider', array($providerId, new Reference($providerId)));
+            $this->loadTypeProvider($typeConfig, $container, $objectPersisterId, $typeDef, $indexName, $typeName);
         }
         if (isset($typeConfig['finder'])) {
             $this->loadTypeFinder($typeConfig, $container, $elasticaToModelTransformerId, $typeDef, $indexName, $typeName);
@@ -282,25 +281,14 @@ class FOQElasticaExtension extends Extension
         if (isset($typeConfig['provider']['service'])) {
             return $typeConfig['provider']['service'];
         }
-        $abstractProviderId = sprintf('foq_elastica.provider.prototype.%s', $typeConfig['driver']);
+
         $providerId = sprintf('foq_elastica.provider.%s.%s', $indexName, $typeName);
-        $providerDef = new DefinitionDecorator($abstractProviderId);
-        $providerDef->replaceArgument(0, $typeDef);
-
-        // Doctrine has a mandatory service as second argument
-        $argPos = ('propel' === $typeConfig['driver']) ? 1 : 2;
-
-        $providerDef->replaceArgument($argPos, new Reference($objectPersisterId));
-        $providerDef->replaceArgument($argPos + 1, $typeConfig['model']);
-
-        $options = array('batch_size' => $typeConfig['provider']['batch_size']);
-
-        if ('propel' !== $typeConfig['driver']) {
-            $options['query_builder_method'] = $typeConfig['provider']['query_builder_method'];
-            $options['clear_object_manager'] = $typeConfig['provider']['clear_object_manager'];
-        }
-
-        $providerDef->replaceArgument($argPos + 2, $options);
+        $providerDef = new DefinitionDecorator('foq_elastica.provider.prototype.' . $typeConfig['driver']);
+        $providerDef->addTag('foq_elastica.provider', array('index' => $indexName, 'type' => $typeName));
+        $providerDef->replaceArgument(0, new Reference($objectPersisterId));
+        $providerDef->replaceArgument(1, $typeConfig['model']);
+        // Propel provider can simply ignore Doctrine-specific options
+        $providerDef->replaceArgument(2, array_diff_key($typeConfig['provider'], array('service' => 1)));
         $container->setDefinition($providerId, $providerDef);
 
         return $providerId;
@@ -371,24 +359,25 @@ class FOQElasticaExtension extends Extension
     /**
      * Loads the index manager
      *
-     * @return null
+     * @param array            $indexRefsByName
+     * @param ContainerBuilder $container
      **/
-    protected function loadIndexManager(array $indexDefs, $defaultIndexId, ContainerBuilder $container)
+    protected function loadIndexManager(array $indexRefsByName, ContainerBuilder $container)
     {
         $managerDef = $container->getDefinition('foq_elastica.index_manager');
-        $managerDef->replaceArgument(0, $indexDefs);
+        $managerDef->replaceArgument(0, $indexRefsByName);
         $managerDef->replaceArgument(1, new Reference('foq_elastica.index'));
     }
 
     /**
-     * Loads the reseter
+     * Loads the resetter
      *
      * @return null
      **/
-    protected function loadReseter(array $indexConfigs, ContainerBuilder $container)
+    protected function loadResetter(array $indexConfigs, ContainerBuilder $container)
     {
-        $reseterDef = $container->getDefinition('foq_elastica.reseter');
-        $reseterDef->replaceArgument(0, $indexConfigs);
+        $resetterDef = $container->getDefinition('foq_elastica.resetter');
+        $resetterDef->replaceArgument(0, $indexConfigs);
     }
 
     protected function loadDriver(ContainerBuilder $container, $driver)

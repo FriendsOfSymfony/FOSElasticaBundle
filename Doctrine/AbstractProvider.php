@@ -2,106 +2,85 @@
 
 namespace FOQ\ElasticaBundle\Doctrine;
 
-use FOQ\ElasticaBundle\Provider\ProviderInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use FOQ\ElasticaBundle\Persister\ObjectPersisterInterface;
-use Elastica_Type;
-use Elastica_Document;
-use Closure;
-use InvalidArgumentException;
+use FOQ\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
 
-abstract class AbstractProvider implements ProviderInterface
+abstract class AbstractProvider extends BaseAbstractProvider
 {
-    /**
-     * Elastica type
-     *
-     * @var Elastica_Type
-     */
-    protected $type;
+    protected $managerRegistry;
 
     /**
-     * Manager registry
+     * Constructor.
      *
-     * @var object
+     * @param ObjectPersisterInterface $objectPersister
+     * @param string                   $objectClass
+     * @param array                    $options
+     * @param ManagerRegistry          $managerRegistry
      */
-    protected $registry;
-
-    /**
-     * Object persister
-     *
-     * @var ObjectPersisterInterface
-     */
-    protected $objectPersister;
-
-    /**
-     * Provider options
-     *
-     * @var array
-     */
-    protected $options = array(
-        'batch_size'           => 100,
-        'clear_object_manager' => true,
-		'query_builder_method' => 'createQueryBuilder'
-    );
-
-    public function __construct(Elastica_Type $type, $registry, ObjectPersisterInterface $objectPersister, $objectClass, array $options = array())
+    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $options, $managerRegistry)
     {
-        $this->type            = $type;
-        $this->registry        = $registry;
-        $this->objectClass     = $objectClass;
-        $this->objectPersister = $objectPersister;
-        $this->options         = array_merge($this->options, $options);
+        parent::__construct($objectPersister, $objectClass, array_merge(array(
+            'clear_object_manager' => true,
+            'query_builder_method' => 'createQueryBuilder',
+        ), $options));
+
+        $this->managerRegistry = $managerRegistry;
     }
 
     /**
-     * Insert the repository objects in the type index
-     *
-     * @param Closure $loggerClosure
+     * @see FOQ\ElasticaBundle\Provider\ProviderInterface::populate()
      */
-    public function populate(Closure $loggerClosure)
+    public function populate(\Closure $loggerClosure = null)
     {
         $queryBuilder = $this->createQueryBuilder();
-        $nbObjects    = $this->countObjects($queryBuilder);
+        $nbObjects = $this->countObjects($queryBuilder);
 
         for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
+            if ($loggerClosure) {
+                $stepStartTime = microtime(true);
+            }
 
-            $stepStartTime = microtime(true);
             $objects = $this->fetchSlice($queryBuilder, $this->options['batch_size'], $offset);
 
             $this->objectPersister->insertMany($objects);
 
             if ($this->options['clear_object_manager']) {
-                $this->registry->getManagerForClass($this->objectClass)->clear();
+                $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
             }
 
-            $stepNbObjects = count($objects);
-            $stepCount = $stepNbObjects+$offset;
-            $objectsPerSecond = $stepNbObjects / (microtime(true) - $stepStartTime);
-            $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s', 100*$stepCount/$nbObjects, $stepCount, $nbObjects, $objectsPerSecond));
+            if ($loggerClosure) {
+                $stepNbObjects = count($objects);
+                $stepCount = $stepNbObjects + $offset;
+                $percentComplete = 100 * $stepCount / $nbObjects;
+                $objectsPerSecond = $stepNbObjects / (microtime(true) - $stepStartTime);
+                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond));
+            }
         }
     }
 
     /**
-     * Counts the objects of a query builder
+     * Counts objects that would be indexed using the query builder.
      *
-     * @param queryBuilder
-     * @return int
-     **/
+     * @param object $queryBuilder
+     * @return integer
+     */
     protected abstract function countObjects($queryBuilder);
 
     /**
-     * Fetches a slice of objects
+     * Fetches a slice of objects using the query builder.
      *
-     * @param queryBuilder
-     * @param int limit
-     * @param int offset
-     * @return array of objects
-     **/
+     * @param object  $queryBuilder
+     * @param integer $limit
+     * @param integer $offset
+     * @return array
+     */
     protected abstract function fetchSlice($queryBuilder, $limit, $offset);
 
     /**
-     * Creates the query builder used to fetch the documents to index
+     * Creates the query builder, which will be used to fetch objects to index.
      *
-     * @return query builder
-     **/
+     * @return object
+     */
     protected abstract function createQueryBuilder();
 }

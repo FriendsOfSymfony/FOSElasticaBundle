@@ -12,6 +12,7 @@
         <parameter key="foq_elastica.data_collector.class">FOQ\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
         <parameter key="foq_elastica.manager.class">FOQ\ElasticaBundle\Manager\RepositoryManager</parameter>
         <parameter key="foq_elastica.elastica_to_model_transformer.collection.class">FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
+        <parameter key="foq_elastica.provider_registry.class">FOQ\ElasticaBundle\Provider\ProviderRegistry</parameter>
     </parameters>
 
     <services>
@@ -37,11 +38,7 @@
             <argument /> <!-- default index -->
         </service>
 
-        <service id="foq_elastica.populator" class="FOQ\ElasticaBundle\Populator">
-            <argument /> <!-- providers -->
-        </service>
-
-        <service id="foq_elastica.reseter" class="FOQ\ElasticaBundle\Reseter">
+        <service id="foq_elastica.resetter" class="FOQ\ElasticaBundle\Resetter">
             <argument /> <!-- index configs -->
         </service>
 
@@ -66,6 +63,11 @@
             <argument type="collection" /> <!-- options -->
         </service>
 
+        <service id="foq_elastica.provider_registry" class="%foq_elastica.provider_registry.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
     </services>
 
 </container>
