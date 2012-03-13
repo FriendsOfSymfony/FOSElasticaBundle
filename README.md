@@ -203,13 +203,12 @@ You can change this value in the provider configuration.
 ##### Change the document identifier field
 
 By default, ElasticaBundle will use the `id` field of your entities as the elasticsearch document identifier.
-You can change this value in the provider configuration.
+You can change this value in the persistence configuration.
 
                         persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
-                            provider:
-                                identifier: id
+                            identifier: id
 
 #### Manual provider
 
