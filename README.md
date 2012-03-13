@@ -212,10 +212,11 @@ You can change this value in the persistence configuration.
 
 #### Manual provider
 
-Create a service with the tag "foq_elastica.provider".
+Create a service with the tag "foq_elastica.provider" and attributes for the
+index and type for which the service will provide.
 
         <service id="acme.search_provider.user" class="Acme\UserBundle\Search\UserProvider">
-            <tag name="foq_elastica.provider" />
+            <tag name="foq_elastica.provider" index="website" type="user" />
             <argument type="service" id="foq_elastica.index.website.user" />
         </service>
 
@@ -242,9 +243,11 @@ Its class must implement `FOQ\ElasticaBundle\Provider\ProviderInterface`.
              *
              * @param Closure $loggerClosure
              */
-            public function populate(Closure $loggerClosure)
+            public function populate(Closure $loggerClosure = null)
             {
-                $loggerClosure('Indexing users');
+                if ($loggerClosure) {
+                    $loggerClosure('Indexing users');
+                }
 
                 $this->userType->addDocuments(array(
                     array('username' => 'Bob')
