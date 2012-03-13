@@ -22,18 +22,17 @@ class SearchCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setDefinition(array(
-                new InputArgument('type', InputArgument::REQUIRED, 'The type to search in'),
-                new InputArgument('query', InputArgument::REQUIRED, 'The text to search'),
-            ))
+            ->setName('foq:elastica:search')
+            ->addArgument('type', InputArgument::REQUIRED, 'The type to search in')
+            ->addArgument('query', InputArgument::REQUIRED, 'The text to search')
             ->addOption('index', null, InputOption::VALUE_NONE, 'The index to search in')
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'The maximum number of documents to return', 20)
             ->addOption('show-field', null, InputOption::VALUE_REQUIRED, 'Field to show, null uses the first field')
             ->addOption('show-source', null, InputOption::VALUE_NONE, 'Show the documents sources')
             ->addOption('show-id', null, InputOption::VALUE_NONE, 'Show the documents ids')
             ->addOption('explain', null, InputOption::VALUE_NONE, 'Enables explanation for each hit on how its score was computed.')
-            ->setName('foq:elastica:search')
-            ->setDescription('Searches documents in a given type and index');
+            ->setDescription('Searches documents in a given type and index')
+        ;
     }
 
     /**

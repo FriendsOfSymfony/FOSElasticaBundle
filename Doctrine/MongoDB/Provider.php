@@ -2,42 +2,49 @@
 
 namespace FOQ\ElasticaBundle\Doctrine\MongoDB;
 
+use Doctrine\ODM\MongoDB\Query\Builder;
 use FOQ\ElasticaBundle\Doctrine\AbstractProvider;
+use FOQ\ElasticaBundle\Exception\InvalidArgumentTypeException;
 
 class Provider extends AbstractProvider
 {
     /**
-     * Counts the objects of a query builder
-     *
-     * @param queryBuilder
-     * @return int
-     **/
+     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
+     */
     protected function countObjects($queryBuilder)
     {
-        return $queryBuilder->getQuery()->count();
+        if (!$queryBuilder instanceof Builder) {
+            throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ODM\MongoDB\Query\Builder');
+        }
+
+        return $queryBuilder
+            ->getQuery()
+            ->count();
     }
 
     /**
-     * Fetches a slice of objects
-     *
-     * @param queryBuilder
-     * @param int limit
-     * @param int offset
-     * @return array of objects
-     **/
+     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
+     */
     protected function fetchSlice($queryBuilder, $limit, $offset)
     {
-        return $queryBuilder->limit($limit)->skip($offset)->getQuery()->execute()->toArray();
+        if (!$queryBuilder instanceof Builder) {
+            throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ODM\MongoDB\Query\Builder');
+        }
+
+        return $queryBuilder
+            ->limit($limit)
+            ->skip($offset)
+            ->getQuery()
+            ->execute()
+            ->toArray();
     }
 
     /**
-     * Creates the query builder used to fetch the documents to index
-     *
-     * @return query builder
-     **/
+     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::createQueryBuilder()
+     */
     protected function createQueryBuilder()
     {
-        return $this->registry
+        return $this->managerRegistry
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass)
             ->{$this->options['query_builder_method']}();

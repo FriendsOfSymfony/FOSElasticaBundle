@@ -6,37 +6,42 @@ use FOQ\ElasticaBundle\IndexManager;
 
 class IndexManagerTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var FOQ\ElasticaBundle\Tests\IndexManager
-     */
-    private $indexManager = null;
+    private $defaultIndexName;
+    private $indexesByName;
+    private $indexManager;
 
     public function setUp()
     {
-        $this->indexManager = new IndexManager(array('index1' => 'test1', 'index2' => 'test2'), 'defaultIndex');
+        $this->defaultIndexName = 'index2';
+        $this->indexesByName = array(
+            'index1' => 'test1',
+            'index2' => 'test2',
+        );
+        $this->indexManager = new IndexManager($this->indexesByName, $this->defaultIndexName);
     }
 
-    public function testThatWeCanGetAllIndexes()
+    public function testGetAllIndexes()
     {
-        $this->assertEquals(array('index1' => 'test1', 'index2' => 'test2'), $this->indexManager->getAllIndexes());
+        $this->assertEquals($this->indexesByName, $this->indexManager->getAllIndexes());
+    }
+
+    public function testGetIndex()
+    {
+        $this->assertEquals($this->indexesByName['index1'], $this->indexManager->getIndex('index1'));
+        $this->assertEquals($this->indexesByName['index2'], $this->indexManager->getIndex('index2'));
     }
 
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testThatWeCannotGetIndexWhichWasNotSet()
+    public function testGetIndexShouldThrowExceptionForInvalidName()
     {
-        $this->indexManager->getIndex('index8');
+        $this->indexManager->getIndex('index3');
     }
-    
-    public function testThatWeCanGetDefaultIndex()
+
+    public function testGetDefaultIndex()
     {
-        $this->assertEquals('defaultIndex', $this->indexManager->getIndex(false));
-        $this->assertEquals('defaultIndex', $this->indexManager->getDefaultIndex());
-    }
-    
-    public function testThatWeCanGetIndex()
-    {
-        $this->assertEquals('test2', $this->indexManager->getIndex('index2'));
+        $this->assertEquals('test2', $this->indexManager->getIndex());
+        $this->assertEquals('test2', $this->indexManager->getDefaultIndex());
     }
 }
