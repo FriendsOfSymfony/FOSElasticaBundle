@@ -269,12 +269,10 @@ class Configuration
         $node
             ->children()
                 ->arrayNode('excludes')
-                    ->addDefaultsIfNotSet()
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                 ->end()
                 ->arrayNode('includes')
-                    ->addDefaultsIfNotSet()
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                 ->end()
