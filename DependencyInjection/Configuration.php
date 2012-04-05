@@ -167,7 +167,7 @@ class Configuration
                                     ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
                                 ->end()
                             ->end()
-                            ->scalarNode('check_method')->defaultFalse()->end()
+                            ->scalarNode('check_method')->defaultNull()->end()
                             ->scalarNode('model')->end()
                             ->scalarNode('repository')->end()
                             ->scalarNode('identifier')->defaultValue('id')->end()
