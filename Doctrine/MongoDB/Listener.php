@@ -13,7 +13,18 @@ class Listener extends AbstractListener implements EventSubscriber
         $document = $eventArgs->getDocument();
 
         if ($document instanceof $this->objectClass) {
-            $this->objectPersister->insertOne($document);
+            if ($this->isIndexableCallback && !is_callable(array($document, $this->isIndexableCallback))) {
+                if (method_exists($document, $this->isIndexableCallback)) {
+                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->isIndexableCallback);
+                } else {
+                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->isIndexableCallback);
+                }
+                throw new \RuntimeException($exception);
+            }
+
+            if (($this->isIndexableCallback && call_user_func(array($document, $this->isIndexableCallback))) || !$this->isIndexableCallback) {
+                $this->objectPersister->insertOne($document);
+            }
         }
     }
 
@@ -22,7 +33,22 @@ class Listener extends AbstractListener implements EventSubscriber
         $document = $eventArgs->getDocument();
 
         if ($document instanceof $this->objectClass) {
-            $this->objectPersister->replaceOne($document);
+
+            if ($this->isIndexableCallback && !is_callable(array($document, $this->isIndexableCallback))) {
+                if (method_exists($document, $this->isIndexableCallback)) {
+                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->isIndexableCallback);
+                } else {
+                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->isIndexableCallback);
+                }
+                throw new \RuntimeException($exception);
+            }
+
+            if (($this->isIndexableCallback && call_user_func(array($document, $this->isIndexableCallback))) || !$this->isIndexableCallback) {
+                $this->objectPersister->replaceOne($document);
+            } else {
+                $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
+                $this->removeIfScheduled($document);
+            }
         }
     }
 
