@@ -36,7 +36,7 @@ abstract class AbstractListener
     /**
      * Constructor
      **/
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $esIdentifierField = 'id', $checkMethod = false)
+    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $esIdentifierField = 'id', $checkMethod = null)
     {
         $this->objectPersister     = $objectPersister;
         $this->objectClass         = $objectClass;
