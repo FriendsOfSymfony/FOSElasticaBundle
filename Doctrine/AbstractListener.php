@@ -31,16 +31,19 @@ abstract class AbstractListener
     protected $esIdentifierField;
     protected $scheduledForRemoval;
 
+    protected $checkMethod;
+
     /**
      * Constructor
      **/
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $esIdentifierField = 'id')
+    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $esIdentifierField = 'id', $checkMethod = false)
     {
         $this->objectPersister     = $objectPersister;
         $this->objectClass         = $objectClass;
         $this->events              = $events;
         $this->esIdentifierField   = $esIdentifierField;
         $this->scheduledForRemoval = array();
+        $this->checkMethod         = $checkMethod;
     }
 
     /**

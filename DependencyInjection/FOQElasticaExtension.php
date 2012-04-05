@@ -306,6 +306,7 @@ class FOQElasticaExtension extends Extension
         $listenerDef->replaceArgument(1, $typeConfig['model']);
         $listenerDef->replaceArgument(3, $typeConfig['identifier']);
         $listenerDef->replaceArgument(2, $this->getDoctrineEvents($typeConfig));
+        $listenerDef->addArgument(4, $typeConfig['check_method']);
         switch ($typeConfig['driver']) {
             case 'orm': $listenerDef->addTag('doctrine.event_subscriber'); break;
             case 'mongodb': $listenerDef->addTag('doctrine.odm.mongodb.event_subscriber'); break;

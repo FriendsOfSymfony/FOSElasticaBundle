@@ -12,7 +12,7 @@ class Listener extends AbstractListener implements EventSubscriber
     {
         $entity = $eventArgs->getEntity();
 
-        if ($entity instanceof $this->objectClass) {
+        if ($entity instanceof $this->objectClass && ((method_exists($entity, $this->checkMethod) && call_user_func(array($entity, $this->checkMethod))) || !$this->checkMethod)) {
             $this->objectPersister->insertOne($entity);
         }
     }
@@ -21,8 +21,11 @@ class Listener extends AbstractListener implements EventSubscriber
     {
         $entity = $eventArgs->getEntity();
 
-        if ($entity instanceof $this->objectClass) {
+        if ($entity instanceof $this->objectClass && $this->checkMethod && method_exists($entity, $this->checkMethod) && call_user_func(array($entity, $this->checkMethod))) {
             $this->objectPersister->replaceOne($entity);
+        } else if ($entity instanceof $this->objectClass) {
+            $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
+            $this->removeIfScheduled($entity);
         }
     }
 
