@@ -29,7 +29,7 @@ class PopulateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('Reseting indexes');
+        $output->writeln('Resetting indexes');
         $this->getContainer()->get('foq_elastica.reseter')->reset();
 
         $output->writeln('Populating indexes');
