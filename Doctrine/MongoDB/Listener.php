@@ -10,40 +10,40 @@ class Listener extends AbstractListener implements EventSubscriber
 {
     public function postPersist(LifecycleEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
+        $document = $eventArgs->getDocument();
 
-        if ($entity instanceof $this->objectClass && ((method_exists($entity, $this->checkMethod) && call_user_func(array($entity, $this->checkMethod))) || !$this->checkMethod)) {
-            $this->objectPersister->insertOne($entity);
+        if ($document instanceof $this->objectClass && ((method_exists($document, $this->checkMethod) && call_user_func(array($document, $this->checkMethod))) || !$this->checkMethod)) {
+            $this->objectPersister->insertOne($document);
         }
     }
 
     public function postUpdate(LifecycleEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
+        $document = $eventArgs->getDocument();
 
-        if ($entity instanceof $this->objectClass && $this->checkMethod && method_exists($entity, $this->checkMethod) && call_user_func(array($entity, $this->checkMethod))) {
-            $this->objectPersister->replaceOne($entity);
-        } else if ($entity instanceof $this->objectClass) {
-            $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
-            $this->removeIfScheduled($entity);
+        if ($document instanceof $this->objectClass && $this->checkMethod && method_exists($document, $this->checkMethod) && call_user_func(array($document, $this->checkMethod))) {
+            $this->objectPersister->replaceOne($document);
+        } else if ($document instanceof $this->objectClass) {
+            $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
+            $this->removeIfScheduled($document);
         }
     }
 
     public function preRemove(LifecycleEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
+        $document = $eventArgs->getDocument();
 
-        if ($entity instanceof $this->objectClass) {
-            $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
+        if ($document instanceof $this->objectClass) {
+            $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
         }
     }
 
     public function postRemove(LifecycleEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
+        $document = $eventArgs->getDocument();
 
-        if ($entity instanceof $this->objectClass) {
-            $this->removeIfScheduled($entity);
+        if ($document instanceof $this->objectClass) {
+            $this->removeIfScheduled($document);
         }
     }
 }
