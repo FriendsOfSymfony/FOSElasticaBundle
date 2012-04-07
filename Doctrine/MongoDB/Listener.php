@@ -12,8 +12,19 @@ class Listener extends AbstractListener implements EventSubscriber
     {
         $document = $eventArgs->getDocument();
 
-        if ($document instanceof $this->objectClass && ((method_exists($document, $this->checkMethod) && call_user_func(array($document, $this->checkMethod))) || !$this->checkMethod)) {
-            $this->objectPersister->insertOne($document);
+        if ($document instanceof $this->objectClass) {
+            if ($this->checkMethod && !is_callable(array($document, $this->checkMethod))) {
+                if (method_exists($document, $this->checkMethod)) {
+                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->checkMethod);
+                } else {
+                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->checkMethod);
+                }
+                throw new \RuntimeException($exception);
+            }
+
+            if (($this->checkMethod && call_user_func(array($document, $this->checkMethod))) || !$this->checkMethod) {
+                $this->objectPersister->insertOne($document);
+            }
         }
     }
 
@@ -21,11 +32,23 @@ class Listener extends AbstractListener implements EventSubscriber
     {
         $document = $eventArgs->getDocument();
 
-        if ($document instanceof $this->objectClass && $this->checkMethod && method_exists($document, $this->checkMethod) && call_user_func(array($document, $this->checkMethod))) {
-            $this->objectPersister->replaceOne($document);
-        } else if ($document instanceof $this->objectClass) {
-            $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
-            $this->removeIfScheduled($document);
+        if ($document instanceof $this->objectClass) {
+
+            if ($this->checkMethod && !is_callable(array($document, $this->checkMethod))) {
+                if (method_exists($document, $this->checkMethod)) {
+                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->checkMethod);
+                } else {
+                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->checkMethod);
+                }
+                throw new \RuntimeException($exception);
+            }
+
+            if (($this->checkMethod && call_user_func(array($document, $this->checkMethod))) || !$this->checkMethod) {
+                $this->objectPersister->replaceOne($document);
+            } else {
+                $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
+                $this->removeIfScheduled($document);
+            }
         }
     }
 
