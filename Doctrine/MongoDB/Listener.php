@@ -13,16 +13,16 @@ class Listener extends AbstractListener implements EventSubscriber
         $document = $eventArgs->getDocument();
 
         if ($document instanceof $this->objectClass) {
-            if ($this->checkMethod && !is_callable(array($document, $this->checkMethod))) {
-                if (method_exists($document, $this->checkMethod)) {
-                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->checkMethod);
+            if ($this->isIndexableCallback && !is_callable(array($document, $this->isIndexableCallback))) {
+                if (method_exists($document, $this->isIndexableCallback)) {
+                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->isIndexableCallback);
                 } else {
-                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->checkMethod);
+                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->isIndexableCallback);
                 }
                 throw new \RuntimeException($exception);
             }
 
-            if (($this->checkMethod && call_user_func(array($document, $this->checkMethod))) || !$this->checkMethod) {
+            if (($this->isIndexableCallback && call_user_func(array($document, $this->isIndexableCallback))) || !$this->isIndexableCallback) {
                 $this->objectPersister->insertOne($document);
             }
         }
@@ -34,16 +34,16 @@ class Listener extends AbstractListener implements EventSubscriber
 
         if ($document instanceof $this->objectClass) {
 
-            if ($this->checkMethod && !is_callable(array($document, $this->checkMethod))) {
-                if (method_exists($document, $this->checkMethod)) {
-                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->checkMethod);
+            if ($this->isIndexableCallback && !is_callable(array($document, $this->isIndexableCallback))) {
+                if (method_exists($document, $this->isIndexableCallback)) {
+                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->isIndexableCallback);
                 } else {
-                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->checkMethod);
+                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->isIndexableCallback);
                 }
                 throw new \RuntimeException($exception);
             }
 
-            if (($this->checkMethod && call_user_func(array($document, $this->checkMethod))) || !$this->checkMethod) {
+            if (($this->isIndexableCallback && call_user_func(array($document, $this->isIndexableCallback))) || !$this->isIndexableCallback) {
                 $this->objectPersister->replaceOne($document);
             } else {
                 $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());

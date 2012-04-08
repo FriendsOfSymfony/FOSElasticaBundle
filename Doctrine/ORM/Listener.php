@@ -13,16 +13,16 @@ class Listener extends AbstractListener implements EventSubscriber
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof $this->objectClass) {
-            if ($this->checkMethod && !is_callable(array($entity, $this->checkMethod))) {
-                if (method_exists($entity, $this->checkMethod)) {
-                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->checkMethod);
+            if ($this->isIndexableCallback && !is_callable(array($entity, $this->isIndexableCallback))) {
+                if (method_exists($entity, $this->isIndexableCallback)) {
+                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->isIndexableCallback);
                 } else {
-                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->checkMethod);
+                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->isIndexableCallback);
                 }
                 throw new \RuntimeException($exception);
             }
 
-            if (($this->checkMethod && call_user_func(array($entity, $this->checkMethod))) || !$this->checkMethod) {
+            if (($this->isIndexableCallback && call_user_func(array($entity, $this->isIndexableCallback))) || !$this->isIndexableCallback) {
                 $this->objectPersister->insertOne($entity);
             }
         }
@@ -34,16 +34,16 @@ class Listener extends AbstractListener implements EventSubscriber
 
         if ($entity instanceof $this->objectClass) {
 
-            if ($this->checkMethod && !is_callable(array($entity, $this->checkMethod))) {
-                if (method_exists($entity, $this->checkMethod)) {
-                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->checkMethod);
+            if ($this->isIndexableCallback && !is_callable(array($entity, $this->isIndexableCallback))) {
+                if (method_exists($entity, $this->isIndexableCallback)) {
+                    $exception = sprintf('The specified check method %s::%s is out of scope.', $this->objectClass, $this->isIndexableCallback);
                 } else {
-                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->checkMethod);
+                    $exception = sprintf('The specified check method %s::%s does not exist', $this->objectClass, $this->isIndexableCallback);
                 }
                 throw new \RuntimeException($exception);
             }
 
-            if (($this->checkMethod && call_user_func(array($entity, $this->checkMethod))) || !$this->checkMethod) {
+            if (($this->isIndexableCallback && call_user_func(array($entity, $this->isIndexableCallback))) || !$this->isIndexableCallback) {
                 $this->objectPersister->replaceOne($entity);
             } else {
                 $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
