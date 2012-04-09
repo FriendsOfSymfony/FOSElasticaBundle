@@ -43,7 +43,7 @@ abstract class AbstractListener
         $this->events              = $events;
         $this->esIdentifierField   = $esIdentifierField;
         $this->scheduledForRemoval = array();
-        $this->isIndexableCallback         = $isIndexableCallback;
+        $this->isIndexableCallback = $isIndexableCallback;
     }
 
     /**
