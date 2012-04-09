@@ -480,17 +480,17 @@ You can also choose to only listen for some of the events:
 ### Checking an entity method for listener
 
 If you use listeners to update your index, you may need to validate your entities before you put them to the
-index (e.g. is the entity public). You can do this with the check_method config param.
+index (e.g. is the entity public). You can do this with the is_indexable_callback config param.
 
                         persistence:
                             listener:
-                            check_method: "isPublic"
+                            is_indexable_callback: "isPublic"
 
-This is optional, but if you set the check_method and the entity has a method with the specified name, your
+This is optional, but if you set the is_indexable_callback and the entity has a method with the specified name, your
 entities will go into the index only if the method returns true. If you update an entity and the update
 listener is active, it will check the method again, and if it returns true, the entity will be removed from
 the index. If it returns true, it will be updated in the index of course. Delete listener disregards the
-check_method.
+is_indexable_callback.
 
 > **Propel** doesn't support this feature yet.
 
