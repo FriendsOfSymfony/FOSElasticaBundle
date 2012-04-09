@@ -42,12 +42,11 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      **/
     public function transform($object, array $fields)
     {
-        $class = get_class($object);
         $array = array();
         foreach ($fields as $key) {
             $getter = 'get'.ucfirst($key);
-            if (!method_exists($class, $getter)) {
-                throw new RuntimeException(sprintf('The getter %s::%s does not exist', $class, $getter));
+            if (!is_callable(array($object, $getter))) {
+                throw new RuntimeException(sprintf('The method %s::%s is not callable', get_class($object), $getter));
             }
             $array[$key] = $this->normalizeValue($object->$getter());
         }
