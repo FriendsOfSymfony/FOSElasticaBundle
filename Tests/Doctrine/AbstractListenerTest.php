@@ -22,6 +22,24 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
         $listener->postPersist($eventArgs);
     }
 
+    /**
+     * @dataProvider provideIsIndexableCallbacks
+     */
+    public function testNonIndexableObjectNotInsertedOnPersist($isIndexableCallback)
+    {
+        $persister = $this->getMockPersister();
+
+        $entity = new Listener\Entity(1, false);
+        $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+
+        $persister->expects($this->never())
+            ->method('insertOne');
+
+        $listener = $this->createListener($persister, get_class($entity), array());
+        $listener->setIsIndexableCallback($isIndexableCallback);
+        $listener->postPersist($eventArgs);
+    }
+
     public function testObjectReplacedOnUpdate()
     {
         $persister = $this->getMockPersister();
@@ -33,7 +51,44 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
             ->method('replaceOne')
             ->with($entity);
 
+        $persister->expects($this->never())
+            ->method('deleteById');
+
         $listener = $this->createListener($persister, get_class($entity), array());
+        $listener->postUpdate($eventArgs);
+    }
+
+    /**
+     * @dataProvider provideIsIndexableCallbacks
+     */
+    public function testNonIndexableObjectRemovedOnUpdate($isIndexableCallback)
+    {
+        $classMetadata = $this->getMockClassMetadata();
+        $objectManager = $this->getMockObjectManager();
+        $persister = $this->getMockPersister();
+
+        $entity = new Listener\Entity(1, false);
+        $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
+
+        $objectManager->expects($this->any())
+            ->method('getClassMetadata')
+            ->with(get_class($entity))
+            ->will($this->returnValue($classMetadata));
+
+        $classMetadata->expects($this->any())
+            ->method('getFieldValue')
+            ->with($entity, 'id')
+            ->will($this->returnValue($entity->getId()));
+
+        $persister->expects($this->never())
+            ->method('replaceOne');
+
+        $persister->expects($this->once())
+            ->method('deleteById')
+            ->with($entity->getId());
+
+        $listener = $this->createListener($persister, get_class($entity), array());
+        $listener->setIsIndexableCallback($isIndexableCallback);
         $listener->postUpdate($eventArgs);
     }
 
@@ -43,7 +98,7 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
         $objectManager = $this->getMockObjectManager();
         $persister = $this->getMockPersister();
 
-        $entity = new Listener\Entity(78);
+        $entity = new Listener\Entity(1);
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
 
         $objectManager->expects($this->any())
@@ -71,7 +126,7 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
         $objectManager = $this->getMockObjectManager();
         $persister = $this->getMockPersister();
 
-        $entity = new Listener\Entity(826);
+        $entity = new Listener\Entity(1);
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
 
         $objectManager->expects($this->any())
@@ -91,6 +146,34 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
         $listener = $this->createListener($persister, get_class($entity), array(), 'identifier');
         $listener->preRemove($eventArgs);
         $listener->postRemove($eventArgs);
+    }
+
+    /**
+     * @dataProvider provideInvalidIsIndexableCallbacks
+     * @expectedException RuntimeException
+     */
+    public function testInvalidIsIndexableCallbacks($isIndexableCallback)
+    {
+        $listener = $this->createListener($this->getMockPersister(), 'FOQ\ElasticaBundle\Tests\Doctrine\Listener\Entity', array());
+        $listener->setIsIndexableCallback($isIndexableCallback);
+    }
+
+    public function provideInvalidIsIndexableCallbacks()
+    {
+        return array(
+            array('nonexistentEntityMethod'),
+            array(array(new Listener\IndexableDecider(), 'internalMethod')),
+            array(42),
+        );
+    }
+
+    public function provideIsIndexableCallbacks()
+    {
+        return array(
+            array('getIsIndexable'),
+            array(array(new Listener\IndexableDecider(), 'isIndexable')),
+            array(function(Listener\Entity $entity) { return $entity->getIsIndexable(); }),
+        );
     }
 
     abstract protected function getLifecycleEventArgsClass();
@@ -140,14 +223,33 @@ namespace FOQ\ElasticaBundle\Tests\Doctrine\Listener;
 class Entity
 {
     private $id;
+    private $isIndexable;
 
-    public function __construct($id)
+    public function __construct($id, $isIndexable = true)
     {
         $this->id = $id;
+        $this->isIndexable = $isIndexable;
     }
 
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getIsIndexable()
+    {
+        return $this->isIndexable;
+    }
+}
+
+class IndexableDecider
+{
+    public function isIndexable(Entity $entity)
+    {
+        return $entity->getIsIndexable();
+    }
+
+    protected function internalMethod()
+    {
     }
 }
