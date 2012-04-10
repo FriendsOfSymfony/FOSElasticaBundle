@@ -16,6 +16,11 @@
         "symfony/console": "2.1.*",
         "ruflin/elastica": ">=0.19.0"
     },
+    "suggest": {
+        "doctrine/orm": "2.2.*",
+        "doctrine/mongodb-odm": "dev-master",
+        "propel/propel1": "1.6.*"
+    },
     "autoload": {
         "psr-0": { "FOQ\\ElasticaBundle": "" }
     },
