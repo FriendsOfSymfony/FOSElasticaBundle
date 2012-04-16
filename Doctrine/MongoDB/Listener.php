@@ -2,17 +2,16 @@
 
 namespace FOQ\ElasticaBundle\Doctrine\MongoDB;
 
-use FOQ\ElasticaBundle\Doctrine\AbstractListener;
 use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
-use Doctrine\Common\EventSubscriber;
+use FOQ\ElasticaBundle\Doctrine\AbstractListener;
 
-class Listener extends AbstractListener implements EventSubscriber
+class Listener extends AbstractListener
 {
     public function postPersist(LifecycleEventArgs $eventArgs)
     {
         $document = $eventArgs->getDocument();
 
-        if ($document instanceof $this->objectClass) {
+        if ($document instanceof $this->objectClass && $this->isObjectIndexable($document)) {
             $this->objectPersister->insertOne($document);
         }
     }
@@ -22,7 +21,12 @@ class Listener extends AbstractListener implements EventSubscriber
         $document = $eventArgs->getDocument();
 
         if ($document instanceof $this->objectClass) {
-            $this->objectPersister->replaceOne($document);
+            if ($this->isObjectIndexable($document)) {
+                $this->objectPersister->replaceOne($document);
+            } else {
+                $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
+                $this->removeIfScheduled($document);
+            }
         }
     }
 

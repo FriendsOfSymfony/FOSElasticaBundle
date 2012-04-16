@@ -2,17 +2,16 @@
 
 namespace FOQ\ElasticaBundle\Doctrine\ORM;
 
-use FOQ\ElasticaBundle\Doctrine\AbstractListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\Common\EventSubscriber;
+use FOQ\ElasticaBundle\Doctrine\AbstractListener;
 
-class Listener extends AbstractListener implements EventSubscriber
+class Listener extends AbstractListener
 {
     public function postPersist(LifecycleEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
 
-        if ($entity instanceof $this->objectClass) {
+        if ($entity instanceof $this->objectClass && $this->isObjectIndexable($entity)) {
             $this->objectPersister->insertOne($entity);
         }
     }
@@ -22,7 +21,12 @@ class Listener extends AbstractListener implements EventSubscriber
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof $this->objectClass) {
-            $this->objectPersister->replaceOne($entity);
+            if ($this->isObjectIndexable($entity)) {
+                $this->objectPersister->replaceOne($entity);
+            } else {
+                $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
+                $this->removeIfScheduled($entity);
+            }
         }
     }
 
