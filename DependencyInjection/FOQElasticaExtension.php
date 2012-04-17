@@ -167,8 +167,11 @@ class FOQElasticaExtension extends Extension
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
             $container->setDefinition($typeId, $typeDef);
+            if (isset($type['_source'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_source'] = $type['_source'];
+            }
             if (isset($type['mappings'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name] = array('properties' => $type['mappings']);
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
                 $typeName = sprintf('%s/%s', $indexName, $name);
                 $this->typeFields[$typeName] = array_keys($type['mappings']);
             }

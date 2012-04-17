@@ -209,6 +209,7 @@ class Configuration
                     ->end()
                 ->end()
                 ->append($this->getMappingsNode())
+                ->append($this->getSourceNode())
             ->end()
         ;
 
@@ -252,6 +253,30 @@ class Configuration
                             ->end()
                         ->end()
                     ->end()
+                ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * Returns the array node used for "_source".
+     */
+    protected function getSourceNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_source');
+
+        $node
+            ->children()
+                ->arrayNode('excludes')
+                    ->useAttributeAsKey('name')
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('includes')
+                    ->useAttributeAsKey('name')
+                    ->prototype('scalar')->end()
                 ->end()
             ->end()
         ;
