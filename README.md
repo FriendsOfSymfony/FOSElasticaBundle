@@ -477,6 +477,35 @@ You can also choose to only listen for some of the events:
 
 > **Propel** doesn't support this feature yet.
 
+### Checking an entity method for listener
+
+If you use listeners to update your index, you may need to validate your
+entities before you index them (e.g. only index "public" entities). Typically,
+you'll want the listener to be consistent with the provider's query criteria.
+This may be achieved by using the `is_indexable_callback` config parameter:
+
+                        persistence:
+                            listener:
+                                is_indexable_callback: "isPublic"
+
+If `is_indexable_callback` is a string and the entity has a method with the
+specified name, the listener will only index entities for which the method
+returns `true`. Additionally, you may provide a service and method name pair:
+
+                        persistence:
+                            listener:
+                                is_indexable_callback: [ "%custom_service_id%", "isIndexable" ]
+
+In this case, the callback will be the `isIndexable()` method on the specified
+service. This allows you to do more complex validation (e.g. ACL checks).
+
+As you might expect, new entities will only be indexed if the callback returns
+`true`. Additionally, modified entities will be updated or removed from the
+index depending on whether the callback returns `true` or `false`, respectively.
+The delete listener disregards the callback.
+
+> **Propel** doesn't support this feature yet.
+
 ### Advanced elasticsearch configuration
 
 Any setting can be specified when declaring a type. For example, to enable a custom analyzer, you could write:
