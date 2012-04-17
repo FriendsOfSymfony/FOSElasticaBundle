@@ -497,7 +497,8 @@ returns `true`. Additionally, you may provide a service and method name pair:
                                 is_indexable_callback: [ "%custom_service_id%", "isIndexable" ]
 
 In this case, the callback will be the `isIndexable()` method on the specified
-service. This allows you to do more complex validation (e.g. ACL checks).
+service and the object being considered for indexing will be passed as the only
+argument. This allows you to do more complex validation (e.g. ACL checks).
 
 As you might expect, new entities will only be indexed if the callback returns
 `true`. Additionally, modified entities will be updated or removed from the
