@@ -5,6 +5,7 @@ namespace FOQ\ElasticaBundle\Doctrine;
 use FOQ\ElasticaBundle\HybridResult;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Document;
+use RuntimeException;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -89,6 +90,9 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     public function hybridTransform(array $elasticaObjects)
     {
         $objects = $this->transform($elasticaObjects);
+        if (count($objects) < count($elasticaObjects)) {
+            throw new RuntimeException('Cannot transform all Elastica results into objects.');
+        };
 
         $result = array();
         for ($i = 0; $i < count($elasticaObjects); $i++) {
