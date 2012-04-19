@@ -173,7 +173,7 @@ class FOQElasticaExtension extends Extension
             if (isset($type['mappings'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
                 $typeName = sprintf('%s/%s', $indexName, $name);
-                $this->typeFields[$typeName] = array_keys($type['mappings']);
+                $this->typeFields[$typeName] = $type['mappings'];
             }
             if (isset($type['persistence'])) {
                 $this->loadTypePersistenceIntegration($type['persistence'], $container, $typeDef, $indexName, $name);

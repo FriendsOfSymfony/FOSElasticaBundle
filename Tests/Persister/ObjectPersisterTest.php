@@ -50,7 +50,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->once())
             ->method('addDocument');
 
-        $fields = array('name');
+        $fields = array('name' => array());
 
         $objectPersister = new ObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
         $objectPersister->replaceOne(new POPO());
@@ -71,7 +71,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocument');
 
-        $fields = array('name');
+        $fields = array('name' => array());
 
         $objectPersister = new InvalidObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
         $objectPersister->replaceOne(new POPO());
@@ -89,7 +89,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->once())
             ->method('addDocument');
 
-        $fields = array('name');
+        $fields = array('name' => array());
 
         $objectPersister = new ObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
         $objectPersister->insertOne(new POPO());
@@ -110,7 +110,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocument');
 
-        $fields = array('name');
+        $fields = array('name' => array());
 
         $objectPersister = new InvalidObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
         $objectPersister->insertOne(new POPO());
@@ -128,7 +128,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocument');
 
-        $fields = array('name');
+        $fields = array('name' => array());
 
         $objectPersister = new ObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
         $objectPersister->deleteOne(new POPO());
@@ -149,7 +149,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocument');
 
-        $fields = array('name');
+        $fields = array('name' => array());
 
         $objectPersister = new InvalidObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
         $objectPersister->deleteOne(new POPO());
@@ -169,7 +169,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->once())
             ->method('addDocuments');
 
-        $fields = array('name');
+        $fields = array('name' => array());
 
         $objectPersister = new ObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
         $objectPersister->insertMany(array(new POPO(), new POPO()));
@@ -192,7 +192,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocuments');
 
-        $fields = array('name');
+        $fields = array('name' => array());
 
         $objectPersister = new InvalidObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
         $objectPersister->insertMany(array(new POPO(), new POPO()));

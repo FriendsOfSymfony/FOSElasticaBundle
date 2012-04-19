@@ -2,11 +2,6 @@
 
 namespace FOQ\ElasticaBundle\Transformer;
 
-use Elastica_Document;
-use Traversable;
-use ArrayAccess;
-use RuntimeException;
-
 /**
  * Maps Elastica documents with Doctrine objects
  * This mapper assumes an exact match between
@@ -30,7 +25,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     public function __construct(array $options = array())
     {
-        $this->options       = array_merge($this->options, $options);
+        $this->options = array_merge($this->options, $options);
     }
 
     /**
@@ -42,18 +37,26 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      **/
     public function transform($object, array $fields)
     {
-        $array = array();
-        foreach ($fields as $key) {
+        $identifierGetter = 'get' . ucfirst($this->options['identifier']);
+        $identifier = $object->$identifierGetter();
+        $document =  new \Elastica_Document($identifier);
+        foreach ($fields as $key => $mapping) {
             $getter = 'get'.ucfirst($key);
             if (!is_callable(array($object, $getter))) {
-                throw new RuntimeException(sprintf('The method %s::%s is not callable', get_class($object), $getter));
+                throw new \RuntimeException(sprintf('The method %s::%s is not callable', get_class($object), $getter));
             }
-            $array[$key] = $this->normalizeValue($object->$getter());
+            if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
+                $attachment = $object->$getter();
+                if($attachment instanceof \SplFileInfo) {
+                    $document->addFile($key, $attachment->getPathName());
+                } else {
+                    $document->addFileContent($key, $attachment);
+                }
+            } else {
+                $document->add($key, $this->normalizeValue($object->$getter()));
+            }
         }
-        $identifierGetter = 'get'.ucfirst($this->options['identifier']);
-        $identifier = $object->$identifierGetter();
-
-        return new Elastica_Document($identifier, $array);
+        return $document;
     }
 
     /**
@@ -73,7 +76,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             }
         };
 
-        if (is_array($value) || $value instanceof Traversable || $value instanceof ArrayAccess) {
+        if (is_array($value) || $value instanceof \Traversable || $value instanceof \ArrayAccess) {
             $value = is_array($value) ? $value : iterator_to_array($value);
             array_walk_recursive($value, $normalizeValue);
         } else {
