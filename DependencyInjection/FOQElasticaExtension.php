@@ -314,7 +314,16 @@ class FOQElasticaExtension extends Extension
             case 'mongodb': $listenerDef->addTag('doctrine.odm.mongodb.event_subscriber'); break;
         }
         if (isset($typeConfig['listener']['is_indexable_callback'])) {
-            $listenerDef->addMethodCall('setIsIndexableCallback', array($typeConfig['listener']['is_indexable_callback']));
+            $callback = $typeConfig['listener']['is_indexable_callback'];
+
+            if (is_array($callback)) {
+                list($class) = $callback + array(null);
+                if (is_string($class) && !class_exists($class)) {
+                    $callback[0] = new Reference($class);
+                }
+            }
+
+            $listenerDef->addMethodCall('setIsIndexableCallback', array($callback));
         }
         $container->setDefinition($listenerId, $listenerDef);
 
