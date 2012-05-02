@@ -17,10 +17,10 @@ class Client extends Elastica_Client
         $this->logger = $logger;
     }
 
-    public function request($path, $method, $data = array())
+    public function request($path, $method, $data = array(), array $query = array())
     {
         $start = microtime(true);
-        $response = parent::request($path, $method, $data);
+        $response = parent::request($path, $method, $data, $query);
 
         if (null !== $this->logger) {
             $time = microtime(true) - $start;
