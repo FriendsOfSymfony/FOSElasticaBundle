@@ -67,6 +67,28 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
             $result2,
         ), $results);
     }
+
+    public function testTransformOrder()
+    {
+        $this->collectionSetup();
+
+        $document1 = new \Elastica_Document(123, array('data' => 'lots of data'), 'type1');
+        $document2 = new \Elastica_Document(124, array('data' => 'not so much data'), 'type1');
+        $result1 = new POPO(123, 'lots of data');
+        $result2 = new POPO2(124, 'not so much data');
+
+        $this->transformers['type1']->expects($this->once())
+         ->method('transform')
+         ->with(array($document1,$document2))
+         ->will($this->returnValue(array($result1,$result2)));
+
+        $results = $this->collection->transform(array($document1, $document2));
+
+        $this->assertEquals(array(
+            $result1,
+            $result2,
+        ), $results);
+    }
 }
 
 class POPO

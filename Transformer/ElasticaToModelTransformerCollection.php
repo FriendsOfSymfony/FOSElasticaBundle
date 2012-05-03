@@ -32,30 +32,24 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
     public function transform(array $elasticaObjects)
     {
         $sorted = array();
-        $order = array();
         foreach ($elasticaObjects as $object) {
             $sorted[$object->getType()][] = $object;
-            $order[] = sprintf('%s-%s', $object->getType(), $object->getId());
         }
+
+        $identifierGetter = 'get' . ucfirst($this->options['identifier']);
 
         $transformed = array();
         foreach ($sorted AS $type => $objects) {
-            $transformed = array_merge($transformed, $this->transformers[$type]->transform($objects));
+            $transformed[$type] = $this->transformers[$type]->transform($objects);
+            $transformed[$type] = array_combine(array_map(function($o) use ($identifierGetter) {return $o->$identifierGetter();},$transformed[$type]),$transformed[$type]);
         }
 
-        $positions = array_flip($order);
-        $identifierGetter = 'get' . ucfirst($this->options['identifier']);
-        $classMap = $this->getTypeToClassMap();
+        $result = array();
+        foreach ($elasticaObjects as $object) {
+            $result[] = $transformed[$object->getType()][$object->getId()];
+        }
 
-        usort($transformed, function($a, $b) use ($positions, $identifierGetter, $classMap)
-        {
-            $aType = array_search(get_class($a), $classMap);
-            $bType = array_search(get_class($b), $classMap);
-
-            return $positions["{$aType}-{$a->$identifierGetter()}"] > $positions["{$bType}-{$b->$identifierGetter()}"];
-        });
-
-        return $transformed;
+        return $result;
     }
 
     public function hybridTransform(array $elasticaObjects)
