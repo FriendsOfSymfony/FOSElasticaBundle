@@ -45,7 +45,7 @@
             <argument /> <!-- index configs -->
         </service>
 
-        <service id="foq_elastica.object_persister.prototype" class="FOQ\ElasticaBundle\Persister\ObjectPersister" public="false" abstract="true">
+        <service id="foq_elastica.object_persister.prototype" class="FOQ\ElasticaBundle\Persister\ObjectPersister" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
