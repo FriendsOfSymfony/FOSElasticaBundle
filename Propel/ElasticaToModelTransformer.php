@@ -2,6 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Propel;
 
+use FOQ\ElasticaBundle\HybridResult;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Document;
 
@@ -62,13 +63,41 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 
         // sort objects in the order of ids
         $idPos = array_flip($ids);
-        $objects->uasort(function($a, $b) use ($idPos, $identifierGetter) {
-            return $idPos[$a->$identifierGetter()] > $idPos[$b->$identifierGetter()];
-        });
+        if (is_object($objects)) {
+            $objects->uasort(function($a, $b) use ($idPos, $identifierGetter) {
+                return $idPos[$a->$identifierGetter()] > $idPos[$b->$identifierGetter()];
+            });
+        } else {
+            usort($objects, function($a, $b) use ($idPos, $identifierGetter) {
+                return $idPos[$a->$identifierGetter()] > $idPos[$b->$identifierGetter()];
+            });
+        }
 
         return $objects;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function hybridTransform(array $elasticaObjects)
+    {
+        $objects = $this->transform($elasticaObjects);
+
+        $result = array();
+        for ($i = 0; $i < count($elasticaObjects); $i++) {
+            $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getObjectClass()
+    {
+        return $this->objectClass;
+    }
 
     /**
      * Fetch objects for theses identifier values
