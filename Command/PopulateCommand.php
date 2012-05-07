@@ -38,6 +38,7 @@ class PopulateCommand extends ContainerAwareCommand
             ->setName('foq:elastica:populate')
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to repopulate')
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
+            ->addOption('no-reset', null, InputOption::VALUE_NONE, 'If set, the indexes will not been resetted before populating.')
             ->setDescription('Populates search indexes from providers')
         ;
     }
@@ -57,8 +58,9 @@ class PopulateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $index = $input->getOption('index');
-        $type = $input->getOption('type');
+        $index      = $input->getOption('index');
+        $type       = $input->getOption('type');
+        $no_reset   = $input->getOption('no-reset');
 
         if (null === $index && null !== $type) {
             throw new \InvalidArgumentException('Cannot specify type option without an index.');
@@ -66,9 +68,9 @@ class PopulateCommand extends ContainerAwareCommand
 
         if (null !== $index) {
             if (null !== $type) {
-                $this->populateIndexType($output, $index, $type);
+                $this->populateIndexType($output, $index, $type, $no_reset);
             } else {
-                $this->populateIndex($output, $index);
+                $this->populateIndex($output, $index, $no_reset);
             }
         } else {
             $indexes = array_keys($this->indexManager->getAllIndexes());
@@ -84,11 +86,14 @@ class PopulateCommand extends ContainerAwareCommand
      *
      * @param OutputInterface $output
      * @param string          $index
+     * @param boolean         $no_reset
      */
-    private function populateIndex(OutputInterface $output, $index)
+    private function populateIndex(OutputInterface $output, $index, $no_reset = false)
     {
-        $output->writeln(sprintf('Resetting: %s', $index));
-        $this->resetter->resetIndex($index);
+        if ( !$no_reset ) {
+            $output->writeln(sprintf('Resetting: %s', $index));
+            $this->resetter->resetIndex($index);
+        } 
 
         $providers = $this->providerRegistry->getIndexProviders($index);
 
@@ -110,11 +115,14 @@ class PopulateCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @param string          $index
      * @param string          $type
+     * @param boolean         $no_reset
      */
-    private function populateIndexType(OutputInterface $output, $index, $type)
+    private function populateIndexType(OutputInterface $output, $index, $type, $no_reset = false)
     {
-        $output->writeln(sprintf('Resetting: %s/%s', $index, $type));
-        $this->resetter->resetIndexType($index, $type);
+        if ( !$no_reset ) {
+            $output->writeln(sprintf('Resetting: %s/%s', $index, $type));
+            $this->resetter->resetIndexType($index, $type);
+        }
 
         $loggerClosure = function($message) use ($output, $index, $type) {
             $output->writeln(sprintf('Populating: %s/%s, %s', $index, $type, $message));
