@@ -114,17 +114,31 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
             return array();
         }
 
-        $queryClass   = $class.'Query';
-        $filterMethod = 'filterBy'.$this->camelize($identifierField);
-        $query = $queryClass::create()
-            ->$filterMethod($identifierValues)
-            ;
+        $query = $this->createQuery($class, $identifierField, $identifierValues);
 
         if (!$hydrate) {
             return $query->toArray();
         }
 
         return $query->find();
+    }
+
+    /**
+     * Create a query to use in the findByIdentifiers() method.
+     *
+     * @param string $class the model class
+     * @param string $identifierField like 'id'
+     * @param array $identifierValues ids values
+     * @return \ModelCriteria
+     */
+    protected function createQuery($class, $identifierField, array $identifierValues)
+    {
+        $queryClass   = $class.'Query';
+        $filterMethod = 'filterBy'.$this->camelize($identifierField);
+
+        return $queryClass::create()
+            ->$filterMethod($identifierValues)
+            ;
     }
 
     /**
