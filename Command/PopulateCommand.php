@@ -21,7 +21,8 @@ class PopulateCommand extends ContainerAwareCommand
     {
         $this
             ->setName('foq:elastica:populate')
-            ->setDescription('Populates search indexes from providers');
+            ->setDescription('Populates search indexes from providers')
+            ->addOption('no-reset', null, InputOption::VALUE_NONE, 'If set, the indexes will not been resetted before populating.');
     }
 
     /**
@@ -29,8 +30,10 @@ class PopulateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('Resetting indexes');
-        $this->getContainer()->get('foq_elastica.reseter')->reset();
+        if (!$input->getOption('no-reset')) {
+            $output->writeln('Resetting indexes');
+            $this->getContainer()->get('foq_elastica.reseter')->reset();
+        }
 
         $output->writeln('Populating indexes');
         $this->getContainer()->get('foq_elastica.populator')->populate(function($text) use ($output) {
