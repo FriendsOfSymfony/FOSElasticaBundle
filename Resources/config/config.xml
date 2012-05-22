@@ -68,6 +68,10 @@
                 <argument type="service" id="service_container" />
             </call>
         </service>
+
+        <service id="foq_elastica.paginator.subscriber" class="FOQ\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
+            <tag name="knp_paginator.subscriber" />
+        </service>
     </services>
 
 </container>
