@@ -3,6 +3,7 @@
 namespace FOQ\ElasticaBundle\Finder;
 
 use FOQ\ElasticaBundle\Paginator\RawPaginatorAdapter;
+use FOQ\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use Pagerfanta\Pagerfanta;
 use Elastica_Searchable;
 use Elastica_Query;
@@ -42,7 +43,7 @@ class RawFinder implements FinderInterface, PaginatedFinderInterface
 		$queryObject = Elastica_Query::create($query);
 		$paginatorAdapter = $this->createPaginatorAdapter($queryObject);
 
-		return new Pagerfanta($paginatorAdapter);
+		return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
     /**
@@ -51,7 +52,7 @@ class RawFinder implements FinderInterface, PaginatedFinderInterface
      * @param Elastica_Query $query
      * @return RawPaginatorAdapter
      */
-    protected function createPaginatorAdapter(Elastica_Query $query)
+    public function createPaginatorAdapter(Elastica_Query $query)
     {
 		return new RawPaginatorAdapter($this->searchable, $query);
     }
