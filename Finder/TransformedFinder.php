@@ -6,6 +6,7 @@ use FOQ\ElasticaBundle\Finder\FinderInterface;
 use FOQ\ElasticaBundle\Finder\PaginatedFinderInterface;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOQ\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
+use FOQ\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use Pagerfanta\Pagerfanta;
 use Elastica_Searchable;
 use Elastica_Query;
@@ -67,7 +68,7 @@ class TransformedFinder implements FinderInterface, PaginatedFinderInterface
         $queryObject = Elastica_Query::create($query);
         $paginatorAdapter = $this->createPaginatorAdapter($queryObject);
 
-        return new Pagerfanta($paginatorAdapter);
+        return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
     /**
@@ -76,7 +77,7 @@ class TransformedFinder implements FinderInterface, PaginatedFinderInterface
      * @param Elastica_Query $query
      * @return TransformedPaginatorAdapter
      */
-    protected function createPaginatorAdapter(Elastica_Query $query)
+    public function createPaginatorAdapter(Elastica_Query $query)
     {
         return new TransformedPaginatorAdapter($this->searchable, $query, $this->transformer);
     }

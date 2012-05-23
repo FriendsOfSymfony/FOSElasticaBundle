@@ -3,17 +3,16 @@
 namespace FOQ\ElasticaBundle\Paginator;
 
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOQ\ElasticaBundle\Paginator\TransformedPartialResults;
 use Elastica_Searchable;
 use Elastica_Query;
 
 /**
- * Implements the Pagerfanta\Adapter\AdapterInterface Interface for use with Zend\Paginator\Paginator
- *
  * Allows pagination of Elastica_Query
  */
-class TransformedPaginatorAdapter extends AbstractPaginatorAdapter
+class TransformedPaginatorAdapter extends RawPaginatorAdapter
 {
-    protected $transformer;
+    private $transformer;
 
     /**
      * @param Elastica_SearchableInterface the object to search in
@@ -28,12 +27,10 @@ class TransformedPaginatorAdapter extends AbstractPaginatorAdapter
     }
 
     /**
-     * @see Pagerfanta\Adapter\AdapterInterface::getSlice
+     * {@inheritDoc}
      */
-    public function getSlice($offset, $length)
+    public function getResults($offset, $length)
     {
-        $results = $this->getElasticaResults($offset, $length);
-
-        return $this->transformer->transform($results);
+        return new TransformedPartialResults($this->getElasticaResults($offset,$length),$this->transformer);
     }
 }
