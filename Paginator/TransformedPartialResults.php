@@ -26,7 +26,7 @@ class TransformedPartialResults implements PartialResultsInterface
      */
     public function toArray()
     {
-        return $this->transformer->transform($this->resultSet);
+        return $this->transformer->transform($this->resultSet->getResults());
     }
 
     /**
