@@ -168,20 +168,22 @@ class FOQElasticaExtension extends Extension
             $typeDef->setFactoryMethod('getType');
             $container->setDefinition($typeId, $typeDef);
             if (isset($type['_source'])) {
-                
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_source'] = $type['_source'];
             }
             if (isset($type['mappings'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
                 $typeName = sprintf('%s/%s', $indexName, $name);
                 $this->typeFields[$typeName] = array_keys($type['mappings']);
-                unset($type['mappings']);
             }
             if (isset($type['persistence'])) {
                 $this->loadTypePersistenceIntegration($type['persistence'], $container, $typeDef, $indexName, $name);
-                unset($type['persistence']);
             }
-            $this->indexConfigs[$indexName]['config']['mappings'][$name] = array_merge(
-                $this->indexConfigs[$indexName]['config']['mappings'][$name], $type);
+            if (isset($type['index_analyzer'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['index_analyzer'] = $type['index_analyzer'];
+            }
+            if (isset($type['search_analyzer'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['search_analyzer'] = $type['search_analyzer'];
+            }
         }
     }
 
