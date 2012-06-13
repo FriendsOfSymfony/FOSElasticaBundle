@@ -93,7 +93,7 @@ class PopulateCommand extends ContainerAwareCommand
         if ($reset) {
             $output->writeln(sprintf('Resetting: %s', $index));
             $this->resetter->resetIndex($index);
-        } 
+        }
 
         $providers = $this->providerRegistry->getIndexProviders($index);
 
