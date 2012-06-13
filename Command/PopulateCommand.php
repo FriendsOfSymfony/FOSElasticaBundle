@@ -58,9 +58,9 @@ class PopulateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $index      = $input->getOption('index');
-        $type       = $input->getOption('type');
-        $no_reset   = $input->getOption('no-reset');
+        $index  = $input->getOption('index');
+        $type   = $input->getOption('type');
+        $reset  = $input->getOption('no-reset') ? false : true;
 
         if (null === $index && null !== $type) {
             throw new \InvalidArgumentException('Cannot specify type option without an index.');
@@ -68,9 +68,9 @@ class PopulateCommand extends ContainerAwareCommand
 
         if (null !== $index) {
             if (null !== $type) {
-                $this->populateIndexType($output, $index, $type, $no_reset);
+                $this->populateIndexType($output, $index, $type, $reset);
             } else {
-                $this->populateIndex($output, $index, $no_reset);
+                $this->populateIndex($output, $index, $reset);
             }
         } else {
             $indexes = array_keys($this->indexManager->getAllIndexes());
@@ -86,11 +86,11 @@ class PopulateCommand extends ContainerAwareCommand
      *
      * @param OutputInterface $output
      * @param string          $index
-     * @param boolean         $no_reset
+     * @param boolean         $reset
      */
-    private function populateIndex(OutputInterface $output, $index, $no_reset = false)
+    private function populateIndex(OutputInterface $output, $index, $reset)
     {
-        if ( !$no_reset ) {
+        if ($reset) {
             $output->writeln(sprintf('Resetting: %s', $index));
             $this->resetter->resetIndex($index);
         } 
@@ -115,11 +115,11 @@ class PopulateCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @param string          $index
      * @param string          $type
-     * @param boolean         $no_reset
+     * @param boolean         $reset
      */
-    private function populateIndexType(OutputInterface $output, $index, $type, $no_reset = false)
+    private function populateIndexType(OutputInterface $output, $index, $type, $reset)
     {
-        if ( !$no_reset ) {
+        if ($reset) {
             $output->writeln(sprintf('Resetting: %s/%s', $index, $type));
             $this->resetter->resetIndexType($index, $type);
         }
