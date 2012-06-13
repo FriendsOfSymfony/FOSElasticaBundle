@@ -62,7 +62,7 @@ class TransformedFinder implements FinderInterface, PaginatedFinderInterface
      * Gets a paginator wrapping the result of a search
      *
      * @return Pagerfanta
-     **/
+     */
     public function findPaginated($query)
     {
         $queryObject = Elastica_Query::create($query);
@@ -75,6 +75,7 @@ class TransformedFinder implements FinderInterface, PaginatedFinderInterface
      * Creates a paginator adapter for this query
      *
      * @param Elastica_Query $query
+     *
      * @return TransformedPaginatorAdapter
      */
     public function createPaginatorAdapter(Elastica_Query $query)

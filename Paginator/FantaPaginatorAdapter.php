@@ -41,6 +41,6 @@ class FantaPaginatorAdapter implements AdapterInterface
      */
     public function getSlice($offset, $length)
     {
-        return $this->adapter->getResults($offset,$length)->toArray();
+        return $this->adapter->getResults($offset, $length)->toArray();
     }
 }

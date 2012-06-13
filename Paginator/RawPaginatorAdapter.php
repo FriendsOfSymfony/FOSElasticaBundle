@@ -55,7 +55,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getResults($offset, $itemCountPerPage)
     {
-        return new RawPartialResults($this->getElasticaResults($offset,$itemCountPerPage));
+        return new RawPartialResults($this->getElasticaResults($offset, $itemCountPerPage));
     }
 
     /**

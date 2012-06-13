@@ -27,7 +27,7 @@ class RawFinder implements FinderInterface, PaginatedFinderInterface
      **/
     public function find($query, $limit)
     {
-		$queryObject = Elastica_Query::create($query);
+        $queryObject = Elastica_Query::create($query);
         $queryObject->setLimit($limit);
 
         return $this->searchable->search($queryObject)->getResults();
@@ -40,20 +40,21 @@ class RawFinder implements FinderInterface, PaginatedFinderInterface
      **/
     public function findPaginated($query)
     {
-		$queryObject = Elastica_Query::create($query);
-		$paginatorAdapter = $this->createPaginatorAdapter($queryObject);
+        $queryObject = Elastica_Query::create($query);
+        $paginatorAdapter = $this->createPaginatorAdapter($queryObject);
 
-		return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
+        return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
     /**
      * Creates a paginator adapter for this query
      *
      * @param Elastica_Query $query
+     *
      * @return RawPaginatorAdapter
      */
     public function createPaginatorAdapter(Elastica_Query $query)
     {
-		return new RawPaginatorAdapter($this->searchable, $query);
+        return new RawPaginatorAdapter($this->searchable, $query);
     }
 }

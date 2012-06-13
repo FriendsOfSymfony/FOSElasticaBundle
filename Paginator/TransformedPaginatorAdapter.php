@@ -31,6 +31,6 @@ class TransformedPaginatorAdapter extends RawPaginatorAdapter
      */
     public function getResults($offset, $length)
     {
-        return new TransformedPartialResults($this->getElasticaResults($offset,$length),$this->transformer);
+        return new TransformedPartialResults($this->getElasticaResults($offset, $length), $this->transformer);
     }
 }
