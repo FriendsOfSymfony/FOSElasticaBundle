@@ -22,7 +22,6 @@ interface PartialResultsInterface
      */
     function getTotalHits();
 
-
     /**
      * Returns the facets
      *
