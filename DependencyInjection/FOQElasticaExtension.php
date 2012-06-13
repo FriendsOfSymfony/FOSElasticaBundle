@@ -178,6 +178,12 @@ class FOQElasticaExtension extends Extension
             if (isset($type['persistence'])) {
                 $this->loadTypePersistenceIntegration($type['persistence'], $container, $typeDef, $indexName, $name);
             }
+            if (isset($type['index_analyzer'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['index_analyzer'] = $type['index_analyzer'];
+            }
+            if (isset($type['search_analyzer'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['search_analyzer'] = $type['search_analyzer'];
+            }
         }
     }
 
