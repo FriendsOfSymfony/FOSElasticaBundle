@@ -22,7 +22,7 @@ class POPO
 
 class InvalidObjectPersister extends ObjectPersister
 {
-    protected function transformToElasticaDocument($object)
+    public function transformToElasticaDocument($object)
     {
         throw new \BadMethodCallException('Invalid transformation');
     }
