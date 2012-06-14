@@ -76,7 +76,7 @@ class PopulateCommand extends ContainerAwareCommand
             $indexes = array_keys($this->indexManager->getAllIndexes());
 
             foreach ($indexes as $index) {
-                $this->populateIndex($output, $index);
+                $this->populateIndex($output, $index, $reset);
             }
         }
     }
