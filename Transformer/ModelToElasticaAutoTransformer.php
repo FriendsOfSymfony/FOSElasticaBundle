@@ -6,6 +6,7 @@ use Elastica_Document;
 use Traversable;
 use ArrayAccess;
 use RuntimeException;
+use Symfony\Component\Form\Util\PropertyPath;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -44,14 +45,11 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     {
         $array = array();
         foreach ($fields as $key) {
-            $getter = 'get'.ucfirst($key);
-            if (!is_callable(array($object, $getter))) {
-                throw new RuntimeException(sprintf('The method %s::%s is not callable', get_class($object), $getter));
-            }
-            $array[$key] = $this->normalizeValue($object->$getter());
+            $property = new PropertyPath($key);
+            $array[$key] = $this->normalizeValue($property->getValue($object));
         }
-        $identifierGetter = 'get'.ucfirst($this->options['identifier']);
-        $identifier = $object->$identifierGetter();
+        $identifierProperty =  new PropertyPath($this->options['identifier']);
+        $identifier = $identifierProperty->getValue($object);
 
         return new Elastica_Document($identifier, $array);
     }
