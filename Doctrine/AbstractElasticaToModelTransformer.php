@@ -5,6 +5,7 @@ namespace FOQ\ElasticaBundle\Doctrine;
 use FOQ\ElasticaBundle\HybridResult;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Document;
+use Symfony\Component\Form\Util\PropertyPath;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -76,13 +77,13 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
             throw new \RuntimeException('Cannot find corresponding Doctrine objects for all Elastica results.');
         };
 
-        $identifierGetter = 'get'.ucfirst($this->options['identifier']);
+        $identifierProperty =  new PropertyPath($this->options['identifier']);
 
         // sort objects in the order of ids
         $idPos = array_flip($ids);
-        usort($objects, function($a, $b) use ($idPos, $identifierGetter)
+        usort($objects, function($a, $b) use ($idPos, $identifierProperty)
         {
-            return $idPos[$a->$identifierGetter()] > $idPos[$b->$identifierGetter()];
+            return $idPos[$identifierProperty->getValue($a)] > $idPos[$identifierProperty->getValue($b)];
         });
 
         return $objects;

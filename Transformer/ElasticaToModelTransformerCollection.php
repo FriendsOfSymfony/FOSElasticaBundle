@@ -3,6 +3,7 @@
 namespace FOQ\ElasticaBundle\Transformer;
 
 use FOQ\ElasticaBundle\HybridResult;
+use Symfony\Component\Form\Util\PropertyPath;
 
 /**
  * Holds a collection of transformers for an index wide transformation.
@@ -36,12 +37,12 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
             $sorted[$object->getType()][] = $object;
         }
 
-        $identifierGetter = 'get' . ucfirst($this->options['identifier']);
+        $identifierProperty = new PropertyPath($this->options['identifier']);
 
         $transformed = array();
         foreach ($sorted AS $type => $objects) {
             $transformedObjects = $this->transformers[$type]->transform($objects);
-            $transformed[$type] = array_combine(array_map(function($o) use ($identifierGetter) {return $o->$identifierGetter();},$transformedObjects),$transformedObjects);
+            $transformed[$type] = array_combine(array_map(function($o) use ($identifierProperty) {return $identifierProperty->getValue($o);},$transformedObjects),$transformedObjects);
         }
 
         $result = array();

@@ -5,6 +5,7 @@ namespace FOQ\ElasticaBundle\Propel;
 use FOQ\ElasticaBundle\HybridResult;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Document;
+use Symfony\Component\Form\Util\PropertyPath;
 
 /**
  * Maps Elastica documents with Propel objects
@@ -59,17 +60,17 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 
         $objects = $this->findByIdentifiers($this->objectClass, $this->options['identifier'], $ids, $this->options['hydrate']);
 
-        $identifierGetter = 'get'.ucfirst($this->options['identifier']);
+        $identifierProperty =  new PropertyPath($this->options['identifier']);
 
         // sort objects in the order of ids
         $idPos = array_flip($ids);
         if (is_object($objects)) {
-            $objects->uasort(function($a, $b) use ($idPos, $identifierGetter) {
-                return $idPos[$a->$identifierGetter()] > $idPos[$b->$identifierGetter()];
+            $objects->uasort(function($a, $b) use ($idPos, $identifierProperty) {
+                return $idPos[$identifierProperty->getValue($a)] > $idPos[$identifierProperty->getValue($b)];
             });
         } else {
-            usort($objects, function($a, $b) use ($idPos, $identifierGetter) {
-                return $idPos[$a->$identifierGetter()] > $idPos[$b->$identifierGetter()];
+            usort($objects, function($a, $b) use ($idPos, $identifierProperty) {
+                return $idPos[$identifierProperty->getValue($a)] > $idPos[$identifierProperty->getValue($b)];
             });
         }
 
