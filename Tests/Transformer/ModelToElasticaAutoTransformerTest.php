@@ -6,11 +6,11 @@ use FOQ\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 
 class POPO
 {
-    public $id        = 123;
-    public $name      = 'someName';
-    public $desc      = 'desc';
-    public $float     = 7.2;
-    public $bool      = true;
+    public $id = 123;
+    public $name = 'someName';
+    private $desc = 'desc';
+    public $float = 7.2;
+    public $bool = true;
     public $falseBool = false;
     public $date;
     public $nullValue;
@@ -40,7 +40,10 @@ class POPO
 
     public function getArray()
     {
-        return array('key1' => 'value1', 'key2' => 'value2');
+        return array(
+            'key1' => 'value1',
+            'key2' => 'value2'
+        );
     }
 
     public function getMultiArray()
@@ -82,14 +85,15 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-       if (!class_exists('Elastica_Document')) {;
-           $this->markTestSkipped('The Elastica library classes are not available');
-       }
+        if (!class_exists('Elastica_Document')) {
+            ;
+            $this->markTestSkipped('The Elastica library classes are not available');
+        }
     }
 
     public function testThatCanTransformObject()
     {
-        $transformer =  new ModelToElasticaAutoTransformer();
+        $transformer = new ModelToElasticaAutoTransformer();
         $document    = $transformer->transform(new POPO(), array('name'));
         $data        = $document->getData();
 
@@ -116,7 +120,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 
     public function testThatCanTransformObjectWithIteratorValue()
     {
-        $transformer =  new ModelToElasticaAutoTransformer();
+        $transformer = new ModelToElasticaAutoTransformer();
         $document    = $transformer->transform(new POPO(), array('iterator'));
         $data        = $document->getData();
 
@@ -125,11 +129,16 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 
     public function testThatCanTransformObjectWithArrayValue()
     {
-        $transformer =  new ModelToElasticaAutoTransformer();
+        $transformer = new ModelToElasticaAutoTransformer();
         $document    = $transformer->transform(new POPO(), array('array'));
         $data        = $document->getData();
 
-        $this->assertEquals(array('key1' => 'value1', 'key2' => 'value2'), $data['array']);
+        $this->assertEquals(
+            array(
+                 'key1'  => 'value1',
+                 'key2'  => 'value2'
+            ), $data['array']
+        );
     }
 
     public function testThatCanTransformObjectWithMultiDimensionalArrayValue()
@@ -158,11 +167,11 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \Symfony\Component\Form\Exception\PropertyAccessDeniedException
      */
-    public function testThatCannotTransformObjectWhenGetterDoesNotExists()
+    public function testThatCannotTransformObjectWhenGetterDoesNotExistForPrivateMethod()
     {
-        $transformer =  new ModelToElasticaAutoTransformer();
+        $transformer = new ModelToElasticaAutoTransformer();
         $transformer->transform(new POPO(), array('desc'));
     }
 }
