@@ -52,13 +52,13 @@ class Resetter
     {
         $indexConfig = $this->getIndexConfig($indexName);
 
-        if (!isset($indexConfig['config']['mappings'][$typeName])) {
+        if (!isset($indexConfig['config']['mappings'][$typeName]['properties'])) {
             throw new \InvalidArgumentException(sprintf('The mapping for index "%s" and type "%s" does not exist.', $indexName, $typeName));
         }
 
         $type = $indexConfig['index']->getType($typeName);
         $type->delete();
-        $type->setMapping($indexConfig['config']['mappings'][$typeName]);
+        $type->setMapping($indexConfig['config']['mappings'][$typeName]['properties']);
     }
 
     /**
