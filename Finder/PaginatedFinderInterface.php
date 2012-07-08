@@ -2,7 +2,9 @@
 
 namespace FOQ\ElasticaBundle\Finder;
 
+use FOQ\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use Pagerfanta\Pagerfanta;
+use Elastica_Query;
 
 interface PaginatedFinderInterface
 {
@@ -13,4 +15,12 @@ interface PaginatedFinderInterface
 	 * @return Pagerfanta paginated results
 	 */
 	function findPaginated($query);
+
+    /**
+     * Creates a paginator adapter for this query
+     *
+     * @param Elastica_Query $query
+     * @return PaginatorAdapterInterface
+     */
+    function createPaginatorAdapter(Elastica_Query $query);
 }
