@@ -14,10 +14,14 @@ class POPO
     public $falseBool = false;
     public $date;
     public $nullValue;
+    public $file;
+    public $fileContents;
 
     public function __construct()
     {
-        $this->date = new \DateTime('1979-05-05');
+        $this->date         = new \DateTime('1979-05-05');
+        $this->file         = new \SplFileInfo(__DIR__ . '/../fixtures/attachment.odt');
+        $this->fileContents = file_get_contents(__DIR__ . '/../fixtures/attachment.odt');
     }
 
     public function getId()
@@ -79,6 +83,15 @@ class POPO
         return $this->nullValue;
     }
 
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function getFileContents()
+    {
+        return $this->file;
+    }
 }
 
 class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
@@ -94,7 +107,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatCanTransformObject()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-        $document    = $transformer->transform(new POPO(), array('name'));
+        $document    = $transformer->transform(new POPO(), array('name' => array()));
         $data        = $document->getData();
 
         $this->assertInstanceOf('Elastica_Document', $document);
@@ -105,7 +118,15 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatCanTransformObjectWithCorrectTypes()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-        $document    = $transformer->transform(new POPO(), array('name', 'float', 'bool', 'date', 'falseBool'));
+        $document    = $transformer->transform(
+            new POPO(), array(
+                             'name'      => array(),
+                             'float'     => array(),
+                             'bool'      => array(),
+                             'date'      => array(),
+                             'falseBool' => array()
+                        )
+        );
         $data        = $document->getData();
 
         $this->assertInstanceOf('Elastica_Document', $document);
@@ -121,7 +142,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatCanTransformObjectWithIteratorValue()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-        $document    = $transformer->transform(new POPO(), array('iterator'));
+        $document    = $transformer->transform(new POPO(), array('iterator' => array()));
         $data        = $document->getData();
 
         $this->assertEquals(array('value1'), $data['iterator']);
@@ -130,7 +151,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatCanTransformObjectWithArrayValue()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-        $document    = $transformer->transform(new POPO(), array('array'));
+        $document    = $transformer->transform(new POPO(), array('array' => array()));
         $data        = $document->getData();
 
         $this->assertEquals(
@@ -144,7 +165,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatCanTransformObjectWithMultiDimensionalArrayValue()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-        $document    = $transformer->transform(new POPO(), array('multiArray'));
+        $document    = $transformer->transform(new POPO(), array('multiArray' => array()));
         $data        = $document->getData();
 
         $expectedDate = new \DateTime('1978-09-07');
@@ -160,7 +181,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatNullValuesAreNotFilteredOut()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-        $document    = $transformer->transform(new POPO(), array('nullValue'));
+        $document    = $transformer->transform(new POPO(), array('nullValue' => array()));
         $data        = $document->getData();
 
         $this->assertTrue(array_key_exists('nullValue', $data));
@@ -172,6 +193,26 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatCannotTransformObjectWhenGetterDoesNotExistForPrivateMethod()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-        $transformer->transform(new POPO(), array('desc'));
+        $transformer->transform(new POPO(), array('desc' => array()));
+    }
+
+    public function testFileAddedForAttachmentMapping()
+    {
+        $transformer = new ModelToElasticaAutoTransformer();
+        $document    = $transformer->transform(new POPO(), array('file' => array('type' => 'attachment')));
+        $data        = $document->getData();
+
+        $this->assertEquals(base64_encode(file_get_contents(__DIR__ . '/../fixtures/attachment.odt')), $data['file']);
+    }
+
+    public function testFileContentsAddedForAttachmentMapping()
+    {
+        $transformer = new ModelToElasticaAutoTransformer();
+        $document    = $transformer->transform(new POPO(), array('fileContents' => array('type' => 'attachment')));
+        $data        = $document->getData();
+
+        $this->assertEquals(
+            base64_encode(file_get_contents(__DIR__ . '/../fixtures/attachment.odt')), $data['fileContents']
+        );
     }
 }

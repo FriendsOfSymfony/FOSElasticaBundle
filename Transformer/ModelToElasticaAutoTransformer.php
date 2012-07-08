@@ -2,10 +2,6 @@
 
 namespace FOQ\ElasticaBundle\Transformer;
 
-use Elastica_Document;
-use Traversable;
-use ArrayAccess;
-use RuntimeException;
 use Symfony\Component\Form\Util\PropertyPath;
 
 /**
@@ -21,7 +17,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * @var array
      */
     protected $options = array(
-		'identifier' => 'id'
+        'identifier' => 'id'
     );
 
     /**
@@ -31,27 +27,36 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     public function __construct(array $options = array())
     {
-        $this->options       = array_merge($this->options, $options);
+        $this->options = array_merge($this->options, $options);
     }
 
     /**
      * Transforms an object into an elastica object having the required keys
      *
      * @param object $object the object to convert
-     * @param array $fields the keys we want to have in the returned array
+     * @param array  $fields the keys we want to have in the returned array
+     *
      * @return Elastica_Document
      **/
     public function transform($object, array $fields)
     {
-        $array = array();
-        foreach ($fields as $key) {
+        $identifierProperty = new PropertyPath($this->options['identifier']);
+        $identifier         = $identifierProperty->getValue($object);
+        $document           = new \Elastica_Document($identifier);
+        foreach ($fields as $key => $mapping) {
             $property = new PropertyPath($key);
-            $array[$key] = $this->normalizeValue($property->getValue($object));
+            if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
+                $attachment = $property->getValue($object);
+                if ($attachment instanceof \SplFileInfo) {
+                    $document->addFile($key, $attachment->getPathName());
+                } else {
+                    $document->addFileContent($key, $attachment);
+                }
+            } else {
+                $document->add($key, $this->normalizeValue($property->getValue($object)));
+            }
         }
-        $identifierProperty =  new PropertyPath($this->options['identifier']);
-        $identifier = $identifierProperty->getValue($object);
-
-        return new Elastica_Document($identifier, $array);
+        return $document;
     }
 
     /**
@@ -63,15 +68,16 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected function normalizeValue($value)
     {
-        $normalizeValue = function(&$v) {
+        $normalizeValue = function(&$v)
+        {
             if ($v instanceof \DateTime) {
-                $v = (int) $v->format('U');
+                $v = (int)$v->format('U');
             } elseif (!is_scalar($v) && !is_null($v)) {
-                $v = (string) $v;
+                $v = (string)$v;
             }
         };
 
-        if (is_array($value) || $value instanceof Traversable || $value instanceof ArrayAccess) {
+        if (is_array($value) || $value instanceof \Traversable || $value instanceof \ArrayAccess) {
             $value = is_array($value) ? $value : iterator_to_array($value);
             array_walk_recursive($value, $normalizeValue);
         } else {
