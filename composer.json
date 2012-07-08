@@ -25,5 +25,6 @@
     "autoload": {
         "psr-0": { "FOQ\\ElasticaBundle": "" }
     },
+    "minimum-stability":"dev",
     "target-dir": "FOQ/ElasticaBundle"
 }
