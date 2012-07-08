@@ -302,8 +302,15 @@ You can now use the `foq_elastica.finder.website.user` service:
 
 You can even get paginated results!
 
+Pagerfanta:
+
     /** var Pagerfanta\Pagerfanta */
     $userPaginator = $finder->findPaginated('bob');
+
+Knp paginator:
+
+    $paginator = $this->get('knp_paginator');
+    $userPaginator = $paginator->paginate($finder->createPaginatorAdapter('bob'));
 
 ##### Index wide finder
 
