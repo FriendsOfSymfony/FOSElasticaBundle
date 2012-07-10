@@ -72,7 +72,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         $ids = array_map(function($elasticaObject) {
             return $elasticaObject->getId();
         }, $elasticaObjects);
-        $objects = $this->findByIdentifiers($this->objectClass, $this->options['identifier'], $ids, $this->options['hydrate']);
+        $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
         if (count($objects) < count($elasticaObjects)) {
             throw new \RuntimeException('Cannot find corresponding Doctrine objects for all Elastica results.');
         };
@@ -104,11 +104,9 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     /**
      * Fetches objects by theses identifier values
      *
-     * @param string $class the model class
-     * @param string $identifierField like 'id'
      * @param array $identifierValues ids values
      * @param Boolean $hydrate whether or not to hydrate the objects, false returns arrays
      * @return array of objects or arrays
      */
-    protected abstract function findByIdentifiers($class, $identifierField, array $identifierValues, $hydrate);
+    protected abstract function findByIdentifiers(array $identifierValues, $hydrate);
 }

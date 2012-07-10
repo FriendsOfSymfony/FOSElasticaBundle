@@ -58,7 +58,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
             return $elasticaObject->getId();
         }, $elasticaObjects);
 
-        $objects = $this->findByIdentifiers($this->objectClass, $this->options['identifier'], $ids, $this->options['hydrate']);
+        $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
 
         $identifierProperty =  new PropertyPath($this->options['identifier']);
 
@@ -109,13 +109,13 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      * @param Boolean $hydrate whether or not to hydrate the objects, false returns arrays
      * @return array of objects or arrays
      */
-    protected function findByIdentifiers($class, $identifierField, array $identifierValues, $hydrate)
+    protected function findByIdentifiers(array $identifierValues, $hydrate)
     {
         if (empty($identifierValues)) {
             return array();
         }
 
-        $query = $this->createQuery($class, $identifierField, $identifierValues);
+        $query = $this->createQuery($this->objectClass, $this->options['identifier'], $identifierValues);
 
         if (!$hydrate) {
             return $query->toArray();
