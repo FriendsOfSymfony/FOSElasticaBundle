@@ -21,11 +21,11 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * @param Boolean $hydrate whether or not to hydrate the objects, false returns arrays
      * @return array of objects or arrays
      */
-    protected function findByIdentifiers($class, $identifierField, array $identifierValues, $hydrate)
+    protected function findByIdentifiers(array $identifierValues, $hydrate)
     {
         return $this->objectManager
-            ->createQueryBuilder($class)
-            ->field($identifierField)->in($identifierValues)
+            ->createQueryBuilder($this->objectClass)
+            ->field($this->options['identifier'])->in($identifierValues)
             ->hydrate($hydrate)
             ->getQuery()
             ->execute()

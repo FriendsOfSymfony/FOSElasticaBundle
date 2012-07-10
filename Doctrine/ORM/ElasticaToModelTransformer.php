@@ -22,17 +22,17 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * @param Boolean $hydrate whether or not to hydrate the objects, false returns arrays
      * @return array of objects or arrays
      */
-    protected function findByIdentifiers($class, $identifierField, array $identifierValues, $hydrate)
+    protected function findByIdentifiers(array $identifierValues, $hydrate)
     {
         if (empty($identifierValues)) {
             return array();
         }
         $hydrationMode = $hydrate ? Query::HYDRATE_OBJECT : Query::HYDRATE_ARRAY;
         $qb = $this->objectManager
-            ->getRepository($class)
+            ->getRepository($this->objectClass)
             ->createQueryBuilder('o');
         /* @var $qb \Doctrine\ORM\QueryBuilder */
-        $qb->where($qb->expr()->in('o.'.$identifierField, ':values'))
+        $qb->where($qb->expr()->in('o.'.$this->options['identifier'], ':values'))
             ->setParameter('values', $identifierValues);
 
         return $qb->getQuery()->setHydrationMode($hydrationMode)->execute();
