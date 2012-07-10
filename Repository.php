@@ -28,6 +28,11 @@ class Repository
         return $this->finder->findPaginated($query);
     }
 
+    public function findHybrid($query)
+    {
+        return $this->finder->findHybrid($query);
+    }
+
     public function createPaginatorAdapter($query)
     {
         return $this->finder->createPaginatorAdapter($query);
