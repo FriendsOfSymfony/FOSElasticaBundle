@@ -14,7 +14,7 @@ use Elastica_Query;
 /**
  * Finds elastica documents and map them to persisted objects
  */
-class TransformedFinder implements FinderInterface, PaginatedFinderInterface
+class TransformedFinder implements PaginatedFinderInterface
 {
     protected $searchable;
     protected $transformer;

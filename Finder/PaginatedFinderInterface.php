@@ -6,7 +6,7 @@ use FOQ\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use Pagerfanta\Pagerfanta;
 use Elastica_Query;
 
-interface PaginatedFinderInterface
+interface PaginatedFinderInterface extends FinderInterface
 {
     /**
      * Searches for query results and returns them wrapped in a paginator

@@ -11,7 +11,7 @@ use Elastica_Query;
 /**
  * Finds elastica documents
  */
-class RawFinder implements FinderInterface, PaginatedFinderInterface
+class RawFinder implements PaginatedFinderInterface
 {
     protected $searchable;
 
