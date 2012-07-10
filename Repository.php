@@ -2,6 +2,8 @@
 
 namespace FOQ\ElasticaBundle;
 
+use FOQ\ElasticaBundle\Finder\PaginatedFinderInterface;
+
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  *
@@ -12,7 +14,7 @@ class Repository
 {
     protected $finder;
 
-    public function __construct($finder)
+    public function __construct(PaginatedFinderInterface $finder)
     {
         $this->finder = $finder;
     }
