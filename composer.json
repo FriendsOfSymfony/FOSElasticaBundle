@@ -15,7 +15,7 @@
         "symfony/framework-bundle": "2.1.*",
         "symfony/console": "2.1.*",
         "symfony/form": "2.1.*",
-        "ruflin/elastica": ">=0.19.3"
+        "ruflin/elastica": "0.19.3"
     },
     "require-dev":{
         "doctrine/orm":"2.2.*",
