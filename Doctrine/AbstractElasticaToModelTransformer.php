@@ -69,12 +69,6 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      **/
     public function transform(array $elasticaObjects)
     {
-        /*
-        $ids = array_map(function($elasticaObject) {
-            return $elasticaObject->getId();
-        }, $elasticaObjects);
-        */
-
         $ids = $highlights = array();
         foreach ($elasticaObjects as $elasticaObject) {
             $ids[] = $elasticaObject->getId();
