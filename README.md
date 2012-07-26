@@ -572,7 +572,7 @@ class Client extends BaseClient
 }
 ```
 
-<h5>Example of advanced query</h5>
+<h3>Example of advanced query</h3>
 If you would like to perform more advanced query here is an example,
 which is using the snowball stemming algorithm.
 
