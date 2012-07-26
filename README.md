@@ -576,8 +576,8 @@ class Client extends BaseClient
 If you would like to perform more advanced query here is an example,
 which is using the snowball stemming algorithm.
 
-It performs search against Article Entity by using title, keywords
-and category ids.
+It performs search against Article Entity by using title, tags
+and categories.
 
 Note: When performing query with Elastica_Query_Terms considering the following:
 Works: 'somestring'
