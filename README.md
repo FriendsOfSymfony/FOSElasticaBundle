@@ -572,17 +572,22 @@ class Client extends BaseClient
 }
 ```
 
+
 <h3>Example of advanced query</h3>
 If you would like to perform more advanced query here is an example,
 which is using the snowball stemming algorithm.
 
 It performs search against Article Entity by using title, tags
-and categories.
+and categoryIds. It will return results if the search string is
+found in either title or tags fields only in the specified 
+categoryIds.
 
 Note: When performing query with Elastica_Query_Terms considering the following:
+
+```
 Works: 'somestring'
 Doesn't work: 'some string', 'some-string', 'SomeString'
-
+```
 
 ```php
 
@@ -599,7 +604,7 @@ $tagsQuery->setTerms('tags', array('tag1', 'tag2'));
 $boolQuery->addShould($tagsQuery);
 
 $categoryQuery = new \Elastica_Query_Terms();
-$categoryQuery->setTerms('categoryId', array('1', '2', '3')); 	
+$categoryQuery->setTerms('categoryIds', array('1', '2', '3'));  
 $boolQuery->addMust($categoryQuery);	
 
 $data = $finder->find($boolQuery);
@@ -609,7 +614,7 @@ $data = $finder->find($boolQuery);
 Configuration:
 
 
-```php
+```
 foq_elastica:
     clients:
         default: { host: localhost, port: 9200 }  
@@ -626,8 +631,8 @@ foq_elastica:
                 article:
                     mappings:
                         title: { boost: 10, analyzer: my_analyzer }
-                        tags: { boost: 5 }
-                        categoryId:
+                        tags:  
+                        categoryIds:
                     persistence:
                         driver: orm  
                         model: Acme\DemoBundle\Entity\Article
