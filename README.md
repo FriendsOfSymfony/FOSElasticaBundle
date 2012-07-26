@@ -571,3 +571,67 @@ class Client extends BaseClient
     }
 }
 ```
+
+<h5>Example of advanced query</h5>
+If you would like to perform more advanced query here is an example,
+which is using the snowball stemming algorithm.
+
+It performs search against Article Entity by using title, keywords
+and category ids.
+
+Note: When performing query with Elastica_Query_Terms considering the following:
+Works: 'somestring'
+Doesn't work: 'some string', 'some-string', 'SomeString'
+
+
+```php
+
+$finder = $this->container->get('foq_elastica.finder.website.article');
+$boolQuery = new \Elastica_Query_Bool();
+
+$fieldQuery = new \Elastica_Query_Text();
+$fieldQuery->setFieldQuery('title', 'I am a title string');
+$fieldQuery->setFieldParam('title', 'analyzer', 'my_analyzer');
+$boolQuery->addShould($fieldQuery);
+
+$tagsQuery = new \Elastica_Query_Terms();
+$tagsQuery->setTerms('tags', array('tag1', 'tag2'));
+$boolQuery->addShould($tagsQuery);
+
+$categoryQuery = new \Elastica_Query_Terms();
+$categoryQuery->setTerms('categoryId', array('1', '2', '3')); 	
+$boolQuery->addMust($categoryQuery);	
+
+$data = $finder->find($boolQuery);
+
+```
+
+Configuration:
+
+
+```php
+foq_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }  
+    indexes:
+        site:
+            settings:
+                index:
+                  analysis:
+                        analyzer:
+                            my_analyzer:
+                                type: snowball
+                                language: English
+            types:
+                article:
+                    mappings:
+                        title: { boost: 10, analyzer: my_analyzer }
+                        tags: { boost: 5 }
+                        categoryId:
+                    persistence:
+                        driver: orm  
+                        model: Acme\DemoBundle\Entity\Article
+                        provider:
+                        finder:
+```
+
