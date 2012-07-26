@@ -573,12 +573,11 @@ class Client extends BaseClient
 ```
 
 
-<h3>Example of advanced query</h3>
-If you would like to perform more advanced query here is an example,
-which is using the snowball stemming algorithm.
+<h3>Example of Advanced Query</h3>
+If you would like to perform more advanced query here is an example, which is using the snowball stemming algorithm.
 
 It performs search against Article Entity by using title, tags
-and categoryIds. It will return results if the search string is
+and categoryIds and return results if the search string is
 found in either title or tags fields only in the specified 
 categoryIds.
 
@@ -639,4 +638,5 @@ foq_elastica:
                         provider:
                         finder:
 ```
+
 
