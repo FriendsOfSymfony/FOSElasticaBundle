@@ -72,14 +72,11 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * Creates a paginator adapter for this query
-     *
-     * @param Elastica_Query $query
-     *
-     * @return TransformedPaginatorAdapter
+     * {@inheritdoc}
      */
-    public function createPaginatorAdapter(Elastica_Query $query)
+    public function createPaginatorAdapter($query)
     {
+        $query = Elastica_Query::create($query);
         return new TransformedPaginatorAdapter($this->searchable, $query, $this->transformer);
     }
 }

@@ -19,8 +19,8 @@ interface PaginatedFinderInterface extends FinderInterface
     /**
      * Creates a paginator adapter for this query
      *
-     * @param Elastica_Query $query
+     * @param mixed $query
      * @return PaginatorAdapterInterface
      */
-    function createPaginatorAdapter(Elastica_Query $query);
+    function createPaginatorAdapter($query);
 }

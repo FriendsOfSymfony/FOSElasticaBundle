@@ -47,14 +47,11 @@ class RawFinder implements PaginatedFinderInterface
     }
 
     /**
-     * Creates a paginator adapter for this query
-     *
-     * @param Elastica_Query $query
-     *
-     * @return RawPaginatorAdapter
+     * {@inheritdoc}
      */
-    public function createPaginatorAdapter(Elastica_Query $query)
+    public function createPaginatorAdapter($query)
     {
+        $query = Elastica_Query::create($query);
         return new RawPaginatorAdapter($this->searchable, $query);
     }
 }
