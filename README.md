@@ -208,8 +208,7 @@ You can change this value in the provider configuration.
                         persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
-                            provider:
-                                identifier: id
+                            identifier: id
 
 #### Manual provider
 
