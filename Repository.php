@@ -18,9 +18,9 @@ class Repository
     }
 
 
-    public function find($query)
+    public function find($query, $limit=null)
     {
-        return $this->finder->find($query);
+        return $this->finder->find($query, $limit);
     }
 
     public function findPaginated($query)
