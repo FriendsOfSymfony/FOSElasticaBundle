@@ -13,7 +13,7 @@ before_script:
   - sh -c "cd mongo-${MONGO_VERSION} && phpize && ./configure && make && sudo make install"
   - echo "extension=mongo.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - wget -nc http://getcomposer.org/composer.phar
-  - php composer.phar install --dev
+  - php composer.phar install
 
 script: phpunit
 
