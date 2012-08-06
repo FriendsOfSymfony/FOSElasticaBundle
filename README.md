@@ -247,9 +247,9 @@ Its class must implement `FOQ\ElasticaBundle\Provider\ProviderInterface`.
             {
                 $loggerClosure('Indexing users');
 
-                $this->userType->addDocuments(array(
-                    array('username' => 'Bob')
-                ));
+                $document = new \Elastica_Document();
+                $document->setData(array('username' => 'Bob'));
+                $this->userType->addDocuments(array($document));
             }
         }
 
