@@ -303,6 +303,22 @@ You can even get paginated results!
     /** var Pagerfanta\Pagerfanta */
     $userPaginator = $finder->findPaginated('bob');
 
+You can also get both the Elastica results and the entities together from the finder.
+YOu can then access the score, highlights etc. from the Elastica_Result whilst
+still also getting the entity.
+
+    /** var array of FOQ\ElasticaBundle\HybridResult */
+    $hybridResults = $finder->findHybrid('bob');
+    foreach ($hybridResults as $hybridResult) {
+
+        /** var  Acme\UserBundle\Entity\User */
+        $user = $hybridResult->getTransformed();
+
+        /** var  Elastica_Result */
+        $result = $hybridResult->getResult();
+    }
+
+
 ##### Index wide finder
 
 You can also define a finder that will work on the entire index. Adjust your index
