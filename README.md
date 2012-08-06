@@ -249,9 +249,9 @@ Its class must implement `FOQ\ElasticaBundle\Provider\ProviderInterface`.
                     $loggerClosure('Indexing users');
                 }
 
-                $this->userType->addDocuments(array(
-                    array('username' => 'Bob')
-                ));
+                $document = new \Elastica_Document();
+                $document->setData(array('username' => 'Bob'));
+                $this->userType->addDocuments(array($document));
             }
         }
 
@@ -311,6 +311,21 @@ Knp paginator:
 
     $paginator = $this->get('knp_paginator');
     $userPaginator = $paginator->paginate($finder->createPaginatorAdapter('bob'));
+
+You can also get both the Elastica results and the entities together from the finder.
+You can then access the score, highlights etc. from the Elastica_Result whilst
+still also getting the entity.
+
+    /** var array of FOQ\ElasticaBundle\HybridResult */
+    $hybridResults = $finder->findHybrid('bob');
+    foreach ($hybridResults as $hybridResult) {
+
+        /** var  Acme\UserBundle\Entity\User */
+        $user = $hybridResult->getTransformed();
+
+        /** var  Elastica_Result */
+        $result = $hybridResult->getResult();
+    }
 
 ##### Index wide finder
 
