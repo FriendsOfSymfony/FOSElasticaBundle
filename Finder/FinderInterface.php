@@ -11,5 +11,5 @@ interface FinderInterface
 	 * @param int $limit How many results to get
 	 * @return array results
 	 */
-	function find($query, $limit);
+	function find($query, $limit = null);
 }
