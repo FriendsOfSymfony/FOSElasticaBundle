@@ -18,7 +18,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectAmountIfRandomNumberOfQueriesAdded()
     {
-        $elasticaLogger = new ElasticaLogger;
+        $elasticaLogger = new ElasticaLogger(null, true);
 
         $total = rand(1, 15);
         for ($i = 0; $i < $total; $i++) {
@@ -30,7 +30,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectlyFormattedQueryReturned()
     {
-        $elasticaLogger = new ElasticaLogger;
+        $elasticaLogger = new ElasticaLogger(null, true);
 
         $path   = 'testPath';
         $method = 'testMethod';
@@ -47,6 +47,18 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
         $elasticaLogger->logQuery($path, $method, $data, $time);
         $returnedQueries = $elasticaLogger->getQueries();
         $this->assertEquals($expected, $returnedQueries[0]);
+    }
+
+    public function testNoQueriesStoredIfDebugFalseAdded()
+    {
+        $elasticaLogger = new ElasticaLogger(null, false);
+
+        $total = rand(1, 15);
+        for ($i = 0; $i < $total; $i++) {
+            $elasticaLogger->logQuery('testPath', 'testMethod', array('data'), 12);
+        }
+
+        $this->assertEquals(0, $elasticaLogger->getNbQueries());
     }
 
     public function testQueryIsLogged()
