@@ -4,6 +4,7 @@ namespace FOQ\ElasticaBundle\Doctrine;
 
 use FOQ\ElasticaBundle\HybridResult;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOQ\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Elastica_Document;
 
 /**
@@ -68,14 +69,22 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      **/
     public function transform(array $elasticaObjects)
     {
-        $ids = array_map(function($elasticaObject) {
-            return $elasticaObject->getId();
-        }, $elasticaObjects);
+        $ids = $highlights = array();
+        foreach ($elasticaObjects as $elasticaObject) {
+            $ids[] = $elasticaObject->getId();
+            $highlights[$elasticaObject->getId()] = $elasticaObject->getHighlights();
+        }
 
         $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
         if (count($objects) < count($elasticaObjects)) {
             throw new \RuntimeException('Cannot find corresponding Doctrine objects for all Elastica results.');
         };
+
+        foreach ($objects as $object) {
+            if ($object instanceof HighlightableModelInterface) {
+                $object->setElasticHighlights($highlights[$object->getId()]);
+            }
+        }
 
         $identifierGetter = 'get'.ucfirst($this->options['identifier']);
 
