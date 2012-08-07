@@ -19,20 +19,19 @@ class Repository
         $this->finder = $finder;
     }
 
-
     public function find($query, $limit=null)
     {
         return $this->finder->find($query, $limit);
     }
 
+    public function findHybrid($query, $limit=null)
+    {
+        return $this->finder->findHybrid($query, $limit);
+    }
+
     public function findPaginated($query)
     {
         return $this->finder->findPaginated($query);
-    }
-
-    public function findHybrid($query)
-    {
-        return $this->finder->findHybrid($query);
     }
 
     public function createPaginatorAdapter($query)

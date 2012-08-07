@@ -19,6 +19,7 @@
 
         <service id="foq_elastica.logger" class="%foq_elastica.logger.class%">
             <argument type="service" id="logger" on-invalid="null" />
+            <argument>%kernel.debug%</argument>
             <tag name="monolog.logger" channel="elastica" />
         </service>
         <service id="foq_elastica.data_collector" class="%foq_elastica.data_collector.class%" public="true">

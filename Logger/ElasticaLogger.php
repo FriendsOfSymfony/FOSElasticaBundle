@@ -16,16 +16,18 @@ class ElasticaLogger
 {
     protected $logger;
     protected $queries;
+    protected $debug;
 
     /**
      * Constructor.
      *
      * @param LoggerInterface $logger The Symfony logger
      */
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger = null, $debug = false)
     {
         $this->logger = $logger;
         $this->queries = array();
+        $this->debug = $debug;
     }
 
     /**
@@ -38,12 +40,14 @@ class ElasticaLogger
      */
     public function logQuery($path, $method, $data, $time)
     {
-        $this->queries[] = array(
-            'path' => $path,
-            'method' => $method,
-            'data' => $data,
-            'executionMS' => $time
-        );
+        if ($this->debug) {
+            $this->queries[] = array(
+                'path' => $path,
+                'method' => $method,
+                'data' => $data,
+                'executionMS' => $time
+            );
+        }
 
         if (null !== $this->logger) {
             $message = sprintf("%s (%s) %0.2f ms", $path, $method, $time * 1000);
