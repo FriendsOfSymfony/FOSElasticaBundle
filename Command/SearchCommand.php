@@ -25,7 +25,7 @@ class SearchCommand extends ContainerAwareCommand
             ->setName('foq:elastica:search')
             ->addArgument('type', InputArgument::REQUIRED, 'The type to search in')
             ->addArgument('query', InputArgument::REQUIRED, 'The text to search')
-            ->addOption('index', null, InputOption::VALUE_NONE, 'The index to search in')
+            ->addOption('index', null, InputOption::VALUE_REQUIRED, 'The index to search in')
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'The maximum number of documents to return', 20)
             ->addOption('show-field', null, InputOption::VALUE_REQUIRED, 'Field to show, null uses the first field')
             ->addOption('show-source', null, InputOption::VALUE_NONE, 'Show the documents sources')
