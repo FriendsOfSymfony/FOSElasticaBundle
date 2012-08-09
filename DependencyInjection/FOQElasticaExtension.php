@@ -170,6 +170,9 @@ class FOQElasticaExtension extends Extension
             if (isset($type['_source'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['_source'] = $type['_source'];
             }
+            if (isset($type['_boost'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_boost'] = $type['_boost'];
+            }
             if (isset($type['mappings'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
                 $typeName = sprintf('%s/%s', $indexName, $name);
