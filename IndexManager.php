@@ -13,10 +13,10 @@ class IndexManager
      * @param array  $indexesByName
      * @param string $defaultIndexName
      */
-    public function __construct(array $indexesByName, $defaultIndexName)
+    public function __construct(array $indexesByName, $defaultIndex)
     {
         $this->indexesByName = $indexesByName;
-        $this->defaultIndexName = $defaultIndexName;
+        $this->defaultIndexName = $defaultIndex->getName();
     }
 
     /**
