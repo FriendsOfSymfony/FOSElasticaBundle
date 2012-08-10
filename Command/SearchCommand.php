@@ -40,7 +40,8 @@ class SearchCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $index = $this->getContainer()->get('foq_elastica.index_manager')->getIndex($input->getOption('index'));
+        $indexName = $input->getOption('index');
+        $index = $this->getContainer()->get('foq_elastica.index_manager')->getIndex($indexName ? $indexName : null);
         $type  = $index->getType($input->getArgument('type'));
         $query = Elastica_Query::create($input->getArgument('query'));
         $query->setLimit($input->getOption('limit'));
