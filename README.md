@@ -289,7 +289,7 @@ Declare that you want a Doctrine/Propel finder in your configuration:
 
 You can now use the `foq_elastica.finder.website.user` service:
 
-    /** var FOQ\ElasticaBundle\Finder\MappedFinder */
+    /** var FOQ\ElasticaBundle\Finder\TransformedFinder */
     $finder = $container->get('foq_elastica.finder.website.user');
 
     /** var array of Acme\UserBundle\Entity\User */
