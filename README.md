@@ -191,7 +191,7 @@ Your repository must implement this method and return a Doctrine query builder.
 
 ##### Change the batch size
 
-By default, ElasticaBundle will index documents by paquets of 100.
+By default, ElasticaBundle will index documents by packets of 100.
 You can change this value in the provider configuration.
 
                         persistence:
