@@ -13,7 +13,7 @@ class IndexManager
      * @param array  $indexesByName
      * @param string $defaultIndexName
      */
-    public function __construct(array $indexesByName, $defaultIndex)
+    public function __construct(array $indexesByName, \Elastica_Index $defaultIndex)
     {
         $this->indexesByName = $indexesByName;
         $this->defaultIndexName = $defaultIndex->getName();

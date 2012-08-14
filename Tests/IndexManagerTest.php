@@ -17,7 +17,16 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
             'index1' => 'test1',
             'index2' => 'test2',
         );
-        $this->indexManager = new IndexManager($this->indexesByName, $this->defaultIndexName);
+
+        $defaultIndex = $this->getMockBuilder('Elastica_Index')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $defaultIndex->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue($this->defaultIndexName));
+
+        $this->indexManager = new IndexManager($this->indexesByName, $defaultIndex);
     }
 
     public function testGetAllIndexes()
