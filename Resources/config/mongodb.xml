@@ -10,7 +10,7 @@
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
-            <argument type="service" id="doctrine.odm.mongodb" />
+            <argument type="service" id="doctrine_mongodb.odm.default_document_manager" />
         </service>
 
         <service id="foq_elastica.listener.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\Listener" public="false" abstract="true">
@@ -21,13 +21,13 @@
         </service>
 
         <service id="foq_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOQ\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer" public="false">
-            <argument type="service" id="doctrine.odm.mongodb" />
+            <argument type="service" id="doctrine_mongodb.odm.default_document_manager" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
         </service>
 
         <service id="foq_elastica.manager.mongodb" class="FOQ\ElasticaBundle\Doctrine\RepositoryManager">
-            <argument type="service" id="doctrine.odm.mongodb"/>
+            <argument type="service" id="doctrine_mongodb.odm.default_document_manager"/>
             <argument type="service" id="annotation_reader"/>
         </service>
 
