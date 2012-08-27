@@ -12,7 +12,7 @@ class Client extends Elastica_Client
 {
     protected $logger;
 
-    public function setLogger(ElasticaLogger $logger)
+    public function setLogger(ElasticaLogger $logger = null)
     {
         $this->logger = $logger;
     }
