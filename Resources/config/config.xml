@@ -12,6 +12,11 @@
         <parameter key="foq_elastica.data_collector.class">FOQ\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
         <parameter key="foq_elastica.manager.class">FOQ\ElasticaBundle\Manager\RepositoryManager</parameter>
         <parameter key="foq_elastica.elastica_to_model_transformer.collection.class">FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
+        <parameter key="foq_elastica.model_to_elastica_transformer.prototype.auto.class">FOQ\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer</parameter>
+        <parameter key="foq_elastica.finder.prototype.class">FOQ\ElasticaBundle\Finder\TransformedFinder</parameter>
+        <parameter key="foq_elastica.populator.class">FOQ\ElasticaBundle\Populator</parameter>
+        <parameter key="foq_elastica.reseter.class">FOQ\ElasticaBundle\Reseter</parameter>
+        <parameter key="foq_elastica.object_persister.prototype.class">FOQ\ElasticaBundle\Persister\ObjectPersister</parameter>
     </parameters>
 
     <services>
@@ -38,27 +43,27 @@
             <argument /> <!-- default index -->
         </service>
 
-        <service id="foq_elastica.populator" class="FOQ\ElasticaBundle\Populator">
+        <service id="foq_elastica.populator" class="%foq_elastica.populator.class%">
             <argument /> <!-- providers -->
         </service>
 
-        <service id="foq_elastica.reseter" class="FOQ\ElasticaBundle\Reseter">
+        <service id="foq_elastica.reseter" class="%foq_elastica.reseter.class%">
             <argument /> <!-- index configs -->
         </service>
 
-        <service id="foq_elastica.object_persister.prototype" class="FOQ\ElasticaBundle\Persister\ObjectPersister" abstract="true">
+        <service id="foq_elastica.object_persister.prototype" class="%foq_elastica.object_persister.prototype.class%" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
             <argument /> <!-- properties mapping -->
         </service>
 
-        <service id="foq_elastica.finder.prototype" class="FOQ\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
+        <service id="foq_elastica.finder.prototype" class="%foq_elastica.finder.prototype.class%" public="true" abstract="true">
             <argument /> <!-- searchable -->
             <argument /> <!-- transformer -->
         </service>
 
-        <service id="foq_elastica.model_to_elastica_transformer.prototype.auto" class="FOQ\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer" public="false" abstract="true">
+        <service id="foq_elastica.model_to_elastica_transformer.prototype.auto" class="%foq_elastica.model_to_elastica_transformer.prototype.auto.class%" public="false" abstract="true">
             <argument /> <!-- options -->
         </service>
 
