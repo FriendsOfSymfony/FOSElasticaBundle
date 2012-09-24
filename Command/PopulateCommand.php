@@ -91,7 +91,7 @@ class PopulateCommand extends ContainerAwareCommand
     private function populateIndex(OutputInterface $output, $index, $reset)
     {
         if ($reset) {
-            $output->writeln(sprintf('Resetting: %s', $index));
+            $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
             $this->resetter->resetIndex($index);
         }
 
@@ -99,13 +99,13 @@ class PopulateCommand extends ContainerAwareCommand
 
         foreach ($providers as $type => $provider) {
             $loggerClosure = function($message) use ($output, $index, $type) {
-                $output->writeln(sprintf('Populating: %s/%s, %s', $index, $type, $message));
+                $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
             };
 
             $provider->populate($loggerClosure);
         }
 
-        $output->writeln(sprintf('Refreshing: %s', $index));
+        $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
         $this->indexManager->getIndex($index)->refresh();
     }
 
