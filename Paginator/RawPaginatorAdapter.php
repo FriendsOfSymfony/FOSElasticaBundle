@@ -65,6 +65,6 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getTotalHits()
     {
-        return $this->searchable->count($this->query);
+        return $this->searchable->search($this->query)->getTotalHits();
     }
 }
