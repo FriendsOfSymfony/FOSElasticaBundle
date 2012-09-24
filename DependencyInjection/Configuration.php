@@ -214,6 +214,7 @@ class Configuration
                 ->end()
                 ->append($this->getMappingsNode())
                 ->append($this->getSourceNode())
+                ->append($this->getBoostNode())
             ->end()
         ;
 
@@ -290,6 +291,24 @@ class Configuration
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                 ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * Returns the array node used for "_boost".
+     */
+    protected function getBoostNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_boost');
+
+        $node
+            ->children()
+                ->scalarNode('name')->end()
+                ->scalarNode('null_value')->end()
             ->end()
         ;
 
