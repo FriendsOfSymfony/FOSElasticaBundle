@@ -320,7 +320,7 @@ class FOQElasticaExtension extends Extension
         $listenerDef->replaceArgument(2, $this->getDoctrineEvents($typeConfig));
         switch ($typeConfig['driver']) {
             case 'orm': $listenerDef->addTag('doctrine.event_subscriber'); break;
-            case 'mongodb': $listenerDef->addTag('doctrine.odm.mongodb.event_subscriber'); break;
+            case 'mongodb': $listenerDef->addTag('doctrine_mongodb.odm.event_subscriber'); break;
         }
         if (isset($typeConfig['listener']['is_indexable_callback'])) {
             $callback = $typeConfig['listener']['is_indexable_callback'];
