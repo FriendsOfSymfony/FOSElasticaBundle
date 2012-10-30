@@ -26,12 +26,11 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             return array();
         }
         $hydrationMode = $hydrate ? Query::HYDRATE_OBJECT : Query::HYDRATE_ARRAY;
-        $repository = $this->registry
+        $qb = $this->registry
             ->getManagerForClass($this->objectClass)
-            ->getRepository($this->objectClass);
-
-        // ORM query builders require an alias argument, so just use $objectClass
-        $qb = $repository->{$this->options['query_builder_method']}($this->objectClass);
+            ->getRepository($this->objectClass)
+            // ORM query builders require an alias argument, so just use $objectClass
+            ->{$this->options['query_builder_method']}($this->objectClass);
 
         /* @var $qb \Doctrine\ORM\QueryBuilder */
         $qb->where($qb->expr()->in($this->objectClass.'.'.$this->options['identifier'], ':values'))
