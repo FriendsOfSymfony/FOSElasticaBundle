@@ -45,10 +45,41 @@ class Configuration
                     ->useAttributeAsKey('id')
                     ->prototype('array')
                         ->performNoDeepMerging()
+                        ->beforeNormalization()
+                            ->ifTrue(function($v) { return isset($v['host']) && isset($v['port']); })
+                            ->then(function($v) {
+                                return array(
+                                    'servers' => array(
+                                        'default' => array(
+                                            'host' => $v['host'],
+                                            'port' => $v['port'],
+                                        )
+                                    )
+                                );
+                            })
+                        ->end()
+                        ->beforeNormalization()
+                            ->ifTrue(function($v) { return isset($v['url']); })
+                            ->then(function($v) {
+                                return array(
+                                    'servers' => array(
+                                        'default' => array(
+                                            'url' => $v['url'],
+                                        )
+                                    )
+                                );
+                            })
+                        ->end()
                         ->children()
-                            ->scalarNode('url')->end()
-                            ->scalarNode('host')->end()
-                            ->scalarNode('port')->end()
+                            ->arrayNode('servers')
+                                ->prototype('array')
+                                    ->children()
+                                        ->scalarNode('url')->end()
+                                        ->scalarNode('host')->end()
+                                        ->scalarNode('port')->end()
+                                    ->end()
+                                ->end()
+                            ->end()
                             ->scalarNode('timeout')->end()
                             ->scalarNode('headers')->end()
                         ->end()
