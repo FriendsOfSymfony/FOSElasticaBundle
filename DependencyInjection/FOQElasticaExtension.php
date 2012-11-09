@@ -89,6 +89,10 @@ class FOQElasticaExtension extends Extension
     {
         $indexIds = array();
         foreach ($indexes as $name => $index) {
+            if (isset($index['name'])) {
+                $name = $index['name'];
+            }
+
             if (isset($index['client'])) {
                 $clientName = $index['client'];
                 if (!isset($clientIdsByName[$clientName])) {
