@@ -45,7 +45,13 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         $document           = new \Elastica_Document($identifier);
         foreach ($fields as $key => $mapping) {
             $property = new PropertyPath($key);
-            if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
+            if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object'))) {
+                $submapping = $mapping['properties'];
+                $subcollection  = $property->getValue($object);
+                $document->add($key, $this->transformNested($subcollection, $submapping));
+            } else if (isset($mapping['type']) && $mapping['type'] == 'multi_field') {
+                throw new \Exception('Please implement me !');
+            } else if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
                 $attachment = $property->getValue($object);
                 if ($attachment instanceof \SplFileInfo) {
                     $document->addFile($key, $attachment->getPathName());
@@ -57,6 +63,23 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             }
         }
         return $document;
+    }
+
+    /**
+     * transform a nested document or an object property into an array of ElasticaDocument
+     *
+     * @param array $objects    the object to convert
+     * @param array $fields     the keys we want to have in the returned array
+     * @return array
+     */
+    protected function transformNested($objects, array $fields)
+    {
+        $documents = array();
+        foreach($objects as $object) {
+            $documents[] = $this->transform($object, $fields)->getData();
+        }
+
+        return $documents;
     }
 
     /**
