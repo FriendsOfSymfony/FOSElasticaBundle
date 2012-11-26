@@ -45,10 +45,14 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         $document           = new \Elastica_Document($identifier);
         foreach ($fields as $key => $mapping) {
             $property = new PropertyPath($key);
-            if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object'))) {
-                $submapping = $mapping['properties'];
+            if (isset($mapping['_parent'])) {
+                $parent             = $property->getValue($object);
+                $identifierProperty = new PropertyPath($mapping['_parent']['identifier']);
+                $document->setParent($identifierProperty->getValue($parent));
+            } else if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object'))) {
+                $submapping     = $mapping['properties'];
                 $subcollection  = $property->getValue($object);
-                $document->add($key, $this->transformNested($subcollection, $submapping));
+                $document->add($key, $this->transformNested($subcollection, $submapping, $document));
             } else if (isset($mapping['type']) && $mapping['type'] == 'multi_field') {
                 throw new \Exception('Please implement me !');
             } else if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
@@ -70,13 +74,15 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      *
      * @param array $objects    the object to convert
      * @param array $fields     the keys we want to have in the returned array
+     * @param Elastica_Document $parent the parent document
      * @return array
      */
-    protected function transformNested($objects, array $fields)
+    protected function transformNested($objects, array $fields, $parent)
     {
         $documents = array();
         foreach($objects as $object) {
-            $documents[] = $this->transform($object, $fields)->getData();
+            $document = $this->transform($object, $fields);
+            $documents[] = $document->getData();
         }
 
         return $documents;
