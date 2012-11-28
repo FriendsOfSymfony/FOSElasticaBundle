@@ -24,4 +24,11 @@ interface ElasticaToModelTransformerInterface
      * @return string
      */
     function getObjectClass();
+
+    /**
+     * Returns the identifier field from the options
+     *
+     * @return string the identifier field
+     */
+    function getIdentifierField();
 }

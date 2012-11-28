@@ -19,10 +19,18 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
             ->method('getObjectClass')
             ->will($this->returnValue('FOQ\ElasticaBundle\Tests\Transformer\POPO'));
 
+        $transformer1->expects($this->any())
+            ->method('getIdentifierField')
+            ->will($this->returnValue('id'));
+
         $transformer2 = $this->getMock('FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
         $transformer2->expects($this->any())
             ->method('getObjectClass')
             ->will($this->returnValue('FOQ\ElasticaBundle\Tests\Transformer\POPO2'));
+
+        $transformer2->expects($this->any())
+            ->method('getIdentifierField')
+            ->will($this->returnValue('id'));
 
         $this->collection = new ElasticaToModelTransformerCollection($this->transformers = array(
             'type1' => $transformer1,
