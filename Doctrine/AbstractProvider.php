@@ -40,7 +40,6 @@ abstract class AbstractProvider extends BaseAbstractProvider
             if ($loggerClosure) {
                 $stepStartTime = microtime(true);
             }
-
             $objects = $this->fetchSlice($queryBuilder, $this->options['batch_size'], $offset);
 
             $this->objectPersister->insertMany($objects);
