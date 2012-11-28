@@ -58,7 +58,27 @@ class Resetter
 
         $type = $indexConfig['index']->getType($typeName);
         $type->delete();
-        $type->setMapping($indexConfig['config']['mappings'][$typeName]['properties']);
+        $mapping = $this->createMapping($indexConfig['config']['mappings'][$typeName]);
+        $type->setMapping($mapping);
+    }
+
+    /**
+     * create type mapping object
+     *
+     * @param array $indexConfig
+     * @return Elastica_Type_Mapping
+     */
+    protected function createMapping($indexConfig)
+    {
+		$mapping = \Elastica_Type_Mapping::create($indexConfig['properties']);
+
+        foreach($indexConfig['properties'] as $field => $type) {
+            if (!empty($type['_parent']) && $type['_parent'] !== '~') {
+                $mapping->setParam('_parent', array('type' => $type['_parent']['type']));
+            }
+        }
+
+        return $mapping;
     }
 
     /**

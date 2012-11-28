@@ -29,6 +29,17 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
                     ),
                 ),
             ),
+            'parent' => array(
+                'index' => $this->getMockElasticaIndex(),
+                'config' => array(
+                    'mappings' => array(
+                        'a' => array('properties' => array(
+                                'field_1' => array('_parent' => array('type' => 'b', 'identifier' => 'id')),
+                                'field_2' => array())),
+                        'b' => array('properties' => array()),
+                    ),
+                ),
+            ),
         );
     }
 
@@ -80,9 +91,10 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $type->expects($this->once())
             ->method('delete');
 
+        $mapping = \Elastica_Type_Mapping::create($this->indexConfigsByName['foo']['config']['mappings']['a']['properties']);
         $type->expects($this->once())
             ->method('setMapping')
-            ->with($this->indexConfigsByName['foo']['config']['mappings']['a']['properties']);
+            ->with($mapping);
 
         $resetter = new Resetter($this->indexConfigsByName);
         $resetter->resetIndexType('foo', 'a');
@@ -104,6 +116,28 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     {
         $resetter = new Resetter($this->indexConfigsByName);
         $resetter->resetIndexType('foo', 'c');
+    }
+
+    public function testIndexMappingForParent()
+    {
+        $type = $this->getMockElasticaType();
+
+        $this->indexConfigsByName['parent']['index']->expects($this->once())
+            ->method('getType')
+            ->with('a')
+            ->will($this->returnValue($type));
+
+        $type->expects($this->once())
+            ->method('delete');
+
+        $mapping = \Elastica_Type_Mapping::create($this->indexConfigsByName['parent']['config']['mappings']['a']['properties']);
+        $mapping->setParam('_parent', array('type' => 'b'));
+        $type->expects($this->once())
+            ->method('setMapping')
+            ->with($mapping);
+
+        $resetter = new Resetter($this->indexConfigsByName);
+        $resetter->resetIndexType('parent', 'a');
     }
 
     /**
