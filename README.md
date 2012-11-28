@@ -139,6 +139,41 @@ Elasticsearch type is comparable to Doctrine entity repository.
 
 Our type is now available as a service: `foq_elastica.index.website.user`. It is an instance of `Elastica_Type`.
 
+### Declaring parent field
+
+    foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        indexes:
+            website:
+                client: default
+                types:
+                    comment:
+                        mappings:
+                            post: {_parent: { type: "post", identifier: "id" } }
+                            date: { boost: 5 }
+                            content: ~
+
+### Declaring `nested` or `object`
+
+    foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        indexes:
+            website:
+                client: default
+                types:
+                    post:
+                        mappings:
+                            date: { boost: 5 }
+                            title: { boost: 3 }
+                            content: ~
+                            comments:
+                                type: "nested"
+                                properties:
+                                    date: { boost: 5 }
+                                    content: ~
+
 ### Populate the types
 
     php app/console foq:elastica:populate

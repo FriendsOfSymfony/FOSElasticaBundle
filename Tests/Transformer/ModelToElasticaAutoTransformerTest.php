@@ -92,6 +92,19 @@ class POPO
     {
         return $this->file;
     }
+
+    public function getSub()
+    {
+        return array(
+            (object) array('foo' => 'foo', 'bar' => 'foo', 'id' => 1),
+            (object) array('foo' => 'bar', 'bar' => 'bar', 'id' => 2),
+        );
+    }
+
+    public function getUpper()
+    {
+        return (object) array('id' => 'parent', 'name' => 'a random name');
+    }
 }
 
 class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
@@ -214,5 +227,67 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             base64_encode(file_get_contents(__DIR__ . '/../fixtures/attachment.odt')), $data['fileContents']
         );
+    }
+
+    public function testNestedMapping()
+    {
+        $transformer = new ModelToElasticaAutoTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+                'sub' => array(
+                    'type' => 'nested',
+                    'properties' => array('foo' => '~')
+                    )
+                ));
+        $data        = $document->getData();
+
+        $this->assertTrue(array_key_exists('sub', $data));
+        $this->assertInternalType('array', $data['sub']);
+        $this->assertEquals(array(
+             array('foo' => 'foo'),
+             array('foo' => 'bar')
+           ), $data['sub']);
+    }
+
+    public function tesObjectMapping()
+    {
+        $transformer = new ModelToElasticaAutoTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+                'sub' => array(
+                    'type' => 'object',
+                    'properties' => array('bar')
+                    )
+                ));
+        $data        = $document->getData();
+
+        $this->assertTrue(array_key_exists('sub', $data));
+        $this->assertInternalType('array', $data['sub']);
+        $this->assertEquals(array(
+             array('bar' => 'foo'),
+             array('bar' => 'bar')
+           ), $data['sub']);
+    }
+
+    public function testParentMapping()
+    {
+        $transformer = new ModelToElasticaAutoTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+                'upper' => array(
+                    '_parent' => array('type' => 'upper', 'identifier' => 'id'),
+                    )
+                ));
+
+        $this->assertEquals("parent", $document->getParent());
+    }
+
+    public function testParentMappingWithCustomIdentifier()
+    {
+        $transformer = new ModelToElasticaAutoTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+                'upper' => array(
+                    '_parent' => array('type' => 'upper', 'identifier' => 'name'),
+                    )
+                ));
+
+        $this->assertEquals("a random name", $document->getParent());
     }
 }
