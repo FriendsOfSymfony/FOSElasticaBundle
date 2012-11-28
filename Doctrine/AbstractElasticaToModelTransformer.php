@@ -112,6 +112,14 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getIdentifierField()
+    {
+        return $this->options['identifier'];
+    }
+
+    /**
      * Fetches objects by theses identifier values
      *
      * @param array $identifierValues ids values

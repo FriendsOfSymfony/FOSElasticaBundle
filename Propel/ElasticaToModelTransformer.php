@@ -101,6 +101,14 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getIdentifierField()
+    {
+        return $this->options['identifier'];
+    }
+
+    /**
      * Fetch objects for theses identifier values
      *
      * @param string $class the model class
