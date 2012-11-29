@@ -50,7 +50,7 @@ class Configuration
                             ->then(function($v) {
                                 return array(
                                     'servers' => array(
-                                        'default' => array(
+                                        array(
                                             'host' => $v['host'],
                                             'port' => $v['port'],
                                         )
@@ -63,7 +63,7 @@ class Configuration
                             ->then(function($v) {
                                 return array(
                                     'servers' => array(
-                                        'default' => array(
+                                        array(
                                             'url' => $v['url'],
                                         )
                                     )
