@@ -53,8 +53,6 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
                 $submapping     = $mapping['properties'];
                 $subcollection  = $property->getValue($object);
                 $document->add($key, $this->transformNested($subcollection, $submapping, $document));
-            } else if (isset($mapping['type']) && $mapping['type'] == 'multi_field') {
-                throw new \Exception('Please implement me !');
             } else if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
                 $attachment = $property->getValue($object);
                 if ($attachment instanceof \SplFileInfo) {
