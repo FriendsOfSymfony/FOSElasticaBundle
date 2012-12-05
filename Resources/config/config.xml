@@ -61,7 +61,6 @@
 
         <service id="foq_elastica.elastica_to_model_transformer.collection.prototype" class="%foq_elastica.elastica_to_model_transformer.collection.class%" public="true" abstract="true">
             <argument type="collection" /> <!-- transformers -->
-            <argument type="collection" /> <!-- options -->
         </service>
 
         <service id="foq_elastica.provider_registry" class="%foq_elastica.provider_registry.class%">

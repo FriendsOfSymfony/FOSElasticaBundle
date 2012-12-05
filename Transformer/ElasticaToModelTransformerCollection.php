@@ -13,20 +13,26 @@ use Symfony\Component\Form\Util\PropertyPath;
 class ElasticaToModelTransformerCollection implements ElasticaToModelTransformerInterface
 {
     protected $transformers = array();
-    protected $options = array(
-        'identifier' => 'id'
-    );
 
-    public function __construct(array $transformers, array $options)
+    public function __construct(array $transformers)
     {
         $this->transformers = $transformers;
-        $this->options = array_merge($this->options, $options);
     }
 
     public function getObjectClass()
     {
         return array_map(function ($transformer) {
             return $transformer->getObjectClass();
+        }, $this->transformers);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIdentifierField()
+    {
+        return array_map(function ($transformer) {
+            return $transformer->getIdentifierField();
         }, $this->transformers);
     }
 
@@ -37,12 +43,19 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
             $sorted[$object->getType()][] = $object;
         }
 
-        $identifierProperty = new PropertyPath($this->options['identifier']);
-
         $transformed = array();
         foreach ($sorted AS $type => $objects) {
             $transformedObjects = $this->transformers[$type]->transform($objects);
-            $transformed[$type] = array_combine(array_map(function($o) use ($identifierProperty) {return $identifierProperty->getValue($o);},$transformedObjects),$transformedObjects);
+            $identifierGetter = 'get' . ucfirst($this->transformers[$type]->getIdentifierField());
+            $transformed[$type] = array_combine(
+                array_map(
+                    function($o) use ($identifierGetter) {
+                        return $o->$identifierGetter();
+                    },
+                    $transformedObjects
+                ),
+                $transformedObjects
+            );
         }
 
         $result = array();

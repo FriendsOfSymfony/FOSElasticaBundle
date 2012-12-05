@@ -45,9 +45,41 @@ class Configuration
                     ->useAttributeAsKey('id')
                     ->prototype('array')
                         ->performNoDeepMerging()
+                        ->beforeNormalization()
+                            ->ifTrue(function($v) { return isset($v['host']) && isset($v['port']); })
+                            ->then(function($v) {
+                                return array(
+                                    'servers' => array(
+                                        array(
+                                            'host' => $v['host'],
+                                            'port' => $v['port'],
+                                        )
+                                    )
+                                );
+                            })
+                        ->end()
+                        ->beforeNormalization()
+                            ->ifTrue(function($v) { return isset($v['url']); })
+                            ->then(function($v) {
+                                return array(
+                                    'servers' => array(
+                                        array(
+                                            'url' => $v['url'],
+                                        )
+                                    )
+                                );
+                            })
+                        ->end()
                         ->children()
-                            ->scalarNode('host')->defaultValue('localhost')->end()
-                            ->scalarNode('port')->defaultValue('9000')->end()
+                            ->arrayNode('servers')
+                                ->prototype('array')
+                                    ->children()
+                                        ->scalarNode('url')->end()
+                                        ->scalarNode('host')->end()
+                                        ->scalarNode('port')->end()
+                                    ->end()
+                                ->end()
+                            ->end()
                             ->scalarNode('timeout')->end()
                             ->scalarNode('headers')->end()
                         ->end()
@@ -214,6 +246,7 @@ class Configuration
                 ->end()
                 ->append($this->getMappingsNode())
                 ->append($this->getSourceNode())
+                ->append($this->getBoostNode())
             ->end()
         ;
 
@@ -265,6 +298,33 @@ class Configuration
                             ->end()
                         ->end()
                     ->end()
+                    ->arrayNode('_parent')
+                        ->treatNullLike(array())
+                        ->children()
+                            ->scalarNode('type')->end()
+                            ->scalarNode('identifier')->defaultValue('id')->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode('properties')
+                        ->useAttributeAsKey('name')
+                        ->prototype('array')
+                            ->treatNullLike(array())
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('type')->defaultValue('string')->end()
+                                ->scalarNode('boost')->end()
+                                ->scalarNode('store')->end()
+                                ->scalarNode('index')->end()
+                                ->scalarNode('index_analyzer')->end()
+                                ->scalarNode('search_analyzer')->end()
+                                ->scalarNode('analyzer')->end()
+                                ->scalarNode('term_vector')->end()
+                                ->scalarNode('null_value')->end()
+                                ->booleanNode('include_in_all')->defaultValue('true')->end()
+                                ->scalarNode('lat_lon')->end()
+                            ->end()
+                        ->end()
+                    ->end()
                 ->end()
             ->end()
         ;
@@ -290,6 +350,24 @@ class Configuration
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                 ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * Returns the array node used for "_boost".
+     */
+    protected function getBoostNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_boost');
+
+        $node
+            ->children()
+                ->scalarNode('name')->end()
+                ->scalarNode('null_value')->end()
             ->end()
         ;
 

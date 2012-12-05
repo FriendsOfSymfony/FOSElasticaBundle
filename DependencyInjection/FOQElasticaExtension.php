@@ -170,6 +170,9 @@ class FOQElasticaExtension extends Extension
             if (isset($type['_source'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['_source'] = $type['_source'];
             }
+            if (isset($type['_boost'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_boost'] = $type['_boost'];
+            }
             if (isset($type['mappings'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
                 $typeName = sprintf('%s/%s', $indexName, $name);
@@ -183,6 +186,9 @@ class FOQElasticaExtension extends Extension
             }
             if (isset($type['search_analyzer'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['search_analyzer'] = $type['search_analyzer'];
+            }
+            if (isset($type['index'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['index'] = $type['index'];
             }
         }
     }
@@ -317,7 +323,7 @@ class FOQElasticaExtension extends Extension
         $listenerDef->replaceArgument(2, $this->getDoctrineEvents($typeConfig));
         switch ($typeConfig['driver']) {
             case 'orm': $listenerDef->addTag('doctrine.event_subscriber'); break;
-            case 'mongodb': $listenerDef->addTag('doctrine.odm.mongodb.event_subscriber'); break;
+            case 'mongodb': $listenerDef->addTag('doctrine_mongodb.odm.event_subscriber'); break;
         }
         if (isset($typeConfig['listener']['is_indexable_callback'])) {
             $callback = $typeConfig['listener']['is_indexable_callback'];
