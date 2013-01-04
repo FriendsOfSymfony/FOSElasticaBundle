@@ -102,6 +102,7 @@ class Configuration
                     ->prototype('array')
                         ->performNoDeepMerging()
                         ->children()
+                            ->scalarNode('index_name')->end()
                             ->scalarNode('client')->end()
                             ->scalarNode('finder')
                                 ->treatNullLike(true)

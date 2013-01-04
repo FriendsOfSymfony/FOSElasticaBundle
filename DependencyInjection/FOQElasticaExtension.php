@@ -100,7 +100,8 @@ class FOQElasticaExtension extends Extension
 
             $clientId = $clientIdsByName[$clientName];
             $indexId = sprintf('foq_elastica.index.%s', $name);
-            $indexDefArgs = array($name);
+            $indexName = isset($index['index_name']) ? $index['index_name'] : $name;
+            $indexDefArgs = array($indexName);
             $indexDef = new Definition('%foq_elastica.index.class%', $indexDefArgs);
             $indexDef->setFactoryService($clientId);
             $indexDef->setFactoryMethod('getIndex');
