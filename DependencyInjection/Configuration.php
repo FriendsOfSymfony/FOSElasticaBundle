@@ -34,6 +34,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('default_client')->end()
                 ->scalarNode('default_index')->end()
                 ->scalarNode('default_manager')->defaultValue('orm')->end()
+                ->scalarNode('serializer_id')->end()
             ->end()
         ;
 
@@ -205,6 +206,15 @@ class Configuration implements ConfigurationInterface
             ->prototype('array')
                 ->treatNullLike(array())
                 ->children()
+                    ->arrayNode('serializer')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->arrayNode('groups')
+                                ->treatNullLike(array())
+                                ->prototype('scalar')->end()
+                            ->end()
+                        ->end()
+                    ->end()
                     ->scalarNode('index_analyzer')->end()
                     ->scalarNode('search_analyzer')->end()
                     ->arrayNode('persistence')
