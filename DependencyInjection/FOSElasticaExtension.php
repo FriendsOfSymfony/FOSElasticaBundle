@@ -40,7 +40,7 @@ class FOSElasticaExtension extends Extension
         }
 
         $clientIdsByName = $this->loadClients($config['clients'], $container);
-        $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client'], $config['serializer_id']);
+        $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client'], $config['serializer']);
         $indexRefsByName = array_map(function($id) {
             return new Reference($id);
         }, $indexIdsByName);
@@ -93,7 +93,7 @@ class FOSElasticaExtension extends Extension
      * @throws \InvalidArgumentException
      * @return array
      */
-    protected function loadIndexes(array $indexes, ContainerBuilder $container, array $clientIdsByName, $defaultClientName, $serializerId)
+    protected function loadIndexes(array $indexes, ContainerBuilder $container, array $clientIdsByName, $defaultClientName, $serializerConfig)
     {
         $indexIds = array();
         foreach ($indexes as $name => $index) {
@@ -128,7 +128,7 @@ class FOSElasticaExtension extends Extension
             if (!empty($index['settings'])) {
                 $this->indexConfigs[$name]['config']['settings'] = $index['settings'];
             }
-            $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig, $serializerId);
+            $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig, $serializerConfig);
         }
 
         return $indexIds;
@@ -169,9 +169,8 @@ class FOSElasticaExtension extends Extension
      * @param $indexId
      * @param array $typePrototypeConfig
      */
-    protected function loadTypes(array $types, ContainerBuilder $container, $indexName, $indexId, array $typePrototypeConfig, $serializerId)
+    protected function loadTypes(array $types, ContainerBuilder $container, $indexName, $indexId, array $typePrototypeConfig, $serializerConfig)
     {
-        $serializer = $serializerId ? new Reference($serializerId) : null;
         foreach ($types as $name => $type) {
             $type = self::deepArrayUnion($typePrototypeConfig, $type);
             $typeId = sprintf('%s.%s', $indexId, $name);
@@ -179,8 +178,18 @@ class FOSElasticaExtension extends Extension
             $typeDef = new Definition('%fos_elastica.type.class%', $typeDefArgs);
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
-            if ($serializer) {
-                $typeDef->addMethodCall('setSerializer', array($serializer, $type['serializer']['groups']));
+            if ($serializerConfig) {
+
+                $serializerDefArgs = array(new Reference($serializerConfig['id']));
+                if (isset($type['serializer']['groups'])) {
+                    $serializerDefArgs[] = $type['serializer']['groups'];
+                }
+
+                $serializerDef = new Definition("%{$serializerConfig['callable_class']}%", $serializerDefArgs);
+                $serializerId = sprintf('%s.%s.serializer', $indexId, $name);
+                $container->setDefinition($serializerId, $serializerDef);
+
+                $typeDef->addMethodCall('setSerializer', array(array(new Reference($serializerId), 'serialize')));
             }
             $container->setDefinition($typeId, $typeDef);
             if (isset($type['_source'])) {
