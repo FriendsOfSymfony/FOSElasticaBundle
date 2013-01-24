@@ -27,7 +27,15 @@ class Configuration
                 ->scalarNode('default_client')->end()
                 ->scalarNode('default_index')->end()
                 ->scalarNode('default_manager')->defaultValue('orm')->end()
-                ->scalarNode('serializer_id')->end()
+                ->arrayNode('serializer')
+                    ->prototype('array')
+                        ->treatNullLike(array())
+                        ->children()
+                            ->scalarNode('callable_class')->end()
+                            ->scalarNode('id')->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
