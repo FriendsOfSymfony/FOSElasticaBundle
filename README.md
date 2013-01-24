@@ -135,7 +135,7 @@ Elasticsearch type is comparable to Doctrine entity repository.
                             username: { boost: 5 }
                             firstName: { boost: 3 }
                             lastName: { boost: 3 }
-                            aboutMe:
+                            aboutMe: ~
 
 Our type is now available as a service: `foq_elastica.index.website.user`. It is an instance of `Elastica_Type`.
 
@@ -206,7 +206,7 @@ some configuration will let ElasticaBundle do it for us.
                         persistence:
                             driver: orm # orm, mongodb, propel are available
                             model: Application\UserBundle\Entity\User
-                            provider:
+                            provider: ~
 
 Three drivers are actually supported: orm, mongodb, and propel.
 
@@ -321,8 +321,8 @@ Declare that you want a Doctrine/Propel finder in your configuration:
                         persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
-                            provider:
-                            finder:
+                            provider: ~
+                            finder: ~
 
 You can now use the `foq_elastica.finder.website.user` service:
 
@@ -371,7 +371,7 @@ configuration as per below:
         indexes:
             website:
                 client: default
-                finder:
+                finder: ~
 
 You can now use the index wide finder service `foq_elastica.finder.website`:
 
@@ -465,8 +465,8 @@ To use the custom repository specify it in the mapping for the entity:
                         persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
-                            provider:
-                            finder:
+                            provider: ~
+                            finder: ~
                             repository: Acme\ElasticaBundle\SearchRepository\UserRepository
 
 Then the custom queries will be available when using the repository returned from the manager:
