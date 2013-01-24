@@ -103,6 +103,23 @@ Most of the time, you will need only one.
         clients:
             default: { host: localhost, port: 9200 }
 
+
+#### Declare a serializer
+
+Elastica can handle objects instead of data arrays if a serializer callable is configured
+
+    #app/config/config.yml
+    foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        serializer:
+            callable_class: %classname%
+            id: serializer
+
+"callable_class" is the class name of a class having a public method serialize($object). "id" is the service id for the
+actual serializer, e.g. 'serializer' if you're using the JMSSerializerBundle. If this is configured you can use
+Elastica_Type::addObject instead of Elastica_Type::addDocument to add data to the index.
+
 #### Declare an index
 
 Elasticsearch index is comparable to Doctrine entity manager.
@@ -111,6 +128,9 @@ Most of the time, you will need only one.
     foq_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callable_class: %classname%
+            id: serializer
         indexes:
             website:
                 client: default
@@ -126,6 +146,9 @@ Elasticsearch type is comparable to Doctrine entity repository.
     foq_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callable_class: %classname%
+            id: serializer
         indexes:
             website:
                 client: default
@@ -139,11 +162,38 @@ Elasticsearch type is comparable to Doctrine entity repository.
 
 Our type is now available as a service: `foq_elastica.index.website.user`. It is an instance of `Elastica_Type`.
 
+### Declaring serializer groups
+
+If you are using the JMSSerializerBundle for serializing objects passed to elastica you can define serializer groups
+per type.
+
+    foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        serializer:
+            callable_class: %classname%
+            id: serializer
+        indexes:
+            website:
+                client: default
+                types:
+                    user:
+                        mappings:
+                            username: { boost: 5 }
+                            firstName: { boost: 3 }
+                            lastName: { boost: 3 }
+                            aboutMe:
+                        serializer:
+                            groups: [elastica, Default]
+
 ### Declaring parent field
 
     foq_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callable_class: %classname%
+            id: serializer
         indexes:
             website:
                 client: default
@@ -159,6 +209,9 @@ Our type is now available as a service: `foq_elastica.index.website.user`. It is
     foq_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callable_class: %classname%
+            id: serializer
         indexes:
             website:
                 client: default
@@ -194,6 +247,9 @@ some configuration will let ElasticaBundle do it for us.
     foq_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callable_class: %classname%
+            id: serializer
         indexes:
             website:
                 client: default
@@ -311,6 +367,9 @@ Declare that you want a Doctrine/Propel finder in your configuration:
     foq_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callable_class: %classname%
+            id: serializer
         indexes:
             website:
                 client: default
