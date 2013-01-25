@@ -42,7 +42,8 @@ class FOQElasticaExtension extends Extension
         }
 
         $clientIdsByName = $this->loadClients($config['clients'], $container);
-        $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client'], $config['serializer']);
+        $serializerConfig = isset($config['serializer']) ? $config['serializer'] : null;
+        $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client'], $serializerConfig);
         $indexRefsByName = array_map(function($id) {
             return new Reference($id);
         }, $indexIdsByName);
@@ -167,14 +168,12 @@ class FOQElasticaExtension extends Extension
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
             if ($serializerConfig) {
-
-                $serializerDefArgs = array(new Reference($serializerConfig['id']));
+                $serializerDef = clone $container->getDefinition($serializerConfig['callback']);
+                $serializerDef->addMethodCall('setSerializer', array(new Reference($serializerConfig['serializer'])));
                 if (isset($type['serializer']['groups'])) {
-                    $serializerDefArgs[] = $type['serializer']['groups'];
+                    $serializerDef->addMethodCall('setGroups', array($type['serializer']['groups']));
                 }
-
-                $serializerDef = new Definition("%{$serializerConfig['callable_class']}%", $serializerDefArgs);
-                $serializerId = sprintf('%s.%s.serializer', $indexId, $name);
+                $serializerId = sprintf('%s.%s.serializer.callback', $indexId, $name);
                 $container->setDefinition($serializerId, $serializerDef);
 
                 $typeDef->addMethodCall('setSerializer', array(array(new Reference($serializerId), 'serialize')));
