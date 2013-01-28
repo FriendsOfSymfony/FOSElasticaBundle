@@ -73,9 +73,6 @@
         <service id="foq_elastica.paginator.subscriber" class="FOQ\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
             <tag name="knp_paginator.subscriber" />
         </service>
-
-        <service id="foq_elastica.serializer.callback" class="%foq_elastica.serializer.callback.class%">
-        </service>
     </services>
 
 </container>

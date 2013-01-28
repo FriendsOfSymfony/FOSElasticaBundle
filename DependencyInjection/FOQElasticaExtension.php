@@ -168,12 +168,16 @@ class FOQElasticaExtension extends Extension
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
             if ($serializerConfig) {
-                $serializerDef = clone $container->getDefinition($serializerConfig['callback']);
+
+                $serializerDef = new Definition("%{$serializerConfig['callback']}%");
+                $serializerId = sprintf('%s.%s.serializer.callback', $indexId, $name);
+
+                $typeDef->addMethodCall('setSerializer', array(array(new Reference($serializerId), 'serialize')));
                 $serializerDef->addMethodCall('setSerializer', array(new Reference($serializerConfig['serializer'])));
                 if (isset($type['serializer']['groups'])) {
                     $serializerDef->addMethodCall('setGroups', array($type['serializer']['groups']));
                 }
-                $serializerId = sprintf('%s.%s.serializer.callback', $indexId, $name);
+
                 $container->setDefinition($serializerId, $serializerDef);
 
                 $typeDef->addMethodCall('setSerializer', array(array(new Reference($serializerId), 'serialize')));
