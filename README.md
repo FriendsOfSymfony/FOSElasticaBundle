@@ -68,12 +68,18 @@ Elastica can handle objects instead of data arrays if a serializer callable is c
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callable_class: %classname%
-            id: serializer
+            callback: callback
+            serializer: serializer
 
-"callable_class" is the class name of a class having a public method serialize($object). "id" is the service id for the
+"callback" is the service having a public method serialize($object). "serializer" is the service id for the
 actual serializer, e.g. 'serializer' if you're using the JMSSerializerBundle. If this is configured you can use
 Elastica_Type::addObject instead of Elastica_Type::addDocument to add data to the index.
+The bundle provides a default implementation with a serializer service id 'serializer' that can be turned on by adding
+the following line to your config.
+
+    #app/config/config.yml
+    foq_elastica:
+        serializer: ~
 
 #### Declare an index
 
