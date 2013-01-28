@@ -37,7 +37,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('serializer')
                     ->treatNullLike(array())
                     ->children()
-                        ->scalarNode('callback')->defaultValue('foq_elastica.serializer.callback')->end()
+                        ->scalarNode('callback')->defaultValue('foq_elastica.serializer.callback.class')->end()
                         ->scalarNode('serializer')->defaultValue('serializer')->end()
                     ->end()
                 ->end()
