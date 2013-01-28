@@ -302,7 +302,7 @@ class Configuration
             ->scalarNode('analyzer')->end()
             ->scalarNode('term_vector')->end()
             ->scalarNode('null_value')->end()
-            ->booleanNode('include_in_all')->defaultValue('true')->end()
+            ->booleanNode('include_in_all')->defaultValue(true)->end()
             ->scalarNode('lat_lon')->end()
             ->arrayNode('_parent')
                 ->treatNullLike(array())
