@@ -3,13 +3,17 @@
 namespace FOQ\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 class Configuration
 {
     private $supportedDrivers = array('orm', 'mongodb', 'propel');
+
+    private $configArray = array();
+
+    public function __construct($configArray){
+        $this->configArray = $configArray;
+    }
 
     /**
      * Generates the configuration tree.
@@ -263,111 +267,125 @@ class Configuration
         $builder = new TreeBuilder();
         $node = $builder->root('mappings');
 
-        $node
+        $nestings = $this->getNestings();
+
+        $childrenNode = $node
             ->useAttributeAsKey('name')
-            ->prototype('variable')
+            ->prototype('array')
                 ->treatNullLike(array())
-                ->validate()
-                    ->always($a = function($v) use (&$a) {
-                        if (!isset($v)) {
-                            $v = array();
-                        }
+                ->addDefaultsIfNotSet()
+                ->children();
 
-                        if (!isset($v['type'])) {
-                            $v['type'] = 'string';
-                        }
+        $this->addFieldConfig($childrenNode, $nestings);
 
-                        $scalars = array(
-                            'type',
-                            'boost',
-                            'store',
-                            'index',
-                            'index_analyzer',
-                            'analyzer',
-                            'search_analyzer',
-                            'term_vector',
-                            'null_value',
-                            'lat_lon',
-                        );
-
-                        foreach ($scalars as $scalar) {
-                            if (isset($v[$scalar]) && !is_scalar($v[$scalar])) {
-                                throw new InvalidTypeException(sprintf(
-                                    'Invalid type for path "%s". Expected scalar, but got %s.',
-                                    $scalar,
-                                    gettype($v[$scalar])
-                                ));
-                            }
-                        }
-
-                        if (!isset($v['include_in_all'])) {
-                            $v['include_in_all'] = 'true';
-                        } else if (!is_bool($v['include_in_all'])) {
-                            throw new InvalidTypeException(sprintf(
-                                'Invalid type for path "%s". Expected boolean, but got %s.',
-                                'include_in_all',
-                                gettype($v['include_in_all'])
-                            ));
-                        }
-
-
-                        if (isset($v['fields'])) {
-                            if ($v['type'] != 'multi_field') {
-                                throw new InvalidConfigurationException('Configuration "fields" does not exist for type '.$v['type']);
-                            }
-                            foreach ($v['fields'] as $index => $field) {
-                               $v['fields'][$index] = $a($field);
-                            }
-                        } else if ($v['type'] == 'multi_field') {
-                            $v['fields'] = array();
-                        }
-
-                        if (isset($v['_parent'])) {
-                            if (!is_array($v['_parent'])) {
-                                throw new InvalidTypeException(sprintf(
-                                    'Invalid type for path "%s". Expected array, but got %s.',
-                                    '_parent',
-                                    gettype($v['_parent'])
-                                ));
-                            } else {
-                                if (!is_scalar($v['_parent']['type'])) {
-                                    throw new InvalidTypeException(sprintf(
-                                        'Invalid type for path "%s". Expected scalar, but got %s.',
-                                        '_parent.type',
-                                        gettype($v['_parent']['type'])
-                                    ));
-                                }
-
-                                if (!isset($v['_parent']['identifier'])) {
-                                    $v['_parent']['identifier'] = 'id';
-                                } else if (!is_scalar($v['_parent']['identifier'])) {
-                                    throw new InvalidTypeException(sprintf(
-                                        'Invalid type for path "%s". Expected scalar, but got %s.',
-                                        '_parent.identifier',
-                                        gettype($v['_parent']['identifier'])
-                                    ));
-                                }
-                            }
-                        }
-
-                        if (isset($v['properties'])) {
-                            if (!in_array($v['type'], array('nested', 'object', 'array'))) {
-                                throw new InvalidConfigurationException('Configuration "properties" does not exist for type '.$v['type']);
-                            }
-                            foreach ($v['properties'] as $index => $property) {
-                                $v['properties'][$index] = $a($property);
-                            }
-                        } else if (in_array($v['type'], array('nested', 'object', 'array'))) {
-                            $v['properties'] = array();
-                        }
-
-                        return $v;
-                    })
+        $childrenNode
                 ->end()
             ->end()
         ;
 
         return $node;
+    }
+
+    /**
+     * @param Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the field config to
+     * @param array $nestings the nested mappings for the current field level
+     */
+    protected function addFieldConfig($node, $nestings)
+    {
+        $node
+            ->scalarNode('type')->defaultValue('string')->end()
+            ->scalarNode('boost')->end()
+            ->scalarNode('store')->end()
+            ->scalarNode('index')->end()
+            ->scalarNode('index_analyzer')->end()
+            ->scalarNode('search_analyzer')->end()
+            ->scalarNode('analyzer')->end()
+            ->scalarNode('term_vector')->end()
+            ->scalarNode('null_value')->end()
+            ->booleanNode('include_in_all')->defaultValue('true')->end()
+            ->scalarNode('lat_lon')->end()
+            ->arrayNode('_parent')
+                ->treatNullLike(array())
+                ->children()
+                    ->scalarNode('type')->end()
+                    ->scalarNode('identifier')->defaultValue('id')->end()
+                ->end()
+            ->end();
+
+        if (isset($nestings['fields'])) {
+            $this->addNestedFieldConfig($node, $nestings, 'fields');
+        }
+
+        if (isset($nestings['properties'])) {
+            $this->addNestedFieldConfig($node, $nestings, 'properties');
+        }
+    }
+
+    /**
+     * @param Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the nested config to
+     * @param array $nestings The nestings for the current field level
+     * @param string $property the name of the nested property ('fields' or 'properties')
+     */
+    protected function addNestedFieldConfig($node, $nestings, $property){
+        $childrenNode = $node
+            ->arrayNode($property)
+                ->useAttributeAsKey('name')
+                ->prototype('array')
+                    ->treatNullLike(array())
+                    ->addDefaultsIfNotSet()
+                    ->children();
+
+        $this->addFieldConfig($childrenNode, $nestings[$property]);
+
+        $childrenNode
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    /**
+     * @return array The unique nested mappings for all types
+     */
+    protected function getNestings()
+    {
+        $nestings = array();
+        foreach ($this->configArray[0]['indexes'] as $index) {
+            foreach ($index['types'] as $type) {
+                $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['mappings'], $nestings));
+            }
+        }
+        return $nestings;
+    }
+
+    /**
+     * @param array $mappings The mappings for the current type
+     * @return array The nested mappings defined for this type
+     */
+    protected function getNestingsForType($mappings)
+    {
+        $nestings = array();
+        foreach ($mappings as $field) {
+            if (isset($field['fields'])) {
+                $this->addPropertyNesting($field, $nestings, 'fields');
+            } else if (isset($field['properties'])) {
+                $this->addPropertyNesting($field, $nestings, 'properties');
+            }
+        }
+
+        return $nestings;
+    }
+
+    /**
+     * @param array $field      The field mapping definition
+     * @param array $nestings   The nestings array
+     * @param string $property  The nested property name ('fields' or 'properties')
+     */
+    protected function addPropertyNesting($field, &$nestings, $property){
+        if (!isset($nestings[$property])) {
+            $nestings[$property] = array();
+        }
+        $nestings[$property] = array_merge_recursive($nestings[$property], $this->getNestingsForType($field[$property]));
     }
 
     /**

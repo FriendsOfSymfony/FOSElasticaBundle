@@ -20,7 +20,7 @@ class FOQElasticaExtension extends Extension
 
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
+        $configuration = new Configuration($configs);
         $processor     = new Processor();
         $config        = $processor->process($configuration->getConfigTree(), $configs);
 
