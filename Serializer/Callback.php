@@ -2,24 +2,32 @@
 
 namespace FOQ\ElasticaBundle\Serializer;
 
+use JMS\Serializer\Serializer;
+
 class Callback
 {
     protected $serializer;
 
     protected $groups;
 
-    public function setSerializer($serializer){
+    public function setSerializer($serializer)
+    {
         $this->serializer = $serializer;
     }
 
-    public function setGroups($groups){
+    public function setGroups(array $groups)
+    {
         $this->groups = $groups;
     }
 
     public function serialize($object)
     {
-        $this->serializer->setGroups(null);
-        $this->serializer->setGroups($this->groups);
+        if ($this->serializer instanceof Serializer) {
+            $this->serializer->setGroups($this->groups);
+        } elseif ($this->groups) {
+            throw new \RuntimeException('Setting serialization groups requires using "JMS\Serializer\Serializer"');
+        }
+
         return $this->serializer->serialize($object, 'json');
     }
 }
