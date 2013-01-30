@@ -364,8 +364,7 @@ class FOQElasticaExtension extends Extension
     {
         if (isset($typeConfig['finder']['service'])) {
             $finderId = $typeConfig['finder']['service'];
-        }
-        else{
+        } else {
             $abstractFinderId = 'foq_elastica.finder.prototype';
             $finderId = sprintf('foq_elastica.finder.%s.%s', $indexName, $typeName);
             $finderDef = new DefinitionDecorator($abstractFinderId);
