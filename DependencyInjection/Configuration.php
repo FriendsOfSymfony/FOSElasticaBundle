@@ -278,11 +278,6 @@ class Configuration
 
         $this->addFieldConfig($childrenNode, $nestings);
 
-        $childrenNode
-                ->end()
-            ->end()
-        ;
-
         return $node;
     }
 
