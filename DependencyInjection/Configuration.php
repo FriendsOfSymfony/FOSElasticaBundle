@@ -326,7 +326,8 @@ class Configuration
      * @param array $nestings The nestings for the current field level
      * @param string $property the name of the nested property ('fields' or 'properties')
      */
-    protected function addNestedFieldConfig($node, $nestings, $property){
+    protected function addNestedFieldConfig($node, $nestings, $property)
+    {
         $childrenNode = $node
             ->arrayNode($property)
                 ->useAttributeAsKey('name')
@@ -381,7 +382,8 @@ class Configuration
      * @param array $nestings   The nestings array
      * @param string $property  The nested property name ('fields' or 'properties')
      */
-    protected function addPropertyNesting($field, &$nestings, $property){
+    protected function addPropertyNesting($field, &$nestings, $property)
+    {
         if (!isset($nestings[$property])) {
             $nestings[$property] = array();
         }
