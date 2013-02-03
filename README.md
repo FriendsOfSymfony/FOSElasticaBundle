@@ -119,6 +119,21 @@ Here we created a "website" index, that uses our "default" client.
 
 Our index is now available as a service: `foq_elastica.index.website`. It is an instance of `Elastica_Index`.
 
+If you need to have different index name from the service name, for example, 
+in order to have different indexes for different environments then you can 
+use the ```index_name``` key to change the index name. The service name will 
+remain the same across the environments:
+
+    foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        indexes:
+            website:
+                client: default
+                index_name: website_qa
+                
+The service id will be `foq_elastica.index.website` but the underlying index name is website_qa.           
+
 #### Declare a type
 
 Elasticsearch type is comparable to Doctrine entity repository.
