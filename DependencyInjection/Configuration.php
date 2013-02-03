@@ -352,6 +352,9 @@ class Configuration
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                 ->end()
+                ->scalarNode('compress')->end()
+                ->scalarNode('compress_threshold')->end()
+                ->scalarNode('enabled')->end()
             ->end()
         ;
 
