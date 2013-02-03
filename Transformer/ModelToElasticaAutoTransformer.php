@@ -73,17 +73,26 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * @param array $objects    the object to convert
      * @param array $fields     the keys we want to have in the returned array
      * @param Elastica_Document $parent the parent document
+     *
      * @return array
      */
     protected function transformNested($objects, array $fields, $parent)
     {
-        $documents = array();
-        foreach($objects as $object) {
-            $document = $this->transform($object, $fields);
-            $documents[] = $document->getData();
+        if (is_array($objects) || $objects instanceof \Traversable || $objects instanceof \ArrayAccess) {
+            $documents = array();
+            foreach ($objects as $object) {
+                $document = $this->transform($object, $fields);
+                $documents[] = $document->getData();
+            }
+
+            return $documents;
+        } elseif (null !== $objects) {
+            $document = $this->transform($objects, $fields);
+
+            return $document->getData();
         }
 
-        return $documents;
+        return array();
     }
 
     /**
