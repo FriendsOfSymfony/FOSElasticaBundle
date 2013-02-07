@@ -410,7 +410,7 @@ example:
     $repository = $repositoryManager->getRepository('UserBundle:User');
 
     /** var array of Acme\UserBundle\Entity\User */
-    $users = $finder->find('bob');
+    $users = $repository->find('bob');
 
 You can also specify the full name of the entity instead of the shortcut syntax:
 
@@ -431,7 +431,7 @@ to `foq_elastica.manager`. So the above example could be simplified to:
     $repository = $repositoryManager->getRepository('UserBundle:User');
 
     /** var array of Acme\UserBundle\Entity\User */
-    $users = $finder->find('bob');
+    $users = $repository->find('bob');
 
 If you use multiple drivers then you can choose which one is aliased to `foq_elastica.manager`
 using the `default_manager` parameter:
@@ -493,7 +493,7 @@ Then the custom queries will be available when using the repository returned fro
     $repository = $repositoryManager->getRepository('UserBundle:User');
 
     /** var array of Acme\UserBundle\Entity\User */
-    $users = $finder->findWithCustomQuery('bob');
+    $users = $repository->findWithCustomQuery('bob');
 
 Alternatively you can specify the custom repository using an annotation in the entity:
 
