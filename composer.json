@@ -32,4 +32,9 @@
     },
     "minimum-stability":"dev",
     "target-dir": "FOQ/ElasticaBundle"
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.1.x-dev"
+        }
+    }
 }
