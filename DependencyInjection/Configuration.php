@@ -4,17 +4,16 @@ namespace FOQ\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class Configuration
+class Configuration implements ConfigurationInterface
 {
     private $supportedDrivers = array('orm', 'mongodb', 'propel');
 
     /**
-     * Generates the configuration tree.
-     *
-     * @return \Symfony\Component\DependencyInjection\Configuration\NodeInterface
+     * {@inheritDoc}
      */
-    public function getConfigTree()
+    public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('foq_elastica', 'array');
@@ -30,7 +29,17 @@ class Configuration
             ->end()
         ;
 
-        return $treeBuilder->buildTree();
+        return $treeBuilder;
+    }
+
+    /**
+     * Generates the configuration tree.
+     *
+     * @return \Symfony\Component\DependencyInjection\Configuration\NodeInterface
+     */
+    public function getConfigTree()
+    {
+        return $this->getConfigTreeBuilder()->buildTree();
     }
 
     /**
@@ -398,7 +407,7 @@ class Configuration
 
         return $node;
     }
-    
+
     /**
      * Returns the array node used for "_routing".
      */

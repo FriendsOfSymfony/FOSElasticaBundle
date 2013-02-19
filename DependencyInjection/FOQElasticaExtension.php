@@ -21,8 +21,7 @@ class FOQElasticaExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $processor     = new Processor();
-        $config        = $processor->process($configuration->getConfigTree(), $configs);
+        $config        = $this->processConfiguration($configuration, $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('config.xml');
@@ -376,7 +375,7 @@ class FOQElasticaExtension extends Extension
             $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
             $container->setDefinition($finderId, $finderDef);
         }
-        
+
         $managerId = sprintf('foq_elastica.manager.%s', $typeConfig['driver']);
         $managerDef = $container->getDefinition($managerId);
         $arguments = array( $typeConfig['model'], new Reference($finderId));
