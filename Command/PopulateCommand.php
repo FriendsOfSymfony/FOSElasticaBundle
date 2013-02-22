@@ -38,7 +38,7 @@ class PopulateCommand extends ContainerAwareCommand
             ->setName('foq:elastica:populate')
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to repopulate')
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
-            ->addOption('no-reset', null, InputOption::VALUE_NONE, 'If set, the indexes will not been resetted before populating.')
+            ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
             ->setDescription('Populates search indexes from providers')
         ;
     }
