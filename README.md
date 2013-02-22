@@ -119,6 +119,21 @@ Here we created a "website" index, that uses our "default" client.
 
 Our index is now available as a service: `foq_elastica.index.website`. It is an instance of `Elastica_Index`.
 
+If you need to have different index name from the service name, for example, 
+in order to have different indexes for different environments then you can 
+use the ```index_name``` key to change the index name. The service name will 
+remain the same across the environments:
+
+    foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        indexes:
+            website:
+                client: default
+                index_name: website_qa
+                
+The service id will be `foq_elastica.index.website` but the underlying index name is website_qa.           
+
 #### Declare a type
 
 Elasticsearch type is comparable to Doctrine entity repository.
@@ -395,7 +410,7 @@ example:
     $repository = $repositoryManager->getRepository('UserBundle:User');
 
     /** var array of Acme\UserBundle\Entity\User */
-    $users = $finder->find('bob');
+    $users = $repository->find('bob');
 
 You can also specify the full name of the entity instead of the shortcut syntax:
 
@@ -416,7 +431,7 @@ to `foq_elastica.manager`. So the above example could be simplified to:
     $repository = $repositoryManager->getRepository('UserBundle:User');
 
     /** var array of Acme\UserBundle\Entity\User */
-    $users = $finder->find('bob');
+    $users = $repository->find('bob');
 
 If you use multiple drivers then you can choose which one is aliased to `foq_elastica.manager`
 using the `default_manager` parameter:
@@ -478,7 +493,7 @@ Then the custom queries will be available when using the repository returned fro
     $repository = $repositoryManager->getRepository('UserBundle:User');
 
     /** var array of Acme\UserBundle\Entity\User */
-    $users = $finder->findWithCustomQuery('bob');
+    $users = $repository->findWithCustomQuery('bob');
 
 Alternatively you can specify the custom repository using an annotation in the entity:
 

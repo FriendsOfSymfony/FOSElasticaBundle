@@ -108,6 +108,7 @@ class Configuration
                     ->prototype('array')
                         ->performNoDeepMerging()
                         ->children()
+                            ->scalarNode('index_name')->end()
                             ->scalarNode('client')->end()
                             ->scalarNode('finder')
                                 ->treatNullLike(true)
@@ -253,6 +254,7 @@ class Configuration
                 ->append($this->getMappingsNode())
                 ->append($this->getSourceNode())
                 ->append($this->getBoostNode())
+                ->append($this->getRoutingNode())
             ->end()
         ;
 
@@ -403,6 +405,9 @@ class Configuration
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                 ->end()
+                ->scalarNode('compress')->end()
+                ->scalarNode('compress_threshold')->end()
+                ->scalarNode('enabled')->end()
             ->end()
         ;
 
@@ -421,6 +426,24 @@ class Configuration
             ->children()
                 ->scalarNode('name')->end()
                 ->scalarNode('null_value')->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+    
+    /**
+     * Returns the array node used for "_routing".
+     */
+    protected function getRoutingNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_routing');
+
+        $node
+            ->children()
+                ->scalarNode('required')->end()
+                ->scalarNode('path')->end()
             ->end()
         ;
 

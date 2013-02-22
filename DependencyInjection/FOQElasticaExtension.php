@@ -105,7 +105,8 @@ class FOQElasticaExtension extends Extension
 
             $clientId = $clientIdsByName[$clientName];
             $indexId = sprintf('foq_elastica.index.%s', $name);
-            $indexDefArgs = array($name);
+            $indexName = isset($index['index_name']) ? $index['index_name'] : $name;
+            $indexDefArgs = array($indexName);
             $indexDef = new Definition('%foq_elastica.index.class%', $indexDefArgs);
             $indexDef->setFactoryService($clientId);
             $indexDef->setFactoryMethod('getIndex');
@@ -177,6 +178,9 @@ class FOQElasticaExtension extends Extension
             }
             if (isset($type['_boost'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['_boost'] = $type['_boost'];
+            }
+            if (isset($type['_routing'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_routing'] = $type['_routing'];
             }
             if (isset($type['mappings'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
@@ -368,15 +372,16 @@ class FOQElasticaExtension extends Extension
     protected function loadTypeFinder(array $typeConfig, ContainerBuilder $container, $elasticaToModelId, $typeDef, $indexName, $typeName)
     {
         if (isset($typeConfig['finder']['service'])) {
-            return $typeConfig['finder']['service'];
+            $finderId = $typeConfig['finder']['service'];
+        } else {
+            $abstractFinderId = 'foq_elastica.finder.prototype';
+            $finderId = sprintf('foq_elastica.finder.%s.%s', $indexName, $typeName);
+            $finderDef = new DefinitionDecorator($abstractFinderId);
+            $finderDef->replaceArgument(0, $typeDef);
+            $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
+            $container->setDefinition($finderId, $finderDef);
         }
-        $abstractFinderId = 'foq_elastica.finder.prototype';
-        $finderId = sprintf('foq_elastica.finder.%s.%s', $indexName, $typeName);
-        $finderDef = new DefinitionDecorator($abstractFinderId);
-        $finderDef->replaceArgument(0, $typeDef);
-        $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
-        $container->setDefinition($finderId, $finderDef);
-
+        
         $managerId = sprintf('foq_elastica.manager.%s', $typeConfig['driver']);
         $managerDef = $container->getDefinition($managerId);
         $arguments = array( $typeConfig['model'], new Reference($finderId));
