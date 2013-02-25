@@ -20,7 +20,7 @@ class FOQElasticaExtension extends Extension
 
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
+        $configuration = $this->getConfiguration($configs, $container);
         $processor     = new Processor();
         $config        = $processor->process($configuration->getConfigTree(), $configs);
 
@@ -54,6 +54,11 @@ class FOQElasticaExtension extends Extension
         $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
 
         $this->createDefaultManagerAlias($config['default_manager'], $container);
+    }
+
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration($config);
     }
 
     /**
