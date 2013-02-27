@@ -6,7 +6,7 @@ use FOQ\ElasticaBundle\HybridResult;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOQ\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Elastica_Document;
-use Symfony\Component\Form\Util\PropertyPath;
+use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * Maps Elastica documents with Doctrine objects

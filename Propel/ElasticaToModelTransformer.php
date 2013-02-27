@@ -5,7 +5,7 @@ namespace FOQ\ElasticaBundle\Propel;
 use FOQ\ElasticaBundle\HybridResult;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Document;
-use Symfony\Component\Form\Util\PropertyPath;
+use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * Maps Elastica documents with Propel objects

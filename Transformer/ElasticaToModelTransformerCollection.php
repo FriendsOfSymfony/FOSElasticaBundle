@@ -3,7 +3,7 @@
 namespace FOQ\ElasticaBundle\Transformer;
 
 use FOQ\ElasticaBundle\HybridResult;
-use Symfony\Component\Form\Util\PropertyPath;
+use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * Holds a collection of transformers for an index wide transformation.
