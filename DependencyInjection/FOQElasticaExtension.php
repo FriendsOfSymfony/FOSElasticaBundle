@@ -64,8 +64,9 @@ class FOQElasticaExtension extends Extension
     /**
      * Loads the configured clients.
      *
-     * @param array $config An array of clients configurations
+     * @param array $clients An array of clients configurations
      * @param ContainerBuilder $container A ContainerBuilder instance
+     * @return array
      */
     protected function loadClients(array $clients, ContainerBuilder $container)
     {
@@ -87,8 +88,12 @@ class FOQElasticaExtension extends Extension
     /**
      * Loads the configured indexes.
      *
-     * @param array $config An array of indexes configurations
+     * @param array $indexes An array of indexes configurations
      * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param array $clientIdsByName
+     * @param $defaultClientName
+     * @throws \InvalidArgumentException
+     * @return array
      */
     protected function loadIndexes(array $indexes, ContainerBuilder $container, array $clientIdsByName, $defaultClientName)
     {
@@ -160,8 +165,11 @@ class FOQElasticaExtension extends Extension
     /**
      * Loads the configured types.
      *
-     * @param array $config An array of types configurations
+     * @param array $types An array of types configurations
      * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param $indexName
+     * @param $indexId
+     * @param array $typePrototypeConfig
      */
     protected function loadTypes(array $types, ContainerBuilder $container, $indexName, $indexId, array $typePrototypeConfig)
     {
@@ -226,8 +234,12 @@ class FOQElasticaExtension extends Extension
     /**
      * Loads the optional provider and finder for a type
      *
-     * @return null
-     **/
+     * @param array $typeConfig
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param \Symfony\Component\DependencyInjection\Definition $typeDef
+     * @param $indexName
+     * @param $typeName
+     */
     protected function loadTypePersistenceIntegration(array $typeConfig, ContainerBuilder $container, Definition $typeDef, $indexName, $typeName)
     {
         $this->loadDriver($container, $typeConfig['driver']);
@@ -409,8 +421,9 @@ class FOQElasticaExtension extends Extension
     /**
      * Loads the resetter
      *
-     * @return null
-     **/
+     * @param array $indexConfigs
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     */
     protected function loadResetter(array $indexConfigs, ContainerBuilder $container)
     {
         $resetterDef = $container->getDefinition('foq_elastica.resetter');

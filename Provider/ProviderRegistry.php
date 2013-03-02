@@ -12,6 +12,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ProviderRegistry implements ContainerAwareInterface
 {
+    /**
+     * @var ContainerInterface
+     */
     private $container;
     private $providers = array();
 
@@ -58,7 +61,7 @@ class ProviderRegistry implements ContainerAwareInterface
      *
      * @param string  $index
      * @return array of ProviderInterface instances
-     * @throws InvalidArgumentException if no providers were registered for the index
+     * @throws \InvalidArgumentException if no providers were registered for the index
      */
     public function getIndexProviders($index)
     {
@@ -81,7 +84,7 @@ class ProviderRegistry implements ContainerAwareInterface
      * @param string $index
      * @param string $type
      * @return ProviderInterface
-     * @throws InvalidArgumentException if no provider was registered for the index and type
+     * @throws \InvalidArgumentException if no provider was registered for the index and type
      */
     public function getProvider($index, $type)
     {

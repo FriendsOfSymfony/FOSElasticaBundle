@@ -3,7 +3,6 @@
 namespace FOQ\ElasticaBundle\Doctrine\ORM;
 
 use FOQ\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
-use Elastica_Document;
 use Doctrine\ORM\Query;
 
 /**

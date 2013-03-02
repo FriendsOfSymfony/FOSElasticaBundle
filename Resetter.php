@@ -33,7 +33,7 @@ class Resetter
      * Deletes and recreates the named index
      *
      * @param string $indexName
-     * @throws InvalidArgumentException if no index exists for the given name
+     * @throws \InvalidArgumentException if no index exists for the given name
      */
     public function resetIndex($indexName)
     {
@@ -46,7 +46,7 @@ class Resetter
      *
      * @param string $indexName
      * @param string $typeName
-     * @throws InvalidArgumentException if no index or type mapping exists for the given names
+     * @throws \InvalidArgumentException if no index or type mapping exists for the given names
      */
     public function resetIndexType($indexName, $typeName)
     {
@@ -66,13 +66,13 @@ class Resetter
      * create type mapping object
      *
      * @param array $indexConfig
-     * @return Elastica_Type_Mapping
+     * @return \Elastica_Type_Mapping
      */
     protected function createMapping($indexConfig)
     {
 		$mapping = \Elastica_Type_Mapping::create($indexConfig['properties']);
 
-        foreach($indexConfig['properties'] as $field => $type) {
+        foreach($indexConfig['properties'] as $type) {
             if (!empty($type['_parent']) && $type['_parent'] !== '~') {
                 $mapping->setParam('_parent', array('type' => $type['_parent']['type']));
             }
@@ -84,9 +84,11 @@ class Resetter
     /**
      * Gets an index config by its name
      *
-     * @param string $index Index name
+     * @param string $indexName Index name
+     *
+     * @param $indexName
      * @return array
-     * @throws InvalidArgumentException if no index config exists for the given name
+     * @throws \InvalidArgumentException if no index config exists for the given name
      */
     protected function getIndexConfig($indexName)
     {

@@ -2,7 +2,6 @@
 
 namespace FOQ\ElasticaBundle\Finder;
 
-use FOQ\ElasticaBundle\Finder\FinderInterface;
 use FOQ\ElasticaBundle\Finder\PaginatedFinderInterface;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOQ\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
@@ -46,6 +45,11 @@ class TransformedFinder implements PaginatedFinderInterface
         return $this->transformer->hybridTransform($results);
     }
 
+    /**
+     * @param $query
+     * @param null|int $limit
+     * @return array
+     */
     protected function search($query, $limit = null)
     {
         $queryObject = Elastica_Query::create($query);
@@ -61,6 +65,7 @@ class TransformedFinder implements PaginatedFinderInterface
     /**
      * Gets a paginator wrapping the result of a search
      *
+     * @param string $query
      * @return Pagerfanta
      */
     public function findPaginated($query)

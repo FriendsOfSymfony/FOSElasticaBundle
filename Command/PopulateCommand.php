@@ -8,6 +8,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
+use FOQ\ElasticaBundle\IndexManager;
+use FOQ\ElasticaBundle\Provider\ProviderRegistry;
+use FOQ\ElasticaBundle\Resetter;
+use FOQ\ElasticaBundle\Provider\ProviderInterface;
 
 /**
  * Populate the search index
@@ -15,17 +19,17 @@ use Symfony\Component\Console\Output\Output;
 class PopulateCommand extends ContainerAwareCommand
 {
     /**
-     * @var FOQ\ElasticaBundle\IndexManager
+     * @var IndexManager
      */
     private $indexManager;
 
     /**
-     * @var FOQ\ElasticaBundle\Provider\ProviderRegistry
+     * @var ProviderRegistry
      */
     private $providerRegistry;
 
     /**
-     * @var FOQ\ElasticaBundle\Resetter
+     * @var Resetter
      */
     private $resetter;
 
@@ -95,6 +99,7 @@ class PopulateCommand extends ContainerAwareCommand
             $this->resetter->resetIndex($index);
         }
 
+        /** @var $providers ProviderInterface[] */
         $providers = $this->providerRegistry->getIndexProviders($index);
 
         foreach ($providers as $type => $provider) {

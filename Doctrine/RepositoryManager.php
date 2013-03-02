@@ -4,7 +4,6 @@ namespace FOQ\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use FOQ\ElasticaBundle\Finder\FinderInterface;
 use FOQ\ElasticaBundle\Manager\RepositoryManager as BaseManager;
 
 /**

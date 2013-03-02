@@ -136,7 +136,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return FOQ\ElasticaBundle\Doctrine\AbstractProvider
+     * @return \FOQ\ElasticaBundle\Doctrine\AbstractProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getMockAbstractProvider()
     {
@@ -149,7 +149,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return Doctrine\Common\Persistence\ManagerRegistry
+     * @return \Doctrine\Common\Persistence\ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getMockManagerRegistry()
     {
@@ -157,7 +157,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return FOQ\ElasticaBundle\Tests\Doctrine\ObjectManager
+     * @return ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getMockObjectManager()
     {
@@ -165,7 +165,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return FOQ\ElasticaBundle\Persister\ObjectPersisterInterface
+     * @return \FOQ\ElasticaBundle\Persister\ObjectPersisterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getMockObjectPersister()
     {

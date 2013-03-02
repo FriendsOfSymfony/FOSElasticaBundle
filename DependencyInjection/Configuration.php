@@ -18,7 +18,7 @@ class Configuration
     /**
      * Generates the configuration tree.
      *
-     * @return \Symfony\Component\DependencyInjection\Configuration\NodeInterface
+     * @return \Symfony\Component\Config\Definition\NodeInterface
      */
     public function getConfigTree()
     {
@@ -284,7 +284,7 @@ class Configuration
     }
 
     /**
-     * @param Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the field config to
+     * @param \Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the field config to
      * @param array $nestings the nested mappings for the current field level
      */
     protected function addFieldConfig($node, $nestings)
@@ -319,7 +319,7 @@ class Configuration
     }
 
     /**
-     * @param Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the nested config to
+     * @param \Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the nested config to
      * @param array $nestings The nestings for the current field level
      * @param string $property the name of the nested property ('fields' or 'properties')
      */

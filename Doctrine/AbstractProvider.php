@@ -35,6 +35,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
     {
         $queryBuilder = $this->createQueryBuilder();
         $nbObjects = $this->countObjects($queryBuilder);
+        $stepStartTime = 0;
 
         for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
             if ($loggerClosure) {

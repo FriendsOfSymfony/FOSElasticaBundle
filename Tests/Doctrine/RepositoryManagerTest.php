@@ -22,14 +22,17 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testThatGetRepositoryReturnsDefaultRepository()
     {
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOQ\ElasticaBundle\Finder\TransformedFinder */
         $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();
@@ -44,14 +47,17 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testThatGetRepositoryReturnsCustomRepository()
     {
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOQ\ElasticaBundle\Finder\TransformedFinder */
         $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();
@@ -65,18 +71,21 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testThatGetRepositoryThrowsExceptionIfEntityNotConfigured()
     {
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOQ\ElasticaBundle\Finder\TransformedFinder */
         $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();
@@ -89,18 +98,21 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testThatGetRepositoryThrowsExceptionIfCustomRepositoryNotFound()
     {
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOQ\ElasticaBundle\Finder\TransformedFinder */
         $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();
@@ -114,14 +126,17 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testThatGetRepositoryWorksWithShortEntityName()
     {
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOQ\ElasticaBundle\Finder\TransformedFinder */
         $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();

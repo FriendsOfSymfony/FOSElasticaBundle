@@ -2,7 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Transformer;
 
-use Symfony\Component\Form\Util\PropertyPath;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -36,32 +36,30 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * @param object $object the object to convert
      * @param array  $fields the keys we want to have in the returned array
      *
-     * @return Elastica_Document
+     * @return \Elastica_Document
      **/
     public function transform($object, array $fields)
     {
-        $identifierProperty = new PropertyPath($this->options['identifier']);
-        $identifier         = $identifierProperty->getValue($object);
+        $accessor           = PropertyAccess::getPropertyAccessor();
+        $identifier         = $accessor->getValue($object, $this->options['identifier']);
         $document           = new \Elastica_Document($identifier);
         foreach ($fields as $key => $mapping) {
-            $property = new PropertyPath($key);
             if (!empty($mapping['_parent']) && $mapping['_parent'] !== '~') {
-                $parent             = $property->getValue($object);
-                $identifierProperty = new PropertyPath($mapping['_parent']['identifier']);
-                $document->setParent($identifierProperty->getValue($parent));
+                $parent             = $accessor->getValue($object, $key);
+                $document->setParent($accessor->getValue($parent, $mapping['_parent']['identifier']));
             } else if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object'))) {
                 $submapping     = $mapping['properties'];
-                $subcollection  = $property->getValue($object);
+                $subcollection  = $accessor->getValue($object, $key);
                 $document->add($key, $this->transformNested($subcollection, $submapping, $document));
             } else if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
-                $attachment = $property->getValue($object);
+                $attachment = $accessor->getValue($object, $key);
                 if ($attachment instanceof \SplFileInfo) {
                     $document->addFile($key, $attachment->getPathName());
                 } else {
                     $document->addFileContent($key, $attachment);
                 }
             } else {
-                $document->add($key, $this->normalizeValue($property->getValue($object)));
+                $document->add($key, $this->normalizeValue($accessor->getValue($object, $key)));
             }
         }
         return $document;
@@ -70,13 +68,12 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     /**
      * transform a nested document or an object property into an array of ElasticaDocument
      *
-     * @param array $objects    the object to convert
-     * @param array $fields     the keys we want to have in the returned array
-     * @param Elastica_Document $parent the parent document
+     * @param array|\Traversable|\ArrayAccess $objects the object to convert
+     * @param array $fields the keys we want to have in the returned array
      *
      * @return array
      */
-    protected function transformNested($objects, array $fields, $parent)
+    protected function transformNested($objects, array $fields)
     {
         if (is_array($objects) || $objects instanceof \Traversable || $objects instanceof \ArrayAccess) {
             $documents = array();

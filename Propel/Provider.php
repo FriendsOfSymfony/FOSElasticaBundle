@@ -18,6 +18,7 @@ class Provider extends AbstractProvider
     {
         $queryClass = $this->objectClass . 'Query';
         $nbObjects = $queryClass::create()->count();
+        $stepStartTime = 0;
 
         for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
             if ($loggerClosure) {
