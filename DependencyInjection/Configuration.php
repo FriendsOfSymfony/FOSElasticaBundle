@@ -349,6 +349,10 @@ class Configuration
     {
         $nestings = array();
         foreach ($this->configArray[0]['indexes'] as $index) {
+            if (empty($index['types'])) {
+                continue;
+            }
+
             foreach ($index['types'] as $type) {
                 $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['mappings'], $nestings));
             }
