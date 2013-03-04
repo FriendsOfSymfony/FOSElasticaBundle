@@ -112,7 +112,7 @@ class FOQElasticaExtension extends Extension
             $indexDef->setFactoryMethod('getIndex');
             $container->setDefinition($indexId, $indexDef);
             $typePrototypeConfig = isset($index['type_prototype']) ? $index['type_prototype'] : array();
-            $indexIds[$indexName] = $indexId;
+            $indexIds[$name] = $indexId;
             $this->indexConfigs[$name] = array(
                 'index' => new Reference($indexId),
                 'config' => array(
