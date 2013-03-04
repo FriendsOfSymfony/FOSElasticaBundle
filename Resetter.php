@@ -70,7 +70,7 @@ class Resetter
      */
     protected function createMapping($indexConfig)
     {
-		$mapping = \Elastica_Type_Mapping::create($indexConfig['properties']);
+        $mapping = \Elastica_Type_Mapping::create($indexConfig['properties']);
 
         foreach($indexConfig['properties'] as $type) {
             if (!empty($type['_parent']) && $type['_parent'] !== '~') {

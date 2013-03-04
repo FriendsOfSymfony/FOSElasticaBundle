@@ -2,7 +2,7 @@
 
 namespace FOQ\ElasticaBundle\Transformer;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Form\Util\PropertyPath;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -40,26 +40,28 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      **/
     public function transform($object, array $fields)
     {
-        $accessor           = PropertyAccess::getPropertyAccessor();
-        $identifier         = $accessor->getValue($object, $this->options['identifier']);
+        $identifierProperty = new PropertyPath($this->options['identifier']);
+        $identifier         = $identifierProperty->getValue($object);
         $document           = new \Elastica_Document($identifier);
         foreach ($fields as $key => $mapping) {
+            $property = new PropertyPath($key);
             if (!empty($mapping['_parent']) && $mapping['_parent'] !== '~') {
-                $parent             = $accessor->getValue($object, $key);
-                $document->setParent($accessor->getValue($parent, $mapping['_parent']['identifier']));
+                $parent             = $property->getValue($object);
+                $identifierProperty = new PropertyPath($mapping['_parent']['identifier']);
+                $document->setParent($identifierProperty->getValue($parent));
             } else if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object'))) {
                 $submapping     = $mapping['properties'];
-                $subcollection  = $accessor->getValue($object, $key);
+                $subcollection  = $property->getValue($object);
                 $document->add($key, $this->transformNested($subcollection, $submapping, $document));
             } else if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
-                $attachment = $accessor->getValue($object, $key);
+                $attachment = $property->getValue($object);
                 if ($attachment instanceof \SplFileInfo) {
                     $document->addFile($key, $attachment->getPathName());
                 } else {
                     $document->addFileContent($key, $attachment);
                 }
             } else {
-                $document->add($key, $this->normalizeValue($accessor->getValue($object, $key)));
+                $document->add($key, $this->normalizeValue($property->getValue($object)));
             }
         }
         return $document;
