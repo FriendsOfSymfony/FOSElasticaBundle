@@ -111,7 +111,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $data['bool']);
         $this->assertEquals(false, $data['falseBool']);
         $expectedDate = new \DateTime('1979-05-05');
-        $this->assertEquals($expectedDate->format('U'), $data['date']);
+        $this->assertEquals($expectedDate->format('c'), $data['date']);
     }
 
     public function testThatCanTransformObjectWithIteratorValue()
@@ -143,7 +143,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             array(
                  'key1'  => 'value1',
-                 'key2'  => array('value2', false, 123, 8.9, $expectedDate->format('U')),
+                 'key2'  => array('value2', false, 123, 8.9, $expectedDate->format('c')),
             ), $data['multiArray']
         );
     }
