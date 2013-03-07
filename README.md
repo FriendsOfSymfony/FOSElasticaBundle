@@ -549,24 +549,17 @@ class Client extends BaseClient
 }
 ```
 
+### Example of Advanced Query
 
-<h3>Example of Advanced Query</h3>
-If you would like to perform more advanced query here is an example, which is using the snowball stemming algorithm.
+If you would like to perform more advanced queries, here is one example using
+the snowball stemming algorithm.
 
-It performs search against Article Entity by using title, tags
-and categoryIds and return results if the search string is
-found in either title or tags fields only in the specified 
-categoryIds.
-
-Note: When performing query with Elastica_Query_Terms considering the following:
-
-```
-Works: 'somestring'
-Doesn't work: 'some string', 'some-string', 'SomeString'
-```
+It searches for Article entities using `title`, `tags`, and `categoryIds`.
+Results must match at least one specified `categoryIds`, and should match the
+`title` or `tags` criteria. Additionally, we define a snowball analyzer to
+apply to queries against the `title` field.
 
 ```php
-
 $finder = $this->container->get('foq_elastica.finder.website.article');
 $boolQuery = new \Elastica_Query_Bool();
 
@@ -580,20 +573,18 @@ $tagsQuery->setTerms('tags', array('tag1', 'tag2'));
 $boolQuery->addShould($tagsQuery);
 
 $categoryQuery = new \Elastica_Query_Terms();
-$categoryQuery->setTerms('categoryIds', array('1', '2', '3'));  
-$boolQuery->addMust($categoryQuery);	
+$categoryQuery->setTerms('categoryIds', array('1', '2', '3'));
+$boolQuery->addMust($categoryQuery);
 
 $data = $finder->find($boolQuery);
-
 ```
 
 Configuration:
 
-
-```
+```yaml
 foq_elastica:
     clients:
-        default: { host: localhost, port: 9200 }  
+        default: { host: localhost, port: 9200 }
     indexes:
         site:
             settings:
@@ -607,13 +598,11 @@ foq_elastica:
                 article:
                     mappings:
                         title: { boost: 10, analyzer: my_analyzer }
-                        tags:  
+                        tags:
                         categoryIds:
                     persistence:
-                        driver: orm  
+                        driver: orm
                         model: Acme\DemoBundle\Entity\Article
                         provider:
                         finder:
 ```
-
-
