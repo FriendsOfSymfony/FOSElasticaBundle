@@ -369,9 +369,14 @@ class Configuration
      * @param array $mappings The mappings for the current type
      * @return array The nested mappings defined for this type
      */
-    protected function getNestingsForType($mappings)
+    protected function getNestingsForType(array $mappings = null)
     {
+        if ($mappings === null) {
+            return array();
+        }
+
         $nestings = array();
+
         foreach ($mappings as $field) {
             if (isset($field['fields'])) {
                 $this->addPropertyNesting($field, $nestings, 'fields');
