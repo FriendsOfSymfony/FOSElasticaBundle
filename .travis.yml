@@ -4,16 +4,5 @@ php:
   - 5.3
   - 5.4
 
-env:
-  - MONGO_VERSION=1.2.12
-
 before_script:
-  - wget http://pecl.php.net/get/mongo-${MONGO_VERSION}.tgz
-  - tar -xzf mongo-${MONGO_VERSION}.tgz
-  - sh -c "cd mongo-${MONGO_VERSION} && phpize && ./configure && make && sudo make install"
-  - echo "extension=mongo.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-  - wget -nc http://getcomposer.org/composer.phar
-  - php composer.phar install
-
-script: phpunit
-
+  - composer install --dev
