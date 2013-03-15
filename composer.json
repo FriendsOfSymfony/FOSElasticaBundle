@@ -18,14 +18,18 @@
         "ruflin/elastica": "0.19.8"
     },
     "require-dev":{
-        "doctrine/orm":">=2.2,<2.5-dev",
-        "doctrine/mongodb-odm":"dev-master",
-        "propel/propel1":"1.6.*"
+        "doctrine/orm": ">=2.2,<2.5-dev",
+        "doctrine/mongodb-odm": "dev-master",
+        "propel/propel1": "1.6.*",
+        "pagerfanta/pagerfanta": "1.*",
+        "knplabs/knp-components": "1.2.*"
     },
     "suggest": {
         "doctrine/orm": ">=2.2,<2.5-dev",
         "doctrine/mongodb-odm": ">=3.0.0-beta2,<3.1-dev",
-        "propel/propel1": "1.6.*"
+        "propel/propel1": "1.6.*",
+        "pagerfanta/pagerfanta": "1.*",
+        "knplabs/knp-components": "1.2.*"
     },
     "autoload": {
         "psr-0": { "FOQ\\ElasticaBundle": "" }

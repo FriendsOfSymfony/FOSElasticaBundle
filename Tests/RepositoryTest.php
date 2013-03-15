@@ -14,6 +14,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $testQuery = 'Test Query';
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOQ\ElasticaBundle\Finder\TransformedFinder */
         $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
@@ -30,6 +31,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $testQuery = 'Test Query';
         $testLimit = 20;
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOQ\ElasticaBundle\Finder\TransformedFinder */
         $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
@@ -45,6 +47,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $testQuery = 'Test Query';
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOQ\ElasticaBundle\Finder\TransformedFinder */
         $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
@@ -61,6 +64,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $testQuery = 'Test Query';
         $testLimit = 20;
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOQ\ElasticaBundle\Finder\TransformedFinder */
         $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();

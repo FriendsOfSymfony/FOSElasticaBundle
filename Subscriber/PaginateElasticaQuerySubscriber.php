@@ -5,12 +5,14 @@ namespace FOQ\ElasticaBundle\Subscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Knp\Component\Pager\Event\ItemsEvent;
 use FOQ\ElasticaBundle\Paginator\PaginatorAdapterInterface;
+use FOQ\ElasticaBundle\Paginator\PartialResultsInterface;
 
 class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {
     public function items(ItemsEvent $event)
     {
         if ($event->target instanceof PaginatorAdapterInterface) {
+            /** @var $results PartialResultsInterface */
             $results = $event->target->getResults($event->getOffset(), $event->getLimit());
 
             $event->count = $results->getTotalHits();

@@ -15,4 +15,5 @@ spl_autoload_register(function($class) {
         require_once $path;
         return true;
     }
+    return false;
 });

@@ -2,12 +2,9 @@
 
 namespace FOQ\ElasticaBundle\Persister;
 
-use FOQ\ElasticaBundle\Provider\ProviderInterface;
 use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Elastica_Type;
 use Elastica_Document;
-use Exception;
 
 /**
  * Inserts, replaces and deletes single documents in an elastica type
@@ -83,7 +80,7 @@ class ObjectPersister implements ObjectPersisterInterface
     /**
      * Inserts an array of objects in the type
      *
-     * @param array of domain model objects
+     * @param array $objects array of domain model objects
      **/
     public function insertMany(array $objects)
     {

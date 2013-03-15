@@ -41,6 +41,7 @@ class SearchCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $indexName = $input->getOption('index');
+        /** @var $index \Elastica_Index */
         $index = $this->getContainer()->get('foq_elastica.index_manager')->getIndex($indexName ? $indexName : null);
         $type  = $index->getType($input->getArgument('type'));
         $query = Elastica_Query::create($input->getArgument('query'));

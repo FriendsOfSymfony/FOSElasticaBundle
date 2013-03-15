@@ -5,7 +5,6 @@ namespace FOQ\ElasticaBundle\Doctrine;
 use FOQ\ElasticaBundle\HybridResult;
 use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOQ\ElasticaBundle\Transformer\HighlightableModelInterface;
-use Elastica_Document;
 use Symfony\Component\Form\Util\PropertyPath;
 
 /**
@@ -65,7 +64,8 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      * Transforms an array of elastica objects into an array of
      * model objects fetched from the doctrine repository
      *
-     * @param array of elastica objects
+     * @param array $elasticaObjects of elastica objects
+     * @throws \RuntimeException
      * @return array
      **/
     public function transform(array $elasticaObjects)

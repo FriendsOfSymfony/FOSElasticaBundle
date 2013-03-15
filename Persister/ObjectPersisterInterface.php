@@ -44,7 +44,7 @@ interface ObjectPersisterInterface
     /**
      * Inserts an array of objects in the type
      *
-     * @param array of domain model objects
+     * @param array $objects array of domain model objects
      **/
     function insertMany(array $objects);
 }

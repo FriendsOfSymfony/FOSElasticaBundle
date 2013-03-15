@@ -5,6 +5,7 @@ namespace FOQ\ElasticaBundle\Doctrine;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;
 use FOQ\ElasticaBundle\Persister\ObjectPersisterInterface;
+use FOQ\ElasticaBundle\Persister\ObjectPersister;
 
 abstract class AbstractListener implements EventSubscriber
 {
@@ -83,7 +84,7 @@ abstract class AbstractListener implements EventSubscriber
      * return a boolean.
      *
      * @param callback $callback
-     * @throw RuntimeException if the callback is not callable
+     * @throws \RuntimeException if the callback is not callable
      */
     public function setIsIndexableCallback($callback)
     {

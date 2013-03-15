@@ -7,6 +7,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|ContainerInterface
+     */
     private $container;
     private $registry;
 

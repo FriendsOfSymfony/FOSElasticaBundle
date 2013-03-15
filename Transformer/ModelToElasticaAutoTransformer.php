@@ -36,7 +36,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * @param object $object the object to convert
      * @param array  $fields the keys we want to have in the returned array
      *
-     * @return Elastica_Document
+     * @return \Elastica_Document
      **/
     public function transform($object, array $fields)
     {
@@ -70,13 +70,12 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     /**
      * transform a nested document or an object property into an array of ElasticaDocument
      *
-     * @param array $objects    the object to convert
-     * @param array $fields     the keys we want to have in the returned array
-     * @param Elastica_Document $parent the parent document
+     * @param array|\Traversable|\ArrayAccess $objects the object to convert
+     * @param array $fields the keys we want to have in the returned array
      *
      * @return array
      */
-    protected function transformNested($objects, array $fields, $parent)
+    protected function transformNested($objects, array $fields)
     {
         if (is_array($objects) || $objects instanceof \Traversable || $objects instanceof \ArrayAccess) {
             $documents = array();
