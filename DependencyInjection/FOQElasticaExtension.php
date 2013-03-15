@@ -261,7 +261,8 @@ class FOQElasticaExtension extends Extension
         $serviceDef->replaceArgument($argPos, $typeConfig['model']);
         $serviceDef->replaceArgument($argPos + 1, array(
             'identifier'    => $typeConfig['identifier'],
-            'hydrate'       => $typeConfig['elastica_to_model_transformer']['hydrate']
+            'hydrate'       => $typeConfig['elastica_to_model_transformer']['hydrate'],
+            'query_builder_method' => $typeConfig['elastica_to_model_transformer']['query_builder_method']
         ));
         $container->setDefinition($serviceId, $serviceDef);
 
