@@ -13,6 +13,7 @@
         <parameter key="foq_elastica.manager.class">FOQ\ElasticaBundle\Manager\RepositoryManager</parameter>
         <parameter key="foq_elastica.elastica_to_model_transformer.collection.class">FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
         <parameter key="foq_elastica.provider_registry.class">FOQ\ElasticaBundle\Provider\ProviderRegistry</parameter>
+        <parameter key="foq_elastica.serializer.callback.class">FOQ\ElasticaBundle\Serializer\Callback</parameter>
     </parameters>
 
     <services>
