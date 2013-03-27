@@ -150,7 +150,7 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideInvalidIsIndexableCallbacks
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testInvalidIsIndexableCallbacks($isIndexableCallback)
     {

@@ -63,6 +63,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryIsLogged()
     {
+        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpKernel\Log\LoggerInterface */
         $loggerMock = $this->getMockBuilder('Symfony\Component\HttpKernel\Log\LoggerInterface')
             ->disableOriginalConstructor()
             ->getMock();

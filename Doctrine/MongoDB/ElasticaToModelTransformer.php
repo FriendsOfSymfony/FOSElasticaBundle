@@ -3,7 +3,6 @@
 namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
 use FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
-use Elastica_Document;
 
 /**
  * Maps Elastica documents with Doctrine objects

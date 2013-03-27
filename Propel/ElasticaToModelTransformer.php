@@ -4,7 +4,6 @@ namespace FOS\ElasticaBundle\Propel;
 
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use Elastica_Document;
 use Symfony\Component\Form\Util\PropertyPath;
 
 /**
@@ -49,12 +48,12 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      * Transforms an array of elastica objects into an array of
      * model objects fetched from the propel repository
      *
-     * @param array of elastica objects
+     * @param \Elastica_Document[] $elasticaObjects array of elastica objects
      * @return array
      */
     public function transform(array $elasticaObjects)
     {
-        $ids = array_map(function($elasticaObject) {
+        $ids = array_map(function(\Elastica_Document $elasticaObject) {
             return $elasticaObject->getId();
         }, $elasticaObjects);
 
@@ -111,10 +110,8 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     /**
      * Fetch objects for theses identifier values
      *
-     * @param string $class the model class
-     * @param string $identifierField like 'id'
      * @param array $identifierValues ids values
-     * @param Boolean $hydrate whether or not to hydrate the objects, false returns arrays
+     * @param boolean $hydrate whether or not to hydrate the objects, false returns arrays
      * @return array of objects or arrays
      */
     protected function findByIdentifiers(array $identifierValues, $hydrate)

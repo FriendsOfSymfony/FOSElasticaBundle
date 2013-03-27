@@ -10,8 +10,8 @@ class IndexManager
     /**
      * Constructor.
      *
-     * @param array  $indexesByName
-     * @param string $defaultIndexName
+     * @param array $indexesByName
+     * @param \Elastica_Index $defaultIndex
      */
     public function __construct(array $indexesByName, \Elastica_Index $defaultIndex)
     {
@@ -33,8 +33,8 @@ class IndexManager
      * Gets an index by its name
      *
      * @param string $name Index to return, or the default index if null
-     * @return Elastica_Index
-     * @throws InvalidArgumentException if no index exists for the given name
+     * @return \Elastica_Index
+     * @throws \InvalidArgumentException if no index exists for the given name
      */
     public function getIndex($name = null)
     {
@@ -52,7 +52,7 @@ class IndexManager
     /**
      * Gets the default index
      *
-     * @return Elastica_Index
+     * @return \Elastica_Index
      */
     public function getDefaultIndex()
     {

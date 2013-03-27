@@ -10,6 +10,9 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
  */
 class Client extends Elastica_Client
 {
+    /**
+     * @var ElasticaLogger
+     */
     protected $logger;
 
     public function setLogger(ElasticaLogger $logger)

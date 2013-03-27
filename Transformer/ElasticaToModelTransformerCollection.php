@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Transformer;
 
 use FOS\ElasticaBundle\HybridResult;
-use Symfony\Component\Form\Util\PropertyPath;
+use Elastica_Document;
 
 /**
  * Holds a collection of transformers for an index wide transformation.
@@ -12,6 +12,9 @@ use Symfony\Component\Form\Util\PropertyPath;
  */
 class ElasticaToModelTransformerCollection implements ElasticaToModelTransformerInterface
 {
+    /**
+     * @var ElasticaToModelTransformerInterface[]
+     */
     protected $transformers = array();
 
     public function __construct(array $transformers)
@@ -21,7 +24,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
 
     public function getObjectClass()
     {
-        return array_map(function ($transformer) {
+        return array_map(function (ElasticaToModelTransformerInterface $transformer) {
             return $transformer->getObjectClass();
         }, $this->transformers);
     }
@@ -31,11 +34,15 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
      */
     public function getIdentifierField()
     {
-        return array_map(function ($transformer) {
+        return array_map(function (ElasticaToModelTransformerInterface $transformer) {
             return $transformer->getIdentifierField();
         }, $this->transformers);
     }
 
+    /**
+     * @param Elastica_Document[] $elasticaObjects
+     * @return array
+     */
     public function transform(array $elasticaObjects)
     {
         $sorted = array();
@@ -80,7 +87,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
 
     protected function getTypeToClassMap()
     {
-        return array_map(function ($transformer) {
+        return array_map(function (ElasticaToModelTransformerInterface $transformer) {
             return $transformer->getObjectClass();
         }, $this->transformers);
     }

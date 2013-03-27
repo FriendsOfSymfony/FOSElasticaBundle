@@ -23,7 +23,7 @@ class Provider extends AbstractProvider
         $qb = clone $queryBuilder;
 
         return $qb
-            ->select($qb->expr()->count($queryBuilder->getRootAlias()))
+            ->select($qb->expr()->count($queryBuilder->getRootAliases()[0]))
             // Remove ordering for efficiency; it doesn't affect the count
             ->resetDQLPart('orderBy')
             ->getQuery()

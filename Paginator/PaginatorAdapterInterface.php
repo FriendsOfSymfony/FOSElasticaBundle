@@ -2,6 +2,8 @@
 
 namespace FOS\ElasticaBundle\Paginator;
 
+use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
+
 interface PaginatorAdapterInterface
 {
     /**
@@ -19,7 +21,7 @@ interface PaginatorAdapterInterface
      * @param integer $offset The offset.
      * @param integer $length The length.
      *
-     * @return FOS\ElasticaBundle\Paginator\PartialResults
+     * @return PartialResultsInterface
      *
      * @api
      */

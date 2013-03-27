@@ -41,6 +41,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $modelTransformer = new  ModelToElasticaAutoTransformer();
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
             ->disableOriginalConstructor()
             ->getMock();
@@ -63,6 +64,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $modelTransformer = new  ModelToElasticaAutoTransformer();
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
             ->disableOriginalConstructor()
             ->getMock();
@@ -81,6 +83,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $modelTransformer = new  ModelToElasticaAutoTransformer();
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
             ->disableOriginalConstructor()
             ->getMock();
@@ -102,6 +105,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $modelTransformer = new  ModelToElasticaAutoTransformer();
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
             ->disableOriginalConstructor()
             ->getMock();
@@ -120,6 +124,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $modelTransformer = new  ModelToElasticaAutoTransformer();
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
             ->disableOriginalConstructor()
             ->getMock();
@@ -141,6 +146,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $modelTransformer = new  ModelToElasticaAutoTransformer();
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
             ->disableOriginalConstructor()
             ->getMock();
@@ -159,6 +165,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $modelTransformer = new  ModelToElasticaAutoTransformer();
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
             ->disableOriginalConstructor()
             ->getMock();
@@ -182,6 +189,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $modelTransformer = new ModelToElasticaAutoTransformer();
 
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
             ->disableOriginalConstructor()
             ->getMock();
