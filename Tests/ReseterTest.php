@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Reseter;
+namespace FOS\ElasticaBundle\Tests\Reseter;
 
-use FOQ\ElasticaBundle\Reseter;
-use FOQ\ElasticaBundle\IndexManager;
+use FOS\ElasticaBundle\Reseter;
+use FOS\ElasticaBundle\IndexManager;
 use Elastica_Exception_Response;
 use Elastica_Response;
 

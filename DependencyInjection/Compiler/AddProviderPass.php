@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\DependencyInjection\Compiler;
+namespace FOS\ElasticaBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -13,15 +13,15 @@ class AddProviderPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('foq_elastica.populator')) {
+        if (!$container->hasDefinition('fos_elastica.populator')) {
             return;
         }
 
         $providers = array();
-        foreach ($container->findTaggedServiceIds('foq_elastica.provider') as $id => $attributes) {
+        foreach ($container->findTaggedServiceIds('fos_elastica.provider') as $id => $attributes) {
             $providers[$id] = new Reference($id);
         }
 
-        $container->getDefinition('foq_elastica.populator')->replaceArgument(0, $providers);
+        $container->getDefinition('fos_elastica.populator')->replaceArgument(0, $providers);
     }
 }

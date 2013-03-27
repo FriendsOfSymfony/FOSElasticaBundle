@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine;
+namespace FOS\ElasticaBundle\Doctrine;
 
-use FOQ\ElasticaBundle\Provider\ProviderInterface;
-use FOQ\ElasticaBundle\Persister\ObjectPersisterInterface;
+use FOS\ElasticaBundle\Provider\ProviderInterface;
+use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use Elastica_Type;
 use Elastica_Document;
 use Closure;

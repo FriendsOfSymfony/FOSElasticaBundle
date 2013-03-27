@@ -43,25 +43,25 @@ Use the master branch with Symfony2 master only, use the 2.0 branch with Symfony
 
 **With submodule**
 
- `git submodule add git://github.com/Exercise/FOQElasticaBundle vendor/bundles/FOQ/ElasticaBundle`
+ `git submodule add git://github.com/Exercise/FOSElasticaBundle vendor/bundles/FOS/ElasticaBundle`
 
 **With clone**
 
- `git clone git://github.com/Exercise/FOQElasticaBundle vendor/bundles/FOQ/ElasticaBundle`
+ `git clone git://github.com/Exercise/FOSElasticaBundle vendor/bundles/FOS/ElasticaBundle`
 
 **With the vendors script**
 
 Add the following lines to your deps file:
 
-    [FOQElasticaBundle]
-        git=git://github.com/Exercise/FOQElasticaBundle.git
-        target=bundles/FOQ/ElasticaBundle
+    [FOSElasticaBundle]
+        git=git://github.com/Exercise/FOSElasticaBundle.git
+        target=bundles/FOS/ElasticaBundle
 
 For the 2.0 branch for use with Symfony2.0.x releases add the following:
 
-    [FOQElasticaBundle]
-        git=git://github.com/Exercise/FOQElasticaBundle.git
-        target=bundles/FOQ/ElasticaBundle
+    [FOSElasticaBundle]
+        git=git://github.com/Exercise/FOSElasticaBundle.git
+        target=bundles/FOS/ElasticaBundle
         version=origin/2.0
 
 Run the vendors script:
@@ -75,7 +75,7 @@ $ php bin/vendors install
 
     $loader->registerNamespaces(array(
         ...
-        'FOQ' => __DIR__.'/../vendor/bundles',
+        'FOS' => __DIR__.'/../vendor/bundles',
     ));
 
 #### Register the bundle
@@ -86,7 +86,7 @@ $ php bin/vendors install
     {
         return array(
             // ...
-            new FOQ\ElasticaBundle\FOQElasticaBundle(),
+            new FOS\ElasticaBundle\FOSElasticaBundle(),
             // ...
         );
     }
@@ -99,7 +99,7 @@ Elasticsearch client is comparable to a database connection.
 Most of the time, you will need only one.
 
     #app/config/config.yml
-    foq_elastica:
+    fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
 
@@ -108,7 +108,7 @@ Most of the time, you will need only one.
 Elasticsearch index is comparable to Doctrine entity manager.
 Most of the time, you will need only one.
 
-    foq_elastica:
+    fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
         indexes:
@@ -117,13 +117,13 @@ Most of the time, you will need only one.
 
 Here we created a "website" index, that uses our "default" client.
 
-Our index is now available as a service: `foq_elastica.index.website`. It is an instance of `Elastica_Index`.
+Our index is now available as a service: `fos_elastica.index.website`. It is an instance of `Elastica_Index`.
 
 #### Declare a type
 
 Elasticsearch type is comparable to Doctrine entity repository.
 
-    foq_elastica:
+    fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
         indexes:
@@ -137,11 +137,11 @@ Elasticsearch type is comparable to Doctrine entity repository.
                             lastName: { boost: 3 }
                             aboutMe:
 
-Our type is now available as a service: `foq_elastica.index.website.user`. It is an instance of `Elastica_Type`.
+Our type is now available as a service: `fos_elastica.index.website.user`. It is an instance of `Elastica_Type`.
 
 ### Populate the types
 
-    php app/console foq:elastica:populate
+    php app/console fos:elastica:populate
 
 This command deletes and creates the declared indexes and types.
 It applies the configured mappings to the types.
@@ -156,7 +156,7 @@ Or, for complete flexibility, go for manual provider.
 If we want to index the entities from a Doctrine repository or a Propel query,
 some configuration will let ElasticaBundle do it for us.
 
-    foq_elastica:
+    fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
         indexes:
@@ -213,20 +213,20 @@ You can change this value in the provider configuration.
 
 #### Manual provider
 
-Create a service with the tag "foq_elastica.provider".
+Create a service with the tag "fos_elastica.provider".
 
         <service id="acme.search_provider.user" class="Acme\UserBundle\Search\UserProvider">
-            <tag name="foq_elastica.provider" />
-            <argument type="service" id="foq_elastica.index.website.user" />
+            <tag name="fos_elastica.provider" />
+            <argument type="service" id="fos_elastica.index.website.user" />
         </service>
 
-Its class must implement `FOQ\ElasticaBundle\Provider\ProviderInterface`.
+Its class must implement `FOS\ElasticaBundle\Provider\ProviderInterface`.
 
         <?php
 
         namespace Acme\UserBundle\Provider;
 
-        use FOQ\ElasticaBundle\Provider\ProviderInterface;
+        use FOS\ElasticaBundle\Provider\ProviderInterface;
         use Elastica_Type;
 
         class UserProvider implements ProviderInterface
@@ -253,14 +253,14 @@ Its class must implement `FOQ\ElasticaBundle\Provider\ProviderInterface`.
             }
         }
 
-You will find a more complete implementation example in `src/FOQ/ElasticaBundle/Doctrine/AbstractProvider.php`.
+You will find a more complete implementation example in `src/FOS/ElasticaBundle/Doctrine/AbstractProvider.php`.
 
 ### Search
 
 You can just use the index and type Elastica objects, provided as services, to perform searches.
 
     /** var Elastica_Type */
-    $userType = $this->container->get('foq_elastica.index.website.user');
+    $userType = $this->container->get('fos_elastica.index.website.user');
 
     /** var Elastica_ResultSet */
     $resultSet = $userType->search('bob');
@@ -271,7 +271,7 @@ If your elasticsearch type is bound to a Doctrine entity repository or a Propel 
 you can get your entities instead of Elastica results when you perform a search.
 Declare that you want a Doctrine/Propel finder in your configuration:
 
-    foq_elastica:
+    fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
         indexes:
@@ -287,10 +287,10 @@ Declare that you want a Doctrine/Propel finder in your configuration:
                             provider:
                             finder:
 
-You can now use the `foq_elastica.finder.website.user` service:
+You can now use the `fos_elastica.finder.website.user` service:
 
-    /** var FOQ\ElasticaBundle\Finder\TransformedFinder */
-    $finder = $container->get('foq_elastica.finder.website.user');
+    /** var FOS\ElasticaBundle\Finder\TransformedFinder */
+    $finder = $container->get('fos_elastica.finder.website.user');
 
     /** var array of Acme\UserBundle\Entity\User */
     $users = $finder->find('bob');
@@ -307,7 +307,7 @@ You can also get both the Elastica results and the entities together from the fi
 YOu can then access the score, highlights etc. from the Elastica_Result whilst
 still also getting the entity.
 
-    /** var array of FOQ\ElasticaBundle\HybridResult */
+    /** var array of FOS\ElasticaBundle\HybridResult */
     $hybridResults = $finder->findHybrid('bob');
     foreach ($hybridResults as $hybridResult) {
 
@@ -324,16 +324,16 @@ still also getting the entity.
 You can also define a finder that will work on the entire index. Adjust your index
 configuration as per below:
 
-    foq_elastica:
+    fos_elastica:
         indexes:
             website:
                 client: default
                 finder:
 
-You can now use the index wide finder service `foq_elastica.finder.website`:
+You can now use the index wide finder service `fos_elastica.finder.website`:
 
-    /** var FOQ\ElasticaBundle\Finder\MappedFinder */
-    $finder = $container->get('foq_elastica.finder.website');
+    /** var FOS\ElasticaBundle\Finder\MappedFinder */
+    $finder = $container->get('fos_elastica.finder.website');
 
     // Returns a mixed array of any objects mapped
     $results = $finder->find('bob');
@@ -345,10 +345,10 @@ can use a manager service for each driver and get a repository for an entity to 
 against. This allows you to use the same service rather than the particular finder. For
 example:
 
-    /** var FOQ\ElasticaBundle\Manager\RepositoryManager */
-    $repositoryManager = $container->get('foq_elastica.manager.orm');
+    /** var FOS\ElasticaBundle\Manager\RepositoryManager */
+    $repositoryManager = $container->get('fos_elastica.manager.orm');
 
-    /** var FOQ\ElasticaBundle\Repository */
+    /** var FOS\ElasticaBundle\Repository */
     $repository = $repositoryManager->getRepository('UserBundle:User');
 
     /** var array of Acme\UserBundle\Entity\User */
@@ -356,7 +356,7 @@ example:
 
 You can also specify the full name of the entity instead of the shortcut syntax:
 
-    /** var FOQ\ElasticaBundle\Repository */
+    /** var FOS\ElasticaBundle\Repository */
     $repository = $repositoryManager->getRepository('Application\UserBundle\Entity\User');
 
 > The **2.0**  branch doesn't support using `UserBundle:User` style syntax and you must use the full name of the entity. .
@@ -364,21 +364,21 @@ You can also specify the full name of the entity instead of the shortcut syntax:
 ##### Default Manager
 
 If you are only using one driver then its manager service is automatically aliased
-to `foq_elastica.manager`. So the above example could be simplified to:
+to `fos_elastica.manager`. So the above example could be simplified to:
 
-    /** var FOQ\ElasticaBundle\Manager\RepositoryManager */
-    $repositoryManager = $container->get('foq_elastica.manager');
+    /** var FOS\ElasticaBundle\Manager\RepositoryManager */
+    $repositoryManager = $container->get('fos_elastica.manager');
 
-    /** var FOQ\ElasticaBundle\Repository */
+    /** var FOS\ElasticaBundle\Repository */
     $repository = $repositoryManager->getRepository('UserBundle:User');
 
     /** var array of Acme\UserBundle\Entity\User */
     $users = $finder->find('bob');
 
-If you use multiple drivers then you can choose which one is aliased to `foq_elastica.manager`
+If you use multiple drivers then you can choose which one is aliased to `fos_elastica.manager`
 using the `default_manager` parameter:
 
-    foq_elastica:
+    fos_elastica:
         default_manager: mongodb #defauults to orm
         clients:
             default: { host: localhost, port: 9200 }
@@ -387,7 +387,7 @@ using the `default_manager` parameter:
 ##### Custom Repositories
 
 As well as the default repository you can create a custom repository for an entity and add
-methods for particular searches. These need to extend `FOQ\ElasticaBundle\Repository` to have
+methods for particular searches. These need to extend `FOS\ElasticaBundle\Repository` to have
 access to the finder:
 
 ```
@@ -395,7 +395,7 @@ access to the finder:
 
 namespace Acme\ElasticaBundle\SearchRepository;
 
-use FOQ\ElasticaBundle\Repository;
+use FOS\ElasticaBundle\Repository;
 
 class UserRepository extends Repository
 {
@@ -409,7 +409,7 @@ class UserRepository extends Repository
 
 To use the custom repository specify it in the mapping for the entity:
 
-    foq_elastica:
+    fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
         indexes:
@@ -428,10 +428,10 @@ To use the custom repository specify it in the mapping for the entity:
 
 Then the custom queries will be available when using the repository returned from the manager:
 
-    /** var FOQ\ElasticaBundle\Manager\RepositoryManager */
-    $repositoryManager = $container->get('foq_elastica.manager');
+    /** var FOS\ElasticaBundle\Manager\RepositoryManager */
+    $repositoryManager = $container->get('fos_elastica.manager');
 
-    /** var FOQ\ElasticaBundle\Repository */
+    /** var FOS\ElasticaBundle\Repository */
     $repository = $repositoryManager->getRepository('UserBundle:User');
 
     /** var array of Acme\UserBundle\Entity\User */
@@ -444,7 +444,7 @@ Alternatively you can specify the custom repository using an annotation in the e
 
 namespace Application\UserBundle\Entity;
 
-use FOQ\ElasticaBundle\Configuration\Search;
+use FOS\ElasticaBundle\Configuration\Search;
 
 /**
  * @Search(repositoryClass="Acme\ElasticaBundle\SearchRepository\UserRepository")
@@ -463,7 +463,7 @@ If you use the Doctrine integration, you can let ElasticaBundle update the index
 when an object is added, updated or removed. It uses Doctrine lifecycle events.
 Declare that you want to update the index in real time:
 
-    foq_elastica:
+    fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
         indexes:
@@ -495,7 +495,7 @@ You can also choose to only listen for some of the events:
 
 Any setting can be specified when declaring a type. For example, to enable a custom analyzer, you could write:
 
-    foq_elastica:
+    fos_elastica:
         indexes:
             doc:
                 settings:
@@ -524,7 +524,7 @@ issuing a request will result in an `Elastica_Exception_Client` being thrown.
 Depending on your needs, it may be desirable to suppress these exceptions and
 allow searches to fail silently.
 
-One way to achieve this is to override the `foq_elastica.client.class` service
+One way to achieve this is to override the `fos_elastica.client.class` service
 container parameter with a custom class. In the following example, we override
 the `Client::request()` method and return the equivalent of an empty search
 response if an exception occurred.
@@ -534,7 +534,7 @@ response if an exception occurred.
 
 namespace Acme\ElasticaBundle;
 
-use FOQ\ElasticaBundle\Client as BaseClient;
+use FOS\ElasticaBundle\Client as BaseClient;
 
 class Client extends BaseClient
 {
@@ -560,7 +560,7 @@ Results must match at least one specified `categoryIds`, and should match the
 apply to queries against the `title` field.
 
 ```php
-$finder = $this->container->get('foq_elastica.finder.website.article');
+$finder = $this->container->get('fos_elastica.finder.website.article');
 $boolQuery = new \Elastica_Query_Bool();
 
 $fieldQuery = new \Elastica_Query_Text();
@@ -582,7 +582,7 @@ $data = $finder->find($boolQuery);
 Configuration:
 
 ```yaml
-foq_elastica:
+fos_elastica:
     clients:
         default: { host: localhost, port: 9200 }
     indexes:

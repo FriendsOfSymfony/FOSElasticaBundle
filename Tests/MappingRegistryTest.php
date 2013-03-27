@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\MappingRegistry;
+namespace FOS\ElasticaBundle\Tests\MappingRegistry;
 
-use FOQ\ElasticaBundle\MappingRegistry;
+use FOS\ElasticaBundle\MappingRegistry;
 use Elastica_Type;
 use Elastica_Index;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests;
+namespace FOS\ElasticaBundle\Tests;
 
-use FOQ\ElasticaBundle\Repository;
+use FOS\ElasticaBundle\Repository;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -14,7 +14,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $testQuery = 'Test Query';
 
-        $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
         $finderMock->expects($this->once())
@@ -30,7 +30,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $testQuery = 'Test Query';
         $testLimit = 20;
 
-        $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
         $finderMock->expects($this->once())
@@ -45,7 +45,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $testQuery = 'Test Query';
 
-        $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
         $finderMock->expects($this->once())
@@ -61,7 +61,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $testQuery = 'Test Query';
         $testLimit = 20;
 
-        $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
         $finderMock->expects($this->once())

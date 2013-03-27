@@ -1,32 +1,32 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Transformer;
+namespace FOS\ElasticaBundle\Tests\Transformer;
 
-use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection;
+use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection;
 
 class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection
+     * @var \FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection
      */
     protected $collection;
     protected $transformers = array();
 
     protected function collectionSetup()
     {
-        $transformer1 = $this->getMock('FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
+        $transformer1 = $this->getMock('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
         $transformer1->expects($this->any())
             ->method('getObjectClass')
-            ->will($this->returnValue('FOQ\ElasticaBundle\Tests\Transformer\POPO'));
+            ->will($this->returnValue('FOS\ElasticaBundle\Tests\Transformer\POPO'));
 
         $transformer1->expects($this->any())
             ->method('getIdentifierField')
             ->will($this->returnValue('id'));
 
-        $transformer2 = $this->getMock('FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
+        $transformer2 = $this->getMock('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
         $transformer2->expects($this->any())
             ->method('getObjectClass')
-            ->will($this->returnValue('FOQ\ElasticaBundle\Tests\Transformer\POPO2'));
+            ->will($this->returnValue('FOS\ElasticaBundle\Tests\Transformer\POPO2'));
 
         $transformer2->expects($this->any())
             ->method('getIdentifierField')
@@ -44,8 +44,8 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
 
         $objectClasses = $this->collection->getObjectClass();
         $this->assertEquals(array(
-            'type1' => 'FOQ\ElasticaBundle\Tests\Transformer\POPO',
-            'type2' => 'FOQ\ElasticaBundle\Tests\Transformer\POPO2'
+            'type1' => 'FOS\ElasticaBundle\Tests\Transformer\POPO',
+            'type2' => 'FOS\ElasticaBundle\Tests\Transformer\POPO2'
         ), $objectClasses);
     }
 

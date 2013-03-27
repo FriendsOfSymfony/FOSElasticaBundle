@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Populator;
+namespace FOS\ElasticaBundle\Tests\Populator;
 
-use FOQ\ElasticaBundle\Populator;
-use FOQ\ElasticaBundle\Provider\ProviderInterface;
+use FOS\ElasticaBundle\Populator;
+use FOS\ElasticaBundle\Provider\ProviderInterface;
 use Closure;
 
 class PopulatorMock extends Populator
@@ -15,23 +15,23 @@ class PopulatorTest extends \PHPUnit_Framework_TestCase
 {
     public function testThatWeCanAddProvider()
     {
-        $provider = $this->getMock('FOQ\ElasticaBundle\Provider\ProviderInterface', array('populate'));
+        $provider = $this->getMock('FOS\ElasticaBundle\Provider\ProviderInterface', array('populate'));
   
         $populator = new PopulatorMock(array());
         $populator->addProvider('l3l0Provider', $provider);
 
         $this->assertEquals(count($populator->providers), 1);
         $this->assertArrayHasKey('l3l0Provider', $populator->providers);
-        $this->assertInstanceOf('FOQ\ElasticaBundle\Provider\ProviderInterface', $populator->providers['l3l0Provider']);
+        $this->assertInstanceOf('FOS\ElasticaBundle\Provider\ProviderInterface', $populator->providers['l3l0Provider']);
     }
   
     public function testThatPopulateThroughProviders()
     {
-        $provider = $this->getMock('FOQ\ElasticaBundle\Provider\ProviderInterface', array('populate'));
+        $provider = $this->getMock('FOS\ElasticaBundle\Provider\ProviderInterface', array('populate'));
         $provider->expects($this->once())
             ->method('populate');
         
-        $provider2 = $this->getMock('FOQ\ElasticaBundle\Provider\ProviderInterface', array('populate'));
+        $provider2 = $this->getMock('FOS\ElasticaBundle\Provider\ProviderInterface', array('populate'));
         $provider2->expects($this->once())
             ->method('populate');
   

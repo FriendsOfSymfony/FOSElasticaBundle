@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\MongoDB;
+namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
-use FOQ\ElasticaBundle\Doctrine\AbstractProvider;
+use FOS\ElasticaBundle\Doctrine\AbstractProvider;
 
 class Provider extends AbstractProvider
 {

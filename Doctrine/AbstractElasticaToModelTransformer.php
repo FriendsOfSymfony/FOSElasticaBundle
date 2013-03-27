@@ -1,10 +1,10 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine;
+namespace FOS\ElasticaBundle\Doctrine;
 
-use FOQ\ElasticaBundle\HybridResult;
-use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use FOQ\ElasticaBundle\Transformer\HighlightableModelInterface;
+use FOS\ElasticaBundle\HybridResult;
+use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Elastica_Document;
 
 /**

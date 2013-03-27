@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle;
+namespace FOS\ElasticaBundle;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>

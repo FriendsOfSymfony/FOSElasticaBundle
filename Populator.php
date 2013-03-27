@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle;
+namespace FOS\ElasticaBundle;
 
-use FOQ\ElasticaBundle\Provider\ProviderInterface;
+use FOS\ElasticaBundle\Provider\ProviderInterface;
 use Closure;
 
 class Populator

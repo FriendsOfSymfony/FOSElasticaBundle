@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\ORM;
+namespace FOS\ElasticaBundle\Doctrine\ORM;
 
-use FOQ\ElasticaBundle\Doctrine\AbstractProvider;
+use FOS\ElasticaBundle\Doctrine\AbstractProvider;
 
 class Provider extends AbstractProvider
 {

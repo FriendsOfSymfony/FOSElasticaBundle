@@ -1,13 +1,13 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\IndexManager;
+namespace FOS\ElasticaBundle\Tests\IndexManager;
 
-use FOQ\ElasticaBundle\IndexManager;
+use FOS\ElasticaBundle\IndexManager;
 
 class IndexManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var FOQ\ElasticaBundle\Tests\IndexManager
+     * @var FOS\ElasticaBundle\Tests\IndexManager
      */
     private $indexManager = null;
 

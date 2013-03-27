@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Paginator;
+namespace FOS\ElasticaBundle\Paginator;
 
 /**
  * Implements the Pagerfanta\Adapter\AdapterInterface for use with Zend\Paginator\Paginator

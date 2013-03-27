@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Persister;
+namespace FOS\ElasticaBundle\Persister;
 
-use FOQ\ElasticaBundle\Provider\ProviderInterface;
-use FOQ\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
+use FOS\ElasticaBundle\Provider\ProviderInterface;
+use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Elastica_Type;
 use Elastica_Document;

@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Command;
+namespace FOS\ElasticaBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,7 +32,7 @@ class SearchCommand extends ContainerAwareCommand
             ->addOption('show-source', null, InputOption::VALUE_NONE, 'Show the documents sources')
             ->addOption('show-id', null, InputOption::VALUE_NONE, 'Show the documents ids')
             ->addOption('explain', null, InputOption::VALUE_NONE, 'Enables explanation for each hit on how its score was computed.')
-            ->setName('foq:elastica:search')
+            ->setName('fos:elastica:search')
             ->setDescription('Searches documents in a given type and index');
     }
 
@@ -41,7 +41,7 @@ class SearchCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $index = $this->getContainer()->get('foq_elastica.index_manager')->getIndex($input->getOption('index'));
+        $index = $this->getContainer()->get('fos_elastica.index_manager')->getIndex($input->getOption('index'));
         $type  = $index->getType($input->getArgument('type'));
         $query = Elastica_Query::create($input->getArgument('query'));
         $query->setLimit($input->getOption('limit'));

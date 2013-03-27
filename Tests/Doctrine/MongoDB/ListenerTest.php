@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Doctrine\MongoDB;
+namespace FOS\ElasticaBundle\Tests\Doctrine\MongoDB;
 
-use FOQ\ElasticaBundle\Doctrine\MongoDB\Listener;
+use FOS\ElasticaBundle\Doctrine\MongoDB\Listener;
 
 class Document{}
 
@@ -20,7 +20,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testObjectInsertedOnPersist()
     {
-        $persisterMock = $this->getMockBuilder('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface')
+        $persisterMock = $this->getMockBuilder('FOS\ElasticaBundle\Persister\ObjectPersisterInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -28,7 +28,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectName = 'FOQ\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
+        $objectName = 'FOS\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
         $document = new Document();
 
         $eventArgsMock->expects($this->once())
@@ -45,7 +45,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testObjectReplacedOnUpdate()
     {
-        $persisterMock = $this->getMockBuilder('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface')
+        $persisterMock = $this->getMockBuilder('FOS\ElasticaBundle\Persister\ObjectPersisterInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -53,7 +53,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectName = 'FOQ\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
+        $objectName = 'FOS\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
         $document = new Document();
 
         $eventArgsMock->expects($this->once())
@@ -70,7 +70,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testObjectDeletedOnRemove()
     {
-        $persisterMock = $this->getMockBuilder('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface')
+        $persisterMock = $this->getMockBuilder('FOS\ElasticaBundle\Persister\ObjectPersisterInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -86,7 +86,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectName = 'FOQ\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
+        $objectName = 'FOS\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
         $document   = new Document();
         $documentId = 78;
 
@@ -118,7 +118,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testObjectWithNonStandardIdentifierDeletedOnRemove()
     {
-        $persisterMock = $this->getMockBuilder('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface')
+        $persisterMock = $this->getMockBuilder('FOS\ElasticaBundle\Persister\ObjectPersisterInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -134,7 +134,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectName = 'FOQ\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
+        $objectName = 'FOS\ElasticaBundle\Tests\Doctrine\MongoDB\Document';
         $document   = new Document();
         $documentIdentifier = 826;
         $identifierField = 'identifier';

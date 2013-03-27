@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Propel;
+namespace FOS\ElasticaBundle\Propel;
 
-use FOQ\ElasticaBundle\HybridResult;
-use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOS\ElasticaBundle\HybridResult;
+use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica_Document;
 
 /**

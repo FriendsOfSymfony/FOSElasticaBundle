@@ -1,9 +1,9 @@
 {
-    "name": "exercise/elastica-bundle",
+    "name": "friendsofsymfony/elastica-bundle",
     "type": "symfony-bundle",
     "description": "Elasticsearch PHP integration for your Symfony2 project using Elastica",
     "keywords": ["doctrine2", "elastica", "elasticsearch", "mongodb", "propel", "search"],
-    "homepage": "https://github.com/Exercise/FOQElasticaBundle",
+    "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle",
     "license": "MIT",
     "authors": [
         { "name": "Thibault Duplessis", "email": "thibault.duplessis@gmail.com" },
@@ -27,7 +27,7 @@
         "propel/propel1": "1.6.*"
     },
     "autoload": {
-        "psr-0": { "FOQ\\ElasticaBundle": "" }
+        "psr-0": { "FOS\\ElasticaBundle": "" }
     },
-    "target-dir": "FOQ/ElasticaBundle"
+    "target-dir": "FOS/ElasticaBundle"
 }

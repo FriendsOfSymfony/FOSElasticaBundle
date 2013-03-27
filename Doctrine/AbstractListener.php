@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine;
+namespace FOS\ElasticaBundle\Doctrine;
 
-use FOQ\ElasticaBundle\Persister\ObjectPersisterInterface;
+use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 abstract class AbstractListener

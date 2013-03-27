@@ -6,7 +6,7 @@
 
     <services>
 
-        <service id="foq_elastica.provider.prototype.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\Provider" public="false" abstract="true">
+        <service id="fos_elastica.provider.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\Provider" public="false" abstract="true">
             <argument /> <!-- type -->
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument /> <!-- object persister -->
@@ -14,20 +14,20 @@
             <argument type="collection" /> <!-- options -->
         </service>
 
-        <service id="foq_elastica.listener.prototype.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\Listener" public="false" abstract="true">
+        <service id="fos_elastica.listener.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\Listener" public="false" abstract="true">
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- events -->
             <argument/> <!-- identifier -->
         </service>
 
-        <service id="foq_elastica.elastica_to_model_transformer.prototype.orm" class="FOQ\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" public="false">
+        <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" public="false">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
         </service>
 
-        <service id="foq_elastica.manager.orm" class="%foq_elastica.manager.class%">
+        <service id="fos_elastica.manager.orm" class="%fos_elastica.manager.class%">
             <argument type="service" id="annotation_reader"/>
         </service>
 

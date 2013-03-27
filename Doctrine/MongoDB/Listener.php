@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\MongoDB;
+namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
-use FOQ\ElasticaBundle\Doctrine\AbstractListener;
+use FOS\ElasticaBundle\Doctrine\AbstractListener;
 use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
 use Doctrine\Common\EventSubscriber;
 

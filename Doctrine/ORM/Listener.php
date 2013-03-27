@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\ORM;
+namespace FOS\ElasticaBundle\Doctrine\ORM;
 
-use FOQ\ElasticaBundle\Doctrine\AbstractListener;
+use FOS\ElasticaBundle\Doctrine\AbstractListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Common\EventSubscriber;
 

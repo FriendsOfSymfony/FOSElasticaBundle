@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Paginator;
+namespace FOS\ElasticaBundle\Paginator;
 
 use Pagerfanta\Adapter\AdapterInterface;
 use Elastica_Searchable;

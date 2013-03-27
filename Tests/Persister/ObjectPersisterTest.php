@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\ObjectPersister;
+namespace FOS\ElasticaBundle\Tests\ObjectPersister;
 
-use FOQ\ElasticaBundle\Persister\ObjectPersister;
-use FOQ\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
+use FOS\ElasticaBundle\Persister\ObjectPersister;
+use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 
 class POPO
 {

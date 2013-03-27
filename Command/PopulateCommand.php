@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Command;
+namespace FOS\ElasticaBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,7 +20,7 @@ class PopulateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('foq:elastica:populate')
+            ->setName('fos:elastica:populate')
             ->setDescription('Populates search indexes from providers')
             ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset the indexes before they are populated.');
     }
@@ -32,18 +32,18 @@ class PopulateCommand extends ContainerAwareCommand
     {
         if (!$input->getOption('no-reset')) {
             $output->writeln('Resetting indexes');
-            $this->getContainer()->get('foq_elastica.reseter')->reset();
+            $this->getContainer()->get('fos_elastica.reseter')->reset();
         }
 
         $output->writeln('Populating indexes');
-        $this->getContainer()->get('foq_elastica.populator')->populate(function($text) use ($output) {
+        $this->getContainer()->get('fos_elastica.populator')->populate(function($text) use ($output) {
             $output->writeLn($text);
         });
 
         $output->writeln('Refreshing indexes');
 		array_map(function($index) {
 			$index->refresh();
-		}, $this->getContainer()->get('foq_elastica.index_manager')->getAllIndexes());
+		}, $this->getContainer()->get('fos_elastica.index_manager')->getAllIndexes());
 
         $output->writeln('Done');
     }
