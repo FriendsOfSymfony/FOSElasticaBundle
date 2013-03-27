@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Finder;
+namespace FOS\ElasticaBundle\Finder;
 
 interface FinderInterface
 {

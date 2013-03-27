@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Paginator;
+namespace FOS\ElasticaBundle\Paginator;
 
 use Pagerfanta\Adapter\AdapterInterface;
-use FOQ\ElasticaBundle\Paginator\PaginatorAdapterInterface;
+use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 
 class FantaPaginatorAdapter implements AdapterInterface
 {

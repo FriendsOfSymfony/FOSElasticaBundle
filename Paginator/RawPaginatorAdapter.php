@@ -1,11 +1,11 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Paginator;
+namespace FOS\ElasticaBundle\Paginator;
 
 use Elastica_Searchable;
 use Elastica_Query;
-use FOQ\ElasticaBundle\Paginator\PaginatorAdapterInterface;
-use FOQ\ElasticaBundle\Paginator\RawPartialResults;
+use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
+use FOS\ElasticaBundle\Paginator\RawPartialResults;
 
 /**
  * Allows pagination of Elastica_Query. Does not map results
@@ -51,7 +51,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * Returns the paginated results.
      *
-     * @return FOQ\ElasticaBundle\Paginator\PartialResultInterface
+     * @return FOS\ElasticaBundle\Paginator\PartialResultInterface
      */
     public function getResults($offset, $itemCountPerPage)
     {

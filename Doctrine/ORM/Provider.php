@@ -1,15 +1,15 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\ORM;
+namespace FOS\ElasticaBundle\Doctrine\ORM;
 
 use Doctrine\ORM\QueryBuilder;
-use FOQ\ElasticaBundle\Doctrine\AbstractProvider;
-use FOQ\ElasticaBundle\Exception\InvalidArgumentTypeException;
+use FOS\ElasticaBundle\Doctrine\AbstractProvider;
+use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 
 class Provider extends AbstractProvider
 {
     /**
-     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
+     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
      */
     protected function countObjects($queryBuilder)
     {
@@ -31,7 +31,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
+     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
      */
     protected function fetchSlice($queryBuilder, $limit, $offset)
     {
@@ -47,7 +47,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::createQueryBuilder()
+     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::createQueryBuilder()
      */
     protected function createQueryBuilder()
     {

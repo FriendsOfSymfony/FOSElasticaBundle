@@ -1,15 +1,15 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\MongoDB;
+namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
-use FOQ\ElasticaBundle\Doctrine\AbstractProvider;
-use FOQ\ElasticaBundle\Exception\InvalidArgumentTypeException;
+use FOS\ElasticaBundle\Doctrine\AbstractProvider;
+use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 
 class Provider extends AbstractProvider
 {
     /**
-     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
+     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
      */
     protected function countObjects($queryBuilder)
     {
@@ -23,7 +23,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
+     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
      */
     protected function fetchSlice($queryBuilder, $limit, $offset)
     {
@@ -40,7 +40,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOQ\ElasticaBundle\Doctrine\AbstractProvider::createQueryBuilder()
+     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::createQueryBuilder()
      */
     protected function createQueryBuilder()
     {

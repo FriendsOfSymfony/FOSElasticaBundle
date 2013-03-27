@@ -1,12 +1,12 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Finder;
+namespace FOS\ElasticaBundle\Finder;
 
-use FOQ\ElasticaBundle\Finder\FinderInterface;
-use FOQ\ElasticaBundle\Finder\PaginatedFinderInterface;
-use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use FOQ\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
-use FOQ\ElasticaBundle\Paginator\FantaPaginatorAdapter;
+use FOS\ElasticaBundle\Finder\FinderInterface;
+use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
+use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
+use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use Pagerfanta\Pagerfanta;
 use Elastica_Searchable;
 use Elastica_Query;

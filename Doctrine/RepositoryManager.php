@@ -1,11 +1,11 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine;
+namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use FOQ\ElasticaBundle\Finder\FinderInterface;
-use FOQ\ElasticaBundle\Manager\RepositoryManager as BaseManager;
+use FOS\ElasticaBundle\Finder\FinderInterface;
+use FOS\ElasticaBundle\Manager\RepositoryManager as BaseManager;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>

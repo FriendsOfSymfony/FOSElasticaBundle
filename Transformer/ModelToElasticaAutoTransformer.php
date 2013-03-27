@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Transformer;
+namespace FOS\ElasticaBundle\Transformer;
 
 use Symfony\Component\Form\Util\PropertyPath;
 

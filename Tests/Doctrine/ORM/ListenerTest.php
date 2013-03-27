@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Doctrine\ORM;
+namespace FOS\ElasticaBundle\Tests\Doctrine\ORM;
 
-use FOQ\ElasticaBundle\Tests\Doctrine\AbstractListenerTest;
+use FOS\ElasticaBundle\Tests\Doctrine\AbstractListenerTest;
 
 class ListenerTest extends AbstractListenerTest
 {
@@ -25,7 +25,7 @@ class ListenerTest extends AbstractListenerTest
 
     protected function getListenerClass()
     {
-        return 'FOQ\ElasticaBundle\Doctrine\ORM\Listener';
+        return 'FOS\ElasticaBundle\Doctrine\ORM\Listener';
     }
 
     protected function getObjectManagerClass()

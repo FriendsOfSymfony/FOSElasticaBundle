@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Provider;
+namespace FOS\ElasticaBundle\Provider;
 
-use FOQ\ElasticaBundle\Persister\ObjectPersisterInterface;
-use FOQ\ElasticaBundle\Provider\ProviderInterface;
+use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
+use FOS\ElasticaBundle\Provider\ProviderInterface;
 
 abstract class AbstractProvider implements ProviderInterface
 {

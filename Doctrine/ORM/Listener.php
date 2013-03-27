@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\ORM;
+namespace FOS\ElasticaBundle\Doctrine\ORM;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use FOQ\ElasticaBundle\Doctrine\AbstractListener;
+use FOS\ElasticaBundle\Doctrine\AbstractListener;
 
 class Listener extends AbstractListener
 {

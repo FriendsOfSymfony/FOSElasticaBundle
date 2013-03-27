@@ -1,10 +1,10 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Subscriber;
+namespace FOS\ElasticaBundle\Subscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Knp\Component\Pager\Event\ItemsEvent;
-use FOQ\ElasticaBundle\Paginator\PaginatorAdapterInterface;
+use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 
 class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {

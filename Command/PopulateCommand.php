@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Command;
+namespace FOS\ElasticaBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,17 +15,17 @@ use Symfony\Component\Console\Output\Output;
 class PopulateCommand extends ContainerAwareCommand
 {
     /**
-     * @var FOQ\ElasticaBundle\IndexManager
+     * @var FOS\ElasticaBundle\IndexManager
      */
     private $indexManager;
 
     /**
-     * @var FOQ\ElasticaBundle\Provider\ProviderRegistry
+     * @var FOS\ElasticaBundle\Provider\ProviderRegistry
      */
     private $providerRegistry;
 
     /**
-     * @var FOQ\ElasticaBundle\Resetter
+     * @var FOS\ElasticaBundle\Resetter
      */
     private $resetter;
 
@@ -35,7 +35,7 @@ class PopulateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('foq:elastica:populate')
+            ->setName('fos:elastica:populate')
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to repopulate')
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
             ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
@@ -48,9 +48,9 @@ class PopulateCommand extends ContainerAwareCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->indexManager = $this->getContainer()->get('foq_elastica.index_manager');
-        $this->providerRegistry = $this->getContainer()->get('foq_elastica.provider_registry');
-        $this->resetter = $this->getContainer()->get('foq_elastica.resetter');
+        $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
+        $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
+        $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
     }
 
     /**

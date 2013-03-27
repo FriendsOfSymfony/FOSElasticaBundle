@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\DependencyInjection;
+namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -22,7 +22,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('foq_elastica', 'array');
+        $rootNode = $treeBuilder->root('fos_elastica', 'array');
 
         $this->addClientsSection($rootNode);
         $this->addIndexesSection($rootNode);

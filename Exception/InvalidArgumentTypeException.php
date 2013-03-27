@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Exception;
+namespace FOS\ElasticaBundle\Exception;
 
 class InvalidArgumentTypeException extends \InvalidArgumentException
 {

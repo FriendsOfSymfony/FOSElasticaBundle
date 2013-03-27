@@ -5,71 +5,71 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="foq_elastica.client.class">FOQ\ElasticaBundle\Client</parameter>
-        <parameter key="foq_elastica.index.class">Elastica_Index</parameter>
-        <parameter key="foq_elastica.type.class">Elastica_Type</parameter>
-        <parameter key="foq_elastica.logger.class">FOQ\ElasticaBundle\Logger\ElasticaLogger</parameter>
-        <parameter key="foq_elastica.data_collector.class">FOQ\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
-        <parameter key="foq_elastica.manager.class">FOQ\ElasticaBundle\Manager\RepositoryManager</parameter>
-        <parameter key="foq_elastica.elastica_to_model_transformer.collection.class">FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
-        <parameter key="foq_elastica.provider_registry.class">FOQ\ElasticaBundle\Provider\ProviderRegistry</parameter>
+        <parameter key="fos_elastica.client.class">FOS\ElasticaBundle\Client</parameter>
+        <parameter key="fos_elastica.index.class">Elastica_Index</parameter>
+        <parameter key="fos_elastica.type.class">Elastica_Type</parameter>
+        <parameter key="fos_elastica.logger.class">FOS\ElasticaBundle\Logger\ElasticaLogger</parameter>
+        <parameter key="fos_elastica.data_collector.class">FOS\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
+        <parameter key="fos_elastica.manager.class">FOS\ElasticaBundle\Manager\RepositoryManager</parameter>
+        <parameter key="fos_elastica.elastica_to_model_transformer.collection.class">FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
+        <parameter key="fos_elastica.provider_registry.class">FOS\ElasticaBundle\Provider\ProviderRegistry</parameter>
     </parameters>
 
     <services>
 
-        <service id="foq_elastica.logger" class="%foq_elastica.logger.class%">
+        <service id="fos_elastica.logger" class="%fos_elastica.logger.class%">
             <argument type="service" id="logger" on-invalid="null" />
             <argument>%kernel.debug%</argument>
             <tag name="monolog.logger" channel="elastica" />
         </service>
-        <service id="foq_elastica.data_collector" class="%foq_elastica.data_collector.class%" public="true">
-            <tag name="data_collector" template="FOQElasticaBundle:Collector:elastica" id="elastica" />
-            <argument type="service" id="foq_elastica.logger" />
+        <service id="fos_elastica.data_collector" class="%fos_elastica.data_collector.class%" public="true">
+            <tag name="data_collector" template="FOSElasticaBundle:Collector:elastica" id="elastica" />
+            <argument type="service" id="fos_elastica.logger" />
         </service>
 
-        <service id="foq_elastica.client" class="%foq_elastica.client.class%">
+        <service id="fos_elastica.client" class="%fos_elastica.client.class%">
             <argument /> <!-- config -->
             <call method="setLogger">
-                <argument type="service" id="foq_elastica.logger" />
+                <argument type="service" id="fos_elastica.logger" />
             </call>
         </service>
 
-        <service id="foq_elastica.index_manager" class="FOQ\ElasticaBundle\IndexManager">
+        <service id="fos_elastica.index_manager" class="FOS\ElasticaBundle\IndexManager">
             <argument /> <!-- indexes -->
             <argument /> <!-- default index -->
         </service>
 
-        <service id="foq_elastica.resetter" class="FOQ\ElasticaBundle\Resetter">
+        <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Resetter">
             <argument /> <!-- index configs -->
         </service>
 
-        <service id="foq_elastica.object_persister.prototype" class="FOQ\ElasticaBundle\Persister\ObjectPersister" abstract="true">
+        <service id="fos_elastica.object_persister.prototype" class="FOS\ElasticaBundle\Persister\ObjectPersister" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
             <argument /> <!-- properties mapping -->
         </service>
 
-        <service id="foq_elastica.finder.prototype" class="FOQ\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
+        <service id="fos_elastica.finder.prototype" class="FOS\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
             <argument /> <!-- searchable -->
             <argument /> <!-- transformer -->
         </service>
 
-        <service id="foq_elastica.model_to_elastica_transformer.prototype.auto" class="FOQ\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer" public="false" abstract="true">
+        <service id="fos_elastica.model_to_elastica_transformer.prototype.auto" class="FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer" public="false" abstract="true">
             <argument /> <!-- options -->
         </service>
 
-        <service id="foq_elastica.elastica_to_model_transformer.collection.prototype" class="%foq_elastica.elastica_to_model_transformer.collection.class%" public="true" abstract="true">
+        <service id="fos_elastica.elastica_to_model_transformer.collection.prototype" class="%fos_elastica.elastica_to_model_transformer.collection.class%" public="true" abstract="true">
             <argument type="collection" /> <!-- transformers -->
         </service>
 
-        <service id="foq_elastica.provider_registry" class="%foq_elastica.provider_registry.class%">
+        <service id="fos_elastica.provider_registry" class="%fos_elastica.provider_registry.class%">
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
         </service>
 
-        <service id="foq_elastica.paginator.subscriber" class="FOQ\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
+        <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
             <tag name="knp_paginator.subscriber" />
         </service>
     </services>

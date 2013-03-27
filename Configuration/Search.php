@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Configuration;
+namespace FOS\ElasticaBundle\Configuration;
 
 /**
  * Annotation class for setting search repository.

@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\MongoDB;
+namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
-use FOQ\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
+use FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
 use Elastica_Document;
 
 /**

@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Paginator;
+namespace FOS\ElasticaBundle\Paginator;
 
-use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use FOQ\ElasticaBundle\Paginator\TransformedPartialResults;
+use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOS\ElasticaBundle\Paginator\TransformedPartialResults;
 use Elastica_Searchable;
 use Elastica_Query;
 

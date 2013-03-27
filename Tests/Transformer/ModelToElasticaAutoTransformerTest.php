@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Transformer\ModelToElasticaAutoTransformer;
+namespace FOS\ElasticaBundle\Tests\Transformer\ModelToElasticaAutoTransformer;
 
-use FOQ\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
+use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 
 class POPO
 {

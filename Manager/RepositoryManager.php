@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Manager;
+namespace FOS\ElasticaBundle\Manager;
 
 use Doctrine\Common\Annotations\Reader;
-use FOQ\ElasticaBundle\Finder\FinderInterface;
+use FOS\ElasticaBundle\Finder\FinderInterface;
 use RuntimeException;
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -58,14 +58,14 @@ class RepositoryManager implements RepositoryManagerInterface
         }
 
         $refClass   = new \ReflectionClass($entityName);
-        $annotation = $this->reader->getClassAnnotation($refClass, 'FOQ\\ElasticaBundle\\Configuration\\Search');
+        $annotation = $this->reader->getClassAnnotation($refClass, 'FOS\\ElasticaBundle\\Configuration\\Search');
         if ($annotation) {
             $this->entities[$entityName]['repositoryName']
                 = $annotation->repositoryClass;
             return $annotation->repositoryClass;
         }
 
-        return 'FOQ\ElasticaBundle\Repository';
+        return 'FOS\ElasticaBundle\Repository';
     }
 
     private function createRepository($entityName)

@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Logger;
+namespace FOS\ElasticaBundle\Tests\Logger;
 
-use FOQ\ElasticaBundle\Logger\ElasticaLogger;
+use FOS\ElasticaBundle\Logger\ElasticaLogger;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>

@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle;
+namespace FOS\ElasticaBundle;
 
 /**
  * Deletes and recreates indexes

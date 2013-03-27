@@ -1,14 +1,14 @@
 <?php
 
-namespace FOQ\ElasticaBundle;
+namespace FOS\ElasticaBundle;
 
-use FOQ\ElasticaBundle\DependencyInjection\Compiler\RegisterProvidersPass;
-use FOQ\ElasticaBundle\DependencyInjection\Compiler\TransformerPass;
+use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterProvidersPass;
+use FOS\ElasticaBundle\DependencyInjection\Compiler\TransformerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class FOQElasticaBundle extends Bundle
+class FOSElasticaBundle extends Bundle
 {
     /**
      * @see Symfony\Component\HttpKernel\Bundle\Bundle::build()

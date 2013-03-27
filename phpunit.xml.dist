@@ -2,7 +2,7 @@
 
 <phpunit bootstrap="./Tests/bootstrap.php" colors="true">
     <testsuites>
-        <testsuite name="FOQElasticaBundle Test Suite">
+        <testsuite name="FOSElasticaBundle Test Suite">
             <directory>./Tests</directory>
         </testsuite>
     </testsuites>

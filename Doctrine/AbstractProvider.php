@@ -1,10 +1,10 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine;
+namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use FOQ\ElasticaBundle\Persister\ObjectPersisterInterface;
-use FOQ\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
+use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
+use FOS\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
 
 abstract class AbstractProvider extends BaseAbstractProvider
 {
@@ -29,7 +29,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
     }
 
     /**
-     * @see FOQ\ElasticaBundle\Provider\ProviderInterface::populate()
+     * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
      */
     public function populate(\Closure $loggerClosure = null)
     {

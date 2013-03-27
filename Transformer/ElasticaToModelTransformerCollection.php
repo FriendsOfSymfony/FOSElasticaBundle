@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Transformer;
+namespace FOS\ElasticaBundle\Transformer;
 
-use FOQ\ElasticaBundle\HybridResult;
+use FOS\ElasticaBundle\HybridResult;
 use Symfony\Component\Form\Util\PropertyPath;
 
 /**

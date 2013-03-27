@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\DependencyInjection;
+namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Config\FileLocator;
 use InvalidArgumentException;
 
-class FOQElasticaExtension extends Extension
+class FOSElasticaExtension extends Extension
 {
     protected $indexConfigs     = array();
     protected $typeFields       = array();
@@ -48,8 +48,8 @@ class FOQElasticaExtension extends Extension
         $this->loadIndexManager($indexRefsByName, $container);
         $this->loadResetter($this->indexConfigs, $container);
 
-        $container->setAlias('foq_elastica.client', sprintf('foq_elastica.client.%s', $config['default_client']));
-        $container->setAlias('foq_elastica.index', sprintf('foq_elastica.index.%s', $config['default_index']));
+        $container->setAlias('fos_elastica.client', sprintf('fos_elastica.client.%s', $config['default_client']));
+        $container->setAlias('fos_elastica.index', sprintf('fos_elastica.index.%s', $config['default_index']));
 
         $this->createDefaultManagerAlias($config['default_manager'], $container);
     }
@@ -69,10 +69,10 @@ class FOQElasticaExtension extends Extension
     {
         $clientIds = array();
         foreach ($clients as $name => $clientConfig) {
-            $clientDef = $container->getDefinition('foq_elastica.client');
+            $clientDef = $container->getDefinition('fos_elastica.client');
             $clientDef->replaceArgument(0, $clientConfig);
 
-            $clientId = sprintf('foq_elastica.client.%s', $name);
+            $clientId = sprintf('fos_elastica.client.%s', $name);
 
             $container->setDefinition($clientId, $clientDef);
 
@@ -102,10 +102,10 @@ class FOQElasticaExtension extends Extension
             }
 
             $clientId = $clientIdsByName[$clientName];
-            $indexId = sprintf('foq_elastica.index.%s', $name);
+            $indexId = sprintf('fos_elastica.index.%s', $name);
             $indexName = isset($index['index_name']) ? $index['index_name'] : $name;
             $indexDefArgs = array($indexName);
-            $indexDef = new Definition('%foq_elastica.index.class%', $indexDefArgs);
+            $indexDef = new Definition('%fos_elastica.index.class%', $indexDefArgs);
             $indexDef->setFactoryService($clientId);
             $indexDef->setFactoryMethod('getIndex');
             $container->setDefinition($indexId, $indexDef);
@@ -139,13 +139,13 @@ class FOQElasticaExtension extends Extension
      */
     protected function loadIndexFinder(ContainerBuilder $container, $name, $indexId)
     {
-        $abstractTransformerId = 'foq_elastica.elastica_to_model_transformer.collection.prototype';
-        $transformerId = sprintf('foq_elastica.elastica_to_model_transformer.collection.%s', $name);
+        $abstractTransformerId = 'fos_elastica.elastica_to_model_transformer.collection.prototype';
+        $transformerId = sprintf('fos_elastica.elastica_to_model_transformer.collection.%s', $name);
         $transformerDef = new DefinitionDecorator($abstractTransformerId);
         $container->setDefinition($transformerId, $transformerDef);
 
-        $abstractFinderId = 'foq_elastica.finder.prototype';
-        $finderId = sprintf('foq_elastica.finder.%s', $name);
+        $abstractFinderId = 'fos_elastica.finder.prototype';
+        $finderId = sprintf('fos_elastica.finder.%s', $name);
         $finderDef = new DefinitionDecorator($abstractFinderId);
         $finderDef->replaceArgument(0, new Reference($indexId));
         $finderDef->replaceArgument(1, new Reference($transformerId));
@@ -167,7 +167,7 @@ class FOQElasticaExtension extends Extension
             $type = self::deepArrayUnion($typePrototypeConfig, $type);
             $typeId = sprintf('%s.%s', $indexId, $name);
             $typeDefArgs = array($name);
-            $typeDef = new Definition('%foq_elastica.type.class%', $typeDefArgs);
+            $typeDef = new Definition('%fos_elastica.type.class%', $typeDefArgs);
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
             $container->setDefinition($typeId, $typeDef);
@@ -250,10 +250,10 @@ class FOQElasticaExtension extends Extension
         if (isset($typeConfig['elastica_to_model_transformer']['service'])) {
             return $typeConfig['elastica_to_model_transformer']['service'];
         }
-        $abstractId = sprintf('foq_elastica.elastica_to_model_transformer.prototype.%s', $typeConfig['driver']);
-        $serviceId = sprintf('foq_elastica.elastica_to_model_transformer.%s.%s', $indexName, $typeName);
+        $abstractId = sprintf('fos_elastica.elastica_to_model_transformer.prototype.%s', $typeConfig['driver']);
+        $serviceId = sprintf('fos_elastica.elastica_to_model_transformer.%s.%s', $indexName, $typeName);
         $serviceDef = new DefinitionDecorator($abstractId);
-        $serviceDef->addTag('foq_elastica.elastica_to_model_transformer', array('type' => $typeName, 'index' => $indexName));
+        $serviceDef->addTag('fos_elastica.elastica_to_model_transformer', array('type' => $typeName, 'index' => $indexName));
 
         // Doctrine has a mandatory service as first argument
         $argPos = ('propel' === $typeConfig['driver']) ? 0 : 1;
@@ -273,8 +273,8 @@ class FOQElasticaExtension extends Extension
         if (isset($typeConfig['model_to_elastica_transformer']['service'])) {
             return $typeConfig['model_to_elastica_transformer']['service'];
         }
-        $abstractId = sprintf('foq_elastica.model_to_elastica_transformer.prototype.auto');
-        $serviceId = sprintf('foq_elastica.model_to_elastica_transformer.%s.%s', $indexName, $typeName);
+        $abstractId = sprintf('fos_elastica.model_to_elastica_transformer.prototype.auto');
+        $serviceId = sprintf('fos_elastica.model_to_elastica_transformer.%s.%s', $indexName, $typeName);
         $serviceDef = new DefinitionDecorator($abstractId);
         $serviceDef->replaceArgument(0, array(
             'identifier' => $typeConfig['identifier']
@@ -286,8 +286,8 @@ class FOQElasticaExtension extends Extension
 
     protected function loadObjectPersister(array $typeConfig, Definition $typeDef, ContainerBuilder $container, $indexName, $typeName, $transformerId)
     {
-        $abstractId = sprintf('foq_elastica.object_persister.prototype');
-        $serviceId = sprintf('foq_elastica.object_persister.%s.%s', $indexName, $typeName);
+        $abstractId = sprintf('fos_elastica.object_persister.prototype');
+        $serviceId = sprintf('fos_elastica.object_persister.%s.%s', $indexName, $typeName);
         $serviceDef = new DefinitionDecorator($abstractId);
         $serviceDef->replaceArgument(0, $typeDef);
         $serviceDef->replaceArgument(1, new Reference($transformerId));
@@ -304,9 +304,9 @@ class FOQElasticaExtension extends Extension
             return $typeConfig['provider']['service'];
         }
 
-        $providerId = sprintf('foq_elastica.provider.%s.%s', $indexName, $typeName);
-        $providerDef = new DefinitionDecorator('foq_elastica.provider.prototype.' . $typeConfig['driver']);
-        $providerDef->addTag('foq_elastica.provider', array('index' => $indexName, 'type' => $typeName));
+        $providerId = sprintf('fos_elastica.provider.%s.%s', $indexName, $typeName);
+        $providerDef = new DefinitionDecorator('fos_elastica.provider.prototype.' . $typeConfig['driver']);
+        $providerDef->addTag('fos_elastica.provider', array('index' => $indexName, 'type' => $typeName));
         $providerDef->replaceArgument(0, new Reference($objectPersisterId));
         $providerDef->replaceArgument(1, $typeConfig['model']);
         // Propel provider can simply ignore Doctrine-specific options
@@ -321,8 +321,8 @@ class FOQElasticaExtension extends Extension
         if (isset($typeConfig['listener']['service'])) {
             return $typeConfig['listener']['service'];
         }
-        $abstractListenerId = sprintf('foq_elastica.listener.prototype.%s', $typeConfig['driver']);
-        $listenerId = sprintf('foq_elastica.listener.%s.%s', $indexName, $typeName);
+        $abstractListenerId = sprintf('fos_elastica.listener.prototype.%s', $typeConfig['driver']);
+        $listenerId = sprintf('fos_elastica.listener.%s.%s', $indexName, $typeName);
         $listenerDef = new DefinitionDecorator($abstractListenerId);
         $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
         $listenerDef->replaceArgument(1, $typeConfig['model']);
@@ -372,15 +372,15 @@ class FOQElasticaExtension extends Extension
         if (isset($typeConfig['finder']['service'])) {
             $finderId = $typeConfig['finder']['service'];
         } else {
-            $abstractFinderId = 'foq_elastica.finder.prototype';
-            $finderId = sprintf('foq_elastica.finder.%s.%s', $indexName, $typeName);
+            $abstractFinderId = 'fos_elastica.finder.prototype';
+            $finderId = sprintf('fos_elastica.finder.%s.%s', $indexName, $typeName);
             $finderDef = new DefinitionDecorator($abstractFinderId);
             $finderDef->replaceArgument(0, $typeDef);
             $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
             $container->setDefinition($finderId, $finderDef);
         }
 
-        $managerId = sprintf('foq_elastica.manager.%s', $typeConfig['driver']);
+        $managerId = sprintf('fos_elastica.manager.%s', $typeConfig['driver']);
         $managerDef = $container->getDefinition($managerId);
         $arguments = array( $typeConfig['model'], new Reference($finderId));
         if (isset($typeConfig['repository'])) {
@@ -399,9 +399,9 @@ class FOQElasticaExtension extends Extension
      **/
     protected function loadIndexManager(array $indexRefsByName, ContainerBuilder $container)
     {
-        $managerDef = $container->getDefinition('foq_elastica.index_manager');
+        $managerDef = $container->getDefinition('fos_elastica.index_manager');
         $managerDef->replaceArgument(0, $indexRefsByName);
-        $managerDef->replaceArgument(1, new Reference('foq_elastica.index'));
+        $managerDef->replaceArgument(1, new Reference('fos_elastica.index'));
     }
 
     /**
@@ -411,7 +411,7 @@ class FOQElasticaExtension extends Extension
      **/
     protected function loadResetter(array $indexConfigs, ContainerBuilder $container)
     {
-        $resetterDef = $container->getDefinition('foq_elastica.resetter');
+        $resetterDef = $container->getDefinition('fos_elastica.resetter');
         $resetterDef->replaceArgument(0, $indexConfigs);
     }
 
@@ -439,7 +439,7 @@ class FOQElasticaExtension extends Extension
             $defaultManagerService = $this->loadedDrivers[0];
         }
 
-        $container->setAlias('foq_elastica.manager', sprintf('foq_elastica.manager.%s', $defaultManagerService));
+        $container->setAlias('fos_elastica.manager', sprintf('fos_elastica.manager.%s', $defaultManagerService));
     }
 
 }

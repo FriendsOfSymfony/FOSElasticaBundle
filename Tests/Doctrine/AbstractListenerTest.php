@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Doctrine;
+namespace FOS\ElasticaBundle\Tests\Doctrine;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -154,7 +154,7 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidIsIndexableCallbacks($isIndexableCallback)
     {
-        $listener = $this->createListener($this->getMockPersister(), 'FOQ\ElasticaBundle\Tests\Doctrine\Listener\Entity', array());
+        $listener = $this->createListener($this->getMockPersister(), 'FOS\ElasticaBundle\Tests\Doctrine\Listener\Entity', array());
         $listener->setIsIndexableCallback($isIndexableCallback);
     }
 
@@ -214,11 +214,11 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
 
     private function getMockPersister()
     {
-        return $this->getMock('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface');
+        return $this->getMock('FOS\ElasticaBundle\Persister\ObjectPersisterInterface');
     }
 }
 
-namespace FOQ\ElasticaBundle\Tests\Doctrine\Listener;
+namespace FOS\ElasticaBundle\Tests\Doctrine\Listener;
 
 class Entity
 {

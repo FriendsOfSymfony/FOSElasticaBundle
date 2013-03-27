@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Logger;
+namespace FOS\ElasticaBundle\Logger;
 
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Doctrine\MongoDB;
+namespace FOS\ElasticaBundle\Tests\Doctrine\MongoDB;
 
-use FOQ\ElasticaBundle\Tests\Doctrine\AbstractListenerTest;
+use FOS\ElasticaBundle\Tests\Doctrine\AbstractListenerTest;
 
 class ListenerTest extends AbstractListenerTest
 {
@@ -25,7 +25,7 @@ class ListenerTest extends AbstractListenerTest
 
     protected function getListenerClass()
     {
-        return 'FOQ\ElasticaBundle\Doctrine\MongoDB\Listener';
+        return 'FOS\ElasticaBundle\Doctrine\MongoDB\Listener';
     }
 
     protected function getObjectManagerClass()

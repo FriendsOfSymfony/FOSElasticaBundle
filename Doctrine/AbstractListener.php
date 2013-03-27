@@ -1,10 +1,10 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine;
+namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;
-use FOQ\ElasticaBundle\Persister\ObjectPersisterInterface;
+use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 
 abstract class AbstractListener implements EventSubscriber
 {

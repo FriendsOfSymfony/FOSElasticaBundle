@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Propel;
+namespace FOS\ElasticaBundle\Propel;
 
-use FOQ\ElasticaBundle\Provider\AbstractProvider;
+use FOS\ElasticaBundle\Provider\AbstractProvider;
 
 /**
  * Propel provider
@@ -12,7 +12,7 @@ use FOQ\ElasticaBundle\Provider\AbstractProvider;
 class Provider extends AbstractProvider
 {
     /**
-     * @see FOQ\ElasticaBundle\Provider\ProviderInterface::populate()
+     * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
      */
     public function populate(\Closure $loggerClosure = null)
     {

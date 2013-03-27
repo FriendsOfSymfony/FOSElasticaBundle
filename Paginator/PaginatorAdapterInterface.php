@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Paginator;
+namespace FOS\ElasticaBundle\Paginator;
 
 interface PaginatorAdapterInterface
 {
@@ -19,7 +19,7 @@ interface PaginatorAdapterInterface
      * @param integer $offset The offset.
      * @param integer $length The length.
      *
-     * @return FOQ\ElasticaBundle\Paginator\PartialResults
+     * @return FOS\ElasticaBundle\Paginator\PartialResults
      *
      * @api
      */

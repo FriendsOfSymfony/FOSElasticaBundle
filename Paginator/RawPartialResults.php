@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Paginator;
+namespace FOS\ElasticaBundle\Paginator;
 
-use FOQ\ElasticaBundle\Paginator\PartialResultsInterface;
+use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use Elastica_ResultSet;
 
 /**

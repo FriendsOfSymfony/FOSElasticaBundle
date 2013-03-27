@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\DataCollector;
+namespace FOS\ElasticaBundle\Tests\DataCollector;
 
-use FOQ\ElasticaBundle\DataCollector\ElasticaDataCollector;
+use FOS\ElasticaBundle\DataCollector\ElasticaDataCollector;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -20,7 +20,7 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $loggerMock = $this->getMockBuilder('FOQ\ElasticaBundle\Logger\ElasticaLogger')
+        $loggerMock = $this->getMockBuilder('FOS\ElasticaBundle\Logger\ElasticaLogger')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -45,7 +45,7 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $loggerMock = $this->getMockBuilder('FOQ\ElasticaBundle\Logger\ElasticaLogger')
+        $loggerMock = $this->getMockBuilder('FOS\ElasticaBundle\Logger\ElasticaLogger')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -70,7 +70,7 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $loggerMock = $this->getMockBuilder('FOQ\ElasticaBundle\Logger\ElasticaLogger')
+        $loggerMock = $this->getMockBuilder('FOS\ElasticaBundle\Logger\ElasticaLogger')
             ->disableOriginalConstructor()
             ->getMock();
 

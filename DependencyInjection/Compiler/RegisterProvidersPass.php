@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\DependencyInjection\Compiler;
+namespace FOS\ElasticaBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -21,15 +21,15 @@ class RegisterProvidersPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('foq_elastica.provider_registry')) {
+        if (!$container->hasDefinition('fos_elastica.provider_registry')) {
             return;
         }
 
         // Infer the default index name from the service alias
-        $defaultIndex = substr($container->getAlias('foq_elastica.index'), 19);
+        $defaultIndex = substr($container->getAlias('fos_elastica.index'), 19);
 
-        $registry = $container->getDefinition('foq_elastica.provider_registry');
-        $providers = $container->findTaggedServiceIds('foq_elastica.provider');
+        $registry = $container->getDefinition('fos_elastica.provider_registry');
+        $providers = $container->findTaggedServiceIds('fos_elastica.provider');
 
         foreach ($providers as $providerId => $tags) {
             $index = $type = null;
@@ -62,7 +62,7 @@ class RegisterProvidersPass implements CompilerPassInterface
     {
         if (!isset($this->implementations[$class])) {
             $refl = new \ReflectionClass($class);
-            $this->implementations[$class] = $refl->implementsInterface('FOQ\ElasticaBundle\Provider\ProviderInterface');
+            $this->implementations[$class] = $refl->implementsInterface('FOS\ElasticaBundle\Provider\ProviderInterface');
         }
 
         return $this->implementations[$class];

@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Doctrine;
+namespace FOS\ElasticaBundle\Tests\Doctrine;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -136,11 +136,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return FOQ\ElasticaBundle\Doctrine\AbstractProvider
+     * @return FOS\ElasticaBundle\Doctrine\AbstractProvider
      */
     private function getMockAbstractProvider()
     {
-        return $this->getMockForAbstractClass('FOQ\ElasticaBundle\Doctrine\AbstractProvider', array(
+        return $this->getMockForAbstractClass('FOS\ElasticaBundle\Doctrine\AbstractProvider', array(
             $this->objectPersister,
             $this->objectClass,
             $this->options,
@@ -157,7 +157,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return FOQ\ElasticaBundle\Tests\Doctrine\ObjectManager
+     * @return FOS\ElasticaBundle\Tests\Doctrine\ObjectManager
      */
     private function getMockObjectManager()
     {
@@ -165,11 +165,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return FOQ\ElasticaBundle\Persister\ObjectPersisterInterface
+     * @return FOS\ElasticaBundle\Persister\ObjectPersisterInterface
      */
     private function getMockObjectPersister()
     {
-        return $this->getMock('FOQ\ElasticaBundle\Persister\ObjectPersisterInterface');
+        return $this->getMock('FOS\ElasticaBundle\Persister\ObjectPersisterInterface');
     }
 }
 

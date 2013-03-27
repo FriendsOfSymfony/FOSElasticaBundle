@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle;
+namespace FOS\ElasticaBundle;
 
 use Elastica_Client;
-use FOQ\ElasticaBundle\Logger\ElasticaLogger;
+use FOS\ElasticaBundle\Logger\ElasticaLogger;
 
 /**
  * @author Gordon Franke <info@nevalon.de>

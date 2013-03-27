@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle;
+namespace FOS\ElasticaBundle;
 
-use FOQ\ElasticaBundle\Finder\PaginatedFinderInterface;
+use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>

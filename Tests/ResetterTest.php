@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Resetter;
+namespace FOS\ElasticaBundle\Tests\Resetter;
 
-use FOQ\ElasticaBundle\Resetter;
+use FOS\ElasticaBundle\Resetter;
 
 class ResetterTest extends \PHPUnit_Framework_TestCase
 {
