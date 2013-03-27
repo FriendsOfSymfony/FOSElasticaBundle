@@ -57,6 +57,9 @@
 
         <service id="fos_elastica.model_to_elastica_transformer.prototype.auto" class="FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer" public="false" abstract="true">
             <argument /> <!-- options -->
+            <call method="setPropertyAccessor">
+                <argument type="service" id="property_accessor" on-invalid="null" />
+            </call>
         </service>
 
         <service id="fos_elastica.elastica_to_model_transformer.collection.prototype" class="%fos_elastica.elastica_to_model_transformer.collection.class%" public="true" abstract="true">
