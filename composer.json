@@ -21,14 +21,14 @@
         "doctrine/orm": ">=2.2,<2.5-dev",
         "doctrine/mongodb-odm": "1.0.*@dev",
         "propel/propel1": "1.6.*",
-        "pagerfanta/pagerfanta": "1.*",
+        "pagerfanta/pagerfanta": "1.0.*@dev",
         "knplabs/knp-components": "1.2.*"
     },
     "suggest": {
         "doctrine/orm": ">=2.2,<2.5-dev",
         "doctrine/mongodb-odm": "1.0.*@dev",
         "propel/propel1": "1.6.*",
-        "pagerfanta/pagerfanta": "1.*",
+        "pagerfanta/pagerfanta": "1.0.*@dev",
         "knplabs/knp-components": "1.2.*"
     },
     "autoload": {
