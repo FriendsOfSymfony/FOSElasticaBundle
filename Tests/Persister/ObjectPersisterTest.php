@@ -4,6 +4,7 @@ namespace FOS\ElasticaBundle\Tests\ObjectPersister;
 
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class POPO
 {
@@ -39,7 +40,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 
     public function testThatCanReplaceObject()
     {
-        $modelTransformer = new  ModelToElasticaAutoTransformer();
+        $transformer = $this->getTransformer();
 
         /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
@@ -53,7 +54,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 
         $fields = array('name' => array());
 
-        $objectPersister = new ObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
+        $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->replaceOne(new POPO());
     }
 
@@ -62,7 +63,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
      */
     public function testThatErrorIsHandledWhenCannotReplaceObject()
     {
-        $modelTransformer = new  ModelToElasticaAutoTransformer();
+        $transformer = $this->getTransformer();
 
         /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
@@ -75,13 +76,13 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 
         $fields = array('name' => array());
 
-        $objectPersister = new InvalidObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
+        $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->replaceOne(new POPO());
     }
 
     public function testThatCanInsertObject()
     {
-        $modelTransformer = new  ModelToElasticaAutoTransformer();
+        $transformer = $this->getTransformer();
 
         /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
@@ -94,7 +95,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 
         $fields = array('name' => array());
 
-        $objectPersister = new ObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
+        $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertOne(new POPO());
     }
 
@@ -103,7 +104,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
      */
     public function testThatErrorIsHandledWhenCannotInsertObject()
     {
-        $modelTransformer = new  ModelToElasticaAutoTransformer();
+        $transformer = $this->getTransformer();
 
         /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
@@ -116,13 +117,13 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 
         $fields = array('name' => array());
 
-        $objectPersister = new InvalidObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
+        $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertOne(new POPO());
     }
 
     public function testThatCanDeleteObject()
     {
-        $modelTransformer = new  ModelToElasticaAutoTransformer();
+        $transformer = $this->getTransformer();
 
         /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
@@ -135,7 +136,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 
         $fields = array('name' => array());
 
-        $objectPersister = new ObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
+        $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->deleteOne(new POPO());
     }
 
@@ -144,7 +145,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
      */
     public function testThatErrorIsHandledWhenCannotDeleteObject()
     {
-        $modelTransformer = new  ModelToElasticaAutoTransformer();
+        $transformer = $this->getTransformer();
 
         /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
@@ -157,13 +158,13 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 
         $fields = array('name' => array());
 
-        $objectPersister = new InvalidObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
+        $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->deleteOne(new POPO());
     }
 
     public function testThatCanInsertManyObjects()
     {
-        $modelTransformer = new  ModelToElasticaAutoTransformer();
+        $transformer = $this->getTransformer();
 
         /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
@@ -178,7 +179,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 
         $fields = array('name' => array());
 
-        $objectPersister = new ObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
+        $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertMany(array(new POPO(), new POPO()));
     }
 
@@ -187,7 +188,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
      */
     public function testThatErrorIsHandledWhenCannotInsertManyObject()
     {
-        $modelTransformer = new ModelToElasticaAutoTransformer();
+        $transformer = $this->getTransformer();
 
         /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica_Type */
         $typeMock = $this->getMockBuilder('Elastica_Type')
@@ -202,7 +203,21 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 
         $fields = array('name' => array());
 
-        $objectPersister = new InvalidObjectPersister($typeMock, $modelTransformer, 'SomeClass', $fields);
+        $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertMany(array(new POPO(), new POPO()));
+    }
+
+    /**
+     * @return ModelToElasticaAutoTransformer
+     */
+    private function getTransformer()
+    {
+        $transformer = new ModelToElasticaAutoTransformer();
+
+        if (class_exists('Symfony\Component\PropertyAccess\PropertyAccess')) {
+            $transformer->setPropertyAccessor(PropertyAccess::getPropertyAccessor());
+        }
+
+        return $transformer;
     }
 }
