@@ -21,9 +21,10 @@ class Provider extends AbstractProvider
          * lest we leave the query builder in a bad state for fetchSlice().
          */
         $qb = clone $queryBuilder;
+        $rootAliases = $queryBuilder->getRootAliases();
 
         return $qb
-            ->select($qb->expr()->count($queryBuilder->getRootAliases()[0]))
+            ->select($qb->expr()->count($rootAliases[0]))
             // Remove ordering for efficiency; it doesn't affect the count
             ->resetDQLPart('orderBy')
             ->getQuery()
