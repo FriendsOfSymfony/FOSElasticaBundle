@@ -26,6 +26,11 @@
         "doctrine/mongodb-odm": "1.0.*@dev",
         "propel/propel1": "1.6.*"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
     "autoload": {
         "psr-0": { "FOS\\ElasticaBundle": "" }
     },
