@@ -32,11 +32,6 @@
         "pagerfanta/pagerfanta": "1.0.*@dev",
         "knplabs/knp-components": "1.2.*"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0.x-dev"
-        }
-    },
     "autoload": {
         "psr-0": { "FOS\\ElasticaBundle": "" }
     },
