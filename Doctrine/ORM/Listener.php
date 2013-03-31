@@ -11,7 +11,7 @@ class Listener extends AbstractListener
     {
         $entity = $eventArgs->getEntity();
 
-        if ($entity instanceof $this->objectClass && $this->isObjectIndexable($entity)) {
+        if (get_class($entity) == $this->objectClass && $this->isObjectIndexable($entity)) {
             $this->objectPersister->insertOne($entity);
         }
     }
@@ -20,7 +20,7 @@ class Listener extends AbstractListener
     {
         $entity = $eventArgs->getEntity();
 
-        if ($entity instanceof $this->objectClass) {
+        if (get_class($entity) == $this->objectClass) {
             if ($this->isObjectIndexable($entity)) {
                 $this->objectPersister->replaceOne($entity);
             } else {
@@ -34,7 +34,7 @@ class Listener extends AbstractListener
     {
         $entity = $eventArgs->getEntity();
 
-        if ($entity instanceof $this->objectClass) {
+        if (get_class($entity) == $this->objectClass) {
             $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
         }
     }
@@ -43,7 +43,7 @@ class Listener extends AbstractListener
     {
         $entity = $eventArgs->getEntity();
 
-        if ($entity instanceof $this->objectClass) {
+        if (get_class($entity) == $this->objectClass) {
             $this->removeIfScheduled($entity);
         }
     }
