@@ -120,6 +120,7 @@ class Configuration implements ConfigurationInterface
                         ->performNoDeepMerging()
                         ->children()
                             ->scalarNode('index_name')->end()
+                            ->booleanNode('use_alias')->defaultValue(false)->end()
                             ->scalarNode('client')->end()
                             ->scalarNode('finder')
                                 ->treatNullLike(true)

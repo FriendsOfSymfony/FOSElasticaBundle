@@ -28,7 +28,7 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
             ->method('getName')
             ->will($this->returnValue($this->defaultIndexName));
 
-        $this->indexManager = new IndexManager($this->indexesByName, $defaultIndex);
+        $this->indexManager = new IndexManager($tbd, $defaultIndex);
     }
 
     public function testGetAllIndexes()

@@ -35,12 +35,12 @@
         </service>
 
         <service id="fos_elastica.index_manager" class="FOS\ElasticaBundle\IndexManager">
-            <argument /> <!-- indexes -->
-            <argument /> <!-- default index -->
+            <argument /> <!-- index configs -->
+            <argument /> <!-- default index key -->
         </service>
 
         <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Resetter">
-            <argument /> <!-- index configs -->
+            <argument type="service" id="fos_elastica.index_manager"/>
         </service>
 
         <service id="fos_elastica.object_persister.prototype" class="FOS\ElasticaBundle\Persister\ObjectPersister" abstract="true">

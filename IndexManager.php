@@ -4,19 +4,21 @@ namespace FOS\ElasticaBundle;
 
 class IndexManager
 {
-    protected $indexesByName;
-    protected $defaultIndexName;
+    protected $indexConfigs;
+    protected $defaultIndexKey;
 
     /**
      * Constructor.
      *
-     * @param array $indexesByName
-     * @param \Elastica_Index $defaultIndex
+     * @param array  $indexConfigs    Indexes configuration
+     * @param string $defaultIndexKey Config key of default index
+     *
+     * @internal param string $defaultIndexName
      */
-    public function __construct(array $indexesByName, \Elastica_Index $defaultIndex)
+    public function __construct(array $indexConfigs, $defaultIndexKey)
     {
-        $this->indexesByName = $indexesByName;
-        $this->defaultIndexName = $defaultIndex->getName();
+        $this->indexConfigs = $indexConfigs;
+        $this->defaultIndexKey = $defaultIndexKey;
     }
 
     /**
@@ -26,27 +28,57 @@ class IndexManager
      */
     public function getAllIndexes()
     {
-        return $this->indexesByName;
+        return array_keys($this->indexConfigs);
     }
 
     /**
      * Gets an index by its name
      *
-     * @param string $name Index to return, or the default index if null
-     * @return \Elastica_Index
-     * @throws \InvalidArgumentException if no index exists for the given name
+     * @param string|null $key Index key
+     *
+     * @return \FOS\ElasticaBundle\ElasticaDynamicIndex
      */
-    public function getIndex($name = null)
+    public function getIndex($key = null)
     {
-        if (null === $name) {
-            $name = $this->defaultIndexName;
+        $config = $this->getIndexConfig($key);
+        return isset($config['index']) ? $config['index'] : $this->buildIndex($key);
+    }
+
+    /**
+     * Factory method for creating index instances
+     *
+     * @param string|null $key Index key
+     *
+     * @return \FOS\ElasticaBundle\ElasticaDynamicIndex
+     */
+    public function buildIndex($key = null)
+    {
+        $config = $this->getIndexConfig($key);
+        $esIndex = new ElasticaDynamicIndex($config['client'], $config['name_or_alias']);
+        $this->indexConfigs[$key ? : $this->defaultIndexKey]['index'] = $esIndex;
+
+        return $esIndex;
+    }
+
+    /**
+     * Returns index configuration by key
+     *
+     * @param string|null $key Index key
+     *
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    public function getIndexConfig($key)
+    {
+        if (null === $key) {
+            $key = $this->defaultIndexKey;
         }
 
-        if (!isset($this->indexesByName[$name])) {
-            throw new \InvalidArgumentException(sprintf('The index "%s" does not exist', $name));
+        if (!isset($this->indexConfigs[$key])) {
+            throw new \InvalidArgumentException(sprintf('The index "%s" does not exist', $key));
         }
 
-        return $this->indexesByName[$name];
+        return $this->indexConfigs[$key];
     }
 
     /**
@@ -56,6 +88,6 @@ class IndexManager
      */
     public function getDefaultIndex()
     {
-        return $this->getIndex($this->defaultIndexName);
+        return $this->getIndex($this->defaultIndexKey);
     }
 }
