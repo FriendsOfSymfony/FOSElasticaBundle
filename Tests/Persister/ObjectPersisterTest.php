@@ -213,10 +213,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     private function getTransformer()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-
-        if (class_exists('Symfony\Component\PropertyAccess\PropertyAccess')) {
-            $transformer->setPropertyAccessor(PropertyAccess::getPropertyAccessor());
-        }
+        $transformer->setPropertyAccessor(PropertyAccess::getPropertyAccessor());
 
         return $transformer;
     }

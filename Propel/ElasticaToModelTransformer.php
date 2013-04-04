@@ -4,7 +4,7 @@ namespace FOS\ElasticaBundle\Propel;
 
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use Symfony\Component\Form\Util\PropertyPath;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Maps Elastica documents with Propel objects
@@ -33,6 +33,13 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     );
 
     /**
+     * PropertyAccessor instance
+     *
+     * @var PropertyAccessorInterface
+     */
+    protected $propertyAccessor;
+
+    /**
      * Instantiates a new Mapper
      *
      * @param string $objectClass
@@ -42,6 +49,16 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     {
         $this->objectClass = $objectClass;
         $this->options     = array_merge($this->options, $options);
+    }
+
+    /**
+     * Set the PropertyAccessor
+     *
+     * @param PropertyAccessorInterface $propertyAccessor
+     */
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
+    {
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     /**
@@ -59,17 +76,17 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 
         $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
 
-        $identifierProperty =  new PropertyPath($this->options['identifier']);
-
         // sort objects in the order of ids
         $idPos = array_flip($ids);
+        $identifier = $this->options['identifier'];
+        $propertyAccessor = $this->propertyAccessor;
         if (is_object($objects)) {
-            $objects->uasort(function($a, $b) use ($idPos, $identifierProperty) {
-                return $idPos[$identifierProperty->getValue($a)] > $idPos[$identifierProperty->getValue($b)];
+            $objects->uasort(function($a, $b) use ($idPos, $identifier, $propertyAccessor) {
+                return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
             });
         } else {
-            usort($objects, function($a, $b) use ($idPos, $identifierProperty) {
-                return $idPos[$identifierProperty->getValue($a)] > $idPos[$identifierProperty->getValue($b)];
+            usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor) {
+                return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
             });
         }
 

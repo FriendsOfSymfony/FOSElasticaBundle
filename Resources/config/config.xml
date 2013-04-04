@@ -13,6 +13,7 @@
         <parameter key="fos_elastica.manager.class">FOS\ElasticaBundle\Manager\RepositoryManager</parameter>
         <parameter key="fos_elastica.elastica_to_model_transformer.collection.class">FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
         <parameter key="fos_elastica.provider_registry.class">FOS\ElasticaBundle\Provider\ProviderRegistry</parameter>
+        <parameter key="fos_elastica.property_accessor.class">Symfony\Component\PropertyAccess\PropertyAccessor</parameter>
     </parameters>
 
     <services>
@@ -58,7 +59,7 @@
         <service id="fos_elastica.model_to_elastica_transformer.prototype.auto" class="FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer" public="false" abstract="true">
             <argument /> <!-- options -->
             <call method="setPropertyAccessor">
-                <argument type="service" id="property_accessor" on-invalid="null" />
+                <argument type="service" id="fos_elastica.property_accessor" />
             </call>
         </service>
 
@@ -74,6 +75,9 @@
 
         <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
             <tag name="knp_paginator.subscriber" />
+        </service>
+
+        <service id="fos_elastica.property_accessor" class="%fos_elastica.property_accessor.class%">
         </service>
     </services>
 
