@@ -2,7 +2,6 @@
 
 namespace FOS\ElasticaBundle\Transformer;
 
-use Symfony\Component\Form\Util\PropertyPath;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
@@ -22,11 +21,11 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     );
 
     /**
-     * PropertyAccessor instance (will be used if available)
+     * PropertyAccessor instance
      *
      * @var PropertyAccessorInterface
      */
-    private $propertyAccessor;
+    protected $propertyAccessor;
 
     /**
      * Instanciates a new Mapper
@@ -43,7 +42,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      *
      * @param PropertyAccessorInterface $propertyAccessor
      */
-    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor = null)
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
     {
         $this->propertyAccessor = $propertyAccessor;
     }
@@ -58,17 +57,17 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      **/
     public function transform($object, array $fields)
     {
-        $identifier = $this->getPropertyValue($object, $this->options['identifier']);
+        $identifier = $this->propertyAccessor->getValue($object, $this->options['identifier']);
         $document = new \Elastica_Document($identifier);
 
         foreach ($fields as $key => $mapping) {
-            $value = $this->getPropertyValue($object, $key);
+            $value = $this->propertyAccessor->getValue($object, $key);
 
             if (isset($mapping['_parent']['identifier'])) {
                 /* $value is the parent. Read its identifier and set that as the
                  * document's parent.
                  */
-                $document->setParent($this->getPropertyValue($value, $mapping['_parent']['identifier']));
+                $document->setParent($this->propertyAccessor->getValue($value, $mapping['_parent']['identifier']));
                 continue;
             }
 
@@ -94,26 +93,6 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         }
 
         return $document;
-    }
-
-    /**
-     * Get the value of an object property.
-     *
-     * This method will use Symfony 2.2's PropertyAccessor if it is available.
-     *
-     * @param object $object
-     * @param string $property
-     * @return mixed
-     */
-    protected function getPropertyValue($object, $property)
-    {
-        if (isset($this->propertyAccessor)) {
-            return $this->propertyAccessor->getValue($object, $property);
-        }
-
-        $propertyPath = new PropertyPath($property);
-
-        return $propertyPath->getValue($object);
     }
 
     /**
