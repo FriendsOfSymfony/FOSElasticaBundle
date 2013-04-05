@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use InvalidArgumentException;
 
 class FOSElasticaExtension extends Extension
@@ -275,6 +276,7 @@ class FOSElasticaExtension extends Extension
             'identifier'    => $typeConfig['identifier'],
             'hydrate'       => $typeConfig['elastica_to_model_transformer']['hydrate']
         ));
+        $serviceDef->addMethodCall('setPropertyAccessor', array(new Reference('property_accessor', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
         $container->setDefinition($serviceId, $serviceDef);
 
         return $serviceId;
