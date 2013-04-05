@@ -35,5 +35,10 @@
     "autoload": {
         "psr-0": { "FOS\\ElasticaBundle": "" }
     },
-    "target-dir": "FOS/ElasticaBundle"
+    "target-dir": "FOS/ElasticaBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.1.x-dev"
+        }
+    }
 }
