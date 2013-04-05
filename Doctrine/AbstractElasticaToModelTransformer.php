@@ -5,7 +5,7 @@ namespace FOS\ElasticaBundle\Doctrine;
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use Symfony\Component\Form\Util\PropertyPath;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -33,8 +33,15 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      */
     protected $options = array(
         'hydrate'    => true,
-		'identifier' => 'id'
+        'identifier' => 'id'
     );
+
+    /**
+     * PropertyAccessor instance
+     *
+     * @var PropertyAccessorInterface
+     */
+    protected $propertyAccessor;
 
     /**
      * Instantiates a new Mapper
@@ -58,6 +65,16 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     public function getObjectClass()
     {
         return $this->objectClass;
+    }
+
+    /**
+     * Set the PropertyAccessor
+     *
+     * @param PropertyAccessorInterface $propertyAccessor
+     */
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
+    {
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     /**
@@ -87,13 +104,13 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
             }
         }
 
-        $identifierProperty =  new PropertyPath($this->options['identifier']);
-
         // sort objects in the order of ids
         $idPos = array_flip($ids);
-        usort($objects, function($a, $b) use ($idPos, $identifierProperty)
+        $identifier = $this->options['identifier'];
+        $propertyAccessor = $this->propertyAccessor;
+        usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor)
         {
-            return $idPos[$identifierProperty->getValue($a)] > $idPos[$identifierProperty->getValue($b)];
+            return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
         });
 
         return $objects;

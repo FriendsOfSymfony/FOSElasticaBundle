@@ -203,12 +203,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 
     public function testThatCannotTransformObjectWhenGetterDoesNotExistForPrivateMethod()
     {
-        // Support both Symfony 2.1 (Form component) and 2.2 (PropertyAccess component)
-        $expectedException = class_exists('Symfony\Component\PropertyAccess\PropertyAccess')
-            ? 'Symfony\Component\PropertyAccess\Exception\PropertyAccessDeniedException'
-            : 'Symfony\Component\Form\Exception\PropertyAccessDeniedException';
-
-        $this->setExpectedException($expectedException);
+        $this->setExpectedException('Symfony\Component\PropertyAccess\Exception\PropertyAccessDeniedException');
 
         $transformer = $this->getTransformer();
         $transformer->transform(new POPO(), array('desc' => array()));
@@ -302,10 +297,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     private function getTransformer()
     {
         $transformer = new ModelToElasticaAutoTransformer();
-
-        if (class_exists('Symfony\Component\PropertyAccess\PropertyAccess')) {
-            $transformer->setPropertyAccessor(PropertyAccess::getPropertyAccessor());
-        }
+        $transformer->setPropertyAccessor(PropertyAccess::getPropertyAccessor());
 
         return $transformer;
     }
