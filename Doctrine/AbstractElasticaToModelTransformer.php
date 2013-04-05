@@ -6,6 +6,7 @@ use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Symfony\Component\Form\Util\PropertyPath;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -25,6 +26,13 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      * @var string
      */
     protected $objectClass = null;
+
+    /**
+     * PropertyAccessor instance (will be used if available)
+     *
+     * @var PropertyAccessorInterface
+     */
+    private $propertyAccessor;
 
     /**
      * Optional parameters
@@ -61,6 +69,16 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     }
 
     /**
+     * Set the PropertyAccessor
+     *
+     * @param PropertyAccessorInterface $propertyAccessor
+     */
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor = null)
+    {
+        $this->propertyAccessor = $propertyAccessor;
+    }
+
+    /**
      * Transforms an array of elastica objects into an array of
      * model objects fetched from the doctrine repository
      *
@@ -87,16 +105,37 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
             }
         }
 
-        $identifierProperty =  new PropertyPath($this->options['identifier']);
+        $identifierProperty =  $this->options['identifier'];
 
         // sort objects in the order of ids
         $idPos = array_flip($ids);
-        usort($objects, function($a, $b) use ($idPos, $identifierProperty)
+        $self = $this;
+        usort($objects, function($a, $b) use ($idPos, $identifierProperty, $self)
         {
-            return $idPos[$identifierProperty->getValue($a)] > $idPos[$identifierProperty->getValue($b)];
+            return $idPos[$self->getPropertyValue($a, $identifierProperty)] > $idPos[$self->getPropertyValue($b, $identifierProperty)];
         });
 
         return $objects;
+    }
+
+    /**
+     * Get the value of an object property.
+     *
+     * This method will use Symfony 2.2's PropertyAccessor if it is available.
+     *
+     * @param object $object
+     * @param string $property
+     * @return mixed
+     */
+    public function getPropertyValue($object, $property)
+    {
+        if (isset($this->propertyAccessor)) {
+            return $this->propertyAccessor->getValue($object, $property);
+        }
+
+        $propertyPath = new PropertyPath($property);
+
+        return $propertyPath->getValue($object);
     }
 
     public function hybridTransform(array $elasticaObjects)
