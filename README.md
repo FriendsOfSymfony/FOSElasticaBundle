@@ -1,95 +1,46 @@
-﻿[Elastica](https://github.com/ruflin/Elastica) integration in Symfony2
+[Elastica](https://github.com/ruflin/Elastica) integration in Symfony2
 
-## Installation
+### Installation
 
-### Install elasticsearch
+#### Bundle and Dependencies
 
-http://www.elasticsearch.org/guide/reference/setup/installation.html
+For Symfony 2.0.x projects, you must use a 1.x release of this bundle.
 
-### Install Elastica
+Add FOSElasticaBundle to your application's `composer.json` file:
 
-#### Download
+```json
+{
+    "require": {
+        "friendsofsymfony/elastica-bundle": "~1.0"
+    }
+}
+```
 
-**With submodule**
-
- `git submodule add git://github.com/ruflin/Elastica vendor/elastica`
-
-**With clone**
-
- `git clone git://github.com/ruflin/Elastica vendor/elastica`
-
-**Using the vendors script**
-
-Add the following lines to your deps file:
-
-    [Elastica]
-        git=git://github.com/ruflin/Elastica.git
-        target=elastica
-
-#### Register autoloading
-
-    // app/autoload.php
-
-    $loader->registerPrefixes(array(
-        ...
-        'Elastica' => __DIR__.'/../vendor/elastica/lib',
-    ));
-
-### Install ElasticaBundle
-
-Use the master branch with Symfony2 master only, use the 2.0 branch with Symfony2.0.x releases.
-
-#### Download
-
-**With submodule**
-
- `git submodule add git://github.com/Exercise/FOSElasticaBundle vendor/bundles/FOS/ElasticaBundle`
-
-**With clone**
-
- `git clone git://github.com/Exercise/FOSElasticaBundle vendor/bundles/FOS/ElasticaBundle`
-
-**With the vendors script**
-
-Add the following lines to your deps file:
-
-    [FOSElasticaBundle]
-        git=git://github.com/Exercise/FOSElasticaBundle.git
-        target=bundles/FOS/ElasticaBundle
-
-For the 2.0 branch for use with Symfony2.0.x releases add the following:
-
-    [FOSElasticaBundle]
-        git=git://github.com/Exercise/FOSElasticaBundle.git
-        target=bundles/FOS/ElasticaBundle
-        version=origin/2.0
-
-Run the vendors script:
+Install the bundle and its dependencies with the following command:
 
 ```bash
-$ php bin/vendors install
+$ php composer.phar update friendsofsymfony/elastica-bundle
 ```
-#### Register autoloading
 
-    // app/autoload.php
+You may rely on Composer to fetch the appropriate version of Elastica. Lastly,
+enable the bundle in your application kernel:
 
-    $loader->registerNamespaces(array(
-        ...
-        'FOS' => __DIR__.'/../vendor/bundles',
-    ));
+```php
+// app/AppKernel.php
 
-#### Register the bundle
+public function registerBundles()
+{
+    $bundles = array(
+        // ...
+        new FOS\ElasticaBundle\FOSElasticaBundle(),
+    );
+}
+```
 
-    // app/AppKernel.php
+#### Elasticsearch
 
-    public function registerBundles()
-    {
-        return array(
-            // ...
-            new FOS\ElasticaBundle\FOSElasticaBundle(),
-            // ...
-        );
-    }
+Instructions for installing and deploying Elasticsearch may be found
+[here](http://www.elasticsearch.org/guide/reference/setup/installation/).
 
 ### Basic configuration
 
