@@ -4,14 +4,18 @@
 
 #### Bundle and Dependencies
 
-For Symfony 2.0.x projects, you must use a 1.x release of this bundle.
+For Symfony 2.0.x projects, you must use a 1.x release of this bundle. Please
+check the bundle
+[tags](https://github.com/FriendsOfSymfony/FOSElasticaBundle/tags) or the
+[Packagist](https://packagist.org/packages/friendsofsymfony/elastica-bundle)
+page for information on Symfony and Elastica compatibility.
 
 Add FOSElasticaBundle to your application's `composer.json` file:
 
 ```json
 {
     "require": {
-        "friendsofsymfony/elastica-bundle": "~1.0"
+        "friendsofsymfony/elastica-bundle": "~2.0"
     }
 }
 ```
