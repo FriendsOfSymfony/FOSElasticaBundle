@@ -363,6 +363,10 @@ class Configuration implements ConfigurationInterface
      */
     protected function getNestings()
     {
+        if(!array_key_exists('indexes', $this->configArray[0])) {
+            return array();
+        }
+        
         $nestings = array();
         foreach ($this->configArray[0]['indexes'] as $index) {
             if (empty($index['types'])) {
