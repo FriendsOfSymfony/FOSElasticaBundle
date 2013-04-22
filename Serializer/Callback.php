@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Serializer;
 
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 
 class Callback
 {
@@ -30,7 +30,7 @@ class Callback
 
     public function serialize($object)
     {
-        $context = $this->serializer instanceof Serializer ? new SerializationContext() : null;
+        $context = $this->serializer instanceof SerializerInterface ? new SerializationContext() : array();
 
         if ($this->groups) {
             if (!$context) {
