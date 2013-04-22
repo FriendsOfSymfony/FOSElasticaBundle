@@ -90,7 +90,7 @@ Most of the time, you will need only one.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callable_class: %classname%
+            callback: %classname%
             id: serializer
         indexes:
             website:
@@ -123,7 +123,7 @@ Elasticsearch type is comparable to Doctrine entity repository.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callable_class: %classname%
+            callback: %classname%
             id: serializer
         indexes:
             website:
@@ -147,7 +147,7 @@ per type.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callable_class: %classname%
+            callback: %classname%
             id: serializer
         indexes:
             website:
@@ -168,7 +168,7 @@ per type.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callable_class: %classname%
+            callback: %classname%
             id: serializer
         indexes:
             website:
@@ -186,7 +186,7 @@ per type.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callable_class: %classname%
+            callback: %classname%
             id: serializer
         indexes:
             website:
@@ -224,7 +224,7 @@ some configuration will let ElasticaBundle do it for us.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callable_class: %classname%
+            callback: %classname%
             id: serializer
         indexes:
             website:
@@ -345,7 +345,7 @@ Declare that you want a Doctrine/Propel finder in your configuration:
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callable_class: %classname%
+            callback: %classname%
             id: serializer
         indexes:
             website:
