@@ -6,15 +6,15 @@
 
     <parameters>
         <parameter key="fos_elastica.client.class">FOS\ElasticaBundle\Client</parameter>
-        <parameter key="fos_elastica.index.class">Elastica_Index</parameter>
-        <parameter key="fos_elastica.type.class">Elastica_Type</parameter>
+        <parameter key="fos_elastica.index.class">Elastica\Index</parameter>
+        <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
         <parameter key="fos_elastica.logger.class">FOS\ElasticaBundle\Logger\ElasticaLogger</parameter>
         <parameter key="fos_elastica.data_collector.class">FOS\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
         <parameter key="fos_elastica.manager.class">FOS\ElasticaBundle\Manager\RepositoryManager</parameter>
         <parameter key="fos_elastica.elastica_to_model_transformer.collection.class">FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
         <parameter key="fos_elastica.provider_registry.class">FOS\ElasticaBundle\Provider\ProviderRegistry</parameter>
         <parameter key="fos_elastica.property_accessor.class">Symfony\Component\PropertyAccess\PropertyAccessor</parameter>
-        <parameter key="foq_elastica.serializer.callback.class">FOQ\ElasticaBundle\Serializer\Callback</parameter>
+        <parameter key="fos_elastica.serializer.callback.class">FOS\ElasticaBundle\Serializer\Callback</parameter>
     </parameters>
 
     <services>

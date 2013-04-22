@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Tests\Resetter;
 
 use FOS\ElasticaBundle\Resetter;
+use Elastica\Type\Mapping;
 
 class ResetterTest extends \PHPUnit_Framework_TestCase
 {
@@ -91,7 +92,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $type->expects($this->once())
             ->method('delete');
 
-        $mapping = \Elastica_Type_Mapping::create($this->indexConfigsByName['foo']['config']['mappings']['a']['properties']);
+        $mapping = Mapping::create($this->indexConfigsByName['foo']['config']['mappings']['a']['properties']);
         $type->expects($this->once())
             ->method('setMapping')
             ->with($mapping);
@@ -130,7 +131,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $type->expects($this->once())
             ->method('delete');
 
-        $mapping = \Elastica_Type_Mapping::create($this->indexConfigsByName['parent']['config']['mappings']['a']['properties']);
+        $mapping = Mapping::create($this->indexConfigsByName['parent']['config']['mappings']['a']['properties']);
         $mapping->setParam('_parent', array('type' => 'b'));
         $type->expects($this->once())
             ->method('setMapping')
@@ -141,21 +142,21 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Elastica_Index
+     * @return \Elastica\Index
      */
     private function getMockElasticaIndex()
     {
-        return $this->getMockBuilder('Elastica_Index')
+        return $this->getMockBuilder('Elastica\Index')
             ->disableOriginalConstructor()
             ->getMock();
     }
 
     /**
-     * @return \Elastica_Type
+     * @return \Elastica\Type
      */
     private function getMockElasticaType()
     {
-        return $this->getMockBuilder('Elastica_Type')
+        return $this->getMockBuilder('Elastica\Type')
             ->disableOriginalConstructor()
             ->getMock();
     }

@@ -2,35 +2,35 @@
 
 namespace FOS\ElasticaBundle\Paginator;
 
-use Elastica_Searchable;
-use Elastica_Query;
-use Elastica_ResultSet;
+use Elastica\SearchableInterface;
+use Elastica\Query;
+use Elastica\ResultSet;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use FOS\ElasticaBundle\Paginator\RawPartialResults;
 use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 
 /**
- * Allows pagination of Elastica_Query. Does not map results
+ * Allows pagination of Elastica\Query. Does not map results
  */
 class RawPaginatorAdapter implements PaginatorAdapterInterface
 {
     /**
-     * @var Elastica_Searchable the object to search in
+     * @var SearchableInterface the object to search in
      */
     private $searchable = null;
 
     /**
-     * @var Elastica_Query the query to search
+     * @var Query the query to search
      */
     private $query = null;
 
     /**
      * @see PaginatorAdapterInterface::__construct
      *
-     * @param Elastica_Searchable $searchable the object to search in
-     * @param Elastica_Query $query the query to search
+     * @param SearchableInterface $searchable the object to search in
+     * @param Query $query the query to search
      */
-    public function __construct(Elastica_Searchable $searchable, Elastica_Query $query)
+    public function __construct(SearchableInterface $searchable, Query $query)
     {
         $this->searchable = $searchable;
         $this->query      = $query;
@@ -41,7 +41,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      *
      * @param $offset
      * @param $itemCountPerPage
-     * @return Elastica_ResultSet
+     * @return ResultSet
      */
     protected function getElasticaResults($offset, $itemCountPerPage)
     {

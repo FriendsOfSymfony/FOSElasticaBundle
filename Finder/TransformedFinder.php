@@ -7,8 +7,8 @@ use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use Pagerfanta\Pagerfanta;
-use Elastica_Searchable;
-use Elastica_Query;
+use Elastica\SearchableInterface;
+use Elastica\Query;
 
 /**
  * Finds elastica documents and map them to persisted objects
@@ -18,7 +18,7 @@ class TransformedFinder implements PaginatedFinderInterface
     protected $searchable;
     protected $transformer;
 
-    public function __construct(Elastica_Searchable $searchable, ElasticaToModelTransformerInterface $transformer)
+    public function __construct(SearchableInterface $searchable, ElasticaToModelTransformerInterface $transformer)
     {
         $this->searchable  = $searchable;
         $this->transformer = $transformer;
@@ -52,9 +52,9 @@ class TransformedFinder implements PaginatedFinderInterface
      */
     protected function search($query, $limit = null)
     {
-        $queryObject = Elastica_Query::create($query);
+        $queryObject = Query::create($query);
         if (null !== $limit) {
-            $queryObject->setLimit($limit);
+            $queryObject->setSize($limit);
         }
         $results = $this->searchable->search($queryObject)->getResults();
 
@@ -70,7 +70,7 @@ class TransformedFinder implements PaginatedFinderInterface
      */
     public function findPaginated($query)
     {
-        $queryObject = Elastica_Query::create($query);
+        $queryObject = Query::create($query);
         $paginatorAdapter = $this->createPaginatorAdapter($queryObject);
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
@@ -81,7 +81,7 @@ class TransformedFinder implements PaginatedFinderInterface
      */
     public function createPaginatorAdapter($query)
     {
-        $query = Elastica_Query::create($query);
+        $query = Query::create($query);
         return new TransformedPaginatorAdapter($this->searchable, $query, $this->transformer);
     }
 }

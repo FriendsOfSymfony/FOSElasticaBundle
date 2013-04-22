@@ -12,7 +12,7 @@ interface ModelToElasticaTransformerInterface
      *
      * @param object $object the object to convert
      * @param array $fields the keys we want to have in the returned array
-     * @return \Elastica_Document
+     * @return \Elastica\Document
      **/
     function transform($object, array $fields);
 }

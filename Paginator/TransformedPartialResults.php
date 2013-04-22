@@ -4,7 +4,7 @@ namespace FOS\ElasticaBundle\Paginator;
 
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOS\ElasticaBundle\Paginator\RawPartialResults;
-use Elastica_ResultSet;
+use Elastica\ResultSet;
 
 /**
  * Partial transformed result set
@@ -14,10 +14,10 @@ class TransformedPartialResults extends RawPartialResults
     protected $transformer;
 
     /**
-     * @param \Elastica_ResultSet $resultSet
+     * @param ResultSet $resultSet
      * @param \FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface $transformer
      */
-    public function __construct(Elastica_ResultSet $resultSet, ElasticaToModelTransformerInterface $transformer)
+    public function __construct(ResultSet $resultSet, ElasticaToModelTransformerInterface $transformer)
     {
         parent::__construct($resultSet);
 

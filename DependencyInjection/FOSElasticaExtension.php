@@ -189,6 +189,9 @@ class FOSElasticaExtension extends Extension
                 if (isset($type['serializer']['groups'])) {
                     $serializerDef->addMethodCall('setGroups', array($type['serializer']['groups']));
                 }
+                if (isset($type['serializer']['version'])) {
+                    $serializerDef->addMethodCall('version', array($type['serializer']['version']));
+                }
 
                 $container->setDefinition($serializerId, $serializerDef);
 

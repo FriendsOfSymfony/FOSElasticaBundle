@@ -64,7 +64,7 @@ Most of the time, you will need only one.
 Elastica can handle objects instead of data arrays if a serializer callable is configured
 
     #app/config/config.yml
-    foq_elastica:
+    fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
@@ -73,12 +73,12 @@ Elastica can handle objects instead of data arrays if a serializer callable is c
 
 "callback" is the name of a parameter defining a class having a public method serialize($object). "serializer" is the service id for the
 actual serializer, e.g. 'serializer' if you're using the JMSSerializerBundle. If this is configured you can use
-Elastica_Type::addObject instead of Elastica_Type::addDocument to add data to the index.
+\Elastica\Type::addObject instead of \Elastica\Type::addDocument to add data to the index.
 The bundle provides a default implementation with a serializer service id 'serializer' that can be turned on by adding
 the following line to your config.
 
     #app/config/config.yml
-    foq_elastica:
+    fos_elastica:
         serializer: ~
 
 #### Declare an index
@@ -98,7 +98,7 @@ Most of the time, you will need only one.
 
 Here we created a "website" index, that uses our "default" client.
 
-Our index is now available as a service: `fos_elastica.index.website`. It is an instance of `Elastica_Index`.
+Our index is now available as a service: `fos_elastica.index.website`. It is an instance of `\Elastica\Index`.
 
 If you need to have different index name from the service name, for example, 
 in order to have different indexes for different environments then you can 
@@ -136,14 +136,14 @@ Elasticsearch type is comparable to Doctrine entity repository.
                             lastName: { boost: 3 }
                             aboutMe: ~
 
-Our type is now available as a service: `fos_elastica.index.website.user`. It is an instance of `Elastica_Type`.
+Our type is now available as a service: `fos_elastica.index.website.user`. It is an instance of `\Elastica\Type`.
 
 ### Declaring serializer groups
 
 If you are using the JMSSerializerBundle for serializing objects passed to elastica you can define serializer groups
 per type.
 
-    foq_elastica:
+    fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
@@ -294,13 +294,14 @@ Its class must implement `FOS\ElasticaBundle\Provider\ProviderInterface`.
         namespace Acme\UserBundle\Provider;
 
         use FOS\ElasticaBundle\Provider\ProviderInterface;
-        use Elastica_Type;
+        use Elastica\Type;
+        use Elastica\Document;
 
         class UserProvider implements ProviderInterface
         {
             protected $userType;
 
-            public function __construct(Elastica_Type $userType)
+            public function __construct(Type $userType)
             {
                 $this->userType = $userType;
             }
@@ -316,7 +317,7 @@ Its class must implement `FOS\ElasticaBundle\Provider\ProviderInterface`.
                     $loggerClosure('Indexing users');
                 }
 
-                $document = new \Elastica_Document();
+                $document = new Document();
                 $document->setData(array('username' => 'Bob'));
                 $this->userType->addDocuments(array($document));
             }
@@ -328,10 +329,10 @@ You will find a more complete implementation example in `src/FOS/ElasticaBundle/
 
 You can just use the index and type Elastica objects, provided as services, to perform searches.
 
-    /** var Elastica_Type */
+    /** var Elastica\Type */
     $userType = $this->container->get('fos_elastica.index.website.user');
 
-    /** var Elastica_ResultSet */
+    /** var Elastica\ResultSet */
     $resultSet = $userType->search('bob');
 
 #### Doctrine/Propel finder
@@ -383,7 +384,7 @@ Knp paginator:
     $userPaginator = $paginator->paginate($finder->createPaginatorAdapter('bob'));
 
 You can also get both the Elastica results and the entities together from the finder.
-You can then access the score, highlights etc. from the Elastica_Result whilst
+You can then access the score, highlights etc. from the Elastica\Result whilst
 still also getting the entity.
 
     /** var array of FOS\ElasticaBundle\HybridResult */
@@ -393,7 +394,7 @@ still also getting the entity.
         /** var  Acme\UserBundle\Entity\User */
         $user = $hybridResult->getTransformed();
 
-        /** var  Elastica_Result */
+        /** var  Elastica\Result */
         $result = $hybridResult->getResult();
     }
 
@@ -628,7 +629,7 @@ Any setting can be specified when declaring a type. For example, to enable a cus
 
 By default, exceptions from the Elastica client library will propagate through
 the bundle's Client class. For instance, if the elasticsearch server is offline,
-issuing a request will result in an `Elastica_Exception_Client` being thrown.
+issuing a request will result in an `Elastica\Exception\Connection` being thrown.
 Depending on your needs, it may be desirable to suppress these exceptions and
 allow searches to fail silently.
 
@@ -644,14 +645,17 @@ namespace Acme\ElasticaBundle;
 
 use FOS\ElasticaBundle\Client as BaseClient;
 
+use Elastica\Exception\AbstractException;
+use Elastica\Response;
+
 class Client extends BaseClient
 {
     public function request($path, $method, $data = array())
     {
         try {
             return parent::request($path, $method, $data);
-        } catch (\Elastica_Exception_Abstract $e) {
-            return new \Elastica_Response('{"took":0,"timed_out":false,"hits":{"total":0,"max_score":0,"hits":[]}}');
+        } catch (AbstractException $e) {
+            return new Response('{"took":0,"timed_out":false,"hits":{"total":0,"max_score":0,"hits":[]}}');
         }
     }
 }
@@ -669,18 +673,18 @@ apply to queries against the `title` field.
 
 ```php
 $finder = $this->container->get('fos_elastica.finder.website.article');
-$boolQuery = new \Elastica_Query_Bool();
+$boolQuery = new \Elastica\Query\Bool();
 
-$fieldQuery = new \Elastica_Query_Text();
+$fieldQuery = new \Elastica\Query\Text();
 $fieldQuery->setFieldQuery('title', 'I am a title string');
 $fieldQuery->setFieldParam('title', 'analyzer', 'my_analyzer');
 $boolQuery->addShould($fieldQuery);
 
-$tagsQuery = new \Elastica_Query_Terms();
+$tagsQuery = new \Elastica\Query\Terms();
 $tagsQuery->setTerms('tags', array('tag1', 'tag2'));
 $boolQuery->addShould($tagsQuery);
 
-$categoryQuery = new \Elastica_Query_Terms();
+$categoryQuery = new \Elastica\Query\Terms();
 $categoryQuery->setTerms('categoryIds', array('1', '2', '3'));
 $boolQuery->addMust($categoryQuery);
 
