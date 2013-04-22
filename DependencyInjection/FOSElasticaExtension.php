@@ -180,22 +180,21 @@ class FOSElasticaExtension extends Extension
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
             if ($serializerConfig) {
+                $callbackDef = new Definition($serializerConfig['callback_class']);
+                $callbackId = sprintf('%s.%s.serializer.callback', $indexId, $name);
 
-                $serializerDef = new Definition("%{$serializerConfig['callback']}%");
-                $serializerId = sprintf('%s.%s.serializer.callback', $indexId, $name);
-
-                $typeDef->addMethodCall('setSerializer', array(array(new Reference($serializerId), 'serialize')));
-                $serializerDef->addMethodCall('setSerializer', array(new Reference($serializerConfig['serializer'])));
+                $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));
+                $callbackDef->addMethodCall('setSerializer', array(new Reference($serializerConfig['serializer'])));
                 if (isset($type['serializer']['groups'])) {
-                    $serializerDef->addMethodCall('setGroups', array($type['serializer']['groups']));
+                    $callbackDef->addMethodCall('setGroups', array($type['serializer']['groups']));
                 }
                 if (isset($type['serializer']['version'])) {
-                    $serializerDef->addMethodCall('setVersion', array($type['serializer']['version']));
+                    $callbackDef->addMethodCall('setVersion', array($type['serializer']['version']));
                 }
 
-                $container->setDefinition($serializerId, $serializerDef);
+                $container->setDefinition($callbackId, $callbackDef);
 
-                $typeDef->addMethodCall('setSerializer', array(array(new Reference($serializerId), 'serialize')));
+                $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));
             }
             $container->setDefinition($typeId, $typeDef);
             if (isset($type['_source'])) {

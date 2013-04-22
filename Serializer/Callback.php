@@ -16,16 +16,31 @@ class Callback
     public function setSerializer($serializer)
     {
         $this->serializer = $serializer;
+        if (!method_exists($this->serializer, 'serialize')) {
+            throw new \RuntimeException('The serializer must have a "serialize" method.');
+        }
     }
 
     public function setGroups(array $groups)
     {
         $this->groups = $groups;
+
+        if ($this->groups) {
+            if (!$this->serializer instanceof SerializerInterface) {
+                throw new \RuntimeException('Setting serialization groups requires using "JMS\Serializer\Serializer".');
+            }
+        }
     }
 
     public function setVersion($version)
     {
         $this->version = $version;
+
+        if ($this->version) {
+            if (!$this->serializer instanceof SerializerInterface) {
+                throw new \RuntimeException('Setting serialization version requires using "JMS\Serializer\Serializer".');
+            }
+        }
     }
 
     public function serialize($object)
@@ -33,18 +48,10 @@ class Callback
         $context = $this->serializer instanceof SerializerInterface ? new SerializationContext() : array();
 
         if ($this->groups) {
-            if (!$context) {
-                throw new \RuntimeException('Setting serialization groups requires using "JMS\Serializer\Serializer"');
-            }
-
             $context->setGroups($this->groups);
         }
 
         if ($this->version) {
-            if (!$context) {
-                throw new \RuntimeException('Setting serialization version requires using "JMS\Serializer\Serializer"');
-            }
-
             $context->setVersion($this->version);
         }
 

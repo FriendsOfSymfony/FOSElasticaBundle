@@ -68,10 +68,12 @@ Elastica can handle objects instead of data arrays if a serializer callable is c
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callback: callback
+            callback_class: callback_class
             serializer: serializer
 
-``callback`` is the name of a parameter defining a class having a public method serialize($object).
+``callback_class`` is the name of a class having a public method serialize($object) and should
+extends from ``FOS\ElasticaBundle\Serializer\Callback``.
+
 ``serializer`` is the service id for the actual serializer, e.g. ``serializer`` if you're using
 JMSSerializerBundle. If this is configured you can use ``\Elastica\Type::addObject`` instead of
 ``\Elastica\Type::addDocument`` to add data to the index. The bundle provides a default implementation
@@ -90,7 +92,7 @@ Most of the time, you will need only one.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callback: %classname%
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
             id: serializer
         indexes:
             website:
@@ -123,7 +125,7 @@ Elasticsearch type is comparable to Doctrine entity repository.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callback: %classname%
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
             id: serializer
         indexes:
             website:
@@ -147,7 +149,7 @@ per type.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callback: %classname%
+            callback_class: %classname%
             id: serializer
         indexes:
             website:
@@ -168,7 +170,7 @@ per type.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callback: %classname%
+            callback_class_class: FOS\ElasticaBundle\Serializer\Callback
             id: serializer
         indexes:
             website:
@@ -186,7 +188,7 @@ per type.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callback: %classname%
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
             id: serializer
         indexes:
             website:
@@ -224,7 +226,7 @@ some configuration will let ElasticaBundle do it for us.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callback: %classname%
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
             id: serializer
         indexes:
             website:
@@ -345,7 +347,7 @@ Declare that you want a Doctrine/Propel finder in your configuration:
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callback: %classname%
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
             id: serializer
         indexes:
             website:
@@ -575,28 +577,28 @@ You can also choose to only listen for some of the events:
 If you use listeners to update your index, you may need to validate your
 entities before you index them (e.g. only index "public" entities). Typically,
 you'll want the listener to be consistent with the provider's query criteria.
-This may be achieved by using the `is_indexable_callback` config parameter:
+This may be achieved by using the `is_indexable_callback_class` config parameter:
 
                         persistence:
                             listener:
-                                is_indexable_callback: "isPublic"
+                                is_indexable_callback_class: "isPublic"
 
-If `is_indexable_callback` is a string and the entity has a method with the
+If `is_indexable_callback_class` is a string and the entity has a method with the
 specified name, the listener will only index entities for which the method
 returns `true`. Additionally, you may provide a service and method name pair:
 
                         persistence:
                             listener:
-                                is_indexable_callback: [ "%custom_service_id%", "isIndexable" ]
+                                is_indexable_callback_class: [ "%custom_service_id%", "isIndexable" ]
 
-In this case, the callback will be the `isIndexable()` method on the specified
+In this case, the callback_class will be the `isIndexable()` method on the specified
 service and the object being considered for indexing will be passed as the only
 argument. This allows you to do more complex validation (e.g. ACL checks).
 
-As you might expect, new entities will only be indexed if the callback returns
+As you might expect, new entities will only be indexed if the callback_class returns
 `true`. Additionally, modified entities will be updated or removed from the
-index depending on whether the callback returns `true` or `false`, respectively.
-The delete listener disregards the callback.
+index depending on whether the callback_class returns `true` or `false`, respectively.
+The delete listener disregards the callback_class.
 
 > **Propel** doesn't support this feature yet.
 
