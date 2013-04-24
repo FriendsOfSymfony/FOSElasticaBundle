@@ -647,7 +647,7 @@ namespace Acme\ElasticaBundle;
 
 use FOS\ElasticaBundle\Client as BaseClient;
 
-use Elastica\Exception\AbstractException;
+use Elastica\Exception\ExceptionInterface;
 use Elastica\Response;
 
 class Client extends BaseClient
@@ -656,7 +656,7 @@ class Client extends BaseClient
     {
         try {
             return parent::request($path, $method, $data);
-        } catch (AbstractException $e) {
+        } catch (ExceptionInterface $e) {
             return new Response('{"took":0,"timed_out":false,"hits":{"total":0,"max_score":0,"hits":[]}}');
         }
     }
