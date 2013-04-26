@@ -14,7 +14,6 @@
         <parameter key="fos_elastica.elastica_to_model_transformer.collection.class">FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
         <parameter key="fos_elastica.provider_registry.class">FOS\ElasticaBundle\Provider\ProviderRegistry</parameter>
         <parameter key="fos_elastica.property_accessor.class">Symfony\Component\PropertyAccess\PropertyAccessor</parameter>
-        <parameter key="fos_elastica.serializer.callback.class">FOS\ElasticaBundle\Serializer\Callback</parameter>
     </parameters>
 
     <services>
@@ -79,8 +78,6 @@
         </service>
 
         <service id="fos_elastica.property_accessor" class="%fos_elastica.property_accessor.class%" />
-
-        <service id="foq_elastica.serializer.callback" class="%foq_elastica.serializer.callback.class%" />
     </services>
 
 </container>
