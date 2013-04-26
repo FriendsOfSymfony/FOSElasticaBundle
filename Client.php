@@ -2,13 +2,13 @@
 
 namespace FOS\ElasticaBundle;
 
-use Elastica_Client;
+use Elastica\Client as ElasticaClient;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 
 /**
  * @author Gordon Franke <info@nevalon.de>
  */
-class Client extends Elastica_Client
+class Client extends ElasticaClient
 {
     /**
      * @var ElasticaLogger
@@ -20,7 +20,7 @@ class Client extends Elastica_Client
         $this->logger = $logger;
     }
 
-    public function request($path, $method, $data = array(), array $query = array())
+    public function request($path, $method = Request::GET, $data = array(), array $query = array())
     {
         $start = microtime(true);
         $response = parent::request($path, $method, $data, $query);

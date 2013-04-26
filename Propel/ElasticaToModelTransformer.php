@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Propel;
 
+use Elastica\Document;
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -65,12 +66,12 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      * Transforms an array of elastica objects into an array of
      * model objects fetched from the propel repository
      *
-     * @param \Elastica_Document[] $elasticaObjects array of elastica objects
+     * @param Document[] $elasticaObjects array of elastica objects
      * @return array
      */
     public function transform(array $elasticaObjects)
     {
-        $ids = array_map(function(\Elastica_Document $elasticaObject) {
+        $ids = array_map(function(Document $elasticaObject) {
             return $elasticaObject->getId();
         }, $elasticaObjects);
 

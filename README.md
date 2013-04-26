@@ -58,6 +58,31 @@ Most of the time, you will need only one.
         clients:
             default: { host: localhost, port: 9200 }
 
+
+#### Declare a serializer
+
+Elastica can handle objects instead of data arrays if a serializer callable is configured
+
+    #app/config/config.yml
+    fos_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        serializer:
+            callback_class: callback_class
+            serializer: serializer
+
+``callback_class`` is the name of a class having a public method serialize($object) and should
+extends from ``FOS\ElasticaBundle\Serializer\Callback``.
+
+``serializer`` is the service id for the actual serializer, e.g. ``serializer`` if you're using
+JMSSerializerBundle. If this is configured you can use ``\Elastica\Type::addObject`` instead of
+``\Elastica\Type::addDocument`` to add data to the index. The bundle provides a default implementation
+with a serializer service id 'serializer' that can be turned on by adding the following line to your config.
+
+    #app/config/config.yml
+    fos_elastica:
+        serializer: ~
+
 #### Declare an index
 
 Elasticsearch index is comparable to Doctrine entity manager.
@@ -66,13 +91,16 @@ Most of the time, you will need only one.
     fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
+            id: serializer
         indexes:
             website:
                 client: default
 
 Here we created a "website" index, that uses our "default" client.
 
-Our index is now available as a service: `fos_elastica.index.website`. It is an instance of `Elastica_Index`.
+Our index is now available as a service: `fos_elastica.index.website`. It is an instance of `\Elastica\Index`.
 
 If you need to have different index name from the service name, for example, 
 in order to have different indexes for different environments then you can 
@@ -96,6 +124,9 @@ Elasticsearch type is comparable to Doctrine entity repository.
     fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
+            id: serializer
         indexes:
             website:
                 client: default
@@ -107,13 +138,40 @@ Elasticsearch type is comparable to Doctrine entity repository.
                             lastName: { boost: 3 }
                             aboutMe: ~
 
-Our type is now available as a service: `fos_elastica.index.website.user`. It is an instance of `Elastica_Type`.
+Our type is now available as a service: `fos_elastica.index.website.user`. It is an instance of `\Elastica\Type`.
+
+### Declaring serializer groups
+
+If you are using the JMSSerializerBundle for serializing objects passed to elastica you can define serializer groups
+per type.
+
+    fos_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        serializer:
+            callback_class: %classname%
+            id: serializer
+        indexes:
+            website:
+                client: default
+                types:
+                    user:
+                        mappings:
+                            username: { boost: 5 }
+                            firstName: { boost: 3 }
+                            lastName: { boost: 3 }
+                            aboutMe:
+                        serializer:
+                            groups: [elastica, Default]
 
 ### Declaring parent field
 
     fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callback_class_class: FOS\ElasticaBundle\Serializer\Callback
+            id: serializer
         indexes:
             website:
                 client: default
@@ -129,6 +187,9 @@ Our type is now available as a service: `fos_elastica.index.website.user`. It is
     fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
+            id: serializer
         indexes:
             website:
                 client: default
@@ -164,6 +225,9 @@ some configuration will let ElasticaBundle do it for us.
     fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
+            id: serializer
         indexes:
             website:
                 client: default
@@ -232,13 +296,14 @@ Its class must implement `FOS\ElasticaBundle\Provider\ProviderInterface`.
         namespace Acme\UserBundle\Provider;
 
         use FOS\ElasticaBundle\Provider\ProviderInterface;
-        use Elastica_Type;
+        use Elastica\Type;
+        use Elastica\Document;
 
         class UserProvider implements ProviderInterface
         {
             protected $userType;
 
-            public function __construct(Elastica_Type $userType)
+            public function __construct(Type $userType)
             {
                 $this->userType = $userType;
             }
@@ -254,7 +319,7 @@ Its class must implement `FOS\ElasticaBundle\Provider\ProviderInterface`.
                     $loggerClosure('Indexing users');
                 }
 
-                $document = new \Elastica_Document();
+                $document = new Document();
                 $document->setData(array('username' => 'Bob'));
                 $this->userType->addDocuments(array($document));
             }
@@ -266,10 +331,10 @@ You will find a more complete implementation example in `src/FOS/ElasticaBundle/
 
 You can just use the index and type Elastica objects, provided as services, to perform searches.
 
-    /** var Elastica_Type */
+    /** var Elastica\Type */
     $userType = $this->container->get('fos_elastica.index.website.user');
 
-    /** var Elastica_ResultSet */
+    /** var Elastica\ResultSet */
     $resultSet = $userType->search('bob');
 
 #### Doctrine/Propel finder
@@ -281,6 +346,9 @@ Declare that you want a Doctrine/Propel finder in your configuration:
     fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
+        serializer:
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
+            id: serializer
         indexes:
             website:
                 client: default
@@ -318,7 +386,7 @@ Knp paginator:
     $userPaginator = $paginator->paginate($finder->createPaginatorAdapter('bob'));
 
 You can also get both the Elastica results and the entities together from the finder.
-You can then access the score, highlights etc. from the Elastica_Result whilst
+You can then access the score, highlights etc. from the Elastica\Result whilst
 still also getting the entity.
 
     /** var array of FOS\ElasticaBundle\HybridResult */
@@ -328,7 +396,7 @@ still also getting the entity.
         /** var  Acme\UserBundle\Entity\User */
         $user = $hybridResult->getTransformed();
 
-        /** var  Elastica_Result */
+        /** var  Elastica\Result */
         $result = $hybridResult->getResult();
     }
 
@@ -509,28 +577,28 @@ You can also choose to only listen for some of the events:
 If you use listeners to update your index, you may need to validate your
 entities before you index them (e.g. only index "public" entities). Typically,
 you'll want the listener to be consistent with the provider's query criteria.
-This may be achieved by using the `is_indexable_callback` config parameter:
+This may be achieved by using the `is_indexable_callback_class` config parameter:
 
                         persistence:
                             listener:
-                                is_indexable_callback: "isPublic"
+                                is_indexable_callback_class: "isPublic"
 
-If `is_indexable_callback` is a string and the entity has a method with the
+If `is_indexable_callback_class` is a string and the entity has a method with the
 specified name, the listener will only index entities for which the method
 returns `true`. Additionally, you may provide a service and method name pair:
 
                         persistence:
                             listener:
-                                is_indexable_callback: [ "%custom_service_id%", "isIndexable" ]
+                                is_indexable_callback_class: [ "%custom_service_id%", "isIndexable" ]
 
-In this case, the callback will be the `isIndexable()` method on the specified
+In this case, the callback_class will be the `isIndexable()` method on the specified
 service and the object being considered for indexing will be passed as the only
 argument. This allows you to do more complex validation (e.g. ACL checks).
 
-As you might expect, new entities will only be indexed if the callback returns
+As you might expect, new entities will only be indexed if the callback_class returns
 `true`. Additionally, modified entities will be updated or removed from the
-index depending on whether the callback returns `true` or `false`, respectively.
-The delete listener disregards the callback.
+index depending on whether the callback_class returns `true` or `false`, respectively.
+The delete listener disregards the callback_class.
 
 > **Propel** doesn't support this feature yet.
 
@@ -563,7 +631,7 @@ Any setting can be specified when declaring a type. For example, to enable a cus
 
 By default, exceptions from the Elastica client library will propagate through
 the bundle's Client class. For instance, if the elasticsearch server is offline,
-issuing a request will result in an `Elastica_Exception_Client` being thrown.
+issuing a request will result in an `Elastica\Exception\Connection` being thrown.
 Depending on your needs, it may be desirable to suppress these exceptions and
 allow searches to fail silently.
 
@@ -579,14 +647,17 @@ namespace Acme\ElasticaBundle;
 
 use FOS\ElasticaBundle\Client as BaseClient;
 
+use Elastica\Exception\ExceptionInterface;
+use Elastica\Response;
+
 class Client extends BaseClient
 {
     public function request($path, $method, $data = array())
     {
         try {
             return parent::request($path, $method, $data);
-        } catch (\Elastica_Exception_Abstract $e) {
-            return new \Elastica_Response('{"took":0,"timed_out":false,"hits":{"total":0,"max_score":0,"hits":[]}}');
+        } catch (ExceptionInterface $e) {
+            return new Response('{"took":0,"timed_out":false,"hits":{"total":0,"max_score":0,"hits":[]}}');
         }
     }
 }
@@ -604,18 +675,18 @@ apply to queries against the `title` field.
 
 ```php
 $finder = $this->container->get('fos_elastica.finder.website.article');
-$boolQuery = new \Elastica_Query_Bool();
+$boolQuery = new \Elastica\Query\Bool();
 
-$fieldQuery = new \Elastica_Query_Text();
+$fieldQuery = new \Elastica\Query\Text();
 $fieldQuery->setFieldQuery('title', 'I am a title string');
 $fieldQuery->setFieldParam('title', 'analyzer', 'my_analyzer');
 $boolQuery->addShould($fieldQuery);
 
-$tagsQuery = new \Elastica_Query_Terms();
+$tagsQuery = new \Elastica\Query\Terms();
 $tagsQuery->setTerms('tags', array('tag1', 'tag2'));
 $boolQuery->addShould($tagsQuery);
 
-$categoryQuery = new \Elastica_Query_Terms();
+$categoryQuery = new \Elastica\Query\Terms();
 $categoryQuery->setTerms('categoryIds', array('1', '2', '3'));
 $boolQuery->addMust($categoryQuery);
 

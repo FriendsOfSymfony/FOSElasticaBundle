@@ -2,6 +2,8 @@
 
 namespace FOS\ElasticaBundle;
 
+use Elastica\Index;
+
 class IndexManager
 {
     protected $indexesByName;
@@ -11,9 +13,9 @@ class IndexManager
      * Constructor.
      *
      * @param array $indexesByName
-     * @param \Elastica_Index $defaultIndex
+     * @param Index $defaultIndex
      */
-    public function __construct(array $indexesByName, \Elastica_Index $defaultIndex)
+    public function __construct(array $indexesByName, Index $defaultIndex)
     {
         $this->indexesByName = $indexesByName;
         $this->defaultIndexName = $defaultIndex->getName();
@@ -33,7 +35,7 @@ class IndexManager
      * Gets an index by its name
      *
      * @param string $name Index to return, or the default index if null
-     * @return \Elastica_Index
+     * @return Index
      * @throws \InvalidArgumentException if no index exists for the given name
      */
     public function getIndex($name = null)
@@ -52,7 +54,7 @@ class IndexManager
     /**
      * Gets the default index
      *
-     * @return \Elastica_Index
+     * @return Index
      */
     public function getDefaultIndex()
     {
