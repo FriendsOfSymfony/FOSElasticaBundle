@@ -112,7 +112,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        if (!class_exists('Elastica_Document')) {
+        if (!class_exists('Elastica\Document')) {
             ;
             $this->markTestSkipped('The Elastica library classes are not available');
         }
@@ -124,7 +124,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $document    = $transformer->transform(new POPO(), array('name' => array()));
         $data        = $document->getData();
 
-        $this->assertInstanceOf('Elastica_Document', $document);
+        $this->assertInstanceOf('Elastica\Document', $document);
         $this->assertEquals(123, $document->getId());
         $this->assertEquals('someName', $data['name']);
     }
@@ -143,7 +143,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         );
         $data        = $document->getData();
 
-        $this->assertInstanceOf('Elastica_Document', $document);
+        $this->assertInstanceOf('Elastica\Document', $document);
         $this->assertEquals(123, $document->getId());
         $this->assertEquals('someName', $data['name']);
         $this->assertEquals(7.2, $data['float']);

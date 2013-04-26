@@ -3,8 +3,8 @@
 namespace FOS\ElasticaBundle\Persister;
 
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use Elastica_Type;
-use Elastica_Document;
+use Elastica\Type;
+use Elastica\Document;
 
 /**
  * Inserts, replaces and deletes single documents in an elastica type
@@ -19,7 +19,7 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $objectClass;
     protected $fields;
 
-    public function __construct(Elastica_Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields)
+    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields)
     {
         $this->type            = $type;
         $this->transformer     = $transformer;
@@ -95,7 +95,7 @@ class ObjectPersister implements ObjectPersisterInterface
      * Transforms an object to an elastica document
      *
      * @param object $object
-     * @return Elastica_Document the elastica document
+     * @return Document the elastica document
      */
     public function transformToElasticaDocument($object)
     {

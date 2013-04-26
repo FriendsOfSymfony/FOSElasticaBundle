@@ -8,8 +8,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
-use Elastica_Query;
-use Elastica_Result;
+use Elastica\Query;
+use Elastica\Result;
 
 /**
  * Searches a type
@@ -41,11 +41,11 @@ class SearchCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $indexName = $input->getOption('index');
-        /** @var $index \Elastica_Index */
+        /** @var $index \Elastica\Index */
         $index = $this->getContainer()->get('fos_elastica.index_manager')->getIndex($indexName ? $indexName : null);
         $type  = $index->getType($input->getArgument('type'));
-        $query = Elastica_Query::create($input->getArgument('query'));
-        $query->setLimit($input->getOption('limit'));
+        $query = Query::create($input->getArgument('query'));
+        $query->setSize($input->getOption('limit'));
         if ($input->getOption('explain')) {
             $query->setExplain(true);
         }
@@ -58,7 +58,7 @@ class SearchCommand extends ContainerAwareCommand
         }
     }
 
-    protected function formatResult(Elastica_Result $result, $showField, $showSource, $showId, $explain)
+    protected function formatResult(Result $result, $showField, $showSource, $showId, $explain)
     {
         $source = $result->getSource();
         if ($showField) {

@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Transformer;
 
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Elastica\Document;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -53,12 +54,12 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * @param object $object the object to convert
      * @param array  $fields the keys we want to have in the returned array
      *
-     * @return \Elastica_Document
+     * @return Document
      **/
     public function transform($object, array $fields)
     {
         $identifier = $this->propertyAccessor->getValue($object, $this->options['identifier']);
-        $document = new \Elastica_Document($identifier);
+        $document = new Document($identifier);
 
         foreach ($fields as $key => $mapping) {
             $value = $this->propertyAccessor->getValue($object, $key);

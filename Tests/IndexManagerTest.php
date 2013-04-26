@@ -19,8 +19,8 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
             'index2' => 'test2',
         );
 
-        /** @var $defaultIndex \PHPUnit_Framework_MockObject_MockObject|\Elastica_Index */
-        $defaultIndex = $this->getMockBuilder('Elastica_Index')
+        /** @var $defaultIndex \PHPUnit_Framework_MockObject_MockObject|\Elastica\Index */
+        $defaultIndex = $this->getMockBuilder('Elastica\Index')
             ->disableOriginalConstructor()
             ->getMock();
 

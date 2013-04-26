@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Transformer;
 
 use FOS\ElasticaBundle\HybridResult;
-use Elastica_Document;
+use Elastica\Document;
 
 /**
  * Holds a collection of transformers for an index wide transformation.
@@ -40,7 +40,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
     }
 
     /**
-     * @param Elastica_Document[] $elasticaObjects
+     * @param Document[] $elasticaObjects
      * @return array
      */
     public function transform(array $elasticaObjects)

@@ -16,7 +16,7 @@
         "symfony/console": ">=2.1.0,<2.3.0-dev",
         "symfony/form": ">=2.1.0,<2.3.0-dev",
         "symfony/property-access": "2.2.*",
-        "ruflin/elastica": "0.19.8"
+        "ruflin/elastica": "0.20.5.*@dev"
     },
     "require-dev":{
         "doctrine/orm": ">=2.2,<2.5-dev",
@@ -38,7 +38,7 @@
     "target-dir": "FOS/ElasticaBundle",
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     }
 }
