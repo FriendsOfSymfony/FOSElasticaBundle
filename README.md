@@ -579,6 +579,23 @@ The delete listener disregards the callback.
 
 > **Propel** doesn't support this feature yet.
 
+### Ignoring missing index results
+
+By default, FOSElasticaBundle will throw an exception if the results returned from
+Elasticsearch are different from the results it finds from the chosen persistence
+provider. This may pose problems for a large index where updates do not occur instantly
+or another process has removed the results from your persistence provider without
+updating Elasticsearch.
+
+The error you're likely to see is something like:
+'Cannot find corresponding Doctrine objects for all Elastica results.'
+
+To solve this issue, each mapped object can be configured to ignore the missing results:
+
+                        persistence:
+                            elastica_to_model_transformer:
+                                ignore_missing: true
+
 ### Advanced elasticsearch configuration
 
 Any setting can be specified when declaring a type. For example, to enable a custom analyzer, you could write:
