@@ -23,6 +23,7 @@
         "doctrine/mongodb-odm": "1.0.*@dev",
         "propel/propel1": "1.6.*",
         "pagerfanta/pagerfanta": "1.0.*@dev",
+        "phpunit/phpunit": "~3.7",
         "knplabs/knp-components": "1.2.*"
     },
     "suggest": {
