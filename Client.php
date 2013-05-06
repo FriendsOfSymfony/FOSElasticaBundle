@@ -3,6 +3,8 @@
 namespace FOS\ElasticaBundle;
 
 use Elastica\Client as ElasticaClient;
+use Elastica\Request;
+
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 
 /**
