@@ -7,7 +7,7 @@ use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  *
- * Basic respoitory to be extended to hold custom queries to be run
+ * Basic repository to be extended to hold custom queries to be run
  * in the finder.
  */
 class Repository
