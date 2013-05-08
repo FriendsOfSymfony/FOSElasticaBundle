@@ -12,9 +12,9 @@ use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Resetter;
 
 /**
- * Purge search indexes
+ * Reset search indexes
  */
-class PurgeCommand extends ContainerAwareCommand
+class ResetCommand extends ContainerAwareCommand
 {
     /**
      * @var IndexManager
@@ -32,10 +32,10 @@ class PurgeCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('fos:elastica:purge')
-            ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to purge')
-            ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to purge')
-            ->setDescription('Purge search indexes')
+            ->setName('fos:elastica:reset')
+            ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to reset')
+            ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to reset')
+            ->setDescription('Reset search indexes')
         ;
     }
 
