@@ -93,7 +93,7 @@ Most of the time, you will need only one.
             default: { host: localhost, port: 9200 }
         serializer:
             callback_class: FOS\ElasticaBundle\Serializer\Callback
-            id: serializer
+            serializer: serializer
         indexes:
             website:
                 client: default
@@ -126,7 +126,7 @@ Elasticsearch type is comparable to Doctrine entity repository.
             default: { host: localhost, port: 9200 }
         serializer:
             callback_class: FOS\ElasticaBundle\Serializer\Callback
-            id: serializer
+            serializer: serializer
         indexes:
             website:
                 client: default
@@ -150,7 +150,7 @@ per type.
             default: { host: localhost, port: 9200 }
         serializer:
             callback_class: %classname%
-            id: serializer
+            serializer: serializer
         indexes:
             website:
                 client: default
@@ -170,8 +170,8 @@ per type.
         clients:
             default: { host: localhost, port: 9200 }
         serializer:
-            callback_class_class: FOS\ElasticaBundle\Serializer\Callback
-            id: serializer
+            callback_class: FOS\ElasticaBundle\Serializer\Callback
+            serializer: serializer
         indexes:
             website:
                 client: default
@@ -189,7 +189,7 @@ per type.
             default: { host: localhost, port: 9200 }
         serializer:
             callback_class: FOS\ElasticaBundle\Serializer\Callback
-            id: serializer
+            serializer: serializer
         indexes:
             website:
                 client: default
@@ -227,7 +227,7 @@ some configuration will let ElasticaBundle do it for us.
             default: { host: localhost, port: 9200 }
         serializer:
             callback_class: FOS\ElasticaBundle\Serializer\Callback
-            id: serializer
+            serializer: serializer
         indexes:
             website:
                 client: default
@@ -348,7 +348,7 @@ Declare that you want a Doctrine/Propel finder in your configuration:
             default: { host: localhost, port: 9200 }
         serializer:
             callback_class: FOS\ElasticaBundle\Serializer\Callback
-            id: serializer
+            serializer: serializer
         indexes:
             website:
                 client: default
