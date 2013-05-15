@@ -43,13 +43,17 @@ class ObjectPersister implements ObjectPersisterInterface
      * Replaces one object in the type
      *
      * @param object $object
+     * @param array  $fields
+     *
      * @return null
-     **/
-    public function replaceOne($object)
+     */
+    public function replaceOne($object, array $fields = array())
     {
-        $document = $this->transformToElasticaDocument($object);
-        $this->type->deleteById($document->getId());
-        $this->type->addDocument($document);
+        $document = $this->transformToElasticaDocument($object, $fields);
+
+        if ($document) {
+            $this->type->updateDocument($document);
+        }
     }
 
     /**
@@ -95,10 +99,17 @@ class ObjectPersister implements ObjectPersisterInterface
      * Transforms an object to an elastica document
      *
      * @param object $object
-     * @return Document the elastica document
+     * @param array  $fields
+     *
+     * @return Document|null the elastica document
      */
-    public function transformToElasticaDocument($object)
+    public function transformToElasticaDocument($object, array $fields = array())
     {
-        return $this->transformer->transform($object, $this->fields);
+        $fields = !empty($fields) ? array_intersect_key($this->fields, $fields) : $this->fields;
+
+        if (empty($fields))
+            return null;
+
+        return $this->transformer->transform($object, $fields);
     }
 }
