@@ -290,8 +290,9 @@ class FOSElasticaExtension extends Extension
 
         $serviceDef->replaceArgument($argPos, $typeConfig['model']);
         $serviceDef->replaceArgument($argPos + 1, array(
-            'identifier'    => $typeConfig['identifier'],
-            'hydrate'       => $typeConfig['elastica_to_model_transformer']['hydrate']
+            'hydrate'        => $typeConfig['elastica_to_model_transformer']['hydrate'],
+            'identifier'     => $typeConfig['identifier'],
+            'ignore_missing' => $typeConfig['elastica_to_model_transformer']['ignore_missing']
         ));
         $container->setDefinition($serviceId, $serviceDef);
 

@@ -32,8 +32,9 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      * @var array
      */
     protected $options = array(
-        'hydrate'    => true,
-        'identifier' => 'id'
+        'hydrate'        => true,
+        'identifier'     => 'id',
+        'ignore_missing' => false,
     );
 
     /**
@@ -94,7 +95,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         }
 
         $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
-        if (count($objects) < count($elasticaObjects)) {
+        if (!$this->options['ignore_missing'] && count($objects) < count($elasticaObjects)) {
             throw new \RuntimeException('Cannot find corresponding Doctrine objects for all Elastica results.');
         };
 
