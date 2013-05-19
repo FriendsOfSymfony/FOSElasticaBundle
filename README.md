@@ -589,7 +589,7 @@ returns `true`. Additionally, you may provide a service and method name pair:
 
                         persistence:
                             listener:
-                                is_indexable_callback_class: [ "%custom_service_id%", "isIndexable" ]
+                                is_indexable_callback_class: [ "@custom_service_id", "isIndexable" ]
 
 In this case, the callback_class will be the `isIndexable()` method on the specified
 service and the object being considered for indexing will be passed as the only
