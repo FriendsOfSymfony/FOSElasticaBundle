@@ -12,7 +12,8 @@ class Configuration implements ConfigurationInterface
 
     private $configArray = array();
 
-    public function __construct($configArray){
+    public function __construct($configArray)
+    {
         $this->configArray = $configArray;
     }
 
