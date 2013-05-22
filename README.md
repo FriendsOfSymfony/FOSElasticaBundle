@@ -15,7 +15,7 @@ Add FOSElasticaBundle to your application's `composer.json` file:
 ```json
 {
     "require": {
-        "friendsofsymfony/elastica-bundle": "~2.0"
+        "friendsofsymfony/elastica-bundle": "3.0.*@dev"
     }
 }
 ```
