@@ -34,9 +34,11 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
                 'index' => $this->getMockElasticaIndex(),
                 'config' => array(
                     'mappings' => array(
-                        'a' => array('properties' => array(
-                                'field_1' => array('_parent' => array('type' => 'b', 'identifier' => 'id')),
-                                'field_2' => array())),
+                        'a' => array(
+                            'properties' => array(
+                                'field_1' => array('_parent' => array('type' => 'b')),
+                                'field_2' => array())
+                            ),
                         'b' => array('properties' => array()),
                     ),
                 ),
@@ -69,6 +71,20 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
 
         $resetter = new Resetter($this->indexConfigsByName);
         $resetter->resetIndex('foo');
+    }
+
+    public function testResetIndexParent()
+    {
+        $expected = $this->indexConfigsByName['parent']['config'];
+        $expected['mappings']['a']['_parent'] = $expected['mappings']['a']['properties']['field_1']['_parent'];
+        unset($expected['mappings']['a']['properties']['field_1']);
+
+        $this->indexConfigsByName['parent']['index']->expects($this->once())
+            ->method('create')
+            ->with($expected, true);
+
+        $resetter = new Resetter($this->indexConfigsByName);
+        $resetter->resetIndex('parent');
     }
 
     /**
