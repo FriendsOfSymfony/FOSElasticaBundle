@@ -102,6 +102,11 @@ class POPO
         );
     }
 
+    public function getObj()
+    {
+        return array('foo' => 'foo', 'bar' => 'foo', 'id' => 1);
+    }
+
     public function getUpper()
     {
         return (object) array('id' => 'parent', 'name' => 'a random name');
@@ -266,6 +271,25 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
              array('bar' => 'foo'),
              array('bar' => 'bar')
            ), $data['sub']);
+    }
+
+    public function testObjectDoesNotRequireProperties()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+                'obj' => array(
+                    'type' => 'object'
+                    )
+                ));
+        $data        = $document->getData();
+
+        $this->assertTrue(array_key_exists('obj', $data));
+        $this->assertInternalType('array', $data['obj']);
+        $this->assertEquals(array(
+             'foo' => 'foo', 
+             'bar' => 'foo', 
+             'id' => 1
+           ), $data['obj']);
     }
 
     public function testParentMapping()
