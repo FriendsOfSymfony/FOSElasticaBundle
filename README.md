@@ -184,6 +184,8 @@ per type.
 
 ### Declaring `nested` or `object`
 
+Note that object can autodetect properties
+
     fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
@@ -204,6 +206,12 @@ per type.
                                 properties:
                                     date: { boost: 5 }
                                     content: ~
+                            user:
+                                type: "object"
+                            approver:
+                                type: "object"
+                                properties:
+                                    date: { boost: 5 }
 
 ### Populate the types
 
