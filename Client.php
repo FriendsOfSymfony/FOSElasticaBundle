@@ -5,7 +5,7 @@ namespace FOS\ElasticaBundle;
 use Elastica\Client as ElasticaClient;
 use Elastica\Request;
 
-use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Gordon Franke <info@nevalon.de>
@@ -17,7 +17,7 @@ class Client extends ElasticaClient
      */
     protected $logger;
 
-    public function setLogger(ElasticaLogger $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
