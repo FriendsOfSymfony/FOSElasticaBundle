@@ -2,7 +2,7 @@
 
 namespace FOS\ElasticaBundle\Logger;
 
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Logger for the Elastica.
@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
  *
  * @author Gordon Franke <info@nevalon.de>
  */
-class ElasticaLogger
+class ElasticaLogger implements LoggerInterface
 {
     protected $logger;
     protected $queries;
@@ -74,5 +74,77 @@ class ElasticaLogger
     public function getQueries()
     {
         return $this->queries;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function emergency($message, array $context = array())
+    {
+        return $this->logger->emergency($message, $context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function alert($message, array $context = array())
+    {
+        return $this->logger->alert($message, $context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function critical($message, array $context = array())
+    {
+        return $this->logger->critical($message, $context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function error($message, array $context = array())
+    {
+        return $this->logger->error($message, $context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function warning($message, array $context = array())
+    {
+        return $this->logger->warning($message, $context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function notice($message, array $context = array())
+    {
+        return $this->logger->notice($message, $context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function info($message, array $context = array())
+    {
+        return $this->logger->info($message, $context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function debug($message, array $context = array())
+    {
+        return $this->logger->debug($message, $context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function log($level, $message, array $context = array())
+    {
+        return $this->logger->log($message, $context);
     }
 }
