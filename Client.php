@@ -7,6 +7,8 @@ use Elastica\Request;
 
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 
+use PSR\Log\LoggerInterface;
+
 /**
  * @author Gordon Franke <info@nevalon.de>
  */
@@ -17,7 +19,7 @@ class Client extends ElasticaClient
      */
     protected $logger;
 
-    public function setLogger(ElasticaLogger $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
