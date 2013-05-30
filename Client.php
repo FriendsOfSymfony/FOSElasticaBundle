@@ -15,9 +15,9 @@ class Client extends ElasticaClient
         $start = microtime(true);
         $response = parent::request($path, $method, $data, $query);
 
-        if (null !== $this->logger) {
+        if (null !== $this->_logger) {
             $time = microtime(true) - $start;
-            $this->logger->logQuery($path, $method, $data, $time);
+            $this->_logger->logQuery($path, $method, $data, $time);
         }
 
         return $response;
