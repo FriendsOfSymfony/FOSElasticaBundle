@@ -16,7 +16,8 @@
         "symfony/console": ">=2.1,<2.4-dev",
         "symfony/form": ">=2.1,<2.4-dev",
         "symfony/property-access": ">=2.2,<2.4-dev",
-        "ruflin/elastica": "0.20.5.*@dev"
+        "ruflin/elastica": "0.20.5.*@dev",
+        "psr/log": "~1.0"
     },
     "require-dev":{
         "doctrine/orm": ">=2.2,<2.5-dev",
