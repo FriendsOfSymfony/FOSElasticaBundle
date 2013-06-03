@@ -86,6 +86,10 @@ class Configuration implements ConfigurationInterface
                         ->beforeNormalization()
                             ->ifTrue(function($v) { return isset($v['url']); })
                             ->then(function($v) {
+                                array(
+                                    'url' => $v['url'],
+                                )
+                                /*
                                 return array(
                                     'servers' => array(
                                         array(
@@ -93,6 +97,7 @@ class Configuration implements ConfigurationInterface
                                         )
                                     )
                                 );
+                                */
                             })
                         ->end()
                         ->children()
