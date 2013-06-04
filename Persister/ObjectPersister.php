@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Persister;
 
+use Elastica\Exception\NotFoundException;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Elastica\Type;
 use Elastica\Document;
@@ -48,7 +49,9 @@ class ObjectPersister implements ObjectPersisterInterface
     public function replaceOne($object)
     {
         $document = $this->transformToElasticaDocument($object);
-        $this->type->deleteById($document->getId());
+        try {
+            $this->type->deleteById($document->getId());
+        } catch (NotFoundException $e) {}
         $this->type->addDocument($document);
     }
 
@@ -61,7 +64,9 @@ class ObjectPersister implements ObjectPersisterInterface
     public function deleteOne($object)
     {
         $document = $this->transformToElasticaDocument($object);
-        $this->type->deleteById($document->getId());
+        try {
+            $this->type->deleteById($document->getId());
+        } catch (NotFoundException $e) {}
     }
 
     /**
@@ -73,7 +78,9 @@ class ObjectPersister implements ObjectPersisterInterface
      **/
     public function deleteById($id)
     {
-        $this->type->deleteById($id);
+        try {
+            $this->type->deleteById($id);
+        } catch (NotFoundException $e) {}
     }
 
 
