@@ -12,9 +12,9 @@
     ],
     "require": {
         "php": ">=5.3.2",
-        "symfony/framework-bundle": ">=2.1.0,<2.3.0-dev",
-        "symfony/console": ">=2.1.0,<2.3.0-dev",
-        "symfony/form": ">=2.1.0,<2.3.0-dev",
+        "symfony/framework-bundle": "~2.1",
+        "symfony/console": "~2.1",
+        "symfony/form": "~2.1",
         "ruflin/elastica": "0.19.8"
     },
     "require-dev":{
@@ -25,7 +25,7 @@
         "knplabs/knp-components": "1.2.*"
     },
     "suggest": {
-        "symfony/property-access": "2.2.*",
+        "symfony/property-access": "~2.2",
         "doctrine/orm": ">=2.2,<2.5-dev",
         "doctrine/mongodb-odm": "1.0.*@dev",
         "propel/propel1": "1.6.*",
