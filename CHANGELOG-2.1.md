@@ -12,7 +12,11 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v2.1.0...v2.1.1
 To generate a changelog summary since the last version, run
 `git log --no-merges --oneline v2.1.0...2.1.x`
 
-* 2.1.0 (2013-5-15)
+* 2.1.2 (2013-06-06)
+
+ * 00e9a49: Allow Symfony dependencies until 3.0
+
+* 2.1.1 (2013-05-15)
 
  * c05e0ca: Added documentation for ignoring missing hits
  * 00b67fd: Ignore missing index hits
