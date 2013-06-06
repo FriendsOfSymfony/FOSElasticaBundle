@@ -12,10 +12,10 @@
     ],
     "require": {
         "php": ">=5.3.2",
-        "symfony/framework-bundle": ">=2.1.0,<2.3.0-dev",
-        "symfony/console": ">=2.1.0,<2.3.0-dev",
-        "symfony/form": ">=2.1.0,<2.3.0-dev",
-        "symfony/property-access": "2.2.*",
+        "symfony/framework-bundle": "~2.1",
+        "symfony/console": "~2.1",
+        "symfony/form": "~2.1",
+        "symfony/property-access": "~2.2",
         "ruflin/elastica": "0.19.8"
     },
     "require-dev":{
