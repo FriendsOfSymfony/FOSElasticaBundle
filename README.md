@@ -680,6 +680,14 @@ class Client extends BaseClient
 }
 ```
 
+### Clients as Tagged Services
+
+Clients will be tagged as `fos_elastica.client`, which makes it possible to
+retrieve all clients from the service container and interact with them via a
+compiler pass. See
+[Working with Tagged Services](http://symfony.com/doc/current/components/dependency_injection/tags.html)
+for more information.
+
 ### Example of Advanced Query
 
 If you would like to perform more advanced queries, here is one example using
