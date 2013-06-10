@@ -680,6 +680,11 @@ class Client extends BaseClient
 }
 ```
 
+### Overriding the Client class with advanced functionality
+
+The client is also now tagged as fos_elastica.client making it easy to add Method calls when the client is instanciated.
+See [Create a CompilerPass](http://symfony.com/doc/current/components/dependency_injection/tags.html) for further details.
+
 ### Example of Advanced Query
 
 If you would like to perform more advanced queries, here is one example using
