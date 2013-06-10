@@ -683,69 +683,7 @@ class Client extends BaseClient
 ### Overriding the Client class with advanced functionality
 
 The client is also now tagged as fos_elastica.client making it easy to add Method calls when the client is instanciated.
-For example, you many want to add a logger to the above client
-
-Add a class to your compiler pass
-
-```
-<?php
-
-namespace Acme\ElasticaBundle;
-
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-
-/**
- * Class ElasticaBundle
- */
-class elasticaBundle extends Bundle
-{
-    /**
-     * @param ContainerBuilder $container
-     */
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-        $container->addCompilerPass(new ElasticaClientPass());
-    }
-}
-```
-
-And find the elastica client(s)
-
-```
-<?php
-
-namespace Acme\ElasticaBundle\DependencyInjection\Compiler;
-
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\Reference;
-
-/**
- * Class ElasticaClientPass
- *
- * @package peerj\SearchBundle\DependencyInjection\Compiler
- */
-class ElasticaClientPass implements CompilerPassInterface
-{
-    /**
-     * {@inheritDoc}
-     */
-    public function process(ContainerBuilder $container)
-    {
-        foreach ($container->findTaggedServiceIds('fos_elastica.client') as $id => $attributes) {
-            $def = $container->getDefinition($id);
-            $def->addMethodCall("setMonologger", array(new Reference('logger')));
-        }
-    }
-}
-```
-
-Then just add a method setMonoLogger to your client class
-
+See [Create a CompilerPass](http://symfony.com/doc/current/components/dependency_injection/tags.html) for further details.
 
 ### Example of Advanced Query
 
