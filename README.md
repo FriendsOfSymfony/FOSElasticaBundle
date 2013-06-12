@@ -205,6 +205,12 @@ per type.
                                     date: { boost: 5 }
                                     content: ~
 
+#### Doctrine ORM and `object` mappings
+
+Objects operate in the same way as the nested results but they need to have associations set up in Doctrine ORM so that they can be referenced correctly when indexing.
+
+If an "Entity was not found" error occurs while indexing, a null association has been discovered in the database. A custom Doctrine query must be used to utilize left joins instead of the default inner join.
+
 ### Populate the types
 
     php app/console fos:elastica:populate
