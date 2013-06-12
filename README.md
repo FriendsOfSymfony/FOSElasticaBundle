@@ -205,6 +205,10 @@ per type.
                                     date: { boost: 5 }
                                     content: ~
 
+>Objects operate in the same way as the nested results but they need to have the associations set up in doctrine so that they can be referenced correctly when indexing.
+
+>When indexing, if the error 'Entity was not found' is fired then a null association has been discovered in the database, a custom Doctrine query must be used to utilise leftJoins instead of the default which is a innerJoin.
+
 ### Populate the types
 
     php app/console fos:elastica:populate
