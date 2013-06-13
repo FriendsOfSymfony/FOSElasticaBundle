@@ -386,6 +386,9 @@ Pagerfanta:
     /** var Pagerfanta\Pagerfanta */
     $userPaginator = $finder->findPaginated('bob');
 
+    /** Number of results to be used for paging the results */
+    $countOfResults = $userPaginator->getNbResults();
+
 Knp paginator:
 
     $paginator = $this->get('knp_paginator');
