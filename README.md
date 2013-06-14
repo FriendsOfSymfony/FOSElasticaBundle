@@ -754,3 +754,27 @@ fos_elastica:
                         provider:
                         finder:
 ```
+
+### Filtering Results and executing a default query
+
+You may want to remove a certain set of results via filtering (which removes it from the `score index`, 
+it is slightly faster in performance because the subset can be cached so that future queries run quicker). 
+Filtering can be used to remove deactivated records or to show results by group. `FilteredQuery` should 
+be used to combine the `QueryString` operator with the `Filter`, an example of `FilteredQuery` is shown Below.
+
+```php
+$term = new \Elastica\Filter\Term();
+$term->setParams(array(
+        'active' => 'active',
+        'companyGroup' => $department
+    ));
+    
+$query = new \Elastica\Query\QueryString();
+$query->setQuery($queryString);
+
+$filteredQuery = new \Elastica\Query\Filtered($query, $term);
+
+$results = $this->container->get('fos_elastica.finder.company.company');->findPaginated($filteredQuery);
+
+```
+    
