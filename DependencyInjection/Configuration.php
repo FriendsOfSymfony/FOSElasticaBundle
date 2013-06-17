@@ -341,7 +341,6 @@ class Configuration implements ConfigurationInterface
                 ->treatNullLike(array())
                 ->children()
                     ->scalarNode('type')->end()
-                    ->scalarNode('identifier')->defaultValue('id')->end()
                 ->end()
             ->end();
 
