@@ -178,9 +178,9 @@ per type.
                 types:
                     comment:
                         mappings:
-                            post: {_parent: { type: "post", identifier: "id" } }
                             date: { boost: 5 }
                             content: ~
+                        _parent: { type: "post", property: "post", identifier: "id" }
 
 ### Declaring `nested` or `object`
 

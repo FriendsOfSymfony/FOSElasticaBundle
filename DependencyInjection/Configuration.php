@@ -287,6 +287,7 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getSourceNode())
                 ->append($this->getBoostNode())
                 ->append($this->getRoutingNode())
+                ->append($this->getParentNode())
             ->end()
         ;
 
@@ -338,13 +339,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('index_options')->end()
             ->scalarNode('ignore_above')->end()
             ->scalarNode('position_offset_gap')->end()
-            ->arrayNode('_parent')
-                ->treatNullLike(array())
-                ->children()
-                    ->scalarNode('type')->end()
-                    ->scalarNode('identifier')->defaultValue('id')->end()
-                ->end()
-            ->end();
+        ;
 
         if (isset($nestings['fields'])) {
             $this->addNestedFieldConfig($node, $nestings, 'fields');
@@ -511,6 +506,25 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('required')->end()
                 ->scalarNode('path')->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+    
+    /**
+     * Returns the array node used for "_parent".
+     */
+    protected function getParentNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_parent');
+
+        $node
+            ->children()
+                ->scalarNode('type')->end()
+                ->scalarNode('property')->end()
+                ->scalarNode('identifier')->defaultValue('id')->end()
             ->end()
         ;
 
