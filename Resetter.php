@@ -44,7 +44,7 @@ class Resetter
         // loop the config, and place the _parent outside the properties array
         foreach ($indexConfig['config']['mappings'] as $typeName => $mapping) {
             foreach ($mapping['properties'] as $key => $type) {
-                if (!empty($type['_parent']) && $type['_parent'] !== '~') {
+                if (!empty($type['_parent'])) {
                     $indexConfig['config']['mappings'][$typeName]['_parent'] = array('type' => $type['_parent']['type']);
                     unset($indexConfig['config']['mappings'][$typeName]['properties'][$key]);
                 }
@@ -86,7 +86,7 @@ class Resetter
         $mapping = Mapping::create($indexConfig['properties']);
 
         foreach($indexConfig['properties'] as $type) {
-            if (!empty($type['_parent']) && $type['_parent'] !== '~') {
+            if (!empty($type['_parent'])) {
                 $mapping->setParam('_parent', array('type' => $type['_parent']['type']));
             }
         }
