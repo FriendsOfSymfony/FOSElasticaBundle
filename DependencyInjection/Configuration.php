@@ -12,7 +12,8 @@ class Configuration implements ConfigurationInterface
 
     private $configArray = array();
 
-    public function __construct($configArray){
+    public function __construct($configArray)
+    {
         $this->configArray = $configArray;
     }
 
@@ -34,6 +35,13 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('default_client')->end()
                 ->scalarNode('default_index')->end()
                 ->scalarNode('default_manager')->defaultValue('orm')->end()
+                ->arrayNode('serializer')
+                    ->treatNullLike(array())
+                    ->children()
+                        ->scalarNode('callback_class')->defaultValue('FOS\ElasticaBundle\Serializer\Callback')->end()
+                        ->scalarNode('serializer')->defaultValue('serializer')->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
@@ -170,6 +178,7 @@ class Configuration implements ConfigurationInterface
                                                 ->addDefaultsIfNotSet()
                                                 ->children()
                                                     ->scalarNode('hydrate')->defaultTrue()->end()
+                                                    ->scalarNode('ignore_missing')->defaultFalse()->end()
                                                     ->scalarNode('service')->end()
                                                 ->end()
                                             ->end()
@@ -205,6 +214,16 @@ class Configuration implements ConfigurationInterface
             ->prototype('array')
                 ->treatNullLike(array())
                 ->children()
+                    ->arrayNode('serializer')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->arrayNode('groups')
+                                ->treatNullLike(array())
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->scalarNode('version')->end()
+                        ->end()
+                    ->end()
                     ->scalarNode('index_analyzer')->end()
                     ->scalarNode('search_analyzer')->end()
                     ->arrayNode('persistence')
@@ -250,6 +269,7 @@ class Configuration implements ConfigurationInterface
                                 ->addDefaultsIfNotSet()
                                 ->children()
                                     ->scalarNode('hydrate')->defaultTrue()->end()
+                                    ->scalarNode('ignore_missing')->defaultFalse()->end()
                                     ->scalarNode('service')->end()
                                 ->end()
                             ->end()
@@ -262,6 +282,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->append($this->getIdNode())
                 ->append($this->getMappingsNode())
                 ->append($this->getSourceNode())
                 ->append($this->getBoostNode())
@@ -414,6 +435,23 @@ class Configuration implements ConfigurationInterface
             $nestings[$property] = array();
         }
         $nestings[$property] = array_merge_recursive($nestings[$property], $this->getNestingsForType($field[$property]));
+    }
+
+    /**
+     * Returns the array node used for "_id".
+     */
+    protected function getIdNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_id');
+
+        $node
+            ->children()
+            ->scalarNode('path')->end()
+            ->end()
+        ;
+
+        return $node;
     }
 
     /**

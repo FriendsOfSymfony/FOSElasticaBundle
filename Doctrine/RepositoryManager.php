@@ -28,7 +28,7 @@ class RepositoryManager extends BaseManager
      * Return repository for entity
      *
      * Returns custom repository if one specified otherwise
-     * returns a basic respository.
+     * returns a basic repository.
      */
     public function getRepository($entityName)
     {

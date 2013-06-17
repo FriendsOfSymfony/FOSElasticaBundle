@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Transformer;
 
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection;
 
 class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCase
@@ -53,8 +54,8 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
     {
         $this->collectionSetup();
 
-        $document1 = new \Elastica_Document(123, array('data' => 'lots of data'), 'type1');
-        $document2 = new \Elastica_Document(124, array('data' => 'not so much data'), 'type2');
+        $document1 = new Document(123, array('data' => 'lots of data'), 'type1');
+        $document2 = new Document(124, array('data' => 'not so much data'), 'type2');
         $result1 = new POPO(123, 'lots of data');
         $result2 = new POPO2(124, 'not so much data');
 
@@ -80,8 +81,8 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
     {
         $this->collectionSetup();
 
-        $document1 = new \Elastica_Document(123, array('data' => 'lots of data'), 'type1');
-        $document2 = new \Elastica_Document(124, array('data' => 'not so much data'), 'type1');
+        $document1 = new Document(123, array('data' => 'lots of data'), 'type1');
+        $document2 = new Document(124, array('data' => 'not so much data'), 'type1');
         $result1 = new POPO(123, 'lots of data');
         $result2 = new POPO2(124, 'not so much data');
 

@@ -3,8 +3,8 @@
 namespace FOS\ElasticaBundle\Paginator;
 
 use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
-use Elastica_ResultSet;
-use Elastica_Result;
+use Elastica\ResultSet;
+use Elastica\Result;
 
 /**
  * Raw partial results transforms to a simple array
@@ -14,9 +14,9 @@ class RawPartialResults implements PartialResultsInterface
     protected $resultSet;
 
     /**
-     * @param \Elastica_ResultSet $resultSet
+     * @param ResultSet $resultSet
      */
-    public function __construct(Elastica_ResultSet $resultSet)
+    public function __construct(ResultSet $resultSet)
     {
         $this->resultSet = $resultSet;
     }
@@ -26,7 +26,7 @@ class RawPartialResults implements PartialResultsInterface
      */
     public function toArray()
     {
-        return array_map(function(Elastica_Result $result) {
+        return array_map(function(Result $result) {
             return $result->getSource();
         }, $this->resultSet->getResults());
     }
