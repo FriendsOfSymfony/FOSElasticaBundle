@@ -8,6 +8,8 @@ use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 
 class Provider extends AbstractProvider
 {
+    const ENTITY_ALIAS = 'a';
+    
     /**
      * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
      */
@@ -40,6 +42,24 @@ class Provider extends AbstractProvider
             throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ORM\QueryBuilder');
         }
 
+        /**
+         * An orderBy DQL  part is required to avoid feching the same row twice.
+         * @see http://stackoverflow.com/questions/6314879/does-limit-offset-length-require-order-by-for-pagination
+         * @see http://www.postgresql.org/docs/current/static/queries-limit.html
+         * @see http://www.sqlite.org/lang_select.html#orderby
+         */
+        $orderBy = $queryBuilder->getDQLPart('orderBy');
+        if (empty($orderBy)) {
+            $identifierFieldNames = $this->managerRegistry
+                ->getManagerForClass($this->objectClass)
+                ->getClassMetadata($this->objectClass)
+                ->getIdentifierFieldNames();
+            sort($identifierFieldNames);
+            foreach ($identifierFieldNames as $fieldName) {
+                $queryBuilder->addOrderBy(static::ENTITY_ALIAS.'.'.$fieldName);
+            }
+        }
+
         return $queryBuilder
             ->setFirstResult($offset)
             ->setMaxResults($limit)
@@ -56,6 +76,6 @@ class Provider extends AbstractProvider
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass)
             // ORM query builders require an alias argument
-            ->{$this->options['query_builder_method']}('a');
+            ->{$this->options['query_builder_method']}(static::ENTITY_ALIAS);
     }
 }
