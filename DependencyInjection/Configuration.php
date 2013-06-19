@@ -511,7 +511,7 @@ class Configuration implements ConfigurationInterface
 
         return $node;
     }
-    
+
     /**
      * Returns the array node used for "_parent".
      */
@@ -523,7 +523,7 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
                 ->scalarNode('type')->end()
-                ->scalarNode('property')->end()
+                ->scalarNode('property')->defaultValue(null)->end()
                 ->scalarNode('identifier')->defaultValue('id')->end()
             ->end()
         ;
