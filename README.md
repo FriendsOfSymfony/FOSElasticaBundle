@@ -776,5 +776,12 @@ $filteredQuery = new \Elastica\Query\Filtered($query, $term);
 
 $results = $this->container->get('fos_elastica.finder.company.company')->findPaginated($filteredQuery);
 
+// Filter results for paging
+$results->setMaxPerPage($limit);
+$results->setCurrentPage($page);
+
+// Number of total results for paging 
+$total = $results->getNbResults();  
+
 ```
     
