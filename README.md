@@ -774,7 +774,7 @@ $query->setQuery($queryString);
 
 $filteredQuery = new \Elastica\Query\Filtered($query, $term);
 
-$results = $this->container->get('fos_elastica.finder.company.company');->findPaginated($filteredQuery);
+$results = $this->container->get('fos_elastica.finder.company.company')->findPaginated($filteredQuery);
 
 ```
     
