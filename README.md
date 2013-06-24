@@ -766,6 +766,7 @@ be used to combine the `QueryString` operator with the `Filter`, an example of `
 $term = new \Elastica\Filter\Term();
 $term->setParams(array(
         'active' => 'active',
+        'address.postCode' => $postCode //Accessing elements nested within an object. address is the object and postCode is the property within it.
         'companyGroup' => $department
     ));
     
