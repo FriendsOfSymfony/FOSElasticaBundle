@@ -125,18 +125,18 @@ class PopulateCommand extends ContainerAwareCommand
     private function populateIndexType(OutputInterface $output, $index, $type, $reset)
     {
         if ($reset) {
-            $output->writeln(sprintf('Resetting: %s/%s', $index, $type));
+            $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
             $this->resetter->resetIndexType($index, $type);
         }
 
         $loggerClosure = function($message) use ($output, $index, $type) {
-            $output->writeln(sprintf('Populating: %s/%s, %s', $index, $type, $message));
+            $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
         };
 
         $provider = $this->providerRegistry->getProvider($index, $type);
         $provider->populate($loggerClosure);
 
-        $output->writeln(sprintf('Refreshing: %s', $index));
+        $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
         $this->indexManager->getIndex($index)->refresh();
     }
 }
