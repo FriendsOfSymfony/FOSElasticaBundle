@@ -54,7 +54,6 @@ class Provider extends AbstractProvider
                 ->getManagerForClass($this->objectClass)
                 ->getClassMetadata($this->objectClass)
                 ->getIdentifierFieldNames();
-            sort($identifierFieldNames);
             foreach ($identifierFieldNames as $fieldName) {
                 $queryBuilder->addOrderBy(static::ENTITY_ALIAS.'.'.$fieldName);
             }
