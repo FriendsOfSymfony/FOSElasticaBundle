@@ -27,13 +27,6 @@
             <argument type="service" id="fos_elastica.logger" />
         </service>
 
-        <service id="fos_elastica.client" class="%fos_elastica.client.class%">
-            <argument /> <!-- config -->
-            <call method="setLogger">
-                <argument type="service" id="fos_elastica.logger" />
-            </call>
-        </service>
-
         <service id="fos_elastica.index_manager" class="FOS\ElasticaBundle\IndexManager">
             <argument /> <!-- indexes -->
             <argument /> <!-- default index -->
