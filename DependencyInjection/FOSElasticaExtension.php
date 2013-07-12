@@ -70,7 +70,7 @@ class FOSElasticaExtension extends Extension
     {
         $clientIds = array();
         foreach ($clients as $name => $clientConfig) {
-            $clientDef = $container->getDefinition('fos_elastica.client');
+            $clientDef = clone $container->getDefinition('fos_elastica.client');
             $clientDef->replaceArgument(0, $clientConfig);
 
             $clientId = sprintf('fos_elastica.client.%s', $name);
