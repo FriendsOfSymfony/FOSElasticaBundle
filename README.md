@@ -757,7 +757,7 @@ fos_elastica:
 
 ### Filtering Results and executing a default query
 
-You may want to remove a certain set of results from a query, filtering is ideal because it is slightly faster in performance compared to a standard query because the subset of results are cached. This improves query speed because the query is ran against the predetermined subset from previous queries rather than recalculating the whole query again. Filtering can effectively when trying to look for only active records which are indicated by a field in the database. `FilteredQuery` should be used to combine the `QueryString` operator with the `Filter`, an example of `FilteredQuery` is shown Below.
+You may want to remove a certain section of results from a query, filtering is ideal because it is slightly faster in performance compared to a standard query because the only the filtered subset of results are cached. This improves query speed because the query is ran against the predetermined subset from previous queries rather than recalculating the whole query again. Filtering can effectively when trying to look for only active records which are indicated by a field in the database. `FilteredQuery` should be used to combine the `QueryString` operator with the `Filter`, an example of `FilteredQuery` is shown Below.
 
 ```php
 $term = new \Elastica\Filter\Term();
