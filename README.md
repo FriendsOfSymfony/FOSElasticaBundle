@@ -755,31 +755,19 @@ fos_elastica:
                         finder:
 ```
 
-### Filtering Results and executing a default query
+### Filtering Results and Executing a Default Query
 
-You may want to remove a certain section of results from a query, filtering is ideal because it is slightly faster in performance compared to a standard query because the only the filtered subset of results are cached. This improves query speed because the query is ran against the predetermined subset from previous queries rather than recalculating the whole query again. Filtering can effectively when trying to look for only active records which are indicated by a field in the database. `FilteredQuery` should be used to combine the `QueryString` operator with the `Filter`, an example of `FilteredQuery` is shown Below.
+If may want to omit certain results from a query, filtering can be more
+performant than a basic query because the filter results can be cached. In turn,
+the query is run against only a subset of the results. A common use case for
+filtering would be if your data has fields that indicate whether records are
+"active" or "inactive". The following example illustrates how to issue such a
+query with Elastica:
 
 ```php
-$term = new \Elastica\Filter\Term();
-$term->setParams(array(
-        'active' => 'active',
-        'address.postCode' => $postCode //Accessing elements nested within an object. address is the object and postCode is the property within it.
-        'companyGroup' => $department
-    ));
-    
-$query = new \Elastica\Query\QueryString();
-$query->setQuery($queryString);
+$query = new \Elastica\Query\QueryString($queryString);
+$term = new \Elastica\Filter\Term(array('active' => true));
 
 $filteredQuery = new \Elastica\Query\Filtered($query, $term);
-
-$results = $this->container->get('fos_elastica.finder.company.company')->findPaginated($filteredQuery);
-
-// Filter results for paging
-$results->setMaxPerPage($limit);
-$results->setCurrentPage($page);
-
-// Number of total results for paging 
-$total = $results->getNbResults();  
-
+$results = $this->container->get('fos_elastica.finder.index.type')->find($filteredQuery);
 ```
-    
