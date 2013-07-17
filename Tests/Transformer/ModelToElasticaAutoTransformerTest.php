@@ -208,8 +208,8 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
             /* ProperyAccess 2.3+ removed PropertyAccessDeniedException, so we
              * must expect NoSuchPropertyException in its absence.
              */
-            $expectedException = class_exists('Symfony\Component\Form\Exception\PropertyAccessDeniedException')
-                ? 'Symfony\Component\Form\Exception\PropertyAccessDeniedException'
+            $expectedException = class_exists('Symfony\Component\PropertyAccess\Exception\PropertyAccessDeniedException')
+                ? 'Symfony\Component\PropertyAccess\Exception\PropertyAccessDeniedException'
                 : 'Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException';
         } else {
             $expectedException = 'Symfony\Component\Form\Exception\PropertyAccessDeniedException';
