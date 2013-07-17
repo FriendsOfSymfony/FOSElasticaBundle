@@ -26,6 +26,11 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     private $query = null;
 
     /**
+     * @var integer the number of hits
+     */
+    private $totalHits = null;
+
+    /**
      * @see PaginatorAdapterInterface::__construct
      *
      * @param SearchableInterface $searchable the object to search in
@@ -60,7 +65,10 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         $query->setFrom($offset);
         $query->setSize($itemCountPerPage);
 
-        return $this->searchable->search($query);
+        $resultSet = $this->searchable->search($query);
+        $this->totalHits = $resultSet->getTotalHits();
+
+        return $resultSet;
     }
 
     /**
@@ -82,7 +90,11 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getTotalHits()
     {
-        $totalHits = $this->searchable->search($this->query)->getTotalHits();
+        if (null === $this->totalHits) {
+            $totalHits = $this->searchable->search($this->query)->getTotalHits();
+        } else {
+            $totalHits = $this->totalHits;
+        }
 
         if ($this->query->hasParam('size') &&
             $totalHits > $this->query->getParam('size')) {
