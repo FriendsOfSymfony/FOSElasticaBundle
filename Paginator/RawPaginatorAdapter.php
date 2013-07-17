@@ -8,6 +8,7 @@ use Elastica\ResultSet;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use FOS\ElasticaBundle\Paginator\RawPartialResults;
 use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Allows pagination of Elastica\Query. Does not map results
@@ -45,9 +46,19 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     protected function getElasticaResults($offset, $itemCountPerPage)
     {
+        if ($this->query->hasParam('size') &&
+            $this->query->getParam('size') < $offset + $itemCountPerPage) {
+            $itemCountPerPage = $this->query->getParam('size') - $offset;
+        }
+
+        if ( 1 > $itemCountPerPage) {
+            //the page exists without the size limit but should not be displayed due to the limit,
+            throw new NotFoundHttpException('This page does not exist');
+        }
+
         $query = clone $this->query;
         $query->setFrom($offset);
-        $query->setLimit($itemCountPerPage);
+        $query->setSize($itemCountPerPage);
 
         return $this->searchable->search($query);
     }
@@ -71,6 +82,13 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getTotalHits()
     {
-        return $this->searchable->search($this->query)->getTotalHits();
+        $totalHits = $this->searchable->search($this->query)->getTotalHits();
+
+        if ($this->query->hasParam('size') &&
+            $totalHits > $this->query->getParam('size')) {
+            $totalHits = $this->query->getParam('size');
+        }
+
+        return $totalHits;
     }
 }
