@@ -325,21 +325,16 @@ class FOSElasticaExtension extends Extension
 
     protected function loadObjectPersister(array $typeConfig, Definition $typeDef, ContainerBuilder $container, $indexName, $typeName, $transformerId)
     {
+        $arguments = array(
+            $typeDef,
+            new Reference($transformerId),
+            $typeConfig['model'],
+        );
         if ($this->serializerConfig) {
-            $abstractId = sprintf('fos_elastica.object_serializer_persister');
-            $arguments = array(
-                $typeDef,
-                new Reference($transformerId),
-                $typeConfig['model'],
-            );
+            $abstractId = 'fos_elastica.object_serializer_persister';
         } else {
-            $abstractId = sprintf('fos_elastica.object_persister.prototype');
-            $arguments = array(
-                $typeDef,
-                new Reference($transformerId),
-                $typeConfig['model'],
-                $this->typeFields[sprintf('%s/%s', $indexName, $typeName)],
-            );
+            $abstractId = 'fos_elastica.object_persister.prototype';
+            $arguments[] = $this->typeFields[sprintf('%s/%s', $indexName, $typeName)];
         }
         $serviceId = sprintf('fos_elastica.object_persister.%s.%s', $indexName, $typeName);
         $serviceDef = new DefinitionDecorator($abstractId);
