@@ -309,7 +309,7 @@ class FOSElasticaExtension extends Extension
             return $typeConfig['model_to_elastica_transformer']['service'];
         }
         if ($this->serializerConfig) {
-            $abstractId = sprintf('fos_elastica.model_to_elastica_transformer.prototype.identifier');
+            $abstractId = sprintf('fos_elastica.model_to_elastica_identifier_transformer');
         } else {
             $abstractId = sprintf('fos_elastica.model_to_elastica_transformer.prototype.auto');
         }
@@ -326,7 +326,7 @@ class FOSElasticaExtension extends Extension
     protected function loadObjectPersister(array $typeConfig, Definition $typeDef, ContainerBuilder $container, $indexName, $typeName, $transformerId)
     {
         if ($this->serializerConfig) {
-            $abstractId = sprintf('fos_elastica.object_serializer_persister.prototype');
+            $abstractId = sprintf('fos_elastica.object_serializer_persister');
             $arguments = array(
                 $typeDef,
                 new Reference($transformerId),
