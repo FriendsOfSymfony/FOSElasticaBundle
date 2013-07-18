@@ -8,6 +8,7 @@ use Elastica\ResultSet;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use FOS\ElasticaBundle\Paginator\RawPartialResults;
 use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
+use InvalidArgumentException;
 
 /**
  * Allows pagination of Elastica\Query. Does not map results
@@ -17,12 +18,17 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * @var SearchableInterface the object to search in
      */
-    private $searchable = null;
+    private $searchable;
 
     /**
      * @var Query the query to search
      */
-    private $query = null;
+    private $query;
+
+    /**
+     * @var integer the number of hits
+     */
+    private $totalHits;
 
     /**
      * @see PaginatorAdapterInterface::__construct
@@ -45,11 +51,29 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     protected function getElasticaResults($offset, $itemCountPerPage)
     {
+        $offset = (integer) $offset;
+        $itemCountPerPage = (integer) $itemCountPerPage;
+        $size = $this->query->hasParam('size')
+            ? (integer) $this->query->getParam('size')
+            : null;
+
+        if ($size &&
+            $size < $offset + $itemCountPerPage) {
+            $itemCountPerPage = $this->query->getParam('size') - $offset;
+        }
+
+        if ( 1 > $itemCountPerPage) {
+            throw new InvalidArgumentException('$itemCountPerPage must be greater than zero');
+        }
+
         $query = clone $this->query;
         $query->setFrom($offset);
-        $query->setLimit($itemCountPerPage);
+        $query->setSize($itemCountPerPage);
 
-        return $this->searchable->search($query);
+        $resultSet = $this->searchable->search($query);
+        $this->totalHits = $resultSet->getTotalHits();
+
+        return $resultSet;
     }
 
     /**
@@ -71,6 +95,12 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getTotalHits()
     {
-        return $this->searchable->search($this->query)->getTotalHits();
+        if ( ! isset($this->totalHits)) {
+            $this->totalHits = $this->searchable->search($this->query)->getTotalHits();
+        }
+
+        return $this->query->hasParam('size')
+            ? min($this->totalHits, (integer) $this->query->getParam('size'))
+            : $this->totalHits;
     }
 }
