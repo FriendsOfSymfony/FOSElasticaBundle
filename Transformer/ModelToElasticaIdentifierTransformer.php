@@ -5,8 +5,8 @@ namespace FOS\ElasticaBundle\Transformer;
 use Elastica\Document;
 
 /**
- * Creates an elastica document with the id of
- * the doctrine object as elastica document id
+ * Creates an Elastica document with the ID of
+ * the Doctrine object as Elastica document ID
  */
 class ModelToElasticaIdentifierTransformer extends ModelToElasticaAutoTransformer
 {

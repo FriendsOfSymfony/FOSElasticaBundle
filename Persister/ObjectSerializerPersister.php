@@ -16,9 +16,9 @@ class ObjectSerializerPersister extends ObjectPersister
 {
     public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass)
     {
-        $this->type            = $type;
-        $this->transformer     = $transformer;
-        $this->objectClass     = $objectClass;
+        $this->type        = $type;
+        $this->transformer = $transformer;
+        $this->objectClass = $objectClass;
     }
 
     /**
@@ -38,7 +38,7 @@ class ObjectSerializerPersister extends ObjectPersister
      *
      * @param object $object
      * @return null
-     **/
+     */
     public function replaceOne($object)
     {
         $document = $this->transformToElasticaDocument($object);
