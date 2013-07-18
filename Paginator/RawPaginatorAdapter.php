@@ -8,7 +8,7 @@ use Elastica\ResultSet;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use FOS\ElasticaBundle\Paginator\RawPartialResults;
 use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use InvalidArgumentException;
 
 /**
  * Allows pagination of Elastica\Query. Does not map results
@@ -18,17 +18,17 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * @var SearchableInterface the object to search in
      */
-    private $searchable = null;
+    private $searchable;
 
     /**
      * @var Query the query to search
      */
-    private $query = null;
+    private $query;
 
     /**
      * @var integer the number of hits
      */
-    private $totalHits = null;
+    private $totalHits;
 
     /**
      * @see PaginatorAdapterInterface::__construct
@@ -51,14 +51,19 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     protected function getElasticaResults($offset, $itemCountPerPage)
     {
-        if ($this->query->hasParam('size') &&
-            $this->query->getParam('size') < $offset + $itemCountPerPage) {
+        $offset = (integer) $offset;
+        $itemCountPerPage = (integer) $itemCountPerPage;
+        $size = $this->query->hasParam('size')
+            ? (integer) $this->query->getParam('size')
+            : null;
+
+        if ($size &&
+            $size < $offset + $itemCountPerPage) {
             $itemCountPerPage = $this->query->getParam('size') - $offset;
         }
 
         if ( 1 > $itemCountPerPage) {
-            //the page exists without the size limit but should not be displayed due to the limit,
-            throw new NotFoundHttpException('This page does not exist');
+            throw new InvalidArgumentException('$itemCountPerPage must be greater than zero');
         }
 
         $query = clone $this->query;
@@ -90,17 +95,12 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getTotalHits()
     {
-        if (null === $this->totalHits) {
-            $totalHits = $this->searchable->search($this->query)->getTotalHits();
-        } else {
-            $totalHits = $this->totalHits;
+        if ( ! isset($this->totalHits)) {
+            $this->totalHits = $this->searchable->search($this->query)->getTotalHits();
         }
 
-        if ($this->query->hasParam('size') &&
-            $totalHits > $this->query->getParam('size')) {
-            $totalHits = $this->query->getParam('size');
-        }
-
-        return $totalHits;
+        return $this->query->hasParam('size')
+            ? min($this->totalHits, (integer) $this->query->getParam('size'))
+            : $this->totalHits;
     }
 }
