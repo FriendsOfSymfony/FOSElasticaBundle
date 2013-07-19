@@ -139,6 +139,30 @@ Elasticsearch type is comparable to Doctrine entity repository.
 
 Our type is now available as a service: `foq_elastica.index.website.user`. It is an instance of `Elastica_Type`.
 
+#### Add general mapping options to a type
+
+You can add general mapping options under the mapping_options attribute. This is handy if you wish to enable time 
+to live (_ttl), timestamp (_timestamp), size (_size), etc.. that are disabled by default.
+
+    foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        indexes:
+            website:
+                client: default
+                types:
+                    user:
+                        mapping_options:
+                            _ttl: { enabled: true, default: 10s}
+                            _timestamp: { enabled: true }
+                            _size: { enabled: true }
+                        mappings:
+                            username: { boost: 5 }
+                            firstName: { boost: 3 }
+                            lastName: { boost: 3 }
+                            aboutMe:
+
+
 ### Declaring parent field
 
     foq_elastica:
