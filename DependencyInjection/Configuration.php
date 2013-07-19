@@ -243,6 +243,7 @@ class Configuration
                             ->end()
                         ->end()
                     ->end()
+                    ->variableNode('mapping_options')->defaultValue(array())->end()
                 ->end()
                 ->append($this->getMappingsNode())
                 ->append($this->getSourceNode())
