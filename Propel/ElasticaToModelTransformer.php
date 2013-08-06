@@ -2,7 +2,6 @@
 
 namespace FOS\ElasticaBundle\Propel;
 
-use Elastica\Document;
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -71,9 +70,10 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      */
     public function transform(array $elasticaObjects)
     {
-        $ids = array_map(function(Document $elasticaObject) {
-            return $elasticaObject->getId();
-        }, $elasticaObjects);
+        $ids = array();
+        foreach ($elasticaObjects as $elasticaObject) {
+            $ids[] = $elasticaObject->getId();
+        }
 
         $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
 
