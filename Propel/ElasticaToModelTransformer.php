@@ -7,40 +7,41 @@ use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
- * Maps Elastica documents with Propel objects
- * This mapper assumes an exact match between
- * elastica documents ids and propel object ids
+ * Maps Elastica documents with Propel objects.
+ *
+ * This mapper assumes an exact match between Elastica document IDs and Propel
+ * entity IDs.
  *
  * @author William Durand <william.durand1@gmail.com>
  */
 class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 {
     /**
-     * Class of the model to map to the elastica documents
+     * Propel model class to map to Elastica documents.
      *
      * @var string
      */
     protected $objectClass = null;
 
     /**
-     * Optional parameters
+     * Transformer options.
      *
      * @var array
      */
     protected $options = array(
         'hydrate'    => true,
-        'identifier' => 'id'
+        'identifier' => 'id',
     );
 
     /**
-     * PropertyAccessor instance
+     * PropertyAccessor instance.
      *
      * @var PropertyAccessorInterface
      */
     protected $propertyAccessor;
 
     /**
-     * Instantiates a new Mapper
+     * Constructor.
      *
      * @param string $objectClass
      * @param array $options
@@ -48,11 +49,11 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     public function __construct($objectClass, array $options = array())
     {
         $this->objectClass = $objectClass;
-        $this->options     = array_merge($this->options, $options);
+        $this->options = array_merge($this->options, $options);
     }
 
     /**
-     * Set the PropertyAccessor
+     * Set the PropertyAccessor instance.
      *
      * @param PropertyAccessorInterface $propertyAccessor
      */
@@ -62,11 +63,11 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     }
 
     /**
-     * Transforms an array of elastica objects into an array of
-     * model objects fetched from the propel repository
+     * Transforms an array of Elastica document into an array of Propel entities
+     * fetched from the database.
      *
-     * @param Document[] $elasticaObjects array of elastica objects
-     * @return array
+     * @param array $elasticaObjects
+     * @return array|\ArrayObject
      */
     public function transform(array $elasticaObjects)
     {
@@ -77,18 +78,19 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 
         $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
 
-        // sort objects in the order of ids
+        // Sort objects in the order of their IDs
         $idPos = array_flip($ids);
         $identifier = $this->options['identifier'];
         $propertyAccessor = $this->propertyAccessor;
+
+        $sortCallback = function($a, $b) use ($idPos, $identifier, $propertyAccessor) {
+            return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
+        };
+
         if (is_object($objects)) {
-            $objects->uasort(function($a, $b) use ($idPos, $identifier, $propertyAccessor) {
-                return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
-            });
+            $objects->uasort($sortCallback);
         } else {
-            usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor) {
-                return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
-            });
+            usort($objects, $sortCallback);
         }
 
         return $objects;
@@ -126,11 +128,14 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     }
 
     /**
-     * Fetch objects for theses identifier values
+     * Fetch Propel entities for the given identifier values.
      *
-     * @param array $identifierValues ids values
-     * @param boolean $hydrate whether or not to hydrate the objects, false returns arrays
-     * @return array of objects or arrays
+     * If $hydrate is false, the returned array elements will be arrays.
+     * Otherwise, the results will be hydrated to instances of the model class.
+     *
+     * @param array   $identifierValues Identifier values
+     * @param boolean $hydrate          Whether or not to hydrate the results
+     * @return array
      */
     protected function findByIdentifiers(array $identifierValues, $hydrate)
     {
@@ -140,7 +145,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 
         $query = $this->createQuery($this->objectClass, $this->options['identifier'], $identifierValues);
 
-        if (!$hydrate) {
+        if ( ! $hydrate) {
             return $query->toArray();
         }
 
@@ -150,9 +155,9 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     /**
      * Create a query to use in the findByIdentifiers() method.
      *
-     * @param string $class the model class
-     * @param string $identifierField like 'id'
-     * @param array $identifierValues ids values
+     * @param string $class            Propel model class
+     * @param string $identifierField  Identifier field name (e.g. "id")
+     * @param array  $identifierValues Identifier values
      * @return \ModelCriteria
      */
     protected function createQuery($class, $identifierField, array $identifierValues)
@@ -160,9 +165,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
         $queryClass   = $class.'Query';
         $filterMethod = 'filterBy'.$this->camelize($identifierField);
 
-        return $queryClass::create()
-            ->$filterMethod($identifierValues)
-            ;
+        return $queryClass::create()->$filterMethod($identifierValues);
     }
 
     /**
