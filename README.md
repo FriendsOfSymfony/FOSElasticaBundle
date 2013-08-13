@@ -754,3 +754,20 @@ fos_elastica:
                         provider:
                         finder:
 ```
+
+### Filtering Results and Executing a Default Query
+
+If may want to omit certain results from a query, filtering can be more
+performant than a basic query because the filter results can be cached. In turn,
+the query is run against only a subset of the results. A common use case for
+filtering would be if your data has fields that indicate whether records are
+"active" or "inactive". The following example illustrates how to issue such a
+query with Elastica:
+
+```php
+$query = new \Elastica\Query\QueryString($queryString);
+$term = new \Elastica\Filter\Term(array('active' => true));
+
+$filteredQuery = new \Elastica\Query\Filtered($query, $term);
+$results = $this->container->get('fos_elastica.finder.index.type')->find($filteredQuery);
+```

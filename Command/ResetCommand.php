@@ -61,7 +61,7 @@ class ResetCommand extends ContainerAwareCommand
         }
 
         if (null !== $type) {
-            $output->writeln(sprintf('Resetting: %s/%s', $index, $type));
+            $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
             $this->resetter->resetIndex($index, $type);
         } else {
             $indexes = null === $index
