@@ -409,6 +409,22 @@ still also getting the entity.
         $result = $hybridResult->getResult();
     }
 
+If you would like to access facets while using Pagerfanta they can be accessed through
+the Adapter seen in the example below.
+
+```php
+$query = new \Elastica\Query();
+$facet = new \Elastica\Facet\Terms('tags');
+$facet->setField('companyGroup');
+$query->addFacet($facet);
+
+$companies = $finder->findPaginated($query);
+$companies->setMaxPerPage($params['limit']);
+$companies->setCurrentPage($params['page']);
+
+$facets = $companies->getAdapter()->getFacets());
+```
+
 ##### Index wide finder
 
 You can also define a finder that will work on the entire index. Adjust your index

@@ -26,4 +26,11 @@ interface PaginatorAdapterInterface
      * @api
      */
     function getResults($offset, $length);
+
+    /**
+     * Returns Facets
+     *
+     * @return mixed
+     */
+    function getFacets();
 }
