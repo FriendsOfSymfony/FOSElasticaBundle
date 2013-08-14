@@ -76,7 +76,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
                 /* $value is a nested document or object. Transform $value into
                  * an array of documents, respective the mapped properties.
                  */
-                $document->add($key, $this->transformNested($value, $mapping['properties'], $document));
+                $document->add($key, $this->transformNested($value, $mapping['properties']));
                 continue;
             }
 

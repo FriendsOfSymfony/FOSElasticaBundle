@@ -205,9 +205,11 @@ per type.
                                     date: { boost: 5 }
                                     content: ~
 
->Objects operate in the same way as the nested results but they need to have the associations set up in doctrine so that they can be referenced correctly when indexing.
+#### Doctrine ORM and `object` mappings
 
->When indexing, if the error 'Entity was not found' is fired then a null association has been discovered in the database, a custom Doctrine query must be used to utilise leftJoins instead of the default which is a innerJoin.
+Objects operate in the same way as the nested results but they need to have associations set up in Doctrine ORM so that they can be referenced correctly when indexing.
+
+If an "Entity was not found" error occurs while indexing, a null association has been discovered in the database. A custom Doctrine query must be used to utilize left joins instead of the default inner join.
 
 ### Populate the types
 
@@ -748,4 +750,21 @@ fos_elastica:
                         model: Acme\DemoBundle\Entity\Article
                         provider:
                         finder:
+```
+
+### Filtering Results and Executing a Default Query
+
+If may want to omit certain results from a query, filtering can be more
+performant than a basic query because the filter results can be cached. In turn,
+the query is run against only a subset of the results. A common use case for
+filtering would be if your data has fields that indicate whether records are
+"active" or "inactive". The following example illustrates how to issue such a
+query with Elastica:
+
+```php
+$query = new \Elastica\Query\QueryString($queryString);
+$term = new \Elastica\Filter\Term(array('active' => true));
+
+$filteredQuery = new \Elastica\Query\Filtered($query, $term);
+$results = $this->container->get('fos_elastica.finder.index.type')->find($filteredQuery);
 ```
