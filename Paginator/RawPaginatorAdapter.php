@@ -115,6 +115,10 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getFacets()
     {
+        if ( ! isset($this->facets)) {
+            $this->facets = $this->searchable->search($this->query)->getFacets();
+        }
+        
         return $this->facets;
     }
 }
