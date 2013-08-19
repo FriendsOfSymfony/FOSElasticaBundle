@@ -30,6 +30,18 @@ class FantaPaginatorAdapter implements AdapterInterface
     }
 
     /**
+     * Returns Facets
+     *
+     * @return mixed
+     *
+     * @api
+     */
+    public function getFacets()
+    {
+        return $this->adapter->getFacets();
+    }
+
+    /**
      * Returns an slice of the results.
      *
      * @param integer $offset The offset.

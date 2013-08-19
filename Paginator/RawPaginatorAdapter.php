@@ -31,6 +31,11 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     private $totalHits;
 
     /**
+     * @array for the facets
+     */
+    private $facets;
+
+    /**
      * @see PaginatorAdapterInterface::__construct
      *
      * @param SearchableInterface $searchable the object to search in
@@ -71,7 +76,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
 
         $resultSet = $this->searchable->search($query);
         $this->totalHits = $resultSet->getTotalHits();
-
+        $this->facets = $resultSet->getFacets();
         return $resultSet;
     }
 
@@ -101,5 +106,19 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         return $this->query->hasParam('size')
             ? min($this->totalHits, (integer) $this->query->getParam('size'))
             : $this->totalHits;
+    }
+
+    /**
+     * Returns Facets
+     *
+     * @return mixed
+     */
+    public function getFacets()
+    {
+        if ( ! isset($this->facets)) {
+            $this->facets = $this->searchable->search($this->query)->getFacets();
+        }
+
+        return $this->facets;
     }
 }
