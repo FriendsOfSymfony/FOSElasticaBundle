@@ -415,6 +415,10 @@ class Configuration implements ConfigurationInterface
         }
 
         if (isset($nestings['properties'])) {
+            $node
+                ->booleanNode('include_in_parent')->end()
+                ->booleanNode('include_in_root')->end()
+            ;
             $this->addNestedFieldConfig($node, $nestings, 'properties');
         }
     }
