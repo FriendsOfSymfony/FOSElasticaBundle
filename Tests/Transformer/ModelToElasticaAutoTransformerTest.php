@@ -106,6 +106,11 @@ class POPO
     {
         return (object) array('id' => 'parent', 'name' => 'a random name');
     }
+
+    public function getUpperAlias()
+    {
+        return $this->getUpper();
+    }
 }
 
 class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
@@ -272,10 +277,8 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
         $document    = $transformer->transform(new POPO(), array(
-                'upper' => array(
-                    '_parent' => array('type' => 'upper', 'identifier' => 'id'),
-                    )
-                ));
+            '_parent' => array('type' => 'upper', 'property'=>'upper', 'identifier' => 'id'),
+        ));
 
         $this->assertEquals("parent", $document->getParent());
     }
@@ -284,12 +287,30 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
         $document    = $transformer->transform(new POPO(), array(
-                'upper' => array(
-                    '_parent' => array('type' => 'upper', 'identifier' => 'name'),
-                    )
-                ));
+            '_parent' => array('type' => 'upper', 'property'=>'upper', 'identifier' => 'name'),
+        ));
 
         $this->assertEquals("a random name", $document->getParent());
+    }
+
+    public function testParentMappingWithNullProperty()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+            '_parent' => array('type' => 'upper', 'property'=>null, 'identifier' => 'id'),
+        ));
+
+        $this->assertEquals("parent", $document->getParent());
+    }
+
+    public function testParentMappingWithCustomProperty()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+            '_parent' => array('type' => 'upper', 'property'=>'upperAlias', 'identifier' => 'id'),
+        ));
+
+        $this->assertEquals("parent", $document->getParent());
     }
 
     /**

@@ -214,6 +214,11 @@ class FOSElasticaExtension extends Extension
                 $typeName = sprintf('%s/%s', $indexName, $name);
                 $this->typeFields[$typeName] = $type['mappings'];
             }
+            if (isset($type['_parent'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_parent'] = array('type' => $type['_parent']['type']);
+                $typeName = sprintf('%s/%s', $indexName, $name);
+                $this->typeFields[$typeName]['_parent'] = $type['_parent'];
+            }
             if (isset($type['persistence'])) {
                 $this->loadTypePersistenceIntegration($type['persistence'], $container, $typeDef, $indexName, $name);
             }
@@ -476,5 +481,4 @@ class FOSElasticaExtension extends Extension
 
         $container->setAlias('fos_elastica.manager', sprintf('fos_elastica.manager.%s', $defaultManagerService));
     }
-
 }

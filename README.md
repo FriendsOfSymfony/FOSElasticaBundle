@@ -178,9 +178,15 @@ per type.
                 types:
                     comment:
                         mappings:
-                            post: {_parent: { type: "post", identifier: "id" } }
                             date: { boost: 5 }
                             content: ~
+                        _parent: { type: "post", property: "post", identifier: "id" }
+
+The parent filed declaration has the following values:
+
+ * `type`: The parent type.
+ * `property`: The property in the child entity where to look for the parent entity. It may be ignored if is equal to the parent type.
+ * `identifier`: The property in the parent entity which have the parent identifier. Defaults to `id`.
 
 ### Declaring `nested` or `object`
 
