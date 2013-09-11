@@ -34,9 +34,16 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
                 'index' => $this->getMockElasticaIndex(),
                 'config' => array(
                     'mappings' => array(
-                        'a' => array('properties' => array(
-                                'field_1' => array('_parent' => array('type' => 'b', 'identifier' => 'id')),
-                                'field_2' => array())),
+                        'a' => array(
+                            'properties' => array(
+                                'field_2' => array()
+                            ),
+                            '_parent' => array(
+                                'type' => 'b',
+                                'property' => 'b',
+                                'identifier' => 'id'
+                            ),
+                        ),
                         'b' => array('properties' => array()),
                     ),
                 ),
