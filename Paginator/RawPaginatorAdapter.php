@@ -121,4 +121,14 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
 
         return $this->facets;
     }
+
+    /**
+     * Returns the Query
+     *
+     * @return Query the search query
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
 }
