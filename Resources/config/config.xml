@@ -86,6 +86,9 @@
 
         <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
             <tag name="knp_paginator.subscriber" />
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
         </service>
 
         <service id="fos_elastica.property_accessor" class="%fos_elastica.property_accessor.class%" />
