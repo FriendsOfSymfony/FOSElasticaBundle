@@ -339,6 +339,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('index_options')->end()
             ->scalarNode('ignore_above')->end()
             ->scalarNode('position_offset_gap')->end()
+            ->scalarNode('format')->end()
         ;
 
         if (isset($nestings['fields'])) {
