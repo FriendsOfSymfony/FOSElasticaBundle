@@ -30,7 +30,7 @@
 
         <service id="fos_elastica.client" class="%fos_elastica.client.class%">
             <argument /> <!-- config -->
-            <call method="setLogger">
+            <call method="setElasticaLogger">
                 <argument type="service" id="fos_elastica.logger" />
             </call>
         </service>
