@@ -13,11 +13,11 @@ class Client extends ElasticaClient
     /**
      * @var ElasticaLogger
      */
-    protected $logger;
+    protected $elasticaLogger;
 
-    public function setLogger(ElasticaLogger $logger)
+    public function setElasticaLogger(ElasticaLogger $logger)
     {
-        $this->logger = $logger;
+        $this->elasticaLogger = $logger;
     }
 
     public function request($path, $method = Request::GET, $data = array(), array $query = array())
@@ -27,7 +27,7 @@ class Client extends ElasticaClient
 
         if (null !== $this->logger) {
             $time = microtime(true) - $start;
-            $this->logger->logQuery($path, $method, $data, $time);
+            $this->elasticaLogger->logQuery($path, $method, $data, $time);
         }
 
         return $response;
