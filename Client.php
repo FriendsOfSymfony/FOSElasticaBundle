@@ -11,13 +11,13 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
 class Client extends ElasticaClient
 {
     /**
-     * @var ElasticaLogger
+     * @var elasticaLogger
      */
-    protected $logger;
+    protected $elasticaLogger;
 
-    public function setLogger(ElasticaLogger $logger)
+    public function setElasticaLogger(ElasticaLogger $logger)
     {
-        $this->logger = $logger;
+        $this->elaticaLogger = $logger;
     }
 
     public function request($path, $method = Request::GET, $data = array(), array $query = array())
@@ -27,7 +27,7 @@ class Client extends ElasticaClient
 
         if (null !== $this->logger) {
             $time = microtime(true) - $start;
-            $this->logger->logQuery($path, $method, $data, $time);
+            $this->elassticaLogger->logQuery($path, $method, $data, $time);
         }
 
         return $response;
