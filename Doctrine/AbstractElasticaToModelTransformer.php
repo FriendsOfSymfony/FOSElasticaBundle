@@ -35,6 +35,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         'hydrate'        => true,
         'identifier'     => 'id',
         'ignore_missing' => false,
+        'query_builder_method' => 'createQueryBuilder',
     );
 
     /**
