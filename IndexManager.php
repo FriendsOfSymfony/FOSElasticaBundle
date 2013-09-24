@@ -2,8 +2,6 @@
 
 namespace FOS\ElasticaBundle;
 
-use Elastica\Index;
-
 class IndexManager
 {
     protected $indexConfigs;
@@ -14,8 +12,6 @@ class IndexManager
      *
      * @param array  $indexConfigs    Indexes configuration
      * @param string $defaultIndexKey Config key of default index
-     *
-     * @internal param string $defaultIndexName
      */
     public function __construct(array $indexConfigs, $defaultIndexKey)
     {
@@ -38,7 +34,9 @@ class IndexManager
      *
      * @param string|null $key Index key
      *
-     * @return \FOS\ElasticaBundle\ElasticaDynamicIndex
+     * @return ElasticaDynamicIndex
+     *
+     * @throws \InvalidArgumentException if no index config exists for the given name
      */
     public function getIndex($key = null)
     {
@@ -51,7 +49,9 @@ class IndexManager
      *
      * @param string|null $key Index key
      *
-     * @return \FOS\ElasticaBundle\ElasticaDynamicIndex
+     * @return ElasticaDynamicIndex
+     *
+     * @throws \InvalidArgumentException if no index config exists for the given name
      */
     public function buildIndex($key = null)
     {
@@ -68,7 +68,8 @@ class IndexManager
      * @param string|null $key Index key
      *
      * @return array
-     * @throws \InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException if no index config exists for the given name
      */
     public function getIndexConfig($key)
     {
