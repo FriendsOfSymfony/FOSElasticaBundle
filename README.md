@@ -188,6 +188,9 @@ The parent filed declaration has the following values:
  * `property`: The property in the child entity where to look for the parent entity. It may be ignored if is equal to the parent type.
  * `identifier`: The property in the parent entity which have the parent identifier. Defaults to `id`.
 
+Note that to create a document with a parent, you need to call `setParent` on the document rather than setting a _parent field.
+If you do this wrong, you will see a `RoutingMissingException` as elasticsearch does not know where to store a document that should have a parent but does not specify it.
+
 ### Declaring `nested` or `object`
 
     fos_elastica:
