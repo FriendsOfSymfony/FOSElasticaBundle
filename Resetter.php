@@ -2,6 +2,8 @@
 
 namespace FOS\ElasticaBundle;
 
+use Elastica\Exception\ExceptionInterface;
+use Elastica\Index;
 use Elastica\Type\Mapping;
 
 /**
@@ -9,8 +11,6 @@ use Elastica\Type\Mapping;
  */
 class Resetter
 {
-    protected $indexConfigsByKey;
-
     /**
      * Index Manager
      *
@@ -21,7 +21,7 @@ class Resetter
     /**
      * Constructor.
      *
-     * @param array $indexConfigsByKey
+     * @param IndexManager $indexManager
      */
     public function __construct(IndexManager $indexManager)
     {
@@ -41,14 +41,15 @@ class Resetter
     /**
      * Deletes and recreates the named index
      *
-     * @param string $indexName
+     * @param string $indexKey
+     *
      * @throws \InvalidArgumentException if no index exists for the given name
      */
     public function resetIndex($indexKey)
     {
         $indexConfig = $this->indexManager->getIndexConfig($indexKey);
-        /** @var $esIndex \Elastica_Index */
         $esIndex = $this->indexManager->getIndex($indexKey);
+
         if (isset($indexConfig['use_alias']) && $indexConfig['use_alias']) {
             $name = $indexConfig['name_or_alias'];
             $name .= date('-Y-m-d-Gis');
@@ -72,8 +73,6 @@ class Resetter
      * and deletes the old index
      *
      * @param string $indexKey Index key
-     *
-     * @return void
      *
      * @throws \RuntimeException
      */
@@ -117,12 +116,12 @@ class Resetter
 
         try {
             $esIndex->getClient()->request('_aliases', 'POST', $aliasUpdateRequest);
-        } catch (\Elastica_Exception_Abstract $renameAliasException) {
+        } catch (ExceptionInterface $renameAliasException) {
             $additionalError   = '';
             // if we failed to move the alias, delete the newly built index
             try {
                 $esIndex->delete();
-            } catch (\Elastica_Exception_Abstract $deleteNewIndexException) {
+            } catch (ExceptionInterface $deleteNewIndexException) {
                 $additionalError = sprintf(
                     'Tried to delete newly built index %s, but also failed: %s',
                     $newIndexName,
@@ -134,17 +133,17 @@ class Resetter
                 sprintf(
                     'Failed to updated index alias: %s. %s',
                     $renameAliasException->getMessage(),
-                    $additionalError ? : sprintf('Newly built index %s was deleted', $newIndexName)
+                    $additionalError ?: sprintf('Newly built index %s was deleted', $newIndexName)
                 )
             );
         }
 
         // Delete the old index after the alias has been switched
         if ($oldIndexName) {
-            $oldIndex = new \Elastica_Index($esIndex->getClient(), $oldIndexName);
+            $oldIndex = new Index($esIndex->getClient(), $oldIndexName);
             try {
                 $oldIndex->delete();
-            } catch (\Elastica_Exception_Abstract $deleteOldIndexException) {
+            } catch (ExceptionInterface $deleteOldIndexException) {
                 throw new \RuntimeException(
                     sprintf(
                         'Failed to delete old index %s with message: %s',
@@ -159,15 +158,16 @@ class Resetter
     /**
      * Returns array of indexes which are mapped to given alias
      *
-     * @param \Elastica_Index $esIndex   ES Index
-     * @param string          $aliasName Alias name
+     * @param Index  $esIndex   ES Index
+     * @param string $aliasName Alias name
      *
      * @return array
      */
-    private function getAliasedIndexes($esIndex, $aliasName)
+    private function getAliasedIndexes(Index $esIndex, $aliasName)
     {
+        $aliasesInfo = $esIndex->getClient()->request('_aliases', 'GET')->getData();
         $aliasedIndexes = array();
-        $aliasesInfo    = $esIndex->getClient()->request('_aliases', 'GET')->getData();
+
         foreach ($aliasesInfo as $indexName => $indexInfo) {
             $aliases = array_keys($indexInfo['aliases']);
             if (in_array($aliasName, $aliases)) {

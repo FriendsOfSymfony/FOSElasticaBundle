@@ -57,7 +57,7 @@ class IndexManager
     {
         $config = $this->getIndexConfig($key);
         $esIndex = new ElasticaDynamicIndex($config['client'], $config['name_or_alias']);
-        $this->indexConfigs[$key ? : $this->defaultIndexKey]['index'] = $esIndex;
+        $this->indexConfigs[$key ?: $this->defaultIndexKey]['index'] = $esIndex;
 
         return $esIndex;
     }

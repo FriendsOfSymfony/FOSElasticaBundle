@@ -2,14 +2,15 @@
 
 namespace FOS\ElasticaBundle;
 
+use Elastica\Index;
+
 /**
  * Elastica index capable of reassigning name dynamically
  *
  * @author Konstantin Tjuterev <kostik.lv@gmail.com>
  */
-class ElasticaDynamicIndex extends \Elastica_Index
+class ElasticaDynamicIndex extends Index
 {
-
     /**
      * Reassign index name
      *
@@ -24,5 +25,4 @@ class ElasticaDynamicIndex extends \Elastica_Index
     {
         $this->_name = $name;
     }
-
 }
