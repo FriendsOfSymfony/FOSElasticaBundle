@@ -41,7 +41,7 @@ class FOSElasticaExtension extends Extension
 
         $clientIdsByName = $this->loadClients($config['clients'], $container);
         $serializerConfig = isset($config['serializer']) ? $config['serializer'] : null;
-        $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
+        $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client'], $serializerConfig);
 
         $this->loadIndexManager($config['default_index'], $container);
 
