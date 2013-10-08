@@ -74,9 +74,9 @@ Here we created a "website" index, that uses our "default" client.
 
 Our index is now available as a service: `fos_elastica.index.website`. It is an instance of `Elastica_Index`.
 
-If you need to have different index name from the service name, for example, 
-in order to have different indexes for different environments then you can 
-use the ```index_name``` key to change the index name. The service name will 
+If you need to have different index name from the service name, for example,
+in order to have different indexes for different environments then you can
+use the ```index_name``` key to change the index name. The service name will
 remain the same across the environments:
 
     fos_elastica:
@@ -86,8 +86,8 @@ remain the same across the environments:
             website:
                 client: default
                 index_name: website_qa
-                
-The service id will be `fos_elastica.index.website` but the underlying index name is website_qa.           
+
+The service id will be `fos_elastica.index.website` but the underlying index name is website_qa.
 
 #### Declare a type
 
@@ -246,9 +246,10 @@ Its class must implement `FOS\ElasticaBundle\Provider\ProviderInterface`.
             /**
              * Insert the repository objects in the type index
              *
-             * @param Closure $loggerClosure
+             * @param \Closure $loggerClosure
+             * @param array    $options
              */
-            public function populate(Closure $loggerClosure = null)
+            public function populate(\Closure $loggerClosure = null, array $options = array())
             {
                 if ($loggerClosure) {
                     $loggerClosure('Indexing users');
