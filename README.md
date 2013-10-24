@@ -102,9 +102,9 @@ Here we created a "website" index, that uses our "default" client.
 
 Our index is now available as a service: `fos_elastica.index.website`. It is an instance of `\Elastica\Index`.
 
-If you need to have different index name from the service name, for example, 
-in order to have different indexes for different environments then you can 
-use the ```index_name``` key to change the index name. The service name will 
+If you need to have different index name from the service name, for example,
+in order to have different indexes for different environments then you can
+use the ```index_name``` key to change the index name. The service name will
 remain the same across the environments:
 
     fos_elastica:
@@ -114,8 +114,8 @@ remain the same across the environments:
             website:
                 client: default
                 index_name: website_qa
-                
-The service id will be `fos_elastica.index.website` but the underlying index name is website_qa.           
+
+The service id will be `fos_elastica.index.website` but the underlying index name is website_qa.
 
 #### Declare a type
 
@@ -139,6 +139,29 @@ Elasticsearch type is comparable to Doctrine entity repository.
                             aboutMe: ~
 
 Our type is now available as a service: `fos_elastica.index.website.user`. It is an instance of `\Elastica\Type`.
+
+#### Add general mapping options to a type
+
+You can add general mapping options under the mapping_options attribute. This is handy if you wish to enable time
+to live (_ttl), timestamp (_timestamp), size (_size), etc.. that are disabled by default.
+
+    foq_elastica:
+        clients:
+            default: { host: localhost, port: 9200 }
+        indexes:
+            website:
+                client: default
+                types:
+                    user:
+                        mapping_options:
+                            _ttl: { enabled: true, default: 10s}
+                            _timestamp: { enabled: true }
+                            _size: { enabled: true }
+                        mappings:
+                            username: { boost: 5 }
+                            firstName: { boost: 3 }
+                            lastName: { boost: 3 }
+                            aboutMe:
 
 ### Declaring serializer groups
 

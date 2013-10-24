@@ -281,6 +281,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
+                    ->variableNode('mapping_options')->defaultValue(array())->end()
                 ->end()
                 ->append($this->getIdNode())
                 ->append($this->getMappingsNode())
