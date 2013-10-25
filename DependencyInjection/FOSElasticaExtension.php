@@ -232,7 +232,10 @@ class FOSElasticaExtension extends Extension
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['index'] = $type['index'];
             }
             if (isset($type['mapping_options'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name] = array_merge($this->indexConfigs[$indexName]['config']['mappings'][$name],$type['mapping_options']);
+                $this->indexConfigs[$indexName]['config']['mappings'][$name] = array_merge(
+                    $this->indexConfigs[$indexName]['config']['mappings'][$name],
+                    $type['mapping_options']
+                );
             }
         }
     }
