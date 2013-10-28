@@ -35,7 +35,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testEmptyConfigContainsMappingOptionsNode()
     {
         $tree = $this->testClass->getConfigTree();
-        $types   = $tree->getChildren()['indexes']->getPrototype()->getChildren()['types']->getPrototype();
+        $children = $tree->getChildren();
+        $indexes  = $children['indexes'];
+        $children = $indexes->getPrototype()->getChildren();
+        $types   = $children['types']->getPrototype();
         $typeNodes = $types->getChildren();
         $this->assertArrayHasKey('mapping_options', $typeNodes);
         $this->assertInstanceOf('Symfony\Component\Config\Definition\VariableNode', $typeNodes['mapping_options']);
