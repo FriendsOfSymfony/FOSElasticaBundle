@@ -15,7 +15,10 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
                 'index' => $this->getMockElasticaIndex(),
                 'config' => array(
                     'mappings' => array(
-                        'a' => array('properties' => array()),
+                        'a' => array(
+                            'dynamic_templates' => array(),
+                            'properties' => array(),
+                        ),
                         'b' => array('properties' => array()),
                     ),
                 ),
@@ -92,6 +95,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             ->method('delete');
 
         $mapping = \Elastica_Type_Mapping::create($this->indexConfigsByName['foo']['config']['mappings']['a']['properties']);
+        $mapping->setParam('dynamic_templates', $this->indexConfigsByName['foo']['config']['mappings']['a']['dynamic_templates']);
         $type->expects($this->once())
             ->method('setMapping')
             ->with($mapping);

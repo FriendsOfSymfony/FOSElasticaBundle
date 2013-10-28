@@ -78,6 +78,10 @@ class Resetter
             }
         }
 
+        if (isset($indexConfig['dynamic_templates'])) {
+            $mapping->setParam('dynamic_templates', $indexConfig['dynamic_templates']);
+        }
+
         return $mapping;
     }
 
