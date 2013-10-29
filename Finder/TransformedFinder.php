@@ -46,6 +46,22 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
+     * Find documents similar to one with passed id.
+     *
+     * @param integer $id
+     * @param array $params
+     * @param array $query
+     * @return array of model objects
+     **/
+    public function moreLikeThis($id, $params = array(), $query = array())
+    {
+        $doc = new Document($id);
+        $results = $this->searchable->moreLikeThis($doc, $params, $query)->getResults();
+
+        return $this->transformer->transform($results);
+    }
+
+    /**
      * @param $query
      * @param null|int $limit
      * @return array
