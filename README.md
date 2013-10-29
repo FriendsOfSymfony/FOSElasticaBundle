@@ -102,9 +102,9 @@ Here we created a "website" index, that uses our "default" client.
 
 Our index is now available as a service: `fos_elastica.index.website`. It is an instance of `\Elastica\Index`.
 
-If you need to have different index name from the service name, for example, 
-in order to have different indexes for different environments then you can 
-use the ```index_name``` key to change the index name. The service name will 
+If you need to have different index name from the service name, for example,
+in order to have different indexes for different environments then you can
+use the ```index_name``` key to change the index name. The service name will
 remain the same across the environments:
 
     fos_elastica:
@@ -114,8 +114,8 @@ remain the same across the environments:
             website:
                 client: default
                 index_name: website_qa
-                
-The service id will be `fos_elastica.index.website` but the underlying index name is website_qa.           
+
+The service id will be `fos_elastica.index.website` but the underlying index name is website_qa.
 
 #### Declare a type
 
@@ -795,4 +795,22 @@ $term = new \Elastica\Filter\Term(array('active' => true));
 
 $filteredQuery = new \Elastica\Query\Filtered($query, $term);
 $results = $this->container->get('fos_elastica.finder.index.type')->find($filteredQuery);
+```
+
+### Date format example
+
+If you want to specify a [date format](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-date-format.html):
+
+```yaml
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        site:
+            types:
+                user:
+                    mappings:
+                        username: { type: string }
+                        lastlogin: { type: date, format: basic_date_time }
+                        birthday: { type: date, format: "yyyy-MM-dd" }
 ```
