@@ -325,7 +325,8 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('type')->end()
                     ->scalarNode('identifier')->defaultValue('id')->end()
                 ->end()
-            ->end();
+            ->end()
+            ->scalarNode('format')->end();
 
         if (isset($nestings['fields'])) {
             $this->addNestedFieldConfig($node, $nestings, 'fields');

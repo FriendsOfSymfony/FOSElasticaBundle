@@ -666,3 +666,21 @@ fos_elastica:
                         provider:
                         finder:
 ```
+
+#### Date format example
+
+If you want to specify a [date format](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-date-format.html):
+
+```yaml
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        site:
+            types:
+                user:
+                    mappings:
+                        username: { type: string }
+                        lastlogin: { type: date, format: basic_date_time }
+                        birthday: { type: date, format: "yyyy-MM-dd" }
+```
