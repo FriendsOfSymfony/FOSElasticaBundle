@@ -74,6 +74,7 @@ class FOSElasticaExtension extends Extension
             $clientId = sprintf('fos_elastica.client.%s', $name);
             $clientDef = new Definition('%fos_elastica.client.class%', array($clientConfig));
             $clientDef->addMethodCall('setLogger', array(new Reference('fos_elastica.logger')));
+            $clientDef->addTag('fos_elastica.client');
 
             $container->setDefinition($clientId, $clientDef);
 
