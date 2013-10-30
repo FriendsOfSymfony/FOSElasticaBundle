@@ -327,8 +327,9 @@ Its class must implement `FOS\ElasticaBundle\Provider\ProviderInterface`.
              * Insert the repository objects in the type index
              *
              * @param \Closure $loggerClosure
+             * @param array    $options
              */
-            public function populate(\Closure $loggerClosure = null)
+            public function populate(\Closure $loggerClosure = null, array $options = array())
             {
                 if ($loggerClosure) {
                     $loggerClosure('Indexing users');
