@@ -630,6 +630,13 @@ In this case, the callback_class will be the `isIndexable()` method on the speci
 service and the object being considered for indexing will be passed as the only
 argument. This allows you to do more complex validation (e.g. ACL checks).
 
+If you have the [Symfony ExpressionLanguage](https://github.com/symfony/expression-language) component installed, you can use expressions
+to evaluate the callback:
+
+                        persistence:
+                            listener:
+                                is_indexable_callback: "user.isActive() && user.hasRole('ROLE_USER')"
+
 As you might expect, new entities will only be indexed if the callback_class returns
 `true`. Additionally, modified entities will be updated or removed from the
 index depending on whether the callback_class returns `true` or `false`, respectively.
