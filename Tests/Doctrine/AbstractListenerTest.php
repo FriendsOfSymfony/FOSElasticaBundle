@@ -164,6 +164,7 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
             array('nonexistentEntityMethod'),
             array(array(new Listener\IndexableDecider(), 'internalMethod')),
             array(42),
+            array('entity.getIsIndexable() && nonexistentEntityFunction()'),
         );
     }
 
@@ -173,6 +174,7 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
             array('getIsIndexable'),
             array(array(new Listener\IndexableDecider(), 'isIndexable')),
             array(function(Listener\Entity $entity) { return $entity->getIsIndexable(); }),
+            array('entity.getIsIndexable()')
         );
     }
 
