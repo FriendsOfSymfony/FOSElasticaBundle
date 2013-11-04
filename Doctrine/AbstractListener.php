@@ -93,22 +93,18 @@ abstract class AbstractListener implements EventSubscriber
      * should expect the object for consideration as its only argument and
      * return a boolean.
      *
-     * @param callback $callback
+     * @param  callback          $callback
      * @throws \RuntimeException if the callback is not callable
      */
     public function setIsIndexableCallback($callback)
     {
         if (is_string($callback)) {
-
             if (!is_callable(array($this->objectClass, $callback))) {
-
-                if(false !== ($expression = $this->getExpressionLanguage())) {
-
+                if (false !== ($expression = $this->getExpressionLanguage())) {
                     $callback = new Expression($callback);
-
                     try {
                         $expression->compile($callback, array($this->getExpressionVar()));
-                    } catch(SyntaxError $e) {
+                    } catch (SyntaxError $e) {
                         throw new \RuntimeException(sprintf('Indexable callback %s::%s() is not callable or a valid expression.', $this->objectClass, $callback), 0, $e);
                     }
                 } else {
@@ -135,7 +131,7 @@ abstract class AbstractListener implements EventSubscriber
     /**
      * Return whether the object is indexable with respect to the callback.
      *
-     * @param object $object
+     * @param  object  $object
      * @return boolean
      */
     protected function isObjectIndexable($object)
@@ -144,7 +140,7 @@ abstract class AbstractListener implements EventSubscriber
             return true;
         }
 
-        if($this->isIndexableCallback instanceof Expression) {
+        if ($this->isIndexableCallback instanceof Expression) {
             return $this->getExpressionLanguage()->evaluate($this->isIndexableCallback, array($this->getExpressionVar($object) => $object));
         }
 
@@ -185,13 +181,12 @@ abstract class AbstractListener implements EventSubscriber
     }
 
     /**
-     * @param mixed $object
+     * @param  mixed  $object
      * @return string
      */
     private function getExpressionVar($object = null)
     {
         $class = $object ?: $this->objectClass;
-
         $ref = new \ReflectionClass($class);
 
         return strtolower($ref->getShortName());
@@ -202,7 +197,7 @@ abstract class AbstractListener implements EventSubscriber
      */
     private function getExpressionLanguage()
     {
-        if(null === $this->expressionLanguage) {
+        if (null === $this->expressionLanguage) {
             if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
                 return false;
             }
