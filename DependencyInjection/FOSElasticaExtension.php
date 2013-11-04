@@ -205,6 +205,12 @@ class FOSElasticaExtension extends Extension
             if (isset($type['index'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['index'] = $type['index'];
             }
+            if (!empty($type['dynamic_templates'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['dynamic_templates'] = array();
+                foreach ($type['dynamic_templates'] as $templateName => $templateData) {
+                    $this->indexConfigs[$indexName]['config']['mappings'][$name]['dynamic_templates'][] = array($templateName => $templateData);
+                }
+            }
         }
     }
 
