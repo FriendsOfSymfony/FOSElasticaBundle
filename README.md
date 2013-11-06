@@ -592,7 +592,7 @@ Declare that you want to update the index in real time:
                         persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
-                            listener: # by default, listens to "insert", "update" and "delete"
+                            listener: ~ # by default, listens to "insert", "update" and "delete"
 
 Now the index is automatically updated each time the state of the bound Doctrine repository changes.
 No need to repopulate the whole "user" index when a new `User` is created.
