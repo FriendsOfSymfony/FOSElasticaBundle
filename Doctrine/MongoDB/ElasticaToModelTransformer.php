@@ -22,7 +22,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
     {
         return $this->registry
             ->getManagerForClass($this->objectClass)
-            ->createQueryBuilder($this->objectClass)
+            ->{$this->options['query_builder_method']}($this->objectClass)
             ->field($this->options['identifier'])->in($identifierValues)
             ->hydrate($hydrate)
             ->getQuery()

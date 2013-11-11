@@ -12,6 +12,8 @@ use Doctrine\ORM\Query;
  */
 class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
 {
+    const ENTITY_ALIAS = 'o';
+
     /**
      * Fetch objects for theses identifier values
      *
@@ -28,9 +30,9 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
         $qb = $this->registry
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass)
-            ->createQueryBuilder('o');
+            ->{$this->options['query_builder_method']}(static::ENTITY_ALIAS);
         /* @var $qb \Doctrine\ORM\QueryBuilder */
-        $qb->where($qb->expr()->in('o.'.$this->options['identifier'], ':values'))
+        $qb->where($qb->expr()->in(static::ENTITY_ALIAS.'.'.$this->options['identifier'], ':values'))
             ->setParameter('values', $identifierValues);
 
         return $qb->getQuery()->setHydrationMode($hydrationMode)->execute();
