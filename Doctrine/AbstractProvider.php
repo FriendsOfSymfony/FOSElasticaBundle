@@ -31,27 +31,22 @@ abstract class AbstractProvider extends BaseAbstractProvider
     /**
      * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
      */
-    public function populate(\Closure $loggerClosure = null, array $options = array())
+    public function populate(\Closure $loggerClosure = null)
     {
         $queryBuilder = $this->createQueryBuilder();
         $nbObjects = $this->countObjects($queryBuilder);
-        $offset = isset($options['offset']) ? intval($options['offset']) : 0;
-        $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;
-        $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
 
-        for (; $offset < $nbObjects; $offset += $batchSize) {
+        for ($offset = 0; $offset < $nbObjects; $offset += $this->options['batch_size']) {
             if ($loggerClosure) {
                 $stepStartTime = microtime(true);
             }
-            $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
+            $objects = $this->fetchSlice($queryBuilder, $this->options['batch_size'], $offset);
 
             $this->objectPersister->insertMany($objects);
 
             if ($this->options['clear_object_manager']) {
                 $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
             }
-
-            usleep($sleep);
 
             if ($loggerClosure) {
                 $stepNbObjects = count($objects);

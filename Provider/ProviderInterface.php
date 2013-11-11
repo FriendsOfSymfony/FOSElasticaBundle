@@ -13,8 +13,7 @@ interface ProviderInterface
      * Persists all domain objects to ElasticSearch for this provider.
      *
      * @param \Closure $loggerClosure
-     * @param array    $options
      * @return
      */
-    function populate(\Closure $loggerClosure = null, array $options = array());
+    function populate(\Closure $loggerClosure = null);
 }
