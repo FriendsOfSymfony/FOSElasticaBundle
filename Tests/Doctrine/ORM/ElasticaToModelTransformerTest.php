@@ -1,17 +1,7 @@
 <?php
 
-/**
- * This file is part of the FOSElasticaBundle
- *
- * (c) Infinite Networks Pty Ltd <http://www.infinite.net.au>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace FOS\ElasticaBundle\Tests\Doctrine\ORM;
 
-use Doctrine\ORM\QueryBuilder;
 use FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer;
 
 class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
