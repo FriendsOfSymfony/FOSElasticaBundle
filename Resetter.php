@@ -78,6 +78,10 @@ class Resetter
             $mapping->setParam('_parent', array('type' => $indexConfig['_parent']['type']));
         }
 
+        if (isset($indexConfig['dynamic_templates'])) {
+            $mapping->setParam('dynamic_templates', $indexConfig['dynamic_templates']);
+        }
+
         return $mapping;
     }
 

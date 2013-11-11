@@ -822,3 +822,33 @@ fos_elastica:
                         lastlogin: { type: date, format: basic_date_time }
                         birthday: { type: date, format: "yyyy-MM-dd" }
 ```
+
+#### Dynamic templates
+
+Dynamic templates allow to define mapping templates that will be
+applied when dynamic introduction of fields / objects happens.
+
+[Documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-root-object-type.html#_dynamic_templates)
+
+```yaml
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        site:
+            types:
+                user:
+                    dynamic_templates:
+                        my_template_1:
+                            match: apples_*
+                            mapping:
+                                type: float
+                        my_template_2:
+                            match: *
+                            match_mapping_type: string
+                            mapping:
+                                type: string
+                                index: not_analyzed
+                    mappings:
+                        username: { type: string }
+```

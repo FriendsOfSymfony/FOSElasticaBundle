@@ -179,6 +179,7 @@ class Configuration implements ConfigurationInterface
                                                 ->children()
                                                     ->scalarNode('hydrate')->defaultTrue()->end()
                                                     ->scalarNode('ignore_missing')->defaultFalse()->end()
+                                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
                                                     ->scalarNode('service')->end()
                                                 ->end()
                                             ->end()
@@ -270,6 +271,7 @@ class Configuration implements ConfigurationInterface
                                 ->children()
                                     ->scalarNode('hydrate')->defaultTrue()->end()
                                     ->scalarNode('ignore_missing')->defaultFalse()->end()
+                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
                                     ->scalarNode('service')->end()
                                 ->end()
                             ->end()
@@ -284,6 +286,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->append($this->getIdNode())
                 ->append($this->getMappingsNode())
+                ->append($this->getDynamicTemplateNode())
                 ->append($this->getSourceNode())
                 ->append($this->getBoostNode())
                 ->append($this->getRoutingNode())
@@ -312,6 +315,37 @@ class Configuration implements ConfigurationInterface
                 ->children();
 
         $this->addFieldConfig($childrenNode, $nestings);
+
+        return $node;
+    }
+
+    /**
+     * Returns the array node used for "dynamic_templates".
+     */
+    public function getDynamicTemplateNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('dynamic_templates');
+
+        $node
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+                ->children()
+                    ->scalarNode('match')->isRequired()->end()
+                    ->scalarNode('match_mapping_type')->end()
+                    ->arrayNode('mapping')
+                        ->isRequired()
+                        ->children()
+                            ->scalarNode('type')->end()
+                            ->scalarNode('index')->end()
+                            ->arrayNode('fields')
+                                ->children()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
 
         return $node;
     }
