@@ -32,5 +32,4 @@ interface RepositoryManagerInterface
      * @param string $entityName
      */
     public function getRepository($entityName);
-
 }

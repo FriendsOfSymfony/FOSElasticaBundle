@@ -3,7 +3,6 @@
 namespace FOS\ElasticaBundle\Paginator;
 
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use FOS\ElasticaBundle\Paginator\TransformedPartialResults;
 use Elastica\SearchableInterface;
 use Elastica\Query;
 

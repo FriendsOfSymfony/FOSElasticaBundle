@@ -11,8 +11,6 @@ namespace FOS\ElasticaBundle\Configuration;
  */
 class Search
 {
-
     /** @var string */
     public $repositoryClass;
-
 }

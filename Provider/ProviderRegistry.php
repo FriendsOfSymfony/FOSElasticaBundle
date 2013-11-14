@@ -2,8 +2,6 @@
 
 namespace FOS\ElasticaBundle\Provider;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

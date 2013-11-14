@@ -3,14 +3,13 @@
 namespace FOS\ElasticaBundle\Paginator;
 
 use Pagerfanta\Adapter\AdapterInterface;
-use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 
 class FantaPaginatorAdapter implements AdapterInterface
 {
     private $adapter;
 
     /**
-     * @param PaginatorAdapterInterface $adapter
+     * @param \FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface $adapter
      */
     public function __construct(PaginatorAdapterInterface $adapter)
     {
@@ -42,7 +41,7 @@ class FantaPaginatorAdapter implements AdapterInterface
     }
 
     /**
-     * Returns an slice of the results.
+     * Returns a slice of the results.
      *
      * @param integer $offset The offset.
      * @param integer $length The length.

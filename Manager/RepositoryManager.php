@@ -5,6 +5,7 @@ namespace FOS\ElasticaBundle\Manager;
 use Doctrine\Common\Annotations\Reader;
 use FOS\ElasticaBundle\Finder\FinderInterface;
 use RuntimeException;
+
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  *
@@ -70,11 +71,10 @@ class RepositoryManager implements RepositoryManagerInterface
 
     private function createRepository($entityName)
     {
-        $repositoryName = $this->getRepositoryName($entityName);
-        if (!class_exists($repositoryName)) {
+        if (!class_exists($repositoryName = $this->getRepositoryName($entityName))) {
             throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $entityName));
         }
+
         return new $repositoryName($this->entities[$entityName]['finder']);
     }
-
 }

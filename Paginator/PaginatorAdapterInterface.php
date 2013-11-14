@@ -2,8 +2,6 @@
 
 namespace FOS\ElasticaBundle\Paginator;
 
-use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
-
 interface PaginatorAdapterInterface
 {
     /**

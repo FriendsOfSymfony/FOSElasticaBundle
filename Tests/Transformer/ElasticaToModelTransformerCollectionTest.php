@@ -119,5 +119,4 @@ class POPO
 
 class POPO2 extends POPO
 {
-
 }

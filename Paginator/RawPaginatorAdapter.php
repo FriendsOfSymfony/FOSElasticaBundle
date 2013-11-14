@@ -5,9 +5,6 @@ namespace FOS\ElasticaBundle\Paginator;
 use Elastica\SearchableInterface;
 use Elastica\Query;
 use Elastica\ResultSet;
-use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
-use FOS\ElasticaBundle\Paginator\RawPartialResults;
-use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use InvalidArgumentException;
 
 /**
@@ -52,6 +49,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      *
      * @param $offset
      * @param $itemCountPerPage
+     * @throws \InvalidArgumentException
      * @return ResultSet
      */
     protected function getElasticaResults($offset, $itemCountPerPage)
