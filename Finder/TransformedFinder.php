@@ -7,6 +7,7 @@ use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use Pagerfanta\Pagerfanta;
+use Elastica_Document;
 use Elastica_Searchable;
 use Elastica_Query;
 
@@ -55,7 +56,7 @@ class TransformedFinder implements PaginatedFinderInterface
      **/
     public function moreLikeThis($id, $params = array(), $query = array())
     {
-        $doc = new Document($id);
+        $doc = new Elastica_Document($id);
         $results = $this->searchable->moreLikeThis($doc, $params, $query)->getResults();
 
         return $this->transformer->transform($results);
@@ -76,7 +77,6 @@ class TransformedFinder implements PaginatedFinderInterface
 
         return $results;
     }
-
 
     /**
      * Gets a paginator wrapping the result of a search
