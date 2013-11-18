@@ -2,7 +2,7 @@
 
 namespace FOS\ElasticaBundle\Finder;
 
-use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
@@ -76,7 +76,6 @@ class TransformedFinder implements PaginatedFinderInterface
 
         return $results;
     }
-
 
     /**
      * Gets a paginator wrapping the result of a search
