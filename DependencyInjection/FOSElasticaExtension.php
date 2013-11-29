@@ -356,6 +356,8 @@ class FOSElasticaExtension extends Extension
 
         if ($this->serializerConfig) {
             $abstractId = 'fos_elastica.object_serializer_persister';
+            $callbackId = sprintf('%s.%s.serializer.callback', $this->indexConfigs[$indexName]['index'], $typeName);
+            $arguments[] = array(new Reference($callbackId), 'serialize');
         } else {
             $abstractId = 'fos_elastica.object_persister';
             $arguments[] = $this->typeFields[sprintf('%s/%s', $indexName, $typeName)];

@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Persister;
 
+use Elastica\Document;
 use Elastica\Type;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 
@@ -14,11 +15,12 @@ use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
  */
 class ObjectSerializerPersister extends ObjectPersister
 {
-    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass)
+    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, $serializer)
     {
         $this->type        = $type;
         $this->transformer = $transformer;
         $this->objectClass = $objectClass;
+        $this->serializer  = $serializer;
     }
 
     /**
@@ -30,7 +32,7 @@ class ObjectSerializerPersister extends ObjectPersister
     public function insertOne($object)
     {
         $document = $this->transformToElasticaDocument($object);
-        $this->type->addObject($object, $document);
+        $this->type->addDocument($document);
     }
 
     /**
@@ -43,7 +45,7 @@ class ObjectSerializerPersister extends ObjectPersister
     {
         $document = $this->transformToElasticaDocument($object);
         $this->type->deleteById($document->getId());
-        $this->type->addObject($object, $document);
+        $this->type->addDocument($document);
     }
 
     /**
@@ -78,9 +80,11 @@ class ObjectSerializerPersister extends ObjectPersister
      **/
     public function insertMany(array $objects)
     {
+        $docs = array();
         foreach ($objects as $object) {
-            $this->insertOne($object);
+            $docs[] = $this->transformToElasticaDocument($object);
         }
+        $this->type->addDocuments($docs);
     }
 
     /**
@@ -92,6 +96,11 @@ class ObjectSerializerPersister extends ObjectPersister
      */
     public function transformToElasticaDocument($object)
     {
-        return $this->transformer->transform($object, array());
+        $document = $this->transformer->transform($object, array());
+
+        $data = call_user_func($this->serializer, $object);
+        $document->setData($data);
+
+        return $document;
     }
 }
