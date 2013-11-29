@@ -199,6 +199,11 @@ class FOSElasticaExtension extends Extension
                 $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));
             }
             $container->setDefinition($typeId, $typeDef);
+
+            $this->indexConfigs[$indexName]['config']['mappings'][$name] = array(
+                "_source" => array("enabled" => true), // Add a default setting for empty mapping settings
+            );
+
             if (isset($type['_id'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['_id'] = $type['_id'];
             }
@@ -211,7 +216,7 @@ class FOSElasticaExtension extends Extension
             if (isset($type['_routing'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['_routing'] = $type['_routing'];
             }
-            if (isset($type['mappings'])) {
+            if (isset($type['mappings']) && !empty($type['mappings'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
                 $typeName = sprintf('%s/%s', $indexName, $name);
                 $this->typeFields[$typeName] = $type['mappings'];
