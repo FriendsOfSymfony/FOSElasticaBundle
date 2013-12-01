@@ -2,8 +2,8 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
+use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\ObjectManager;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -48,11 +48,11 @@ abstract class AbstractListener implements EventSubscriber
     protected $isIndexableCallback;
 
     /**
-     * Objects scheduled for removal
-     *
-     * @var array
+     * Objects scheduled for insertion, replacement, or removal
      */
-    private $scheduledForRemoval = array();
+    protected $scheduledForInsertion = array();
+    protected $scheduledForUpdate = array();
+    protected $scheduledForDeletion = array();
 
     /**
      * An instance of ExpressionLanguage
@@ -150,37 +150,6 @@ abstract class AbstractListener implements EventSubscriber
     }
 
     /**
-     * Schedules the object for removal.
-     *
-     * This is usually called during the pre-remove event.
-     *
-     * @param object        $object
-     * @param ObjectManager $objectManager
-     */
-    protected function scheduleForRemoval($object, ObjectManager $objectManager)
-    {
-        $metadata = $objectManager->getClassMetadata($this->objectClass);
-        $esId = $metadata->getFieldValue($object, $this->esIdentifierField);
-        $this->scheduledForRemoval[spl_object_hash($object)] = $esId;
-    }
-
-    /**
-     * Removes the object if it was scheduled for removal.
-     *
-     * This is usually called during the post-remove event.
-     *
-     * @param object $object
-     */
-    protected function removeIfScheduled($object)
-    {
-        $objectHash = spl_object_hash($object);
-        if (isset($this->scheduledForRemoval[$objectHash])) {
-            $this->objectPersister->deleteById($this->scheduledForRemoval[$objectHash]);
-            unset($this->scheduledForRemoval[$objectHash]);
-        }
-    }
-
-    /**
      * @param  mixed  $object
      * @return string
      */
@@ -206,5 +175,58 @@ abstract class AbstractListener implements EventSubscriber
         }
 
         return $this->expressionLanguage;
+    }
+
+    public function postPersist(EventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+
+        if ($entity instanceof $this->objectClass && $this->isObjectIndexable($entity)) {
+            $this->scheduledForInsertion[] = $entity;
+        }
+    }
+
+    public function postUpdate(EventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+
+        if ($entity instanceof $this->objectClass) {
+            if ($this->isObjectIndexable($entity)) {
+                $this->scheduledForUpdate[] = $entity;
+            } else {
+                // Delete if no longer indexable
+                $this->scheduledForDeletion[] = $entity;
+            }
+        }
+    }
+
+    public function preRemove(EventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+
+        if ($entity instanceof $this->objectClass) {
+            $this->scheduledForDeletion[] = $entity;
+        }
+    }
+
+    public function postRemove(EventArgs $eventArgs)
+    {
+    }
+
+    /**
+     * Iterate through scheduled actions *after* flushing to ensure that the ElasticSearch index will only be affected
+     * only if the query is successful
+     */
+    public function postFlush(EventArgs $eventArgs)
+    {
+        foreach ($this->scheduledForInsertion as $entity) {
+            $this->objectPersister->insertOne($entity);
+        }
+        foreach ($this->scheduledForUpdate as $entity) {
+            $this->objectPersister->replaceOne($entity);
+        }
+        foreach ($this->scheduledForDeletion as $entity) {
+            $this->objectPersister->deleteOne($entity);
+        }
     }
 }

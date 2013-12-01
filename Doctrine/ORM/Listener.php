@@ -2,49 +2,28 @@
 
 namespace FOS\ElasticaBundle\Doctrine\ORM;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Common\EventArgs;
 use FOS\ElasticaBundle\Doctrine\AbstractListener;
 
 class Listener extends AbstractListener
 {
-    public function postPersist(LifecycleEventArgs $eventArgs)
+    public function postPersist(EventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-
-        if ($entity instanceof $this->objectClass && $this->isObjectIndexable($entity)) {
-            $this->objectPersister->insertOne($entity);
-        }
+        parent::postPersist($eventArgs);
     }
 
-    public function postUpdate(LifecycleEventArgs $eventArgs)
+    public function postUpdate(EventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-
-        if ($entity instanceof $this->objectClass) {
-            if ($this->isObjectIndexable($entity)) {
-                $this->objectPersister->replaceOne($entity);
-            } else {
-                $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
-                $this->removeIfScheduled($entity);
-            }
-        }
+        parent::postUpdate($eventArgs);
     }
 
-    public function preRemove(LifecycleEventArgs $eventArgs)
+    public function preRemove(EventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-
-        if ($entity instanceof $this->objectClass) {
-            $this->scheduleForRemoval($entity, $eventArgs->getEntityManager());
-        }
+        parent::preRemove($eventArgs);
     }
 
-    public function postRemove(LifecycleEventArgs $eventArgs)
+    public function postRemove(EventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-
-        if ($entity instanceof $this->objectClass) {
-            $this->removeIfScheduled($entity);
-        }
+        parent::postRemove($eventArgs);
     }
 }

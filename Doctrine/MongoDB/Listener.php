@@ -2,49 +2,23 @@
 
 namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
-use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
+use Doctrine\Common\EventArgs;
 use FOS\ElasticaBundle\Doctrine\AbstractListener;
 
 class Listener extends AbstractListener
 {
-    public function postPersist(LifecycleEventArgs $eventArgs)
+    public function postPersist(EventArgs $eventArgs)
     {
-        $document = $eventArgs->getDocument();
-
-        if ($document instanceof $this->objectClass && $this->isObjectIndexable($document)) {
-            $this->objectPersister->insertOne($document);
-        }
+        parent::postPersist($eventArgs);
     }
 
-    public function postUpdate(LifecycleEventArgs $eventArgs)
+    public function postUpdate(EventArgs $eventArgs)
     {
-        $document = $eventArgs->getDocument();
-
-        if ($document instanceof $this->objectClass) {
-            if ($this->isObjectIndexable($document)) {
-                $this->objectPersister->replaceOne($document);
-            } else {
-                $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
-                $this->removeIfScheduled($document);
-            }
-        }
+        parent::postUpdate($eventArgs);
     }
 
-    public function preRemove(LifecycleEventArgs $eventArgs)
+    public function postRemove(EventArgs $eventArgs)
     {
-        $document = $eventArgs->getDocument();
-
-        if ($document instanceof $this->objectClass) {
-            $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
-        }
-    }
-
-    public function postRemove(LifecycleEventArgs $eventArgs)
-    {
-        $document = $eventArgs->getDocument();
-
-        if ($document instanceof $this->objectClass) {
-            $this->removeIfScheduled($document);
-        }
+        parent::postRemove($eventArgs);
     }
 }
