@@ -209,10 +209,6 @@ abstract class AbstractListener implements EventSubscriber
         }
     }
 
-    public function postRemove(EventArgs $eventArgs)
-    {
-    }
-
     /**
      * Iterate through scheduled actions *after* flushing to ensure that the ElasticSearch index will only be affected
      * only if the query is successful

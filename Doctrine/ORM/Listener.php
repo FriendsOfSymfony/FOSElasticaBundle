@@ -21,9 +21,4 @@ class Listener extends AbstractListener
     {
         parent::preRemove($eventArgs);
     }
-
-    public function postRemove(EventArgs $eventArgs)
-    {
-        parent::postRemove($eventArgs);
-    }
 }

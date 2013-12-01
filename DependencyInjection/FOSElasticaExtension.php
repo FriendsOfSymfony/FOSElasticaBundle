@@ -412,7 +412,7 @@ class FOSElasticaExtension extends Extension
         $eventMapping = array(
             'insert' => array('postPersist'),
             'update' => array('postUpdate'),
-            'delete' => array('postRemove', 'preRemove')
+            'delete' => array('preRemove'),
             'flush' => array('postFlush')
         );
 
