@@ -15,11 +15,11 @@ use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
  */
 class ObjectSerializerPersister extends ObjectPersister
 {
+    protected $serializer;
+
     public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, $serializer)
     {
-        $this->type        = $type;
-        $this->transformer = $transformer;
-        $this->objectClass = $objectClass;
+        parent::__construct($type, $transformer, $objectClass, array());
         $this->serializer  = $serializer;
     }
 
