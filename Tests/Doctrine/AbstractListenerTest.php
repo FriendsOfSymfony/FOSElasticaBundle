@@ -3,9 +3,11 @@
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
 /**
+ * See concrete MongoDB/ORM instances of this abstract test
+ *
  * @author Richard Miller <info@limethinking.co.uk>
  */
-abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
+abstract class ListenerTest extends \PHPUnit_Framework_TestCase
 {
     public function testObjectInsertedOnPersist()
     {
@@ -14,12 +16,16 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
         $entity = new Listener\Entity(1);
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
 
+        $listener = $this->createListener($persister, get_class($entity), array());
+        $listener->postPersist($eventArgs);
+
+        $this->assertEquals($entity, current($listener->scheduledForInsertion));
+
         $persister->expects($this->once())
             ->method('insertOne')
             ->with($entity);
 
-        $listener = $this->createListener($persister, get_class($entity), array());
-        $listener->postPersist($eventArgs);
+        $listener->postFlush($eventArgs);
     }
 
     /**
@@ -32,12 +38,16 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
         $entity = new Listener\Entity(1, false);
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
 
-        $persister->expects($this->never())
-            ->method('insertOne');
-
         $listener = $this->createListener($persister, get_class($entity), array());
         $listener->setIsIndexableCallback($isIndexableCallback);
         $listener->postPersist($eventArgs);
+
+        $this->assertEmpty($listener->scheduledForInsertion);
+
+        $persister->expects($this->never())
+            ->method('insertOne');
+
+        $listener->postFlush($eventArgs);
     }
 
     public function testObjectReplacedOnUpdate()
@@ -47,15 +57,18 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
         $entity = new Listener\Entity(1);
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
 
+        $listener = $this->createListener($persister, get_class($entity), array());
+        $listener->postUpdate($eventArgs);
+
+        $this->assertEquals($entity, current($listener->scheduledForUpdate));
+
         $persister->expects($this->once())
             ->method('replaceOne')
             ->with($entity);
-
         $persister->expects($this->never())
             ->method('deleteById');
 
-        $listener = $this->createListener($persister, get_class($entity), array());
-        $listener->postUpdate($eventArgs);
+        $listener->postFlush($eventArgs);
     }
 
     /**
@@ -80,16 +93,20 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
             ->with($entity, 'id')
             ->will($this->returnValue($entity->getId()));
 
-        $persister->expects($this->never())
-            ->method('replaceOne');
-
-        $persister->expects($this->once())
-            ->method('deleteById')
-            ->with($entity->getId());
-
         $listener = $this->createListener($persister, get_class($entity), array());
         $listener->setIsIndexableCallback($isIndexableCallback);
         $listener->postUpdate($eventArgs);
+
+        $this->assertEmpty($listener->scheduledForUpdate);
+        $this->assertEquals($entity, current($listener->scheduledForDeletion));
+
+        $persister->expects($this->never())
+            ->method('replaceOne');
+        $persister->expects($this->once())
+            ->method('deleteOne')
+            ->with($entity);
+
+        $listener->postFlush($eventArgs);
     }
 
     public function testObjectDeletedOnRemove()
@@ -111,13 +128,16 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
             ->with($entity, 'id')
             ->will($this->returnValue($entity->getId()));
 
-        $persister->expects($this->once())
-            ->method('deleteById')
-            ->with($entity->getId());
-
         $listener = $this->createListener($persister, get_class($entity), array());
         $listener->preRemove($eventArgs);
-        $listener->postRemove($eventArgs);
+
+        $this->assertEquals($entity, current($listener->scheduledForDeletion));
+
+        $persister->expects($this->once())
+            ->method('deleteOne')
+            ->with($entity);
+
+        $listener->postFlush($eventArgs);
     }
 
     public function testObjectWithNonStandardIdentifierDeletedOnRemove()
@@ -139,13 +159,16 @@ abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
             ->with($entity, 'identifier')
             ->will($this->returnValue($entity->getId()));
 
-        $persister->expects($this->once())
-            ->method('deleteById')
-            ->with($entity->getId());
-
         $listener = $this->createListener($persister, get_class($entity), array(), 'identifier');
         $listener->preRemove($eventArgs);
-        $listener->postRemove($eventArgs);
+
+        $this->assertEquals($entity, current($listener->scheduledForDeletion));
+
+        $persister->expects($this->once())
+            ->method('deleteOne')
+            ->with($entity);
+
+        $listener->postFlush($eventArgs);
     }
 
     /**
