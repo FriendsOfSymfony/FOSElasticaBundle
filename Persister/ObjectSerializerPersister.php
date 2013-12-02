@@ -72,7 +72,6 @@ class ObjectSerializerPersister extends ObjectPersister
         $this->type->deleteById($id);
     }
 
-
     /**
      * Inserts an array of objects in the type
      *
