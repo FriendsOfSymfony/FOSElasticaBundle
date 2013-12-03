@@ -576,7 +576,11 @@ class User
 ### Realtime, selective index update
 
 If you use the Doctrine integration, you can let ElasticaBundle update the indexes automatically
-when an object is added, updated or removed. It uses Doctrine lifecycle events.
+when an object is added, updated or removed. It uses Doctrine lifecycle events to schedule updates
+and then synchronizes changes either before or after flush.
+
+> **Propel** doesn't support this feature yet.
+
 Declare that you want to update the index in real time:
 
     fos_elastica:
@@ -592,7 +596,7 @@ Declare that you want to update the index in real time:
                         persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
-                            listener: ~ # by default, listens to "insert", "update" and "delete"
+                            listener: ~ # by default, listens to "insert", "update" and "delete" and updates `postFlush`
 
 Now the index is automatically updated each time the state of the bound Doctrine repository changes.
 No need to repopulate the whole "user" index when a new `User` is created.
@@ -605,7 +609,19 @@ You can also choose to only listen for some of the events:
                                 update: false
                                 delete: true
 
-> **Propel** doesn't support this feature yet.
+By default, the ElasticSearch index will be updated after flush.  To update before flushing, set `immediate`
+to `true`:
+
+                        persistence:
+                            listener:
+                                insert: true
+                                update: false
+                                delete: true
+                                immediate: true
+
+> Updating ElasticSearch before flushing may cause the ElasticSearch index to fall out of sync with the
+> original data in the event of a crash.
+
 
 ### Checking an entity method for listener
 

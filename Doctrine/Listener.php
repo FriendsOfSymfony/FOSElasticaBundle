@@ -210,10 +210,9 @@ class Listener implements EventSubscriber
     }
 
     /**
-     * Iterate through scheduled actions *after* flushing to ensure that the ElasticSearch index will only be affected
-     * only if the query is successful
+     * Persist scheduled action to ElasticSearch
      */
-    public function postFlush(EventArgs $eventArgs)
+    private function persistScheduled()
     {
         foreach ($this->scheduledForInsertion as $entity) {
             $this->objectPersister->insertOne($entity);
@@ -224,5 +223,23 @@ class Listener implements EventSubscriber
         foreach ($this->scheduledForDeletion as $entity) {
             $this->objectPersister->deleteOne($entity);
         }
+    }
+
+    /**
+     * Iterate through scheduled actions before flushing to emulate 2.x behavior.  Note that the ElasticSearch index
+     * will fall out of sync with the data source in event of a crash on flush.
+     */
+    public function preFlush(EventArgs $eventArgs)
+    {
+        $this->persistScheduled();
+    }
+
+    /**
+     * Iterating through scheduled actions *after* flushing ensures that the ElasticSearch index will be affected
+     * only if the query is successful
+     */
+    public function postFlush(EventArgs $eventArgs)
+    {
+        $this->persistScheduled();
     }
 }

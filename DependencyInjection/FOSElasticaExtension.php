@@ -405,7 +405,7 @@ class FOSElasticaExtension extends Extension
 
     private function getDoctrineEvents(array $typeConfig)
     {
-        // Flush event always fires; not configurable
+        // Flush always calls depending on actions scheduled in lifecycle listeners
         $typeConfig['listener']['flush'] = true;
 
         $events = array();
@@ -413,8 +413,10 @@ class FOSElasticaExtension extends Extension
             'insert' => array('postPersist'),
             'update' => array('postUpdate'),
             'delete' => array('preRemove'),
-            'flush' => array('postFlush')
+            'flush' => array($typeConfig['listener']['immediate'] ? 'preFlush' : 'postFlush')
         );
+
+        var_dump($eventMapping);
 
         foreach ($eventMapping as $event => $doctrineEvents) {
             if (isset($typeConfig['listener'][$event]) && $typeConfig['listener'][$event]) {
