@@ -416,8 +416,6 @@ class FOSElasticaExtension extends Extension
             'flush' => array($typeConfig['listener']['immediate'] ? 'preFlush' : 'postFlush')
         );
 
-        var_dump($eventMapping);
-
         foreach ($eventMapping as $event => $doctrineEvents) {
             if (isset($typeConfig['listener'][$event]) && $typeConfig['listener'][$event]) {
                 $events = array_merge($events, $doctrineEvents);
