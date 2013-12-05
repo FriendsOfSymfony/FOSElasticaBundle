@@ -231,6 +231,9 @@ class FOSElasticaExtension extends Extension
             if (isset($type['index'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['index'] = $type['index'];
             }
+            if (isset($type['_all'])) {
+                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_all'] = $type['_all'];
+            }
         }
     }
 
