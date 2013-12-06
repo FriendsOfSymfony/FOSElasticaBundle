@@ -102,9 +102,9 @@ Here we created a "website" index, that uses our "default" client.
 
 Our index is now available as a service: `fos_elastica.index.website`. It is an instance of `\Elastica\Index`.
 
-If you need to have different index name from the service name, for example, 
-in order to have different indexes for different environments then you can 
-use the ```index_name``` key to change the index name. The service name will 
+If you need to have different index name from the service name, for example,
+in order to have different indexes for different environments then you can
+use the ```index_name``` key to change the index name. The service name will
 remain the same across the environments:
 
     fos_elastica:
@@ -114,8 +114,8 @@ remain the same across the environments:
             website:
                 client: default
                 index_name: website_qa
-                
-The service id will be `fos_elastica.index.website` but the underlying index name is website_qa.           
+
+The service id will be `fos_elastica.index.website` but the underlying index name is website_qa.
 
 #### Declare a type
 
@@ -327,8 +327,9 @@ Its class must implement `FOS\ElasticaBundle\Provider\ProviderInterface`.
              * Insert the repository objects in the type index
              *
              * @param \Closure $loggerClosure
+             * @param array    $options
              */
-            public function populate(\Closure $loggerClosure = null)
+            public function populate(\Closure $loggerClosure = null, array $options = array())
             {
                 if ($loggerClosure) {
                     $loggerClosure('Indexing users');
@@ -591,7 +592,7 @@ Declare that you want to update the index in real time:
                         persistence:
                             driver: orm
                             model: Application\UserBundle\Entity\User
-                            listener: # by default, listens to "insert", "update" and "delete"
+                            listener: ~ # by default, listens to "insert", "update" and "delete"
 
 Now the index is automatically updated each time the state of the bound Doctrine repository changes.
 No need to repopulate the whole "user" index when a new `User` is created.
@@ -628,6 +629,13 @@ returns `true`. Additionally, you may provide a service and method name pair:
 In this case, the callback_class will be the `isIndexable()` method on the specified
 service and the object being considered for indexing will be passed as the only
 argument. This allows you to do more complex validation (e.g. ACL checks).
+
+If you have the [Symfony ExpressionLanguage](https://github.com/symfony/expression-language) component installed, you can use expressions
+to evaluate the callback:
+
+                        persistence:
+                            listener:
+                                is_indexable_callback: "user.isActive() && user.hasRole('ROLE_USER')"
 
 As you might expect, new entities will only be indexed if the callback_class returns
 `true`. Additionally, modified entities will be updated or removed from the
@@ -795,4 +803,52 @@ $term = new \Elastica\Filter\Term(array('active' => true));
 
 $filteredQuery = new \Elastica\Query\Filtered($query, $term);
 $results = $this->container->get('fos_elastica.finder.index.type')->find($filteredQuery);
+```
+
+### Date format example
+
+If you want to specify a [date format](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-date-format.html):
+
+```yaml
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        site:
+            types:
+                user:
+                    mappings:
+                        username: { type: string }
+                        lastlogin: { type: date, format: basic_date_time }
+                        birthday: { type: date, format: "yyyy-MM-dd" }
+```
+
+#### Dynamic templates
+
+Dynamic templates allow to define mapping templates that will be
+applied when dynamic introduction of fields / objects happens.
+
+[Documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-root-object-type.html#_dynamic_templates)
+
+```yaml
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        site:
+            types:
+                user:
+                    dynamic_templates:
+                        my_template_1:
+                            match: apples_*
+                            mapping:
+                                type: float
+                        my_template_2:
+                            match: *
+                            match_mapping_type: string
+                            mapping:
+                                type: string
+                                index: not_analyzed
+                    mappings:
+                        username: { type: string }
 ```

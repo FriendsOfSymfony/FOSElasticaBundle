@@ -179,6 +179,7 @@ class Configuration implements ConfigurationInterface
                                                 ->children()
                                                     ->scalarNode('hydrate')->defaultTrue()->end()
                                                     ->scalarNode('ignore_missing')->defaultFalse()->end()
+                                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
                                                     ->scalarNode('service')->end()
                                                 ->end()
                                             ->end()
@@ -270,6 +271,7 @@ class Configuration implements ConfigurationInterface
                                 ->children()
                                     ->scalarNode('hydrate')->defaultTrue()->end()
                                     ->scalarNode('ignore_missing')->defaultFalse()->end()
+                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
                                     ->scalarNode('service')->end()
                                 ->end()
                             ->end()
@@ -284,6 +286,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->append($this->getIdNode())
                 ->append($this->getMappingsNode())
+                ->append($this->getDynamicTemplateNode())
                 ->append($this->getSourceNode())
                 ->append($this->getBoostNode())
                 ->append($this->getRoutingNode())
@@ -318,6 +321,37 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * Returns the array node used for "dynamic_templates".
+     */
+    public function getDynamicTemplateNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('dynamic_templates');
+
+        $node
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+                ->children()
+                    ->scalarNode('match')->isRequired()->end()
+                    ->scalarNode('match_mapping_type')->end()
+                    ->arrayNode('mapping')
+                        ->isRequired()
+                        ->children()
+                            ->scalarNode('type')->end()
+                            ->scalarNode('index')->end()
+                            ->arrayNode('fields')
+                                ->children()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
      * @param \Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the field config to
      * @param array $nestings the nested mappings for the current field level
      */
@@ -334,12 +368,21 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('term_vector')->end()
             ->scalarNode('null_value')->end()
             ->booleanNode('include_in_all')->defaultValue(true)->end()
+            ->booleanNode('enabled')->defaultValue(true)->end()
             ->scalarNode('lat_lon')->end()
             ->scalarNode('index_name')->end()
             ->booleanNode('omit_norms')->end()
             ->scalarNode('index_options')->end()
             ->scalarNode('ignore_above')->end()
             ->scalarNode('position_offset_gap')->end()
+            ->arrayNode('_parent')
+                ->treatNullLike(array())
+                ->children()
+                    ->scalarNode('type')->end()
+                    ->scalarNode('identifier')->defaultValue('id')->end()
+                ->end()
+            ->end()
+            ->scalarNode('format')->end();
         ;
 
         if (isset($nestings['fields'])) {
