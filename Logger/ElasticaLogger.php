@@ -38,15 +38,17 @@ class ElasticaLogger implements LoggerInterface
      * @param string $method Rest method to use (GET, POST, DELETE, PUT)
      * @param array  $data   arguments
      * @param float  $time   execution time
+     * @param string $full_host   host and port of the query
      */
-    public function logQuery($path, $method, $data, $time)
+    public function logQuery($path, $method, $data, $time, $full_host = null)
     {
         if ($this->debug) {
             $this->queries[] = array(
                 'path' => $path,
                 'method' => $method,
                 'data' => $data,
-                'executionMS' => $time
+                'executionMS' => $time,
+                'full_host' => $full_host
             );
         }
 

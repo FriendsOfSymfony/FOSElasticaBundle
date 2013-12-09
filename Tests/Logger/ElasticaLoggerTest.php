@@ -9,7 +9,6 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
  */
 class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testGetZeroIfNoQueriesAdded()
     {
         $elasticaLogger = new ElasticaLogger;
@@ -36,15 +35,17 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
         $method = 'testMethod';
         $data   = array('data');
         $time   = 12;
+        $full_host = 'http://example.com:9200';
 
         $expected = array(
             'path'        => $path,
             'method'      => $method,
             'data'        => $data,
-            'executionMS' => $time
+            'executionMS' => $time,
+            'full_host'   => $full_host,
         );
 
-        $elasticaLogger->logQuery($path, $method, $data, $time);
+        $elasticaLogger->logQuery($path, $method, $data, $time, $full_host);
         $returnedQueries = $elasticaLogger->getQueries();
         $this->assertEquals($expected, $returnedQueries[0]);
     }
