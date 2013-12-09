@@ -17,7 +17,16 @@ class Client extends ElasticaClient
 
         if (null !== $this->_logger) {
             $time = microtime(true) - $start;
-            $this->_logger->logQuery($path, $method, $data, $time);
+
+            $connection = $this->getLastRequest()->getConnection();
+
+            $connection_array = array(
+                'host'      => $connection->getHost(),
+                'port'      => $connection->getPort(),
+                'transport' => $connection->getTransport(),
+            );
+
+            $this->_logger->logQuery($path, $method, $data, $time, $connection_array);
         }
 
         return $response;
