@@ -4,8 +4,6 @@ namespace FOS\ElasticaBundle;
 
 use Elastica\Client as ElasticaClient;
 use Elastica\Request;
-use Elastica\Transport\Http;
-use Elastica\Transport\Https;
 
 /**
  * @author Gordon Franke <info@nevalon.de>
@@ -21,14 +19,14 @@ class Client extends ElasticaClient
             $time = microtime(true) - $start;
 
             $connection = $this->getLastRequest()->getConnection();
-            $transport  = $connection->getTransportObject();
-            $full_host  = null;
 
-            if ($transport instanceof Http || $transport instanceof Https) {
-                $full_host = $connection->getTransport().'://'.$connection->getHost().':'.$connection->getPort();
-            }
+            $connection_array = array(
+                'host'      => $connection->getHost(),
+                'port'      => $connection->getPort(),
+                'transport' => $connection->getTransport(),
+            );
 
-            $this->_logger->logQuery($path, $method, $data, $time, $full_host);
+            $this->_logger->logQuery($path, $method, $data, $time, $connection_array);
         }
 
         return $response;

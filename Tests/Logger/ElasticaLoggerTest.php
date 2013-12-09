@@ -35,17 +35,17 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
         $method = 'testMethod';
         $data   = array('data');
         $time   = 12;
-        $full_host = 'http://example.com:9200';
+        $connection = array('host' => 'localhost', 'port' => '8999', 'transport' => 'https');
 
         $expected = array(
             'path'        => $path,
             'method'      => $method,
             'data'        => $data,
             'executionMS' => $time,
-            'full_host'   => $full_host,
+            'connection'  => $connection,
         );
 
-        $elasticaLogger->logQuery($path, $method, $data, $time, $full_host);
+        $elasticaLogger->logQuery($path, $method, $data, $time, $connection);
         $returnedQueries = $elasticaLogger->getQueries();
         $this->assertEquals($expected, $returnedQueries[0]);
     }

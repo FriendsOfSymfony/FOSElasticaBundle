@@ -44,7 +44,7 @@
             {% for key, query in collector.queries %}
                 <li class="{{ cycle(['odd', 'even'], loop.index) }}">
                     <strong>Path</strong>: {{ query.path }}<br />
-                    <strong>Method</strong>: {{ query.method }}
+                    <strong>Method</strong>: {{ query.method }} <small>({{ query.connection.transport }} on {{ query.connection.host }}:{{ query.connection.port }})</small>
                     <div>
                         <code>{{ query.data|json_encode }}</code>
                     </div>
@@ -52,7 +52,7 @@
                         <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS * 1000) }} ms
                     </small>
 
-                    {% if query.full_host %}
+                    {% if query.connection.transport in ['Http', 'Https'] %}{# cURL support only HTTP #}
                         <a href="#elastica_curl_query_{{ key }}" onclick="return curl_version(this);" style="text-decoration: none;" title="Get the cURL repeatable query">
                             <img alt="+" src="{{ asset('bundles/framework/images/blue_picto_more.gif') }}" style="display: inline; width: 12px; height: 12px; vertical-align: bottom;" />
                             <img alt="-" src="{{ asset('bundles/framework/images/blue_picto_less.gif') }}" style="display: none; width: 12px; height: 12px; vertical-align: bottom;" />
@@ -60,7 +60,7 @@
                         </a>
 
                         <div style="display: none;" id="elastica_curl_query_{{ key }}">
-                            <code>curl -X{{ query.method }} '{{ query.full_host }}/{{ query.path }}' -d '{{ query.data|json_encode }}'</code>
+                            <code>curl -X{{ query.method }} '{{ query.connection.transport|lower }}://{{ query.connection.host }}:{{ query.connection.port }}/{{ query.path }}' -d '{{ query.data|json_encode }}'</code>
                         </div>
                     {% endif %}
                 </li>
