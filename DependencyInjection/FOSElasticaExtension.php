@@ -16,6 +16,7 @@ class FOSElasticaExtension extends Extension
     protected $indexConfigs     = array();
     protected $typeFields       = array();
     protected $loadedDrivers    = array();
+    protected $serializerConfig = array();
 
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -40,8 +41,8 @@ class FOSElasticaExtension extends Extension
         }
 
         $clientIdsByName = $this->loadClients($config['clients'], $container);
-        $serializerConfig = isset($config['serializer']) ? $config['serializer'] : null;
-        $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client'], $serializerConfig);
+        $this->serializerConfig = isset($config['serializer']) ? $config['serializer'] : null;
+        $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
         $indexRefsByName = array_map(function($id) {
             return new Reference($id);
         }, $indexIdsByName);
@@ -94,7 +95,7 @@ class FOSElasticaExtension extends Extension
      * @throws \InvalidArgumentException
      * @return array
      */
-    protected function loadIndexes(array $indexes, ContainerBuilder $container, array $clientIdsByName, $defaultClientName, $serializerConfig)
+    protected function loadIndexes(array $indexes, ContainerBuilder $container, array $clientIdsByName, $defaultClientName)
     {
         $indexIds = array();
         foreach ($indexes as $name => $index) {
@@ -129,7 +130,7 @@ class FOSElasticaExtension extends Extension
             if (!empty($index['settings'])) {
                 $this->indexConfigs[$name]['config']['settings'] = $index['settings'];
             }
-            $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig, $serializerConfig);
+            $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig);
         }
 
         return $indexIds;
@@ -171,7 +172,7 @@ class FOSElasticaExtension extends Extension
      * @param $indexId
      * @param array $typePrototypeConfig
      */
-    protected function loadTypes(array $types, ContainerBuilder $container, $indexName, $indexId, array $typePrototypeConfig, $serializerConfig)
+    protected function loadTypes(array $types, ContainerBuilder $container, $indexName, $indexId, array $typePrototypeConfig)
     {
         foreach ($types as $name => $type) {
             $type = self::deepArrayUnion($typePrototypeConfig, $type);
@@ -180,12 +181,12 @@ class FOSElasticaExtension extends Extension
             $typeDef = new Definition('%fos_elastica.type.class%', $typeDefArgs);
             $typeDef->setFactoryService($indexId);
             $typeDef->setFactoryMethod('getType');
-            if ($serializerConfig) {
-                $callbackDef = new Definition($serializerConfig['callback_class']);
+            if ($this->serializerConfig) {
+                $callbackDef = new Definition($this->serializerConfig['callback_class']);
                 $callbackId = sprintf('%s.%s.serializer.callback', $indexId, $name);
 
                 $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));
-                $callbackDef->addMethodCall('setSerializer', array(new Reference($serializerConfig['serializer'])));
+                $callbackDef->addMethodCall('setSerializer', array(new Reference($this->serializerConfig['serializer'])));
                 if (isset($type['serializer']['groups'])) {
                     $callbackDef->addMethodCall('setGroups', array($type['serializer']['groups']));
                 }
@@ -198,6 +199,11 @@ class FOSElasticaExtension extends Extension
                 $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));
             }
             $container->setDefinition($typeId, $typeDef);
+
+            $this->indexConfigs[$indexName]['config']['mappings'][$name] = array(
+                "_source" => array("enabled" => true), // Add a default setting for empty mapping settings
+            );
+
             if (isset($type['_id'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['_id'] = $type['_id'];
             }
@@ -210,7 +216,7 @@ class FOSElasticaExtension extends Extension
             if (isset($type['_routing'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['_routing'] = $type['_routing'];
             }
-            if (isset($type['mappings'])) {
+            if (isset($type['mappings']) && !empty($type['mappings'])) {
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
                 $typeName = sprintf('%s/%s', $indexName, $name);
                 $this->typeFields[$typeName] = $type['mappings'];
@@ -324,8 +330,14 @@ class FOSElasticaExtension extends Extension
             return $typeConfig['model_to_elastica_transformer']['service'];
         }
 
+        if ($this->serializerConfig) {
+            $abstractId = sprintf('fos_elastica.model_to_elastica_identifier_transformer');
+        } else {
+            $abstractId = sprintf('fos_elastica.model_to_elastica_transformer');
+        }
+
         $serviceId = sprintf('fos_elastica.model_to_elastica_transformer.%s.%s', $indexName, $typeName);
-        $serviceDef = new DefinitionDecorator('fos_elastica.model_to_elastica_transformer');
+        $serviceDef = new DefinitionDecorator($abstractId);
         $serviceDef->replaceArgument(0, array(
             'identifier' => $typeConfig['identifier']
         ));
@@ -336,12 +348,26 @@ class FOSElasticaExtension extends Extension
 
     protected function loadObjectPersister(array $typeConfig, Definition $typeDef, ContainerBuilder $container, $indexName, $typeName, $transformerId)
     {
+        $arguments = array(
+            $typeDef,
+            new Reference($transformerId),
+            $typeConfig['model'],
+        );
+
+        if ($this->serializerConfig) {
+            $abstractId = 'fos_elastica.object_serializer_persister';
+            $callbackId = sprintf('%s.%s.serializer.callback', $this->indexConfigs[$indexName]['index'], $typeName);
+            $arguments[] = array(new Reference($callbackId), 'serialize');
+        } else {
+            $abstractId = 'fos_elastica.object_persister';
+            $arguments[] = $this->typeFields[sprintf('%s/%s', $indexName, $typeName)];
+        }
         $serviceId = sprintf('fos_elastica.object_persister.%s.%s', $indexName, $typeName);
-        $serviceDef = new DefinitionDecorator('fos_elastica.object_persister');
-        $serviceDef->replaceArgument(0, $typeDef);
-        $serviceDef->replaceArgument(1, new Reference($transformerId));
-        $serviceDef->replaceArgument(2, $typeConfig['model']);
-        $serviceDef->replaceArgument(3, $this->typeFields[sprintf('%s/%s', $indexName, $typeName)]);
+        $serviceDef = new DefinitionDecorator($abstractId);
+        foreach ($arguments as $i => $argument) {
+            $serviceDef->replaceArgument($i, $argument);
+        }
+
         $container->setDefinition($serviceId, $serviceDef);
 
         return $serviceId;

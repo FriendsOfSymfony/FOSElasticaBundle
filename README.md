@@ -193,6 +193,8 @@ If you do this wrong, you will see a `RoutingMissingException` as elasticsearch 
 
 ### Declaring `nested` or `object`
 
+Note that object can autodetect properties
+
     fos_elastica:
         clients:
             default: { host: localhost, port: 9200 }
@@ -213,6 +215,12 @@ If you do this wrong, you will see a `RoutingMissingException` as elasticsearch 
                                 properties:
                                     date: { boost: 5 }
                                     content: ~
+                            user:
+                                type: "object"
+                            approver:
+                                type: "object"
+                                properties:
+                                    date: { boost: 5 }
 
 #### Doctrine ORM and `object` mappings
 

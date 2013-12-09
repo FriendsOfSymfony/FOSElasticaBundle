@@ -433,6 +433,10 @@ class Configuration implements ConfigurationInterface
             }
 
             foreach ($index['types'] as $type) {
+                if (empty($type['mappings'])) {
+                    continue;
+                }
+
                 $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['mappings'], $nestings));
             }
         }

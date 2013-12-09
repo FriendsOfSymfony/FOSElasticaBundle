@@ -71,11 +71,11 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
             $value = $this->propertyAccessor->getValue($object, $key);
 
-            if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object'))) {
+            if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object')) && isset($mapping['properties'])) {
                 /* $value is a nested document or object. Transform $value into
                  * an array of documents, respective the mapped properties.
                  */
-                $document->add($key, $this->transformNested($value, $mapping['properties']));
+                $document->set($key, $this->transformNested($value, $mapping['properties']));
                 continue;
             }
 
@@ -89,7 +89,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
                 continue;
             }
 
-            $document->add($key, $this->normalizeValue($value));
+            $document->set($key, $this->normalizeValue($value));
         }
 
         return $document;
