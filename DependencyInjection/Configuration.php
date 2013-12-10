@@ -339,7 +339,7 @@ class Configuration implements ConfigurationInterface
             ->useAttributeAsKey('name')
             ->prototype('array')
                 ->children()
-                    ->scalarNode('match')->end()
+                    ->scalarNode('match')->defaultValue('*')->end()
                     ->scalarNode('unmatch')->end()
                     ->scalarNode('match_mapping_type')->end()
                     ->scalarNode('path_match')->end()
