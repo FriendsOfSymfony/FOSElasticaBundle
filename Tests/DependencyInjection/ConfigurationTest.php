@@ -48,6 +48,22 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['match_mapping_type']);
         $this->assertNull($dynamicTemplates['match_mapping_type']->getDefaultValue());
 
+        $this->assertArrayHasKey('unmatch', $dynamicTemplates);
+        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['unmatch']);
+        $this->assertNull($dynamicTemplates['unmatch']->getDefaultValue());
+
+        $this->assertArrayHasKey('path_match', $dynamicTemplates);
+        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['path_match']);
+        $this->assertNull($dynamicTemplates['path_match']->getDefaultValue());
+
+        $this->assertArrayHasKey('path_unmatch', $dynamicTemplates);
+        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['v']);
+        $this->assertNull($dynamicTemplates['path_unmatch']->getDefaultValue());
+
+        $this->assertArrayHasKey('match_pattern', $dynamicTemplates);
+        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['match_pattern']);
+        $this->assertNull($dynamicTemplates['match_pattern']->getDefaultValue());
+
         $this->assertArrayHasKey('mapping', $dynamicTemplates);
         $this->assertInstanceOf('Symfony\Component\Config\Definition\ArrayNode', $dynamicTemplates['mapping']);
     }
