@@ -117,30 +117,28 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     }
 
     /**
-     * transform a nested document or an object property into an array of ElasticaDocument
+     * Transform a nested document or an object property into an array of
+     * Elastica_Document objects.
      *
-     * @param array|\Traversable|\ArrayAccess $objects the object to convert
+     * @param array|\Traversable $objects the objects to convert
      * @param array $fields the keys we want to have in the returned array
-     *
      * @return array
+     * @throws \InvalidArgumentException if $objects is not an array or Traversable
      */
     protected function transformNested($objects, array $fields)
     {
-        if (is_array($objects) || $objects instanceof \Traversable || $objects instanceof \ArrayAccess) {
-            $documents = array();
-            foreach ($objects as $object) {
-                $document = $this->transform($object, $fields);
-                $documents[] = $document->getData();
-            }
-
-            return $documents;
-        } elseif (null !== $objects) {
-            $document = $this->transform($objects, $fields);
-
-            return $document->getData();
+        if (!(is_array($objects) || $objects instanceof \Traversable)) {
+            throw new \InvalidArgumentException('$objects parameter must be an array or Traversable.');
         }
 
-        return array();
+        $documents = array();
+
+        foreach ($objects as $object) {
+            $document = $this->transform($object, $fields);
+            $documents[] = $document->getData();
+        }
+
+        return $documents;
     }
 
     /**
@@ -152,23 +150,21 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected function normalizeValue($value)
     {
-        $normalizeValue = function(&$v)
-        {
+        $normalize = function(&$v) {
             if ($v instanceof \DateTime) {
                 $v = $v->format('c');
-            } elseif (!is_scalar($v) && !is_null($v)) {
-                $v = (string)$v;
+            } elseif ($v !== null && !is_scalar($v)) {
+                $v = (string) $v;
             }
         };
 
-        if (is_array($value) || $value instanceof \Traversable || $value instanceof \ArrayAccess) {
+        if (is_array($value) || $value instanceof \Traversable) {
             $value = is_array($value) ? $value : iterator_to_array($value);
-            array_walk_recursive($value, $normalizeValue);
+            array_walk_recursive($value, $normalize);
         } else {
-            $normalizeValue($value);
+            $normalize($value);
         }
 
         return $value;
     }
-
 }
