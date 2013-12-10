@@ -78,7 +78,7 @@ class Configuration implements ConfigurationInterface
                                         array(
                                             'host'   => $v['host'],
                                             'port'   => $v['port'],
-                                            'logger' => $v['logger']
+                                            'logger' => isset($v['logger']) ? $v['logger'] : null
                                         )
                                     )
                                 );
@@ -91,7 +91,7 @@ class Configuration implements ConfigurationInterface
                                     'servers' => array(
                                         array(
                                             'url'    => $v['url'],
-                                            'logger' => $v['logger']
+                                            'logger' => isset($v['logger']) ? $v['logger'] : null
                                         )
                                     )
                                 );
