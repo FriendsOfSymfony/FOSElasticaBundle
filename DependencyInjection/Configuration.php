@@ -76,8 +76,9 @@ class Configuration implements ConfigurationInterface
                                 return array(
                                     'servers' => array(
                                         array(
-                                            'host' => $v['host'],
-                                            'port' => $v['port'],
+                                            'host'   => $v['host'],
+                                            'port'   => $v['port'],
+                                            'logger' => $v['logger']
                                         )
                                     )
                                 );
@@ -89,7 +90,8 @@ class Configuration implements ConfigurationInterface
                                 return array(
                                     'servers' => array(
                                         array(
-                                            'url' => $v['url'],
+                                            'url'    => $v['url'],
+                                            'logger' => $v['logger']
                                         )
                                     )
                                 );
@@ -102,6 +104,11 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('url')->end()
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
+                                        ->scalarNode('logger')
+                                            ->defaultValue('fos_elastica.logger')
+                                            ->treatNullLike('fos_elastica.logger')
+                                            ->treatTrueLike('fos_elastica.logger')
+                                        ->end()
                                     ->end()
                                 ->end()
                             ->end()
