@@ -57,7 +57,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($dynamicTemplates['path_match']->getDefaultValue());
 
         $this->assertArrayHasKey('path_unmatch', $dynamicTemplates);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['v']);
+        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['path_unmatch']);
         $this->assertNull($dynamicTemplates['path_unmatch']->getDefaultValue());
 
         $this->assertArrayHasKey('match_pattern', $dynamicTemplates);
