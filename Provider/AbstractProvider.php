@@ -3,7 +3,6 @@
 namespace FOS\ElasticaBundle\Provider;
 
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
-use FOS\ElasticaBundle\Provider\ProviderInterface;
 
 abstract class AbstractProvider implements ProviderInterface
 {

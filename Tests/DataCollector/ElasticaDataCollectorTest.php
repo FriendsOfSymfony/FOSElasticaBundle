@@ -9,7 +9,6 @@ use FOS\ElasticaBundle\DataCollector\ElasticaDataCollector;
  */
 class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testCorrectAmountOfQueries()
     {
         /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Request */
@@ -93,5 +92,4 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
         $elasticaDataCollector->collect($requestMock, $responseMock);
         $this->assertEquals(30, $elasticaDataCollector->getTime());
     }
-
 }

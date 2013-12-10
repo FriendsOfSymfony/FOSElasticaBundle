@@ -92,6 +92,7 @@ class FOSElasticaExtension extends Extension
      * @param ContainerBuilder $container A ContainerBuilder instance
      * @param array $clientIdsByName
      * @param $defaultClientName
+     * @param $serializerConfig
      * @throws \InvalidArgumentException
      * @return array
      */
@@ -171,6 +172,7 @@ class FOSElasticaExtension extends Extension
      * @param $indexName
      * @param $indexId
      * @param array $typePrototypeConfig
+     * @param $serializerConfig
      */
     protected function loadTypes(array $types, ContainerBuilder $container, $indexName, $indexId, array $typePrototypeConfig)
     {

@@ -156,5 +156,4 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
         $repository = $manager->getRepository($shortEntityName);
         $this->assertInstanceOf('FOS\ElasticaBundle\Repository', $repository);
     }
-
 }

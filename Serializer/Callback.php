@@ -8,9 +8,7 @@ use JMS\Serializer\SerializerInterface;
 class Callback
 {
     protected $serializer;
-
     protected $groups;
-
     protected $version;
 
     public function setSerializer($serializer)

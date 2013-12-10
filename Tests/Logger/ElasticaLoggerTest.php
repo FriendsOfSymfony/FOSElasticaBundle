@@ -87,5 +87,4 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 
         $elasticaLogger->logQuery($path, $method, $data, $time);
     }
-
 }

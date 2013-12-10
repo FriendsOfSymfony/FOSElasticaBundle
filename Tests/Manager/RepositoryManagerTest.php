@@ -97,5 +97,4 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
         $manager->addEntity($entityName, $finderMock, 'FOS\ElasticaBundle\Tests\MissingRepository');
         $manager->getRepository('Missing Entity');
     }
-
 }

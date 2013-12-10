@@ -9,7 +9,6 @@ use FOS\ElasticaBundle\Repository;
  */
 class RepositoryTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testThatFindCallsFindOnFinder()
     {
         $testQuery = 'Test Query';
@@ -75,5 +74,4 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $repository = new Repository($finderMock);
         $repository->findHybrid($testQuery, $testLimit);
     }
-
 }

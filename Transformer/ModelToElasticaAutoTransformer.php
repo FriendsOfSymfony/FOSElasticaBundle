@@ -149,5 +149,4 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         return $value;
     }
-
 }
