@@ -291,6 +291,7 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getBoostNode())
                 ->append($this->getRoutingNode())
                 ->append($this->getParentNode())
+                ->append($this->getAllNode())
             ->end()
         ;
 
@@ -572,6 +573,23 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('type')->end()
                 ->scalarNode('property')->defaultValue(null)->end()
                 ->scalarNode('identifier')->defaultValue('id')->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * Returns the array node used for "_all"
+     */
+    protected function getAllNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_all');
+
+        $node
+            ->children()
+            ->scalarNode('enabled')->defaultValue(true)->end()
             ->end()
         ;
 
