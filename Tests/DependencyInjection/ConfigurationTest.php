@@ -63,13 +63,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('type', $mapping);
         $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $mapping['type']);
-        $this->assertNull($mapping['type']->getDefaultValue());
+        $this->assertSame('string', $mapping['type']->getDefaultValue());
 
         $this->assertArrayHasKey('index', $mapping);
         $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $mapping['index']);
         $this->assertNull($mapping['index']->getDefaultValue());
-
-        $this->assertArrayHasKey('fields', $mapping);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ArrayNode', $mapping['fields']);
     }
 }
