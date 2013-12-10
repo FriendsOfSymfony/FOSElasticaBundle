@@ -42,7 +42,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('match', $dynamicTemplates);
         $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['match']);
-        $this->assertSame('*', $dynamicTemplates['match']->getDefaultValue());
+        $this->assertNull($dynamicTemplates['match']->getDefaultValue());
 
         $this->assertArrayHasKey('match_mapping_type', $dynamicTemplates);
         $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['match_mapping_type']);
