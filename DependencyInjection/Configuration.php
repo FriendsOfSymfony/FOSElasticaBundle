@@ -339,21 +339,31 @@ class Configuration implements ConfigurationInterface
             ->useAttributeAsKey('name')
             ->prototype('array')
                 ->children()
-                    ->scalarNode('match')->isRequired()->end()
+                    ->scalarNode('match')->end()
+                    ->scalarNode('unmatch')->end()
                     ->scalarNode('match_mapping_type')->end()
-                    ->arrayNode('mapping')
-                        ->isRequired()
-                        ->children()
-                            ->scalarNode('type')->end()
-                            ->scalarNode('index')->end()
-                            ->arrayNode('fields')
-                                ->children()
-                            ->end()
-                        ->end()
-                    ->end()
+                    ->scalarNode('path_match')->end()
+                    ->scalarNode('path_unmatch')->end()
+                    ->scalarNode('match_pattern')->end()
+                    ->append($this->getDynamicTemplateMapping())
                 ->end()
             ->end()
         ;
+
+        return $node;
+    }
+
+    /**
+     * @return the array node used for mapping in dynamic templates
+     */
+    protected function getDynamicTemplateMapping()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('mapping');
+
+        $nestings = $this->getNestingsForDynamicTemplates();
+
+        $this->addFieldConfig($node->children(), $nestings);
 
         return $node;
     }
@@ -446,6 +456,41 @@ class Configuration implements ConfigurationInterface
                 }
 
                 $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['mappings'], $nestings));
+            }
+        }
+        return $nestings;
+    }
+
+    /**
+     * @return array The unique nested mappings for all dynamic templates
+     */
+    protected function getNestingsForDynamicTemplates()
+    {
+        if (!isset($this->configArray[0]['indexes'])) {
+            return array();
+        }
+
+        $nestings = array();
+        foreach ($this->configArray[0]['indexes'] as $index) {
+            if (empty($index['types'])) {
+                continue;
+            }
+
+            foreach ($index['types'] as $type) {
+                if (empty($type['dynamic_templates'])) {
+                    continue;
+                }
+
+                foreach ($type['dynamic_templates'] as $definition) {
+                    $field = $definition['mapping'];
+
+                    if (isset($field['fields'])) {
+                        $this->addPropertyNesting($field, $nestings, 'fields');
+                    } else if (isset($field['properties'])) {
+                        $this->addPropertyNesting($field, $nestings, 'properties');
+                    }
+                }
+
             }
         }
         return $nestings;
