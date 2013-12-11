@@ -9,6 +9,40 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
  */
 class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpKernel\Log\LoggerInterface
+     */
+    private function getMockLogger()
+    {
+        return $this->getMockBuilder('Symfony\Component\HttpKernel\Log\LoggerInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * @param string $level
+     * @param string $message
+     * @param array $context
+     * @return ElasticaLogger
+     */
+    private function getMockLoggerForLevelMessageAndContext($level, $message, $context)
+    {
+        $loggerMock = $this->getMockBuilder('Symfony\Component\HttpKernel\Log\LoggerInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $loggerMock->expects($this->once())
+            ->method($level)
+            ->with(
+                $this->equalTo($message),
+                $this->equalTo($context)
+            );
+
+        $elasticaLogger = new ElasticaLogger($loggerMock);
+
+        return $elasticaLogger;
+    }
+
     public function testGetZeroIfNoQueriesAdded()
     {
         $elasticaLogger = new ElasticaLogger;
@@ -64,10 +98,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryIsLogged()
     {
-        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpKernel\Log\LoggerInterface */
-        $loggerMock = $this->getMockBuilder('Symfony\Component\HttpKernel\Log\LoggerInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $loggerMock = $this->getMockLogger();
 
         $elasticaLogger = new ElasticaLogger($loggerMock);
 
@@ -86,5 +117,56 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
             );
 
         $elasticaLogger->logQuery($path, $method, $data, $time);
+    }
+
+    /**
+     * @return array
+     */
+    public function logLevels()
+    {
+        return array(
+            array('emergency'),
+            array('alert'),
+            array('critical'),
+            array('error'),
+            array('warning'),
+            array('notice'),
+            array('info'),
+            array('debug'),
+        );
+    }
+
+    /**
+     * @dataProvider logLevels
+     */
+    public function testMessagesCanBeLoggedAtSpecificLogLevels($level)
+    {
+        $message = 'foo';
+        $context = array('data');
+
+        $loggerMock = $this->getMockLoggerForLevelMessageAndContext($level, $message, $context);
+
+        call_user_func(array($loggerMock, $level), $message, $context);
+    }
+
+    public function testMessagesCanBeLoggedToArbitraryLevels()
+    {
+        $loggerMock = $this->getMockLogger();
+
+        $level = 'info';
+        $message = 'foo';
+        $context = array('data');
+
+        $loggerMock->expects($this->once())
+            ->method('log')
+            ->with(
+                $level,
+                $message,
+                $context
+            );
+
+        $elasticaLogger = new ElasticaLogger($loggerMock);
+
+        $elasticaLogger->log($level, $message, $context);
     }
 }
