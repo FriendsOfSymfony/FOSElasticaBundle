@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Tests\Transformer;
 
 use Elastica\Document;
+use Elastica\Result;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection;
 
 class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCase
@@ -97,6 +98,57 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
             $result1,
             $result2,
         ), $results);
+    }
+
+    public function testGetIdentifierFieldReturnsAMapOfIdentifiers()
+    {
+        $collection = new ElasticaToModelTransformerCollection(array());
+        $identifiers = $collection->getIdentifierField();
+        $this->assertInternalType('array', $identifiers);
+        $this->assertEmpty($identifiers);
+
+        $this->collectionSetup();
+        $identifiers = $this->collection->getIdentifierField();
+        $this->assertInternalType('array', $identifiers);
+        $this->assertEquals(array('type1' => 'id', 'type2' => 'id'), $identifiers);
+    }
+
+    public function elasticaResults()
+    {
+        $document = new Result(array('_id' => 123, '_type' => 'type1'));
+        $result = new POPO(123, array());
+
+        return array(
+            array(
+                $document, $result
+            )
+        );
+    }
+
+    /**
+     * @dataProvider elasticaResults
+     */
+    public function testHybridTransformDecoratesResultsWithHybridResultObjects($document, $result)
+    {
+        $transformer = $this->getMock('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
+        $transformer->expects($this->any())->method('getIdentifierField')->will($this->returnValue('id'));
+
+        $transformer
+            ->expects($this->any())
+            ->method('transform')
+            ->will($this->returnValue(array($result)));
+
+        $collection = new ElasticaToModelTransformerCollection(array('type1' => $transformer));
+
+        $hybridResults = $collection->hybridTransform(array($document));
+
+        $this->assertInternalType('array', $hybridResults);
+        $this->assertNotEmpty($hybridResults);
+        $this->assertContainsOnlyInstancesOf('FOS\ElasticaBundle\HybridResult', $hybridResults);
+
+        $hybridResult = array_pop($hybridResults);
+        $this->assertEquals($document, $hybridResult->getResult());
+        $this->assertEquals($result, $hybridResult->getTransformed());
     }
 }
 
