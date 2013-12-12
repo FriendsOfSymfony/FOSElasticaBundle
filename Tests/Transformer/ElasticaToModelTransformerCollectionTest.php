@@ -115,12 +115,12 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
 
     public function elasticaResults()
     {
-        $document = new Result(array('_id' => 123, '_type' => 'type1'));
-        $result = new POPO(123, array());
+        $result = new Result(array('_id' => 123, '_type' => 'type1'));
+        $transformedObject = new POPO(123, array());
 
         return array(
             array(
-                $document, $result
+                $result, $transformedObject
             )
         );
     }
@@ -128,7 +128,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
     /**
      * @dataProvider elasticaResults
      */
-    public function testHybridTransformDecoratesResultsWithHybridResultObjects($document, $result)
+    public function testHybridTransformDecoratesResultsWithHybridResultObjects($result, $transformedObject)
     {
         $transformer = $this->getMock('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
         $transformer->expects($this->any())->method('getIdentifierField')->will($this->returnValue('id'));
@@ -136,19 +136,19 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $transformer
             ->expects($this->any())
             ->method('transform')
-            ->will($this->returnValue(array($result)));
+            ->will($this->returnValue(array($transformedObject)));
 
         $collection = new ElasticaToModelTransformerCollection(array('type1' => $transformer));
 
-        $hybridResults = $collection->hybridTransform(array($document));
+        $hybridResults = $collection->hybridTransform(array($result));
 
         $this->assertInternalType('array', $hybridResults);
         $this->assertNotEmpty($hybridResults);
         $this->assertContainsOnlyInstancesOf('FOS\ElasticaBundle\HybridResult', $hybridResults);
 
         $hybridResult = array_pop($hybridResults);
-        $this->assertEquals($document, $hybridResult->getResult());
-        $this->assertEquals($result, $hybridResult->getTransformed());
+        $this->assertEquals($result, $hybridResult->getResult());
+        $this->assertEquals($transformedObject, $hybridResult->getTransformed());
     }
 }
 
