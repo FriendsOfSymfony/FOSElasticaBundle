@@ -27,7 +27,7 @@ class Listener implements EventSubscriber
     protected $objectClass;
 
     /**
-     * List of su]bscribed events
+     * List of subscribed events
      *
      * @var array
      */
