@@ -137,6 +137,16 @@ class POPO
     }
 }
 
+class CastableObject
+{
+    public $foo;
+
+    public function __toString()
+    {
+        return $this->foo;
+    }
+}
+
 class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 {
     public function testTransformerDispatches()
@@ -471,6 +481,52 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
             array('foo' => 'foo', 'bar' => 'foo'),
             array('foo' => 'bar', 'bar' => 'bar'),
         ), $data['subWithoutIdentifier']);
+    }
+
+    public function testNestedTransformHandlesSingleObjects()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+            'upper' => array(
+                'type' => 'nested',
+                'properties' => array('name' => '~')
+            )
+        ));
+
+        $data = $document->getData();
+        $this->assertEquals('a random name', $data['upper']['name']);
+    }
+
+    public function testNestedTransformReturnsAnEmptyArrayForNullValues()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+            'nullValue' => array(
+                'type' => 'nested',
+                'properties' => array()
+            )
+        ));
+
+        $data = $document->getData();
+        $this->assertInternalType('array', $data['nullValue']);
+        $this->assertEmpty($data['nullValue']);
+    }
+
+    public function testUnmappedFieldValuesAreNormalisedToStrings()
+    {
+        $object = new \stdClass();
+        $value = new CastableObject();
+        $value->foo = 'bar';
+
+        $object->id = 123;
+        $object->unmappedValue = $value;
+
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform($object, array('unmappedValue' => array('property' => 'unmappedValue')));
+
+        $data = $document->getData();
+        $this->assertEquals('bar', $data['unmappedValue']);
+>>>>>>> 49486cc... Cover edge cases in ModelToElasticaAutoTransformer
     }
 
     /**
