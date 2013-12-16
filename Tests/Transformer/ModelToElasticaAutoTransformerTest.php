@@ -92,7 +92,7 @@ class POPO
 
     public function getFileContents()
     {
-        return $this->file;
+        return $this->fileContents;
     }
 
     public function getSub()
