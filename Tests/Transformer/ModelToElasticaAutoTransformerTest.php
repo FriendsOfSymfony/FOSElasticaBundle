@@ -118,6 +118,16 @@ class POPO
     }
 }
 
+class CastableObject
+{
+    public $foo;
+
+    public function __toString()
+    {
+        return $this->foo;
+    }
+}
+
 class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -334,6 +344,51 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals("parent", $document->getParent());
+    }
+
+    public function testNestedTransformHandlesSingleObjects()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+            'upper' => array(
+                'type' => 'nested',
+                'properties' => array('name' => '~')
+            )
+        ));
+
+        $data = $document->getData();
+        $this->assertEquals('a random name', $data['upper']['name']);
+    }
+
+    public function testNestedTransformReturnsAnEmptyArrayForNullValues()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+            'nullValue' => array(
+                'type' => 'nested',
+                'properties' => array()
+            )
+        ));
+
+        $data = $document->getData();
+        $this->assertInternalType('array', $data['nullValue']);
+        $this->assertEmpty($data['nullValue']);
+    }
+
+    public function testUnmappedFieldValuesAreNormalisedToStrings()
+    {
+        $object = new \stdClass();
+        $value = new CastableObject();
+        $value->foo = 'bar';
+
+        $object->id = 123;
+        $object->unmappedValue = $value;
+
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform($object, array('unmappedValue' => array('property' => 'unmappedValue')));
+
+        $data = $document->getData();
+        $this->assertEquals('bar', $data['unmappedValue']);
     }
 
     /**
