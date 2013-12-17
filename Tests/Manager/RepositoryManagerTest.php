@@ -95,6 +95,21 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
 
         $manager = new RepositoryManager($readerMock);
         $manager->addEntity($entityName, $finderMock, 'FOS\ElasticaBundle\Tests\MissingRepository');
+        $manager->getRepository('FOS\ElasticaBundle\Tests\Manager\Entity');
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testThatGetRepositoryThrowsExceptionIfEntityDoesNotExist()
+    {
+        $finderMock = $this->createFinderMock();
+        $readerMock = $this->createReaderMock();
+
+        $entityName = 'FOS\ElasticaBundle\Tests\Manager\Entity';
+
+        $manager = new RepositoryManager($readerMock);
+        $manager->addEntity($entityName, $finderMock, 'FOS\ElasticaBundle\Tests\MissingRepository');
         $manager->getRepository('Missing Entity');
     }
 
