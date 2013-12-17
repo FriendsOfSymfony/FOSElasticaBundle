@@ -8,6 +8,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
+    /**
+     * Stores supported database drivers.
+     *
+     * @var array
+     */
     private $supportedDrivers = array('orm', 'mongodb', 'propel');
 
     private $configArray = array();
@@ -32,8 +37,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('default_client')->end()
-                ->scalarNode('default_index')->end()
+                ->scalarNode('default_client')
+                    ->info('Defaults to the first client defined')
+                ->end()
+                ->scalarNode('default_index')
+                    ->info('Defaults to the first index defined')
+                ->end()
                 ->scalarNode('default_manager')->defaultValue('orm')->end()
                 ->arrayNode('serializer')
                     ->treatNullLike(array())
@@ -105,6 +114,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
                                         ->scalarNode('logger')
+                                            ->info('Set your own logger service for this client or disable the logger with false.')
                                             ->defaultValue('fos_elastica.logger')
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
@@ -134,11 +144,14 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->performNoDeepMerging()
                         ->children()
-                            ->scalarNode('index_name')->end()
+                            ->scalarNode('index_name')
+                                ->info('Defaults to the name of the index, but can be modified if the index name is different in ElasticSearch')
+                            ->end()
                             ->scalarNode('client')->end()
                             ->scalarNode('finder')
+                                ->info('Defines an index wide finder that will search all types.')
                                 ->treatNullLike(true)
-                                ->defaultTrue()
+                                ->defaultFalse()
                             ->end()
                             ->append($this->getTypePrototypeNode())
                             ->variableNode('settings')->defaultValue(array())->end()
@@ -157,6 +170,7 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder();
         $node = $builder->root('type_prototype');
+        $node->info('Allows a prototype type definition that can be applied to all types.');
 
         $this->applyTypeConfiguration($node);
 
