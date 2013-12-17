@@ -147,6 +147,6 @@ class ElasticaLogger implements LoggerInterface
      */
     public function log($level, $message, array $context = array())
     {
-        return $this->logger->log($message, $context);
+        return $this->logger->log($level, $message, $context);
     }
 }
