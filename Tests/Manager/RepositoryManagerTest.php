@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Manager;
 
+use FOS\ElasticaBundle\Configuration\Search;
 use FOS\ElasticaBundle\Manager\RepositoryManager;
 
 class CustomRepository
@@ -112,5 +113,30 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
         $repository2 = $manager->getRepository($entityName);
         $this->assertInstanceOf('FOS\ElasticaBundle\Tests\Manager\CustomRepository', $repository2);
         $this->assertSame($repository, $repository2);
+    }
+
+    public function testGetRepositoryNameCanReadFromClassAnnotation()
+    {
+        $repositoryClass = 'FOS\ElasticaBundle\Tests\Manager\CustomRepository';
+
+        $annotation = new Search;
+        $annotation->repositoryClass = $repositoryClass;
+
+        $finderMock = $this->createFinderMock();
+        $readerMock = $this->createReaderMock();
+
+        $readerMock
+            ->expects($this->once())
+            ->method('getClassAnnotation')
+            ->will($this->returnValue($annotation));
+
+        $entityName = 'FOS\ElasticaBundle\Tests\Manager\Entity';
+
+        $manager = new RepositoryManager($readerMock);
+        $manager->addEntity($entityName, $finderMock);
+
+        $repository = $manager->getRepository($entityName);
+
+        $this->assertInstanceOf($repositoryClass, $repository);
     }
 }
