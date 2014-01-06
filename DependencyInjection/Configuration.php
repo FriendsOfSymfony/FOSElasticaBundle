@@ -662,6 +662,8 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('enabled')->defaultValue(true)->end()
             ->scalarNode('path')->end()
             ->scalarNode('format')->end()
+            ->scalarNode('store')->end()
+            ->scalarNode('index')->end()
             ->end()
         ;
 
