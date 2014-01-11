@@ -182,16 +182,18 @@ per type.
                             content: ~
                         _parent: { type: "post", property: "post", identifier: "id" }
 
-The parent filed declaration has the following values:
+The parent field declaration has the following values:
 
  * `type`: The parent type.
  * `property`: The property in the child entity where to look for the parent entity. It may be ignored if is equal to the parent type.
- * `identifier`: The property in the parent entity which have the parent identifier. Defaults to `id`.
+ * `identifier`: The property in the parent entity which has the parent identifier. Defaults to `id`.
 
 Note that to create a document with a parent, you need to call `setParent` on the document rather than setting a _parent field.
 If you do this wrong, you will see a `RoutingMissingException` as elasticsearch does not know where to store a document that should have a parent but does not specify it.
 
 ### Declaring `nested` or `object`
+
+Note that object can autodetect properties
 
     fos_elastica:
         clients:
@@ -213,6 +215,12 @@ If you do this wrong, you will see a `RoutingMissingException` as elasticsearch 
                                 properties:
                                     date: { boost: 5 }
                                     content: ~
+                            user:
+                                type: "object"
+                            approver:
+                                type: "object"
+                                properties:
+                                    date: { boost: 5 }
 
 #### Doctrine ORM and `object` mappings
 
@@ -230,7 +238,7 @@ It applies the configured mappings to the types.
 This command needs providers to insert new documents in the elasticsearch types.
 There are 2 ways to create providers.
 If your elasticsearch type matches a Doctrine repository or a Propel query, go for the persistence automatic provider.
-Or, for complete flexibility, go for manual provider.
+Or, for complete flexibility, go for a manual provider.
 
 #### Persistence automatic provider
 
@@ -495,7 +503,7 @@ If you use multiple drivers then you can choose which one is aliased to `fos_ela
 using the `default_manager` parameter:
 
     fos_elastica:
-        default_manager: mongodb #defauults to orm
+        default_manager: mongodb #defaults to orm
         clients:
             default: { host: localhost, port: 9200 }
         #--

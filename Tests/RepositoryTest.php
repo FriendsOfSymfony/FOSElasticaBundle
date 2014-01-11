@@ -9,7 +9,6 @@ use FOS\ElasticaBundle\Repository;
  */
 class RepositoryTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testThatFindCallsFindOnFinder()
     {
         $testQuery = 'Test Query';
@@ -59,6 +58,22 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $repository->findPaginated($testQuery);
     }
 
+    public function testThatCreatePaginatorCreatesAPaginatorViaFinder()
+    {
+        $testQuery = 'Test Query';
+
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $finderMock->expects($this->once())
+            ->method('createPaginatorAdapter')
+            ->with($this->equalTo($testQuery));
+
+        $repository = new Repository($finderMock);
+        $repository->createPaginatorAdapter($testQuery);
+    }
+
     public function testThatFindHybridCallsFindHybridOnFinder()
     {
         $testQuery = 'Test Query';
@@ -75,5 +90,4 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $repository = new Repository($finderMock);
         $repository->findHybrid($testQuery, $testLimit);
     }
-
 }

@@ -3,11 +3,9 @@
 namespace FOS\ElasticaBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
 use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Resetter;
 
@@ -62,7 +60,7 @@ class ResetCommand extends ContainerAwareCommand
 
         if (null !== $type) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
-            $this->resetter->resetIndex($index, $type);
+            $this->resetter->resetIndexType($index, $type);
         } else {
             $indexes = null === $index
                 ? array_keys($this->indexManager->getAllIndexes())

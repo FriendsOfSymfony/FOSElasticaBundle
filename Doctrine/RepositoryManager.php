@@ -40,5 +40,4 @@ class RepositoryManager extends BaseManager
 
         return parent::getRepository($realEntityName);
     }
-
 }

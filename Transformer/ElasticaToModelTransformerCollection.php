@@ -84,11 +84,4 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
 
         return $result;
     }
-
-    protected function getTypeToClassMap()
-    {
-        return array_map(function (ElasticaToModelTransformerInterface $transformer) {
-            return $transformer->getObjectClass();
-        }, $this->transformers);
-    }
 }

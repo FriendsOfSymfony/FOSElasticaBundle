@@ -19,13 +19,13 @@
 {% endblock %}
 
 {% block menu %}
-<span class="label">
-    <span class="icon"><img src="{{ asset('bundles/foselastica/images/elastica.png') }}" alt="" /></span>
-    <strong>Elastica</strong>
-    <span class="count">
-        <span>{{ collector.querycount }}</span>
+    <span class="label">
+        <span class="icon"><img src="{{ asset('bundles/foselastica/images/elastica.png') }}" alt="" /></span>
+        <strong>Elastica</strong>
+        <span class="count">
+            <span>{{ collector.querycount }}</span>
+        </span>
     </span>
-</span>
 {% endblock %}
 
 {% block panel %}
@@ -41,18 +41,52 @@
         </p>
     {% else %}
         <ul class="alt">
-            {% for query in collector.queries %}
+            {% for key, query in collector.queries %}
                 <li class="{{ cycle(['odd', 'even'], loop.index) }}">
                     <strong>Path</strong>: {{ query.path }}<br />
-                    <strong>Method</strong>: {{ query.method }}
+                    <strong>Method</strong>: {{ query.method }} <small>({{ query.connection.transport }} on {{ query.connection.host }}:{{ query.connection.port }})</small>
                     <div>
                         <code>{{ query.data|json_encode }}</code>
                     </div>
                     <small>
                         <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS * 1000) }} ms
                     </small>
+
+                    {% if query.connection.transport in ['Http', 'Https'] %}{# cURL support only HTTP #}
+                        <a href="#elastica_curl_query_{{ key }}" onclick="return curl_version(this);" style="text-decoration: none;" title="Get the cURL repeatable query">
+                            <img alt="+" src="{{ asset('bundles/framework/images/blue_picto_more.gif') }}" style="display: inline; width: 12px; height: 12px; vertical-align: bottom;" />
+                            <img alt="-" src="{{ asset('bundles/framework/images/blue_picto_less.gif') }}" style="display: none; width: 12px; height: 12px; vertical-align: bottom;" />
+                            <small>Display cURL query</small>
+                        </a>
+
+                        <div style="display: none;" id="elastica_curl_query_{{ key }}">
+                            <code>curl -X{{ query.method }} '{{ query.connection.transport|lower }}://{{ query.connection.host }}:{{ query.connection.port }}/{{ query.path }}' -d '{{ query.data|json_encode }}'</code>
+                        </div>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
+
+        <script type="text/javascript">//<![CDATA[
+            function curl_version(link) {
+                "use strict";
+
+                var sections = link.children;
+
+                if (sections[0].style.display != 'none') {
+                    sections[0].style.display = 'none';
+                    sections[1].style.display = 'inline';
+
+                    document.getElementById(link.hash.replace("#", "")).style.display = 'block';
+                } else {
+                    sections[0].style.display = 'inline';
+                    sections[1].style.display = 'none';
+
+                    document.getElementById(link.hash.replace("#", "")).style.display = 'none';
+                }
+
+                return false;
+            }
+        </script>
     {% endif %}
 {% endblock %}

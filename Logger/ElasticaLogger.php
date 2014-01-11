@@ -38,15 +38,17 @@ class ElasticaLogger implements LoggerInterface
      * @param string $method Rest method to use (GET, POST, DELETE, PUT)
      * @param array  $data   arguments
      * @param float  $time   execution time
+     * @param array  $connection   host, port and transport of the query
      */
-    public function logQuery($path, $method, $data, $time)
+    public function logQuery($path, $method, $data, $time, $connection = array())
     {
         if ($this->debug) {
             $this->queries[] = array(
                 'path' => $path,
                 'method' => $method,
                 'data' => $data,
-                'executionMS' => $time
+                'executionMS' => $time,
+                'connection' => $connection
             );
         }
 
@@ -145,6 +147,6 @@ class ElasticaLogger implements LoggerInterface
      */
     public function log($level, $message, array $context = array())
     {
-        return $this->logger->log($message, $context);
+        return $this->logger->log($level, $message, $context);
     }
 }
