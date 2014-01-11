@@ -214,9 +214,10 @@ class Listener implements EventSubscriber
      */
     private function persistScheduled()
     {
-        foreach ($this->scheduledForInsertion as $entity) {
-            $this->objectPersister->insertOne($entity);
+        if (count($this->scheduledForInsertion)) {
+            $this->objectPersister->insertMany($this->scheduledForInsertion);
         }
+
         foreach ($this->scheduledForUpdate as $entity) {
             $this->objectPersister->replaceOne($entity);
         }

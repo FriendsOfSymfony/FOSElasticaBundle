@@ -22,8 +22,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($entity, current($listener->scheduledForInsertion));
 
         $persister->expects($this->once())
-            ->method('insertOne')
-            ->with($entity);
+            ->method('insertMany')
+            ->with($listener->scheduledForInsertion);
 
         $listener->postFlush($eventArgs);
     }
@@ -46,6 +46,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
 
         $persister->expects($this->never())
             ->method('insertOne');
+        $persister->expects($this->never())
+            ->method('insertMany');
 
         $listener->postFlush($eventArgs);
     }
