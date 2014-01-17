@@ -399,7 +399,8 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('identifier')->defaultValue('id')->end()
                 ->end()
             ->end()
-            ->scalarNode('format')->end();
+            ->scalarNode('format')->end()
+            ->scalarNode('similarity')->end();
         ;
 
         if (isset($nestings['fields'])) {
