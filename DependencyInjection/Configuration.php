@@ -298,6 +298,7 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getRoutingNode())
                 ->append($this->getParentNode())
                 ->append($this->getAllNode())
+                ->append($this->getTimestampNode())
             ->end()
         ;
 
@@ -642,6 +643,27 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
             ->scalarNode('enabled')->defaultValue(true)->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * Returns the array node used for "_timestamp"
+     */
+    protected function getTimestampNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_timestamp');
+
+        $node
+            ->children()
+            ->scalarNode('enabled')->defaultValue(true)->end()
+            ->scalarNode('path')->end()
+            ->scalarNode('format')->end()
+            ->scalarNode('store')->end()
+            ->scalarNode('index')->end()
             ->end()
         ;
 
