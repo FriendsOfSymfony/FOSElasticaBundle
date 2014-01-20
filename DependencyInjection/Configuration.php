@@ -132,7 +132,6 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('indexes')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
-                        ->performNoDeepMerging()
                         ->children()
                             ->scalarNode('index_name')->end()
                             ->scalarNode('client')->end()
