@@ -10,6 +10,9 @@ namespace FOS\ElasticaBundle\Persister;
  */
 interface ObjectPersisterInterface
 {
+    const BULK_INSERT = 'addDocuments';
+    const BULK_REPLACE = 'updateDocuments';
+
     /**
      * Insert one object into the type
      * The object will be transformed to an elastica document
@@ -42,9 +45,10 @@ interface ObjectPersisterInterface
     function deleteById($id);
 
     /**
-     * Inserts an array of objects in the type
+     * Bulk update an array of objects in the type for the given method
      *
      * @param array $objects array of domain model objects
-     **/
-    function insertMany(array $objects);
+     * @param string Method to call
+     */
+    function bulkPersist(array $objects, $method);
 }
