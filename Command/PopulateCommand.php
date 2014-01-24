@@ -67,10 +67,9 @@ class PopulateCommand extends ContainerAwareCommand
         $index         = $input->getOption('index');
         $type          = $input->getOption('type');
         $reset         = $input->getOption('no-reset') ? false : true;
-        $noInteraction = $input->getOption('no-interaction');
         $options       = $input->getOptions();
 
-        if (!$noInteraction && $reset && $input->getOption('offset')) {
+        if ($input->isInteractive() && $reset && $input->getOption('offset')) {
             /** @var DialogHelper $dialog */
             $dialog = $this->getHelperSet()->get('dialog');
             if (!$dialog->askConfirmation($output, '<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>', true)) {
