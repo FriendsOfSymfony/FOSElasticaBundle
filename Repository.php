@@ -38,4 +38,9 @@ class Repository
     {
         return $this->finder->createPaginatorAdapter($query, $options);
     }
+
+    public function createHybridPaginatorAdapter($query)
+    {
+        return $this->finder->createHybridPaginatorAdapter($query);
+    }
 }
