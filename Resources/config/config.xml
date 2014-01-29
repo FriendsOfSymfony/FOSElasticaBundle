@@ -14,6 +14,10 @@
         <parameter key="fos_elastica.elastica_to_model_transformer.collection.class">FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection</parameter>
         <parameter key="fos_elastica.provider_registry.class">FOS\ElasticaBundle\Provider\ProviderRegistry</parameter>
         <parameter key="fos_elastica.property_accessor.class">Symfony\Component\PropertyAccess\PropertyAccessor</parameter>
+        <parameter key="fos_elastica.object_persister.class">FOS\ElasticaBundle\Persister\ObjectPersister</parameter>
+        <parameter key="fos_elastica.object_serializer_persister.class">FOS\ElasticaBundle\Persister\ObjectSerializerPersister</parameter>
+        <parameter key="fos_elastica.model_to_elastica_transformer.class">FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer</parameter>
+        <parameter key="fos_elastica.model_to_elastica_identifier_transformer.class">FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer</parameter>
     </parameters>
 
     <services>
@@ -37,7 +41,7 @@
             <argument /> <!-- index configs -->
         </service>
 
-        <service id="fos_elastica.object_persister" class="FOS\ElasticaBundle\Persister\ObjectPersister" abstract="true">
+        <service id="fos_elastica.object_persister" class="%fos_elastica.object_persister.class%" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
@@ -49,21 +53,21 @@
             <argument /> <!-- transformer -->
         </service>
 
-        <service id="fos_elastica.object_serializer_persister" class="FOS\ElasticaBundle\Persister\ObjectSerializerPersister" abstract="true">
+        <service id="fos_elastica.object_serializer_persister" class="%fos_elastica.object_serializer_persister.class%" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
             <argument /> <!-- serializer -->
         </service>
 
-        <service id="fos_elastica.model_to_elastica_transformer" class="FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer" public="false" abstract="true">
+        <service id="fos_elastica.model_to_elastica_transformer" class="%fos_elastica.model_to_elastica_transformer.class%" public="false" abstract="true">
             <argument /> <!-- options -->
             <call method="setPropertyAccessor">
                 <argument type="service" id="fos_elastica.property_accessor" />
             </call>
         </service>
 
-        <service id="fos_elastica.model_to_elastica_identifier_transformer" class="FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer" public="false" abstract="true">
+        <service id="fos_elastica.model_to_elastica_identifier_transformer" class="%fos_elastica.model_to_elastica_identifier_transformer.class%" public="false" abstract="true">
             <argument /> <!-- options -->
             <call method="setPropertyAccessor">
                 <argument type="service" id="fos_elastica.property_accessor" />
