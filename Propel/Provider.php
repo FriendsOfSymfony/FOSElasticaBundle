@@ -37,11 +37,14 @@ class Provider extends AbstractProvider
             usleep($sleep);
 
             if ($loggerClosure) {
+                $memory = round(memory_get_usage() / (1024*1024),0); // to get usage in Mo
+                $memoryMax = round(memory_get_peak_usage() / (1024*1024)); // to get usage in Mo
+                $message = '(RAM : current='.$memory.'Mo peak='.$memoryMax.'Mo)';
                 $stepNbObjects = count($objects);
                 $stepCount = $stepNbObjects + $offset;
                 $percentComplete = 100 * $stepCount / $nbObjects;
                 $objectsPerSecond = $stepNbObjects / (microtime(true) - $stepStartTime);
-                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond));
+                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s %s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond, $message));
             }
         }
     }
