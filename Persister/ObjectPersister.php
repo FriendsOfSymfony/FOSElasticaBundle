@@ -84,23 +84,46 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk update an array of objects in the type for the given method
+     * Bulk insert an array of objects in the type for the given method
      *
      * @param array $objects array of domain model objects
      * @param string Method to call
      */
-    public function bulkPersist(array $objects, $method)
+    public function insertMany(array $objects)
     {
-        if (!count($objects)) {
-            return;
-        }
-
         $documents = array();
         foreach ($objects as $object) {
             $documents[] = $this->transformToElasticaDocument($object);
         }
+        $this->type->addDocuments($documents);
+    }
 
-        $this->type->$method($documents);
+    /**
+     * Bulk updates an array of objects in the type
+     *
+     * @param array $objects array of domain model objects
+     */
+    public function replaceMany(array $objects)
+    {
+        $documents = array();
+        foreach ($objects as $object) {
+            $documents[] = $this->transformToElasticaDocument($object);
+        }
+        $this->type->updateDocuments($documents);
+    }
+
+    /**
+     * Bulk deletes an array of objects in the type
+     *
+     * @param array $objects array of domain model objects
+     */
+    public function deleteMany(array $objects)
+    {
+        $documents = array();
+        foreach ($objects as $object) {
+            $documents[] = $this->transformToElasticaDocument($object);
+        }
+        $this->type->deleteDocuments($documents);
     }
 
     /**

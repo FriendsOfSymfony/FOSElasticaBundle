@@ -627,8 +627,8 @@ to `true`:
                                 delete: true
                                 immediate: true
 
-> Updating ElasticSearch before flushing may cause the ElasticSearch index to fall out of sync with the
-> original data in the event of a crash.
+> Using `immediate` to update ElasticSearch before flush completes may cause the ElasticSearch index to fall out of
+> sync with the source database in the event of a crash during the flush itself, such as in the case of a bad query.
 
 
 ### Checking an entity method for listener

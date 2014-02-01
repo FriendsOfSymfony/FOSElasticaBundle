@@ -210,21 +210,24 @@ class Listener implements EventSubscriber
     }
 
     /**
-     * Persist scheduled action to ElasticSearch
+     * Persist scheduled objects to ElasticSearch
      */
     private function persistScheduled()
     {
-        $this->objectPersister->bulkPersist($this->scheduledForInsertion, ObjectPersisterInterface::BULK_INSERT);
-        $this->objectPersister->bulkPersist($this->scheduledForUpdate, ObjectPersisterInterface::BULK_REPLACE);
-
-        foreach ($this->scheduledForDeletion as $entity) {
-            $this->objectPersister->deleteOne($entity);
+        if (count($this->scheduledForInsertion)) {
+            $this->objectPersister->insertMany($this->scheduledForInsertion);
+        }
+        if (count($this->scheduledForUpdate)) {
+            $this->objectPersister->replaceMany($this->scheduledForUpdate);
+        }
+        if (count($this->scheduledForDeletion)) {
+            $this->objectPersister->deleteMany($this->scheduledForDeletion);
         }
     }
 
     /**
      * Iterate through scheduled actions before flushing to emulate 2.x behavior.  Note that the ElasticSearch index
-     * will fall out of sync with the data source in event of a crash on flush.
+     * will fall out of sync with the source data in the event of a crash during flush.
      */
     public function preFlush(EventArgs $eventArgs)
     {
