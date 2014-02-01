@@ -132,7 +132,6 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('indexes')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
-                        ->performNoDeepMerging()
                         ->children()
                             ->scalarNode('index_name')->end()
                             ->scalarNode('client')->end()
@@ -301,6 +300,8 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getRoutingNode())
                 ->append($this->getParentNode())
                 ->append($this->getAllNode())
+                ->append($this->getTimestampNode())
+                ->append($this->getTtlNode())
             ->end()
         ;
 
@@ -401,7 +402,8 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('identifier')->defaultValue('id')->end()
                 ->end()
             ->end()
-            ->scalarNode('format')->end();
+            ->scalarNode('format')->end()
+            ->scalarNode('similarity')->end();
         ;
 
         if (isset($nestings['fields'])) {
@@ -649,4 +651,45 @@ class Configuration implements ConfigurationInterface
 
         return $node;
     }
+
+    /**
+     * Returns the array node used for "_timestamp"
+     */
+    protected function getTimestampNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_timestamp');
+
+        $node
+            ->children()
+            ->scalarNode('enabled')->defaultValue(true)->end()
+            ->scalarNode('path')->end()
+            ->scalarNode('format')->end()
+            ->scalarNode('store')->end()
+            ->scalarNode('index')->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+    
+    /**
+     * Returns the array node used for "_ttl"
+     */
+    protected function getTtlNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_ttl');
+
+        $node
+            ->children()
+            ->scalarNode('enabled')->defaultValue(true)->end()
+            ->scalarNode('default')->end()
+            ->scalarNode('store')->end()
+            ->scalarNode('index')->end()
+            ->end()
+        ;
+
+        return $node;
+    }    
 }
