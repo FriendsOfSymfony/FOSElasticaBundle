@@ -65,8 +65,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($entity, current($listener->scheduledForUpdate));
 
         $persister->expects($this->once())
-            ->method('replaceOne')
-            ->with($entity);
+            ->method('replaceMany')
+            ->with(array($entity));
         $persister->expects($this->never())
             ->method('deleteById');
 
@@ -105,8 +105,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $persister->expects($this->never())
             ->method('replaceOne');
         $persister->expects($this->once())
-            ->method('deleteOne')
-            ->with($entity);
+            ->method('deleteMany')
+            ->with(array($entity));
 
         $listener->postFlush($eventArgs);
     }
@@ -136,8 +136,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($entity, current($listener->scheduledForDeletion));
 
         $persister->expects($this->once())
-            ->method('deleteOne')
-            ->with($entity);
+            ->method('deleteMany')
+            ->with(array($entity));
 
         $listener->postFlush($eventArgs);
     }
@@ -167,8 +167,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($entity, current($listener->scheduledForDeletion));
 
         $persister->expects($this->once())
-            ->method('deleteOne')
-            ->with($entity);
+            ->method('deleteMany')
+            ->with(array($entity));
 
         $listener->postFlush($eventArgs);
     }
