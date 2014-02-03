@@ -299,6 +299,7 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getParentNode())
                 ->append($this->getAllNode())
                 ->append($this->getTimestampNode())
+                ->append($this->getTtlNode())
             ->end()
         ;
 
@@ -669,4 +670,24 @@ class Configuration implements ConfigurationInterface
 
         return $node;
     }
+    
+    /**
+     * Returns the array node used for "_ttl"
+     */
+    protected function getTtlNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_ttl');
+
+        $node
+            ->children()
+            ->scalarNode('enabled')->defaultValue(true)->end()
+            ->scalarNode('default')->end()
+            ->scalarNode('store')->end()
+            ->scalarNode('index')->end()
+            ->end()
+        ;
+
+        return $node;
+    }    
 }
