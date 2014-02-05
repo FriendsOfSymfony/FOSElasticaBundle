@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Finder;
 
 use Elastica\Document;
+use Elastica\ResultSet;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
@@ -36,6 +37,26 @@ class TransformedFinder implements PaginatedFinderInterface
         $results = $this->search($query, $limit);
 
         return $this->transformer->transform($results);
+    }
+
+    /**
+     * Transform a given \Elastica\ResultSet
+     *
+     * @param \Elastica\ResultSet $resultSet
+     * @return array of model objects
+     */
+    public function transform(ResultSet $resultSet)
+    {
+        return $this->transformer->transform($resultSet->getResults());
+    }
+
+    /**
+     * @param \Elastica\ResultSet $resultSet
+     * @return array of model objects
+     */
+    public function hybridTransform(ResultSet $resultSet)
+    {
+        return $this->transformer->transform($resultSet->getResults());
     }
 
     public function findHybrid($query, $limit = null)
