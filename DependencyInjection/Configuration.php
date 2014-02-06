@@ -134,6 +134,7 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->children()
                             ->scalarNode('index_name')->end()
+                            ->booleanNode('use_alias')->defaultValue(false)->end()
                             ->scalarNode('client')->end()
                             ->scalarNode('finder')
                                 ->treatNullLike(true)
@@ -670,7 +671,7 @@ class Configuration implements ConfigurationInterface
 
         return $node;
     }
-    
+
     /**
      * Returns the array node used for "_ttl"
      */
@@ -689,5 +690,5 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $node;
-    }    
+    }
 }

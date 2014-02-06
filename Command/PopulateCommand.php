@@ -124,6 +124,7 @@ class PopulateCommand extends ContainerAwareCommand
         }
 
         $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
+        $this->resetter->postPopulate($index);
         $this->indexManager->getIndex($index)->refresh();
     }
 
