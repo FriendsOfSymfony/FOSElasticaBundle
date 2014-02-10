@@ -45,7 +45,7 @@ class Resetter
         $esIndex = $indexConfig['index'];
         if (isset($indexConfig['use_alias']) && $indexConfig['use_alias']) {
             $name = $indexConfig['name_or_alias'];
-            $name .= date('-Y-m-d-Gis');
+            $name .= uniqid();
             $esIndex->overrideName($name);
             $esIndex->create($indexConfig['config']);
 
@@ -124,7 +124,7 @@ class Resetter
     }
 
     /**
-     * Switches the alias for given index to the newly populated index
+     * Switches the alias for given index (by key) to the newly populated index
      * and deletes the old index
      *
      * @param string $indexName Index name
