@@ -74,12 +74,11 @@ class Resetter
     {
         $mapping = Mapping::create($indexConfig['properties']);
 
-        if (isset($indexConfig['_parent'])) {
-            $mapping->setParam('_parent', array('type' => $indexConfig['_parent']['type']));
-        }
-
-        if (isset($indexConfig['dynamic_templates'])) {
-            $mapping->setParam('dynamic_templates', $indexConfig['dynamic_templates']);
+        $mappingSpecialFields = array('_uid', '_id', '_source', '_all', '_analyzer', '_boost', '_parent', '_routing', '_index', '_size', '_timestamp', '_ttl');
+        foreach ($mappingSpecialFields as $specialField) {
+            if (isset($indexConfig[$specialField])) {
+                $mapping->setParam($specialField, $indexConfig[$specialField]);
+            }
         }
 
         return $mapping;
