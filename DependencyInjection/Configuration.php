@@ -102,6 +102,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('url')->end()
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
+                                        ->scalarNode('timeout')->end()
                                     ->end()
                                 ->end()
                             ->end()
