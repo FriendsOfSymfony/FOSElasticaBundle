@@ -32,10 +32,12 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * @return string
      */
-    protected function getMemoryUsage() {
+    protected function getMemoryUsage()
+    {
         $memory = round(memory_get_usage() / (1024*1024),0); // to get usage in Mo
         $memoryMax = round(memory_get_peak_usage() / (1024*1024)); // to get max usage in Mo
         $message = '(RAM : current='.$memory.'Mo peak='.$memoryMax.'Mo)';
+
         return $message;
     }
 }
