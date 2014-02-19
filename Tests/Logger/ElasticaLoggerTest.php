@@ -70,6 +70,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
         $data   = array('data');
         $time   = 12;
         $connection = array('host' => 'localhost', 'port' => '8999', 'transport' => 'https');
+        $query = array('search_type' => 'dfs_query_then_fetch');
 
         $expected = array(
             'path'        => $path,
@@ -77,9 +78,10 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
             'data'        => $data,
             'executionMS' => $time,
             'connection'  => $connection,
+            'queryString' => $query,
         );
 
-        $elasticaLogger->logQuery($path, $method, $data, $time, $connection);
+        $elasticaLogger->logQuery($path, $method, $data, $time, $connection, $query);
         $returnedQueries = $elasticaLogger->getQueries();
         $this->assertEquals($expected, $returnedQueries[0]);
     }
