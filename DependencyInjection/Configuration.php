@@ -109,6 +109,7 @@ class Configuration implements ConfigurationInterface
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
                                         ->end()
+                                        ->scalarNode('timeout')->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -670,7 +671,7 @@ class Configuration implements ConfigurationInterface
 
         return $node;
     }
-    
+
     /**
      * Returns the array node used for "_ttl"
      */
@@ -689,5 +690,5 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $node;
-    }    
+    }
 }
