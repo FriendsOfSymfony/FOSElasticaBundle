@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
 
@@ -23,6 +24,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
         parent::__construct($objectPersister, $objectClass, array_merge(array(
             'clear_object_manager' => true,
             'query_builder_method' => 'createQueryBuilder',
+            'stop_on_error'        => true,
         ), $options));
 
         $this->managerRegistry = $managerRegistry;
@@ -38,6 +40,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $offset = isset($options['offset']) ? intval($options['offset']) : 0;
         $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
+        $stopOnError = isset($options['no-stop-on-error']) ? empty($options['no-stop-on-error']) : $this->options['stop_on_error'];
 
         for (; $offset < $nbObjects; $offset += $batchSize) {
             if ($loggerClosure) {
@@ -45,7 +48,17 @@ abstract class AbstractProvider extends BaseAbstractProvider
             }
             $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
 
-            $this->objectPersister->insertMany($objects);
+            if (!$stopOnError) {
+                $this->objectPersister->insertMany($objects);
+            } else {
+                try {
+                    $this->objectPersister->insertMany($objects);
+                } catch(BulkResponseException $e) {
+                    if ($loggerClosure) {
+                        $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
+                    }
+                }
+            }
 
             if ($this->options['clear_object_manager']) {
                 $this->managerRegistry->getManagerForClass($this->objectClass)->clear();

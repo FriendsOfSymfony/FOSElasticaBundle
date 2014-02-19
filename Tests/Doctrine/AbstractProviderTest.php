@@ -135,6 +135,28 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($loggerClosureInvoked);
     }
 
+    public function testPopulateNotStopOnError()
+    {
+        $nbObjects = 1;
+        $objects = array(1);
+
+        $provider = $this->getMockAbstractProvider();
+
+        $provider->expects($this->any())
+            ->method('countObjects')
+            ->will($this->returnValue($nbObjects));
+
+        $provider->expects($this->any())
+            ->method('fetchSlice')
+            ->will($this->returnValue($objects));
+
+        $this->objectPersister->expects($this->any())
+            ->method('insertMany')
+            ->will($this->throwException($this->getMockBulkResponseException()));
+
+        $provider->populate(null, array('no-stop-on-error' => true));
+    }
+
     /**
      * @return \FOS\ElasticaBundle\Doctrine\AbstractProvider|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -146,6 +168,16 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             $this->options,
             $this->managerRegistry,
         ));
+    }
+
+    /**
+     * @return \Elastica\Exception\Bulk\ResponseException
+     */
+    private function getMockBulkResponseException()
+    {
+        return $this->getMockBuilder('Elastica\Exception\Bulk\ResponseException')
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     /**
