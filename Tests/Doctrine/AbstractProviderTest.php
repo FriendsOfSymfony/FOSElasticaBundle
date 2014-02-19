@@ -154,7 +154,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->method('insertMany')
             ->will($this->throwException($this->getMockBulkResponseException()));
 
-        $provider->populate(null, array('no-stop-on-error' => true));
+        $this->setExpectedException('Elastica\Exception\Bulk\ResponseException');
+
+        $provider->populate(null, array('ignore-errors' => false));
     }
 
     /**

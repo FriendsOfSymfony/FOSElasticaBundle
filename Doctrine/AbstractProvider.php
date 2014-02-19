@@ -23,8 +23,8 @@ abstract class AbstractProvider extends BaseAbstractProvider
     {
         parent::__construct($objectPersister, $objectClass, array_merge(array(
             'clear_object_manager' => true,
+            'ignore_errors'        => false,
             'query_builder_method' => 'createQueryBuilder',
-            'stop_on_error'        => true,
         ), $options));
 
         $this->managerRegistry = $managerRegistry;
@@ -40,7 +40,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $offset = isset($options['offset']) ? intval($options['offset']) : 0;
         $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
-        $stopOnError = isset($options['no-stop-on-error']) ? empty($options['no-stop-on-error']) : $this->options['stop_on_error'];
+        $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
 
         for (; $offset < $nbObjects; $offset += $batchSize) {
             if ($loggerClosure) {
@@ -48,7 +48,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             }
             $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
 
-            if (!$stopOnError) {
+            if (!$ignoreErrors) {
                 $this->objectPersister->insertMany($objects);
             } else {
                 try {
