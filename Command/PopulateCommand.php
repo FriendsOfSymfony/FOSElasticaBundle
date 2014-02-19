@@ -45,7 +45,7 @@ class PopulateCommand extends ContainerAwareCommand
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
-            ->addOption('no-stop-on-error', null, InputOption::VALUE_NONE, 'Do not stop on errors')
+            ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->setDescription('Populates search indexes from providers')
         ;
     }
@@ -69,6 +69,8 @@ class PopulateCommand extends ContainerAwareCommand
         $type          = $input->getOption('type');
         $reset         = $input->getOption('no-reset') ? false : true;
         $options       = $input->getOptions();
+
+        $options['ignore-errors'] = $input->hasOption('ignore-errors');
 
         if ($input->isInteractive() && $reset && $input->getOption('offset')) {
             /** @var DialogHelper $dialog */
