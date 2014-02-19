@@ -150,10 +150,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->method('fetchSlice')
             ->will($this->returnValue($objects));
 
-        $this->objectPersister->expects($this->any())
-            ->method('insertMany')
-            ->will($this->throwException($this->getMockBulkResponseException()));
-
         $provider->populate(null, array('no-stop-on-error' => true));
     }
 
@@ -168,16 +164,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             $this->options,
             $this->managerRegistry,
         ));
-    }
-
-    /**
-     * @return \Elastica\Exception\Bulk\ResponseException
-     */
-    private function getMockBulkResponseException()
-    {
-        return $this->getMockBuilder('Elastica\Exception\Bulk\ResponseException')
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 
     /**
