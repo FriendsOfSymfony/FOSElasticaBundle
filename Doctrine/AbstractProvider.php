@@ -58,7 +58,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
                 $stepCount = $stepNbObjects + $offset;
                 $percentComplete = 100 * $stepCount / $nbObjects;
                 $objectsPerSecond = $stepNbObjects / (microtime(true) - $stepStartTime);
-                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond));
+                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s %s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond, $this->getMemoryUsage()));
             }
         }
     }

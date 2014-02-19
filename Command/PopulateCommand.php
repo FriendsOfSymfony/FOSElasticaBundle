@@ -107,7 +107,7 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndex(OutputInterface $output, $index, $reset, $options)
     {
-        if ($reset) {
+        if ($reset && $this->indexManager->getIndex($index)->exists()) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
             $this->resetter->resetIndex($index);
         }
