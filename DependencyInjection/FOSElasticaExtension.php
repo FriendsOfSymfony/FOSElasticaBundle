@@ -113,7 +113,8 @@ class FOSElasticaExtension extends Extension
             }
 
             $clientId = $clientIdsByName[$clientName];
-            $indexId = sprintf('fos_elastica.index.%s', $name);
+            $serviceSuffix = isset($index['service_suffix']) ? $index['service_suffix'] : $name;
+            $indexId = sprintf('fos_elastica.index.%s', $serviceSuffix);
             $indexName = isset($index['index_name']) ? $index['index_name'] : $name;
             $indexDefArgs = array($indexName);
             $indexDef = new Definition('%fos_elastica.index.class%', $indexDefArgs);
