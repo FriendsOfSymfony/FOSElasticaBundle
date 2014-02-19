@@ -67,7 +67,7 @@ class PopulateCommand extends ContainerAwareCommand
     {
         $index         = $input->getOption('index');
         $type          = $input->getOption('type');
-        $reset         = $input->getOption('no-reset') ? false : true;
+        $reset         = $input->hasOption('no-reset');
         $options       = $input->getOptions();
 
         $options['ignore-errors'] = $input->hasOption('ignore-errors');
