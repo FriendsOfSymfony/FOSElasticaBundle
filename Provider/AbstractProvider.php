@@ -4,10 +4,24 @@ namespace FOS\ElasticaBundle\Provider;
 
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 
+/**
+ * AbstractProvider
+ */
 abstract class AbstractProvider implements ProviderInterface
 {
-    protected $objectClass;
+    /**
+     * @var ObjectPersisterInterface
+     */
     protected $objectPersister;
+
+    /**
+     * @var string
+     */
+    protected $objectClass;
+
+    /**
+     * @var array
+     */
     protected $options;
 
     /**
@@ -34,10 +48,9 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected function getMemoryUsage()
     {
-        $memory = round(memory_get_usage() / (1024*1024),0); // to get usage in Mo
-        $memoryMax = round(memory_get_peak_usage() / (1024*1024)); // to get max usage in Mo
-        $message = '(RAM : current='.$memory.'Mo peak='.$memoryMax.'Mo)';
+        $memory = round(memory_get_usage() / (1024 * 1024)); // to get usage in Mo
+        $memoryMax = round(memory_get_peak_usage() / (1024 * 1024)); // to get max usage in Mo
 
-        return $message;
+        return sprintf('(RAM : current=%uMo peak=%uMo)', $memory, $memoryMax);
     }
 }
