@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Subscriber;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Knp\Component\Pager\Event\ItemsEvent;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
@@ -9,19 +10,18 @@ use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 
 class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {
-    private $container;
+    private $request;
 
-    public function setContainer($container)
+    public function setRequest(Request $request = null)
     {
-        $this->container = $container;
+        $this->request = $request;
     }
 
     public function items(ItemsEvent $event)
     {
         if ($event->target instanceof PaginatorAdapterInterface) {
-
             // Add sort to query
-            $this->addPagingSort($event);
+            $this->setSorting($event);
 
             /** @var $results PartialResultsInterface */
             $results = $event->target->getResults($event->getOffset(), $event->getLimit());
@@ -40,19 +40,17 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     /**
      * Adds knp paging sort to query
      *
-     * @param ItemsEvent $event 
-     * @return void
+     * @param ItemsEvent $event
      */
-    protected function addPagingSort(ItemsEvent $event)
+    protected function setSorting(ItemsEvent $event)
     {
-        $request = $this->container->get('request');
         $options = $event->options;
-        $sortField = $request->get($options['sortFieldParameterName']);
+        $sortField = $this->request->get($options['sortFieldParameterName']);
 
         if (!empty($sortField)) {
             // determine sort direction
             $dir = 'asc';
-            $sortDirection = $request->get($options['sortDirectionParameterName']);
+            $sortDirection = $this->request->get($options['sortDirectionParameterName']);
             if ('desc' === strtolower($sortDirection)) {
                 $dir = 'desc';
             }
