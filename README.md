@@ -58,6 +58,7 @@ Most of the time, you will need only one.
         clients:
             default: { host: localhost, port: 9200 }
 
+A client configuration can also override the Elastica logger to change the used class ```logger: <your logger class>``` or to simply disable it ```logger: false```. Disabling the logger should be done on production because it can cause a memory leak.
 
 #### Declare a serializer
 
