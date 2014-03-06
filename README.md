@@ -58,6 +58,23 @@ Most of the time, you will need only one.
         clients:
             default: { host: localhost, port: 9200 }
 
+If your client requires Basic HTTP Authentication, you can specify an Authorization Header to
+include in HTTP requests. The Authorization Header value is a ``base64`` encoded string that
+includes the authentication username and password, and can be obtained by running the following
+command in your terminal:
+
+    php -r "Print 'Basic ' . base64_encode('your_auth_username' . ':' . 'your_auth_password');"
+
+A sample configuration with Basic HTTP Authentication is:
+
+    #app/config/config.yml
+    fos_elastica:
+        clients:
+            default:
+                host: example.com
+                port: 80
+                headers:
+                    Authorization: "Basic jdumrGK7rY9TMuQOPng7GZycmxyMHNoir=="
 
 #### Declare a serializer
 
