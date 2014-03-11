@@ -33,7 +33,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     private $totalHits;
 
     /**
-     * @array for the facets
+     * @var array for the facets
      */
     private $facets;
 
