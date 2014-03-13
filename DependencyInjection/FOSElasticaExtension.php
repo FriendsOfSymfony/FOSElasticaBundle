@@ -204,6 +204,8 @@ class FOSElasticaExtension extends Extension
                     $callbackDef->addMethodCall('setContainer', array(new Reference('service_container')));                    
                 }
 
+                $callbackDef->addMethodCall('setContainer', array(new Reference('service_container')));
+
                 $container->setDefinition($callbackId, $callbackDef);
 
                 $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));

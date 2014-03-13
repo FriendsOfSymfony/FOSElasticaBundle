@@ -10,6 +10,7 @@ class Callback
     protected $serializer;
     protected $groups;
     protected $version;
+    protected $container;
 
     public function setSerializer($serializer)
     {
@@ -39,6 +40,11 @@ class Callback
                 throw new \RuntimeException('Setting serialization version requires using "JMS\Serializer\Serializer".');
             }
         }
+    }
+
+    public function setContainer($container)
+    {
+        $this->container = $container;
     }
 
     public function serialize($object)
