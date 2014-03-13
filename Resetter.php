@@ -63,7 +63,7 @@ class Resetter
         try {
             $type->delete();
         } catch (ResponseException $e) {
-            if (strpos($e->getMessage(), 'TypeMissingException') !== 0) {
+            if (strpos($e->getMessage(), 'TypeMissingException') === false) {
                 throw $e;
             }
         }
