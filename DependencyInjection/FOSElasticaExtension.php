@@ -4,6 +4,7 @@ namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -197,6 +198,10 @@ class FOSElasticaExtension extends Extension
                 }
                 if (isset($type['serializer']['version'])) {
                     $callbackDef->addMethodCall('setVersion', array($type['serializer']['version']));
+                }
+                $callbackClassImplementedInterfaces = class_implements($this->serializerConfig['callback_class']); // PHP < 5.4 friendly
+                if (isset($callbackClassImplementedInterfaces['Symfony\Component\DependencyInjection\ContainerAwareInterface'])) {
+                    $callbackDef->addMethodCall('setContainer', array(new Reference('service_container')));                    
                 }
 
                 $container->setDefinition($callbackId, $callbackDef);
