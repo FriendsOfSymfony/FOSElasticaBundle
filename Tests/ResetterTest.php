@@ -2,6 +2,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Resetter;
 
+use Elastica\Exception\ResponseException;
+use Elastica\Request;
+use Elastica\Response;
 use FOS\ElasticaBundle\Resetter;
 use Elastica\Type\Mapping;
 
@@ -128,6 +131,32 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     {
         $resetter = new Resetter($this->indexConfigsByName);
         $resetter->resetIndexType('foo', 'c');
+    }
+
+    public function testResetIndexTypeIgnoreTypeMissingException()
+    {
+        $type = $this->getMockElasticaType();
+
+        $this->indexConfigsByName['foo']['index']->expects($this->once())
+            ->method('getType')
+            ->with('a')
+            ->will($this->returnValue($type));
+
+        $type->expects($this->once())
+            ->method('delete')
+            ->will($this->throwException(new ResponseException(
+                new Request(''),
+                new Response(array('error' => 'TypeMissingException[[de_20131022] type[bla] missing]', 'status' => 404)))
+            ));
+
+        $mapping = Mapping::create($this->indexConfigsByName['foo']['config']['mappings']['a']['properties']);
+        $mapping->setParam('dynamic_templates', $this->indexConfigsByName['foo']['config']['mappings']['a']['dynamic_templates']);
+        $type->expects($this->once())
+            ->method('setMapping')
+            ->with($mapping);
+
+        $resetter = new Resetter($this->indexConfigsByName);
+        $resetter->resetIndexType('foo', 'a');
     }
 
     public function testIndexMappingForParent()

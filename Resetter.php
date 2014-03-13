@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle;
 
+use Elastica\Exception\ResponseException;
 use Elastica\Type\Mapping;
 
 /**
@@ -59,7 +60,13 @@ class Resetter
         }
 
         $type = $indexConfig['index']->getType($typeName);
-        $type->delete();
+        try {
+            $type->delete();
+        } catch (ResponseException $e) {
+            if (strpos($e->getMessage(), 'TypeMissingException') !== 0) {
+                throw $e;
+            }
+        }
         $mapping = $this->createMapping($indexConfig['config']['mappings'][$typeName]);
         $type->setMapping($mapping);
     }
