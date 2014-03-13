@@ -11,7 +11,7 @@ class Listener extends AbstractListener
     {
         $document = $eventArgs->getDocument();
 
-        if ($document instanceof $this->objectClass && $this->isObjectIndexable($document)) {
+        if (get_class($document) == $this->objectClass && $this->isObjectIndexable($document)) {
             $this->objectPersister->insertOne($document);
         }
     }
@@ -20,7 +20,7 @@ class Listener extends AbstractListener
     {
         $document = $eventArgs->getDocument();
 
-        if ($document instanceof $this->objectClass) {
+        if (get_class($document) == $this->objectClass) {
             if ($this->isObjectIndexable($document)) {
                 $this->objectPersister->replaceOne($document);
             } else {
@@ -34,7 +34,7 @@ class Listener extends AbstractListener
     {
         $document = $eventArgs->getDocument();
 
-        if ($document instanceof $this->objectClass) {
+        if (get_class($document) == $this->objectClass) {
             $this->scheduleForRemoval($document, $eventArgs->getDocumentManager());
         }
     }
@@ -43,7 +43,7 @@ class Listener extends AbstractListener
     {
         $document = $eventArgs->getDocument();
 
-        if ($document instanceof $this->objectClass) {
+        if (get_class($document) == $this->objectClass) {
             $this->removeIfScheduled($document);
         }
     }
