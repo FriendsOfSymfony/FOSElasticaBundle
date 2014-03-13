@@ -410,8 +410,26 @@ Pagerfanta:
 
 Knp paginator:
 
+    // paginated results 
     $paginator = $this->get('knp_paginator');
     $userPaginator = $paginator->paginate($finder->createPaginatorAdapter('bob'));
+    
+    // paginated results sorted by default
+    $query = new \Elastica\Query(array(
+        // query filter
+        'query' => array(
+            'query_string' => array(
+                'query' => 'bob'
+            )
+        ),
+        // default sort
+        'sort' => array(
+            'username' => array(
+                'order' => 'asc'
+            )
+        )
+    ));
+    $userPaginator = $paginator->paginate($finder->createPaginatorAdapter($query);
 
 You can also get both the Elastica results and the entities together from the finder.
 You can then access the score, highlights etc. from the Elastica\Result whilst
