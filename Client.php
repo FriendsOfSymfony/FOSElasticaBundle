@@ -11,6 +11,9 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
  */
 class Client extends ElasticaClient
 {
+    /**
+     * {@inheritdoc}
+     */
     public function request($path, $method = Request::GET, $data = array(), array $query = array())
     {
         $start = microtime(true);

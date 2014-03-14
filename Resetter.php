@@ -50,6 +50,7 @@ class Resetter
      * @param string $indexName
      * @param string $typeName
      * @throws \InvalidArgumentException if no index or type mapping exists for the given names
+     * @throws ResponseException
      */
     public function resetIndexType($indexName, $typeName)
     {
