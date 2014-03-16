@@ -125,6 +125,7 @@ class FOSElasticaExtension extends Extension
             $indexIds[$name] = $indexId;
             $this->indexConfigs[$name] = array(
                 'index' => new Reference($indexId),
+                'name_or_alias' => $indexName,
                 'config' => array(
                     'mappings' => array()
                 )
@@ -135,6 +136,10 @@ class FOSElasticaExtension extends Extension
             if (!empty($index['settings'])) {
                 $this->indexConfigs[$name]['config']['settings'] = $index['settings'];
             }
+            if ($index['use_alias']) {
+                $this->indexConfigs[$name]['use_alias'] = true;
+            }
+
             $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig);
         }
 
