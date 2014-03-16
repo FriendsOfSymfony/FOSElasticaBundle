@@ -101,7 +101,12 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('servers')
                                 ->prototype('array')
                                     ->children()
-                                        ->scalarNode('url')->end()
+                                        ->scalarNode('url')
+                                            ->validate()
+                                                ->ifTrue(function($url) { return substr($url, -1) !== '/'; })
+                                                ->then(function($url) { return $url.'/'; })
+                                            ->end()
+                                        ->end()
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
                                         ->scalarNode('logger')
@@ -109,6 +114,7 @@ class Configuration implements ConfigurationInterface
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
                                         ->end()
+                                        ->scalarNode('timeout')->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -410,6 +416,10 @@ class Configuration implements ConfigurationInterface
         }
 
         if (isset($nestings['properties'])) {
+            $node
+                ->booleanNode('include_in_parent')->end()
+                ->booleanNode('include_in_root')->end()
+            ;
             $this->addNestedFieldConfig($node, $nestings, 'properties');
         }
     }

@@ -14,33 +14,44 @@ use Psr\Log\LoggerInterface;
  */
 class ElasticaLogger implements LoggerInterface
 {
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
-    protected $queries;
+
+    /**
+     * @var array
+     */
+    protected $queries = array();
+
+    /**
+     * @var boolean
+     */
     protected $debug;
 
     /**
      * Constructor.
      *
      * @param LoggerInterface|null $logger The Symfony logger
-     * @param bool $debug
+     * @param boolean              $debug
      */
     public function __construct(LoggerInterface $logger = null, $debug = false)
     {
         $this->logger = $logger;
-        $this->queries = array();
         $this->debug = $debug;
     }
 
     /**
      * Logs a query.
      *
-     * @param string $path   Path to call
-     * @param string $method Rest method to use (GET, POST, DELETE, PUT)
-     * @param array  $data   arguments
-     * @param float  $time   execution time
-     * @param array  $connection   host, port and transport of the query
+     * @param string $path       Path to call
+     * @param string $method     Rest method to use (GET, POST, DELETE, PUT)
+     * @param array  $data       Arguments
+     * @param float  $time       Execution time
+     * @param array  $connection Host, port and transport of the query
+     * @param array  $query      Arguments
      */
-    public function logQuery($path, $method, $data, $time, $connection = array())
+    public function logQuery($path, $method, $data, $time, $connection = array(), $query = array())
     {
         if ($this->debug) {
             $this->queries[] = array(
@@ -48,7 +59,8 @@ class ElasticaLogger implements LoggerInterface
                 'method' => $method,
                 'data' => $data,
                 'executionMS' => $time,
-                'connection' => $connection
+                'connection' => $connection,
+                'queryString' => $query,
             );
         }
 

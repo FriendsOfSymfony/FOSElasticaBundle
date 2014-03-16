@@ -24,6 +24,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 Request::GET,
                 $this->isType('array'),
                 $this->isType('float'),
+                $this->isType('array'),
                 $this->isType('array')
             );
 
