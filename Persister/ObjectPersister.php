@@ -83,12 +83,12 @@ class ObjectPersister implements ObjectPersisterInterface
         } catch (NotFoundException $e) {}
     }
 
-
     /**
-     * Inserts an array of objects in the type
+     * Bulk insert an array of objects in the type for the given method
      *
      * @param array $objects array of domain model objects
-     **/
+     * @param string Method to call
+     */
     public function insertMany(array $objects)
     {
         $documents = array();
@@ -96,6 +96,34 @@ class ObjectPersister implements ObjectPersisterInterface
             $documents[] = $this->transformToElasticaDocument($object);
         }
         $this->type->addDocuments($documents);
+    }
+
+    /**
+     * Bulk updates an array of objects in the type
+     *
+     * @param array $objects array of domain model objects
+     */
+    public function replaceMany(array $objects)
+    {
+        $documents = array();
+        foreach ($objects as $object) {
+            $documents[] = $this->transformToElasticaDocument($object);
+        }
+        $this->type->updateDocuments($documents);
+    }
+
+    /**
+     * Bulk deletes an array of objects in the type
+     *
+     * @param array $objects array of domain model objects
+     */
+    public function deleteMany(array $objects)
+    {
+        $documents = array();
+        foreach ($objects as $object) {
+            $documents[] = $this->transformToElasticaDocument($object);
+        }
+        $this->type->deleteDocuments($documents);
     }
 
     /**

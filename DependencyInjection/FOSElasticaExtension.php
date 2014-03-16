@@ -448,13 +448,32 @@ class FOSElasticaExtension extends Extension
         return $listenerId;
     }
 
+    /**
+     * Map Elastica to Doctrine events for the current driver
+     */
     private function getDoctrineEvents(array $typeConfig)
     {
+        // Flush always calls depending on actions scheduled in lifecycle listeners
+        $typeConfig['listener']['flush'] = true;
+
+        switch ($typeConfig['driver']) {
+            case 'orm':
+                $eventsClass = '\Doctrine\ORM\Events';
+                break;
+            case 'mongodb':
+                $eventsClass = '\Doctrine\ODM\MongoDB\Events';
+                break;
+            default:
+                throw new InvalidArgumentException(sprintf('Cannot determine events for driver "%s"', $typeConfig['driver']));
+                break;
+        }
+
         $events = array();
         $eventMapping = array(
-            'insert' => array('postPersist'),
-            'update' => array('postUpdate'),
-            'delete' => array('postRemove', 'preRemove')
+            'insert' => array(constant($eventsClass.'::postPersist')),
+            'update' => array(constant($eventsClass.'::postUpdate')),
+            'delete' => array(constant($eventsClass.'::preRemove')),
+            'flush' => array($typeConfig['listener']['immediate'] ? constant($eventsClass.'::preFlush') : constant($eventsClass.'::postFlush'))
         );
 
         foreach ($eventMapping as $event => $doctrineEvents) {
