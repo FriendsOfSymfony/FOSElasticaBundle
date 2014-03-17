@@ -10,11 +10,14 @@ use Elastica\ResultSet;
  */
 class HybridPartialResults extends RawPartialResults
 {
+    /**
+     * @var ElasticaToModelTransformerInterface
+     */
     protected $transformer;
 
     /**
-     * @param ResultSet $resultSet
-     * @param \FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface $transformer
+     * @param ResultSet                           $resultSet
+     * @param ElasticaToModelTransformerInterface $transformer
      */
     public function __construct(ResultSet $resultSet, ElasticaToModelTransformerInterface $transformer)
     {
