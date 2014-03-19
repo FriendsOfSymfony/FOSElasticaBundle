@@ -4,6 +4,7 @@ namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -124,6 +125,7 @@ class FOSElasticaExtension extends Extension
             $indexIds[$name] = $indexId;
             $this->indexConfigs[$name] = array(
                 'index' => new Reference($indexId),
+                'name_or_alias' => $indexName,
                 'config' => array(
                     'mappings' => array()
                 )
@@ -134,6 +136,10 @@ class FOSElasticaExtension extends Extension
             if (!empty($index['settings'])) {
                 $this->indexConfigs[$name]['config']['settings'] = $index['settings'];
             }
+            if ($index['use_alias']) {
+                $this->indexConfigs[$name]['use_alias'] = true;
+            }
+
             $this->loadTypes(isset($index['types']) ? $index['types'] : array(), $container, $name, $indexId, $typePrototypeConfig);
         }
 
@@ -197,6 +203,10 @@ class FOSElasticaExtension extends Extension
                 }
                 if (isset($type['serializer']['version'])) {
                     $callbackDef->addMethodCall('setVersion', array($type['serializer']['version']));
+                }
+                $callbackClassImplementedInterfaces = class_implements($this->serializerConfig['callback_class']); // PHP < 5.4 friendly
+                if (isset($callbackClassImplementedInterfaces['Symfony\Component\DependencyInjection\ContainerAwareInterface'])) {
+                    $callbackDef->addMethodCall('setContainer', array(new Reference('service_container')));                    
                 }
 
                 $container->setDefinition($callbackId, $callbackDef);
@@ -443,13 +453,32 @@ class FOSElasticaExtension extends Extension
         return $listenerId;
     }
 
+    /**
+     * Map Elastica to Doctrine events for the current driver
+     */
     private function getDoctrineEvents(array $typeConfig)
     {
+        // Flush always calls depending on actions scheduled in lifecycle listeners
+        $typeConfig['listener']['flush'] = true;
+
+        switch ($typeConfig['driver']) {
+            case 'orm':
+                $eventsClass = '\Doctrine\ORM\Events';
+                break;
+            case 'mongodb':
+                $eventsClass = '\Doctrine\ODM\MongoDB\Events';
+                break;
+            default:
+                throw new InvalidArgumentException(sprintf('Cannot determine events for driver "%s"', $typeConfig['driver']));
+                break;
+        }
+
         $events = array();
         $eventMapping = array(
-            'insert' => array('postPersist'),
-            'update' => array('postUpdate'),
-            'delete' => array('postRemove', 'preRemove')
+            'insert' => array(constant($eventsClass.'::postPersist')),
+            'update' => array(constant($eventsClass.'::postUpdate')),
+            'delete' => array(constant($eventsClass.'::preRemove')),
+            'flush' => array($typeConfig['listener']['immediate'] ? constant($eventsClass.'::preFlush') : constant($eventsClass.'::postFlush'))
         );
 
         foreach ($eventMapping as $event => $doctrineEvents) {

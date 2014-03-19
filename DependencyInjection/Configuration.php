@@ -146,6 +146,7 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->children()
                             ->scalarNode('index_name')->end()
+                            ->booleanNode('use_alias')->defaultValue(false)->end()
                             ->scalarNode('client')->end()
                             ->scalarNode('finder')
                                 ->treatNullLike(true)
@@ -183,6 +184,7 @@ class Configuration implements ConfigurationInterface
                                                     ->scalarNode('insert')->defaultTrue()->end()
                                                     ->scalarNode('update')->defaultTrue()->end()
                                                     ->scalarNode('delete')->defaultTrue()->end()
+                                                    ->scalarNode('persist')->defaultValue('postFlush')->end()
                                                     ->scalarNode('service')->end()
                                                     ->variableNode('is_indexable_callback')->defaultNull()->end()
                                                 ->end()
@@ -275,6 +277,7 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('insert')->defaultTrue()->end()
                                     ->scalarNode('update')->defaultTrue()->end()
                                     ->scalarNode('delete')->defaultTrue()->end()
+                                    ->booleanNode('immediate')->defaultFalse()->end()
                                     ->scalarNode('service')->end()
                                     ->variableNode('is_indexable_callback')->defaultNull()->end()
                                 ->end()
@@ -421,6 +424,10 @@ class Configuration implements ConfigurationInterface
         }
 
         if (isset($nestings['properties'])) {
+            $node
+                ->booleanNode('include_in_parent')->end()
+                ->booleanNode('include_in_root')->end()
+            ;
             $this->addNestedFieldConfig($node, $nestings, 'properties');
         }
     }

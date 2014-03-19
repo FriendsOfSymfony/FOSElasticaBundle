@@ -33,4 +33,9 @@ class Client extends ElasticaClient
 
         return $response;
     }
+
+    public function getIndex($name)
+    {
+        return new DynamicIndex($this, $name);
+    }
 }

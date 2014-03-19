@@ -2,9 +2,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine\ORM;
 
-use FOS\ElasticaBundle\Tests\Doctrine\AbstractListenerTest;
+use FOS\ElasticaBundle\Tests\Doctrine\ListenerTest as BaseListenerTest;
 
-class ListenerTest extends AbstractListenerTest
+class ListenerTest extends BaseListenerTest
 {
     public function setUp()
     {
@@ -25,7 +25,7 @@ class ListenerTest extends AbstractListenerTest
 
     protected function getListenerClass()
     {
-        return 'FOS\ElasticaBundle\Doctrine\ORM\Listener';
+        return 'FOS\ElasticaBundle\Doctrine\Listener';
     }
 
     protected function getObjectManagerClass()
