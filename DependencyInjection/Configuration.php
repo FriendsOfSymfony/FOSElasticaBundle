@@ -78,7 +78,8 @@ class Configuration implements ConfigurationInterface
                                         array(
                                             'host'   => $v['host'],
                                             'port'   => $v['port'],
-                                            'logger' => isset($v['logger']) ? $v['logger'] : null
+                                            'logger' => isset($v['logger']) ? $v['logger'] : null,
+                                            'headers' => isset($v['headers']) ? $v['headers'] : null,
                                         )
                                     )
                                 );
@@ -100,6 +101,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->arrayNode('servers')
                                 ->prototype('array')
+                                    ->fixXmlConfig('header')
                                     ->children()
                                         ->scalarNode('url')
                                             ->validate()
@@ -113,6 +115,10 @@ class Configuration implements ConfigurationInterface
                                             ->defaultValue('fos_elastica.logger')
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
+                                        ->end()
+                                        ->arrayNode('headers')
+                                            ->useAttributeAsKey('name')
+                                            ->prototype('scalar')->end()
                                         ->end()
                                         ->scalarNode('timeout')->end()
                                     ->end()

@@ -25,6 +25,7 @@ class Client extends ElasticaClient
                 'host'      => $connection->getHost(),
                 'port'      => $connection->getPort(),
                 'transport' => $connection->getTransport(),
+                'headers'   => $connection->getConfig('headers'),
             );
 
             $this->_logger->logQuery($path, $method, $data, $time, $connection_array, $query);
