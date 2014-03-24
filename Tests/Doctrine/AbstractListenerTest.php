@@ -133,7 +133,9 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener = $this->createListener($persister, get_class($entity), array());
         $listener->preRemove($eventArgs);
 
-        $this->assertEquals($entity, current($listener->scheduledForDeletion));
+        $scheduledClone = current($listener->scheduledForDeletion);
+        $this->assertEquals($entity, $scheduledClone);
+        $this->assertNotSame($entity, $scheduledClone);
 
         $persister->expects($this->once())
             ->method('deleteMany')
@@ -164,7 +166,9 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener = $this->createListener($persister, get_class($entity), array(), 'identifier');
         $listener->preRemove($eventArgs);
 
-        $this->assertEquals($entity, current($listener->scheduledForDeletion));
+        $scheduledClone = current($listener->scheduledForDeletion);
+        $this->assertEquals($entity, $scheduledClone);
+        $this->assertNotSame($entity, $scheduledClone);
 
         $persister->expects($this->once())
             ->method('deleteMany')

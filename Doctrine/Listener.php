@@ -195,17 +195,20 @@ class Listener implements EventSubscriber
                 $this->scheduledForUpdate[] = $entity;
             } else {
                 // Delete if no longer indexable
-                $this->scheduledForDeletion[] = $entity;
+                $this->scheduledForDeletion[] = clone $entity;
             }
         }
     }
 
+    /**
+     * Delete objects preRemove instead of postRemove so that we have access to the id
+     */
     public function preRemove(EventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof $this->objectClass) {
-            $this->scheduledForDeletion[] = $entity;
+            $this->scheduledForDeletion[] = clone $entity;
         }
     }
 
