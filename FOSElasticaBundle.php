@@ -8,10 +8,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle.
+ *
+ */
 class FOSElasticaBundle extends Bundle
 {
     /**
-     * @see Symfony\Component\HttpKernel\Bundle\Bundle::build()
+     * {@inheritdoc}
      */
     public function build(ContainerBuilder $container)
     {
