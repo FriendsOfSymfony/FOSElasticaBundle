@@ -9,7 +9,7 @@ use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 class Provider extends AbstractProvider
 {
     const ENTITY_ALIAS = 'a';
-    
+
     /**
      * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
      */
@@ -50,12 +50,13 @@ class Provider extends AbstractProvider
          */
         $orderBy = $queryBuilder->getDQLPart('orderBy');
         if (empty($orderBy)) {
+            $rootAliases = $queryBuilder->getRootAliases();
             $identifierFieldNames = $this->managerRegistry
                 ->getManagerForClass($this->objectClass)
                 ->getClassMetadata($this->objectClass)
                 ->getIdentifierFieldNames();
             foreach ($identifierFieldNames as $fieldName) {
-                $queryBuilder->addOrderBy(static::ENTITY_ALIAS.'.'.$fieldName);
+                $queryBuilder->addOrderBy($rootAliases[0].'.'.$fieldName);
             }
         }
 
