@@ -25,11 +25,13 @@ class FOSElasticaExtension extends Extension
         $config        = $this->processConfiguration($configuration, $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('config.xml');
 
         if (empty($config['clients']) || empty($config['indexes'])) {
-            throw new InvalidArgumentException('You must define at least one client and one index');
+            // No Clients or indexes are defined
+            return;
         }
+
+        $loader->load('config.xml');
 
         if (empty($config['default_client'])) {
             $keys = array_keys($config['clients']);

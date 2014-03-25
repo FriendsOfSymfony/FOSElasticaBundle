@@ -8,6 +8,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
+    /**
+     * Stores supported database drivers.
+     *
+     * @var array
+     */
     private $supportedDrivers = array('orm', 'mongodb', 'propel');
 
     private $configArray = array();
@@ -32,8 +37,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('default_client')->end()
-                ->scalarNode('default_index')->end()
+                ->scalarNode('default_client')
+                    ->info('Defaults to the first client defined')
+                ->end()
+                ->scalarNode('default_index')
+                    ->info('Defaults to the first index defined')
+                ->end()
                 ->scalarNode('default_manager')->defaultValue('orm')->end()
                 ->arrayNode('serializer')
                     ->treatNullLike(array())
@@ -145,7 +154,9 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('name')
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('index_name')->end()
+                            ->scalarNode('index_name')
+                                ->info('Defaults to the name of the index, but can be modified if the index name is different in ElasticSearch')
+                            ->end()
                             ->booleanNode('use_alias')->defaultValue(false)->end()
                             ->scalarNode('client')->end()
                             ->scalarNode('finder')
