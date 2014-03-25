@@ -38,7 +38,7 @@ C) Basic Bundle Configuration
 -----------------------------
 
 The basic minimal configuration for FOSElasticaBundle is one client with one Elasticsearch
-index. In almost all cases, an application will only need a single index. An index can 
+index. In almost all cases, an application will only need a single index. An index can
 be considered comparable to a Doctrine Entity Manager, where the index will hold multiple
 type definitions.
 
@@ -51,7 +51,7 @@ fos_elastica:
         search: ~
 ```
 
-In this example, an Elastica index (an instance of `Elastica\Index`) is available as a 
+In this example, an Elastica index (an instance of `Elastica\Index`) is available as a
 service with the key `fos_elastica.index.search`.
 
 If the Elasticsearch index name needs to be different to the service name in your
@@ -71,7 +71,7 @@ index of search_dev.
 D) Defining index types
 -----------------------
 
-By default, FOSElasticaBundle requires each type that is to be indexed to be mapped. 
+By default, FOSElasticaBundle requires each type that is to be indexed to be mapped.
 It is possible to use a serializer to avoid this requirement. To use a serializer, see
 the [serializer documentation](serializer.md)
 
@@ -95,12 +95,10 @@ Each defined type is made available as a service, and in this case the service k
 `fos_elastica.index.search.user` and is an instance of `Elastica\Type`.
 
 FOSElasticaBundle requires a provider for each type that will notify when an object
-that maps to a type has been modified. The bundle ships with support for Doctrine and 
+that maps to a type has been modified. The bundle ships with support for Doctrine and
 Propel objects.
 
-Below is an example for the Doctrine ORM. For additional information regarding
-integration with Doctrine or Propel or how to create a custom provider, see 
-[type-providers.md].
+Below is an example for the Doctrine ORM.
 
 ```yaml
                 user:
@@ -118,6 +116,7 @@ integration with Doctrine or Propel or how to create a custom provider, see
                         provider: ~
                         listener: ~
                         finder: ~
+                        immediate: ~
 ```
 
 There are a significant number of options available for types, that can be
@@ -127,7 +126,7 @@ E) Populating the Elasticsearch index
 -------------------------------------
 
 When using the providers and listeners that come with the bundle, any new or modified
-object will be indexed automatically. In some cases, where the database is modified 
+object will be indexed automatically. In some cases, where the database is modified
 externally, the Elasticsearch index must be updated manually. This can be achieved by
 running the console command:
 

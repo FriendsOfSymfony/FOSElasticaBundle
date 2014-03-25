@@ -4,7 +4,11 @@ FOSElasticaBundle
 This bundle provides integration with [ElasticSearch](http://www.elasticsearch.org) and [Elastica](https://github.com/ruflin/Elastica) with
 Symfony2. Features include:
 
-- Features...
+- Integrates the Elastica library into a Symfony2 environment
+- Automatically generate mappings using a serializer
+- Listeners for Doctrine events for automatic indexing
+
+> **Note** Propel support is limited and contributions fixing issues are welcome!
 
 [![Build Status](https://secure.travis-ci.org/FriendsOfSymfony/FOSElasticaBundle.png?branch=master)](http://travis-ci.org/FriendsOfSymfony/FOSElasticaBundle) [![Total Downloads](https://poser.pugx.org/FriendsOfSymfony/elastica-bundle/downloads.png)](https://packagist.org/packages/FriendsOfSymfony/elastica-bundle) [![Latest Stable Version](https://poser.pugx.org/FriendsOfSymfony/elastica-bundle/v/stable.png)](https://packagist.org/packages/FriendsOfSymfony/elastica-bundle)
 

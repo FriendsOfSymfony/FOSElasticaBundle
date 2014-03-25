@@ -262,3 +262,17 @@ index depending on whether the callback_class returns `true` or `false`, respect
 The delete listener disregards the callback_class.
 
 > **Propel** doesn't support this feature yet.
+
+Flushing Method
+---------------
+
+FOSElasticaBundle, since 3.0.0 performs its indexing in the postFlush Doctrine event
+instead of prePersist and preUpdate which means that indexing will only occur when there
+has been a successful flush. This new default makes more sense but in the instance where
+you want to perform indexing before the flush is confirmed you may set the `immediate`
+option on a type persistence configuration to false.
+
+```yaml
+                    persistence:
+                        immediate: false
+```
