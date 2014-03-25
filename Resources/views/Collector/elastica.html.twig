@@ -44,6 +44,7 @@
             {% for key, query in collector.queries %}
                 <li class="{{ cycle(['odd', 'even'], loop.index) }}">
                     <strong>Path</strong>: {{ query.path }}<br />
+                    <strong>Query</strong>: {{ query.queryString|url_encode }}<br />
                     <strong>Method</strong>: {{ query.method }} <small>({{ query.connection.transport }} on {{ query.connection.host }}:{{ query.connection.port }})</small>
                     <div>
                         <code>{{ query.data|json_encode }}</code>
@@ -60,7 +61,7 @@
                         </a>
 
                         <div style="display: none;" id="elastica_curl_query_{{ key }}">
-                            <code>curl -X{{ query.method }} '{{ query.connection.transport|lower }}://{{ query.connection.host }}:{{ query.connection.port }}/{{ query.path }}' -d '{{ query.data|json_encode }}'</code>
+                            <code>curl -X{{ query.method }} '{{ query.connection.transport|lower }}://{{ query.connection.host }}:{{ query.connection.port }}/{{ query.path }}{% if query.queryString|length %}?{{ query.queryString|url_encode }}{% endif %}' -d '{{ query.data|json_encode }}'</code>
                         </div>
                     {% endif %}
                 </li>

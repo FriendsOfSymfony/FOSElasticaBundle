@@ -38,13 +38,27 @@ interface ObjectPersisterInterface
      * @param mixed $id
      *
      * @return null
-     **/
+     */
     function deleteById($id);
 
     /**
-     * Inserts an array of objects in the type
+     * Bulk inserts an array of objects in the type
      *
      * @param array $objects array of domain model objects
-     **/
+     */
     function insertMany(array $objects);
+
+    /**
+     * Bulk updates an array of objects in the type
+     *
+     * @param array $objects array of domain model objects
+     */
+    function replaceMany(array $objects);
+
+    /**
+     * Bulk deletes an array of objects in the type
+     *
+     * @param array $objects array of domain model objects
+     */
+    function deleteMany(array $objects);
 }

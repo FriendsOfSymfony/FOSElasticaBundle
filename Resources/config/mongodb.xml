@@ -13,7 +13,7 @@
             <argument type="service" id="doctrine_mongodb" />
         </service>
 
-        <service id="fos_elastica.listener.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\Listener" public="false" abstract="true">
+        <service id="fos_elastica.listener.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\Listener" public="false">
             <argument /> <!-- object persister -->
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- events -->

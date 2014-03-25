@@ -11,6 +11,9 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
  */
 class Client extends ElasticaClient
 {
+    /**
+     * {@inheritdoc}
+     */
     public function request($path, $method = Request::GET, $data = array(), array $query = array())
     {
         $start = microtime(true);
@@ -25,11 +28,17 @@ class Client extends ElasticaClient
                 'host'      => $connection->getHost(),
                 'port'      => $connection->getPort(),
                 'transport' => $connection->getTransport(),
+                'headers'   => $connection->getConfig('headers'),
             );
 
-            $this->_logger->logQuery($path, $method, $data, $time, $connection_array);
+            $this->_logger->logQuery($path, $method, $data, $time, $connection_array, $query);
         }
 
         return $response;
+    }
+
+    public function getIndex($name)
+    {
+        return new DynamicIndex($this, $name);
     }
 }

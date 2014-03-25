@@ -60,7 +60,7 @@ class ResetCommand extends ContainerAwareCommand
 
         if (null !== $type) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
-            $this->resetter->resetIndex($index, $type);
+            $this->resetter->resetIndexType($index, $type);
         } else {
             $indexes = null === $index
                 ? array_keys($this->indexManager->getAllIndexes())

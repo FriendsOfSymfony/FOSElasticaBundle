@@ -2,15 +2,15 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
+use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\ObjectManager;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
 
-abstract class AbstractListener implements EventSubscriber
+class Listener implements EventSubscriber
 {
     /**
      * Object persister
@@ -48,11 +48,11 @@ abstract class AbstractListener implements EventSubscriber
     protected $isIndexableCallback;
 
     /**
-     * Objects scheduled for removal
-     *
-     * @var array
+     * Objects scheduled for insertion, replacement, or removal
      */
-    private $scheduledForRemoval = array();
+    public $scheduledForInsertion = array();
+    public $scheduledForUpdate = array();
+    public $scheduledForDeletion = array();
 
     /**
      * An instance of ExpressionLanguage
@@ -150,37 +150,6 @@ abstract class AbstractListener implements EventSubscriber
     }
 
     /**
-     * Schedules the object for removal.
-     *
-     * This is usually called during the pre-remove event.
-     *
-     * @param object        $object
-     * @param ObjectManager $objectManager
-     */
-    protected function scheduleForRemoval($object, ObjectManager $objectManager)
-    {
-        $metadata = $objectManager->getClassMetadata($this->objectClass);
-        $esId = $metadata->getFieldValue($object, $this->esIdentifierField);
-        $this->scheduledForRemoval[spl_object_hash($object)] = $esId;
-    }
-
-    /**
-     * Removes the object if it was scheduled for removal.
-     *
-     * This is usually called during the post-remove event.
-     *
-     * @param object $object
-     */
-    protected function removeIfScheduled($object)
-    {
-        $objectHash = spl_object_hash($object);
-        if (isset($this->scheduledForRemoval[$objectHash])) {
-            $this->objectPersister->deleteById($this->scheduledForRemoval[$objectHash]);
-            unset($this->scheduledForRemoval[$objectHash]);
-        }
-    }
-
-    /**
      * @param  mixed  $object
      * @return string
      */
@@ -206,5 +175,71 @@ abstract class AbstractListener implements EventSubscriber
         }
 
         return $this->expressionLanguage;
+    }
+
+    public function postPersist(EventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+
+        if ($entity instanceof $this->objectClass && $this->isObjectIndexable($entity)) {
+            $this->scheduledForInsertion[] = $entity;
+        }
+    }
+
+    public function postUpdate(EventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+
+        if ($entity instanceof $this->objectClass) {
+            if ($this->isObjectIndexable($entity)) {
+                $this->scheduledForUpdate[] = $entity;
+            } else {
+                // Delete if no longer indexable
+                $this->scheduledForDeletion[] = $entity;
+            }
+        }
+    }
+
+    public function preRemove(EventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+
+        if ($entity instanceof $this->objectClass) {
+            $this->scheduledForDeletion[] = $entity;
+        }
+    }
+
+    /**
+     * Persist scheduled objects to ElasticSearch
+     */
+    private function persistScheduled()
+    {
+        if (count($this->scheduledForInsertion)) {
+            $this->objectPersister->insertMany($this->scheduledForInsertion);
+        }
+        if (count($this->scheduledForUpdate)) {
+            $this->objectPersister->replaceMany($this->scheduledForUpdate);
+        }
+        if (count($this->scheduledForDeletion)) {
+            $this->objectPersister->deleteMany($this->scheduledForDeletion);
+        }
+    }
+
+    /**
+     * Iterate through scheduled actions before flushing to emulate 2.x behavior.  Note that the ElasticSearch index
+     * will fall out of sync with the source data in the event of a crash during flush.
+     */
+    public function preFlush(EventArgs $eventArgs)
+    {
+        $this->persistScheduled();
+    }
+
+    /**
+     * Iterating through scheduled actions *after* flushing ensures that the ElasticSearch index will be affected
+     * only if the query is successful
+     */
+    public function postFlush(EventArgs $eventArgs)
+    {
+        $this->persistScheduled();
     }
 }

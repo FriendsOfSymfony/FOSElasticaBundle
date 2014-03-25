@@ -87,7 +87,8 @@ class Configuration implements ConfigurationInterface
                                         array(
                                             'host'   => $v['host'],
                                             'port'   => $v['port'],
-                                            'logger' => isset($v['logger']) ? $v['logger'] : null
+                                            'logger' => isset($v['logger']) ? $v['logger'] : null,
+                                            'headers' => isset($v['headers']) ? $v['headers'] : null,
                                         )
                                     )
                                 );
@@ -109,16 +110,26 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->arrayNode('servers')
                                 ->prototype('array')
+                                    ->fixXmlConfig('header')
                                     ->children()
-                                        ->scalarNode('url')->end()
+                                        ->scalarNode('url')
+                                            ->validate()
+                                                ->ifTrue(function($url) { return substr($url, -1) !== '/'; })
+                                                ->then(function($url) { return $url.'/'; })
+                                            ->end()
+                                        ->end()
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
                                         ->scalarNode('logger')
-                                            ->info('Set your own logger service for this client or disable the logger with false.')
                                             ->defaultValue('fos_elastica.logger')
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
                                         ->end()
+                                        ->arrayNode('headers')
+                                            ->useAttributeAsKey('name')
+                                            ->prototype('scalar')->end()
+                                        ->end()
+                                        ->scalarNode('timeout')->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -142,18 +153,77 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('indexes')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
-                        ->performNoDeepMerging()
                         ->children()
                             ->scalarNode('index_name')
                                 ->info('Defaults to the name of the index, but can be modified if the index name is different in ElasticSearch')
                             ->end()
+                            ->booleanNode('use_alias')->defaultValue(false)->end()
                             ->scalarNode('client')->end()
                             ->scalarNode('finder')
-                                ->info('Defines an index wide finder that will search all types.')
                                 ->treatNullLike(true)
                                 ->defaultFalse()
                             ->end()
-                            ->append($this->getTypePrototypeNode())
+                            ->arrayNode('type_prototype')
+                                ->children()
+                                    ->scalarNode('index_analyzer')->end()
+                                    ->scalarNode('search_analyzer')->end()
+                                    ->arrayNode('persistence')
+                                        ->validate()
+                                            ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
+                                            ->thenInvalid('Propel doesn\'t support listeners')
+                                            ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
+                                            ->thenInvalid('Propel doesn\'t support the "repository" parameter')
+                                        ->end()
+                                        ->children()
+                                            ->scalarNode('driver')
+                                                ->validate()
+                                                    ->ifNotInArray($this->supportedDrivers)
+                                                    ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
+                                                ->end()
+                                            ->end()
+                                            ->scalarNode('identifier')->defaultValue('id')->end()
+                                            ->arrayNode('provider')
+                                                ->children()
+                                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
+                                                    ->scalarNode('batch_size')->defaultValue(100)->end()
+                                                    ->scalarNode('clear_object_manager')->defaultTrue()->end()
+                                                    ->scalarNode('service')->end()
+                                                ->end()
+                                            ->end()
+                                            ->arrayNode('listener')
+                                                ->children()
+                                                    ->scalarNode('insert')->defaultTrue()->end()
+                                                    ->scalarNode('update')->defaultTrue()->end()
+                                                    ->scalarNode('delete')->defaultTrue()->end()
+                                                    ->scalarNode('persist')->defaultValue('postFlush')->end()
+                                                    ->scalarNode('service')->end()
+                                                    ->variableNode('is_indexable_callback')->defaultNull()->end()
+                                                ->end()
+                                            ->end()
+                                            ->arrayNode('finder')
+                                                ->children()
+                                                    ->scalarNode('service')->end()
+                                                ->end()
+                                            ->end()
+                                            ->arrayNode('elastica_to_model_transformer')
+                                                ->addDefaultsIfNotSet()
+                                                ->children()
+                                                    ->scalarNode('hydrate')->defaultTrue()->end()
+                                                    ->scalarNode('ignore_missing')->defaultFalse()->end()
+                                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
+                                                    ->scalarNode('service')->end()
+                                                ->end()
+                                            ->end()
+                                            ->arrayNode('model_to_elastica_transformer')
+                                                ->addDefaultsIfNotSet()
+                                                ->children()
+                                                    ->scalarNode('service')->end()
+                                                ->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
                             ->variableNode('settings')->defaultValue(array())->end()
                         ->end()
                         ->append($this->getTypesNode())
@@ -164,20 +234,6 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Builds a type prototype node for the index configuration.
-     */
-    protected function getTypePrototypeNode()
-    {
-        $builder = new TreeBuilder();
-        $node = $builder->root('type_prototype');
-        $node->info('Allows a prototype type definition that can be applied to all types.');
-
-        $this->applyTypeConfiguration($node);
-
-        return $node;
-    }
-
-    /**
      * Returns the array node used for "types".
      */
     protected function getTypesNode()
@@ -185,100 +241,95 @@ class Configuration implements ConfigurationInterface
         $builder = new TreeBuilder();
         $node = $builder->root('types');
 
-        $childrenNode = $node
+        $node
             ->useAttributeAsKey('name')
             ->prototype('array')
-                ->treatNullLike(array());
-
-        $this->applyTypeConfiguration($childrenNode);
+                ->treatNullLike(array())
+                ->children()
+                    ->arrayNode('serializer')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->arrayNode('groups')
+                                ->treatNullLike(array())
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->scalarNode('version')->end()
+                        ->end()
+                    ->end()
+                    ->scalarNode('index_analyzer')->end()
+                    ->scalarNode('search_analyzer')->end()
+                    ->arrayNode('persistence')
+                        ->validate()
+                            ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
+                            ->thenInvalid('Propel doesn\'t support listeners')
+                            ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
+                            ->thenInvalid('Propel doesn\'t support the "repository" parameter')
+                        ->end()
+                        ->children()
+                            ->scalarNode('driver')
+                                ->validate()
+                                    ->ifNotInArray($this->supportedDrivers)
+                                    ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
+                                ->end()
+                            ->end()
+                            ->scalarNode('model')->end()
+                            ->scalarNode('repository')->end()
+                            ->scalarNode('identifier')->defaultValue('id')->end()
+                            ->arrayNode('provider')
+                                ->children()
+                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
+                                    ->scalarNode('batch_size')->defaultValue(100)->end()
+                                    ->scalarNode('clear_object_manager')->defaultTrue()->end()
+                                    ->scalarNode('service')->end()
+                                ->end()
+                            ->end()
+                            ->arrayNode('listener')
+                                ->children()
+                                    ->scalarNode('insert')->defaultTrue()->end()
+                                    ->scalarNode('update')->defaultTrue()->end()
+                                    ->scalarNode('delete')->defaultTrue()->end()
+                                    ->booleanNode('immediate')->defaultFalse()->end()
+                                    ->scalarNode('service')->end()
+                                    ->variableNode('is_indexable_callback')->defaultNull()->end()
+                                ->end()
+                            ->end()
+                            ->arrayNode('finder')
+                                ->children()
+                                    ->scalarNode('service')->end()
+                                ->end()
+                            ->end()
+                            ->arrayNode('elastica_to_model_transformer')
+                                ->addDefaultsIfNotSet()
+                                ->children()
+                                    ->scalarNode('hydrate')->defaultTrue()->end()
+                                    ->scalarNode('ignore_missing')->defaultFalse()->end()
+                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
+                                    ->scalarNode('service')->end()
+                                ->end()
+                            ->end()
+                            ->arrayNode('model_to_elastica_transformer')
+                                ->addDefaultsIfNotSet()
+                                ->children()
+                                    ->scalarNode('service')->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->append($this->getIdNode())
+                ->append($this->getMappingsNode())
+                ->append($this->getDynamicTemplateNode())
+                ->append($this->getSourceNode())
+                ->append($this->getBoostNode())
+                ->append($this->getRoutingNode())
+                ->append($this->getParentNode())
+                ->append($this->getAllNode())
+                ->append($this->getTimestampNode())
+                ->append($this->getTtlNode())
+            ->end()
+        ;
 
         return $node;
-    }
-
-    /**
-     * Applies all type configuration fields to a node.
-     */
-    protected function applyTypeConfiguration($node)
-    {
-        $node
-            ->children()
-                ->arrayNode('serializer')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->arrayNode('groups')
-                            ->treatNullLike(array())
-                            ->prototype('scalar')->end()
-                        ->end()
-                        ->scalarNode('version')->end()
-                    ->end()
-                ->end()
-                ->scalarNode('index_analyzer')->end()
-                ->scalarNode('search_analyzer')->end()
-                ->arrayNode('persistence')
-                    ->validate()
-                        ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
-                        ->thenInvalid('Propel doesn\'t support listeners')
-                        ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
-                        ->thenInvalid('Propel doesn\'t support the "repository" parameter')
-                    ->end()
-                    ->children()
-                        ->scalarNode('driver')
-                            ->validate()
-                                ->ifNotInArray($this->supportedDrivers)
-                                ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
-                            ->end()
-                        ->end()
-                        ->scalarNode('model')->end()
-                        ->scalarNode('repository')->end()
-                        ->scalarNode('identifier')->defaultValue('id')->end()
-                        ->arrayNode('provider')
-                            ->children()
-                                ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
-                                ->scalarNode('batch_size')->defaultValue(100)->end()
-                                ->scalarNode('clear_object_manager')->defaultTrue()->end()
-                                ->scalarNode('service')->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('listener')
-                            ->children()
-                                ->scalarNode('insert')->defaultTrue()->end()
-                                ->scalarNode('update')->defaultTrue()->end()
-                                ->scalarNode('delete')->defaultTrue()->end()
-                                ->scalarNode('service')->end()
-                                ->variableNode('is_indexable_callback')->defaultNull()->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('finder')
-                            ->children()
-                                ->scalarNode('service')->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('elastica_to_model_transformer')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('hydrate')->defaultTrue()->end()
-                                ->scalarNode('ignore_missing')->defaultFalse()->end()
-                                ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
-                                ->scalarNode('service')->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('model_to_elastica_transformer')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('service')->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end()
-            ->append($this->getIdNode())
-            ->append($this->getMappingsNode())
-            ->append($this->getDynamicTemplateNode())
-            ->append($this->getSourceNode())
-            ->append($this->getBoostNode())
-            ->append($this->getRoutingNode())
-            ->append($this->getParentNode())
-            ->append($this->getAllNode());
     }
 
     /**
@@ -294,6 +345,10 @@ class Configuration implements ConfigurationInterface
         $childrenNode = $node
             ->useAttributeAsKey('name')
             ->prototype('array')
+                ->validate()
+                ->ifTrue(function($v) { return isset($v['fields']) && empty($v['fields']); })
+                    ->then(function($v) { unset($v['fields']); return $v; })
+                ->end()
                 ->treatNullLike(array())
                 ->addDefaultsIfNotSet()
                 ->children();
@@ -375,7 +430,8 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('identifier')->defaultValue('id')->end()
                 ->end()
             ->end()
-            ->scalarNode('format')->end();
+            ->scalarNode('format')->end()
+            ->scalarNode('similarity')->end();
         ;
 
         if (isset($nestings['fields'])) {
@@ -383,6 +439,10 @@ class Configuration implements ConfigurationInterface
         }
 
         if (isset($nestings['properties'])) {
+            $node
+                ->booleanNode('include_in_parent')->end()
+                ->booleanNode('include_in_root')->end()
+            ;
             $this->addNestedFieldConfig($node, $nestings, 'properties');
         }
     }
@@ -618,6 +678,47 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
             ->scalarNode('enabled')->defaultValue(true)->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * Returns the array node used for "_timestamp"
+     */
+    protected function getTimestampNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_timestamp');
+
+        $node
+            ->children()
+            ->scalarNode('enabled')->defaultValue(true)->end()
+            ->scalarNode('path')->end()
+            ->scalarNode('format')->end()
+            ->scalarNode('store')->end()
+            ->scalarNode('index')->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * Returns the array node used for "_ttl"
+     */
+    protected function getTtlNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('_ttl');
+
+        $node
+            ->children()
+            ->scalarNode('enabled')->defaultValue(true)->end()
+            ->scalarNode('default')->end()
+            ->scalarNode('store')->end()
+            ->scalarNode('index')->end()
             ->end()
         ;
 

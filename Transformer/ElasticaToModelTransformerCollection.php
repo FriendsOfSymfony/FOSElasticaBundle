@@ -67,7 +67,9 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
 
         $result = array();
         foreach ($elasticaObjects as $object) {
-            $result[] = $transformed[$object->getType()][$object->getId()];
+            if (array_key_exists($object->getId(), $transformed[$object->getType()])) {
+                $result[] = $transformed[$object->getType()][$object->getId()];
+            }
         }
 
         return $result;
@@ -83,12 +85,5 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
         }
 
         return $result;
-    }
-
-    protected function getTypeToClassMap()
-    {
-        return array_map(function (ElasticaToModelTransformerInterface $transformer) {
-            return $transformer->getObjectClass();
-        }, $this->transformers);
     }
 }

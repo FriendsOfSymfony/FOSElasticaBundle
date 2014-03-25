@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Tests\Resetter\DependencyInjection;
 
 use FOS\ElasticaBundle\DependencyInjection\Configuration;
+use Symfony\Component\Config\Definition\Processor;
 
 /**
  * ConfigurationTest
@@ -84,5 +85,52 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('index', $mapping);
         $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $mapping['index']);
         $this->assertNull($mapping['index']->getDefaultValue());
+    }
+
+    public function testSlashIsAddedAtTheEndOfServerUrl()
+    {
+        $config = array(
+            'clients' => array(
+                'default' => array(
+                    'url' => 'http://www.github.com',
+                ),
+            ),
+        ); 
+        
+        $processor = new Processor();
+
+        $configuration = $processor->processConfiguration($this->configuration, array($config));
+
+        $this->assertEquals('http://www.github.com/', $configuration['clients']['default']['servers'][0]['url']);
+    }
+
+    public function testEmptyFieldsIndexIsUnset()
+    {
+        $config = array(
+            'indexes' => array(
+                'test' => array(
+                    'types' => array(
+                        'test' => array(
+                            'mappings' => array(
+                                'title' => array(
+                                    'type' => 'string',
+                                    'fields' => array(
+                                        'autocomplete' => null
+                                    )
+                                ),
+                                'content' => null
+                            )
+                        )
+                    )
+                )
+            )
+        );
+
+        $processor = new Processor();
+
+        $configuration = $processor->processConfiguration(new Configuration(array($config)), array($config));
+
+        $this->assertArrayNotHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['content']);
+        $this->assertArrayHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['title']);
     }
 }

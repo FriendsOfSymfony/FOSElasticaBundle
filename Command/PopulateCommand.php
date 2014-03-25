@@ -45,6 +45,7 @@ class PopulateCommand extends ContainerAwareCommand
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
+            ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->setDescription('Populates search indexes from providers')
         ;
     }
@@ -66,11 +67,12 @@ class PopulateCommand extends ContainerAwareCommand
     {
         $index         = $input->getOption('index');
         $type          = $input->getOption('type');
-        $reset         = $input->getOption('no-reset') ? false : true;
-        $noInteraction = $input->getOption('no-interaction');
+        $reset         = !$input->getOption('no-reset');
         $options       = $input->getOptions();
 
-        if (!$noInteraction && $reset && $input->getOption('offset')) {
+        $options['ignore-errors'] = $input->hasOption('ignore-errors');
+
+        if ($input->isInteractive() && $reset && $input->getOption('offset')) {
             /** @var DialogHelper $dialog */
             $dialog = $this->getHelperSet()->get('dialog');
             if (!$dialog->askConfirmation($output, '<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>', true)) {
@@ -107,7 +109,7 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndex(OutputInterface $output, $index, $reset, $options)
     {
-        if ($reset) {
+        if ($reset && $this->indexManager->getIndex($index)->exists()) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
             $this->resetter->resetIndex($index);
         }
@@ -124,6 +126,7 @@ class PopulateCommand extends ContainerAwareCommand
         }
 
         $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
+        $this->resetter->postPopulate($index);
         $this->indexManager->getIndex($index)->refresh();
     }
 
