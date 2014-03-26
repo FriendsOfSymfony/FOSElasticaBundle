@@ -133,7 +133,11 @@ class FOSElasticaExtension extends Extension
                 )
             );
             if ($index['finder']) {
-                $this->loadIndexFinder($container, $name, $indexId);
+                if ($name == $indexName) {
+                    $this->loadIndexFinder($container, $name, $indexId);
+                } else {
+                    $this->loadIndexFinder($container, $indexName, $indexIds[$indexName], $name);
+                }
             }
             if (!empty($index['settings'])) {
                 $this->indexConfigs[$name]['config']['settings'] = $index['settings'];
@@ -154,9 +158,10 @@ class FOSElasticaExtension extends Extension
      * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
      * @param string $name The index name
      * @param string $indexId The index service identifier
+     * @param string $alias The index_name finder can be used as
      * @return string
      */
-    protected function loadIndexFinder(ContainerBuilder $container, $name, $indexId)
+    protected function loadIndexFinder(ContainerBuilder $container, $name, $indexId, $alias = null)
     {
         /* Note: transformer services may conflict with "collection.index", if
          * an index and type names were "collection" and an index, respectively.
@@ -165,7 +170,7 @@ class FOSElasticaExtension extends Extension
         $transformerDef = new DefinitionDecorator('fos_elastica.elastica_to_model_transformer.collection');
         $container->setDefinition($transformerId, $transformerDef);
 
-        $finderId = sprintf('fos_elastica.finder.%s', $name);
+        $finderId = sprintf('fos_elastica.finder.%s', ($alias) ? $alias : $name);
         $finderDef = new DefinitionDecorator('fos_elastica.finder');
         $finderDef->replaceArgument(0, new Reference($indexId));
         $finderDef->replaceArgument(1, new Reference($transformerId));
