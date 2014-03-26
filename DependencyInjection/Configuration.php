@@ -121,7 +121,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
                                         ->scalarNode('logger')
-                                            ->defaultValue('fos_elastica.logger')
+                                            ->defaultValue('%kernel.debug%')
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
                                         ->end()
