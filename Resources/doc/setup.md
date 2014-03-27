@@ -29,7 +29,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new FOS\RestBundle\FOSRestBundle(),
+        new FOS\ElasticaBundle\FOSElasticaBundle(),
     );
 }
 ```
