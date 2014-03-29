@@ -127,6 +127,16 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
+     * Bulk deletes records from an array of identifiers
+     *
+     * @param array $identifiers array of domain model object identifiers
+     */
+    public function deleteManyByIdentifiers(array $identifiers)
+    {
+        $this->type->getIndex()->getClient()->deleteIds($identifiers, $this->type->getIndex(), $this->type);
+    }
+
+    /**
      * Transforms an object to an elastica document
      *
      * @param object $object
