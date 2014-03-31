@@ -458,6 +458,10 @@ class Configuration implements ConfigurationInterface
             ->arrayNode($property)
                 ->useAttributeAsKey('name')
                 ->prototype('array')
+                    ->validate()
+                        ->ifTrue(function($v) { return isset($v['fields']) && empty($v['fields']); })
+                        ->then(function($v) { unset($v['fields']); return $v; })
+                    ->end()
                     ->treatNullLike(array())
                     ->addDefaultsIfNotSet()
                     ->children();
