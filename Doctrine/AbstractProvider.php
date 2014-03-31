@@ -42,6 +42,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
         $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
 
+        if ($this->options['clear_object_manager']) {
+            $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
+        }
+
         for (; $offset < $nbObjects; $offset += $batchSize) {
             if ($loggerClosure) {
                 $stepStartTime = microtime(true);
@@ -61,7 +65,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             }
 
             if ($this->options['clear_object_manager']) {
-                $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
+                $manager->clear();
             }
 
             usleep($sleep);
