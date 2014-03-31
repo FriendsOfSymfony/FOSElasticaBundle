@@ -118,7 +118,19 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                                         'autocomplete' => null
                                     )
                                 ),
-                                'content' => null
+                                'content' => null,
+                                'children' => array(
+                                    'type' => 'nested',
+                                    'properties' => array(
+                                        'title' => array(
+                                            'type' => 'string',
+                                            'fields' => array(
+                                                'autocomplete' => null
+                                            )
+                                        ),
+                                        'content' => null
+                                    )
+                                )
                             )
                         )
                     )
@@ -132,5 +144,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayNotHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['content']);
         $this->assertArrayHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['title']);
+        $this->assertArrayNotHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['children']['properties']['content']);
+        $this->assertArrayHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['children']['properties']['title']);
     }
 }
