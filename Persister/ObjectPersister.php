@@ -107,7 +107,15 @@ class ObjectPersister implements ObjectPersisterInterface
     {
         $documents = array();
         foreach ($objects as $object) {
-            $documents[] = $this->transformToElasticaDocument($object);
+            $document = $this->transformToElasticaDocument($object);
+
+            try {
+                $this->type->getDocument($document->getId());
+            } catch (NotFoundException $e) {
+                $this->type->addDocument($document);
+            }
+
+            $documents[] = $document;
         }
         $this->type->updateDocuments($documents);
     }
