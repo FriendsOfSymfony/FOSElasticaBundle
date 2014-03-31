@@ -44,7 +44,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      * Constructor.
      *
      * @param string $objectClass
-     * @param array $options
+     * @param array  $options
      */
     public function __construct($objectClass, array $options = array())
     {
@@ -63,11 +63,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     }
 
     /**
-     * Transforms an array of Elastica document into an array of Propel entities
-     * fetched from the database.
-     *
-     * @param array $elasticaObjects
-     * @return array|\ArrayObject
+     * {@inheritdoc}
      */
     public function transform(array $elasticaObjects)
     {
@@ -104,7 +100,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
         $objects = $this->transform($elasticaObjects);
 
         $result = array();
-        for ($i = 0; $i < count($elasticaObjects); $i++) {
+        for ($i = 0, $count = count($elasticaObjects); $i < $count; $i++) {
             $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
         }
 
@@ -130,12 +126,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     /**
      * Fetch Propel entities for the given identifier values.
      *
-     * If $hydrate is false, the returned array elements will be arrays.
-     * Otherwise, the results will be hydrated to instances of the model class.
-     *
-     * @param array   $identifierValues Identifier values
-     * @param boolean $hydrate          Whether or not to hydrate the results
-     * @return array
+     * {@inheritdoc}
      */
     protected function findByIdentifiers(array $identifierValues, $hydrate)
     {
@@ -145,7 +136,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 
         $query = $this->createQuery($this->objectClass, $this->options['identifier'], $identifierValues);
 
-        if ( ! $hydrate) {
+        if (!$hydrate) {
             return $query->toArray();
         }
 
@@ -158,6 +149,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      * @param string $class            Propel model class
      * @param string $identifierField  Identifier field name (e.g. "id")
      * @param array  $identifierValues Identifier values
+     *
      * @return \ModelCriteria
      */
     protected function createQuery($class, $identifierField, array $identifierValues)

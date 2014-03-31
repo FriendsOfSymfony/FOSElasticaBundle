@@ -50,7 +50,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      *
      * @param object $registry
      * @param string $objectClass
-     * @param array $options
+     * @param array  $options
      */
     public function __construct($registry, $objectClass, array $options = array())
     {
@@ -84,9 +84,11 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      * model objects fetched from the doctrine repository
      *
      * @param array $elasticaObjects of elastica objects
-     * @throws \RuntimeException
+     *
      * @return array
-     **/
+     *
+     * @throws \RuntimeException
+     */
     public function transform(array $elasticaObjects)
     {
         $ids = $highlights = array();
@@ -110,20 +112,22 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         $idPos = array_flip($ids);
         $identifier = $this->options['identifier'];
         $propertyAccessor = $this->propertyAccessor;
-        usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor)
-        {
+        usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor) {
             return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
         });
 
         return $objects;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hybridTransform(array $elasticaObjects)
     {
         $objects = $this->transform($elasticaObjects);
 
         $result = array();
-        for ($i = 0; $i < count($elasticaObjects); $i++) {
+        for ($i = 0, $count = count($elasticaObjects); $i < $count; $i++) {
             $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
         }
 
@@ -141,9 +145,10 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     /**
      * Fetches objects by theses identifier values
      *
-     * @param array $identifierValues ids values
+     * @param array   $identifierValues ids values
      * @param Boolean $hydrate whether or not to hydrate the objects, false returns arrays
-     * @return array of objects or arrays
+     *
+     * @return object[] array of objects or arrays
      */
     protected abstract function findByIdentifiers(array $identifierValues, $hydrate);
 }

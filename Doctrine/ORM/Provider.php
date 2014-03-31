@@ -11,7 +11,7 @@ class Provider extends AbstractProvider
     const ENTITY_ALIAS = 'a';
 
     /**
-     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
+     * {@inheritdoc}
      */
     protected function countObjects($queryBuilder)
     {
@@ -19,9 +19,8 @@ class Provider extends AbstractProvider
             throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ORM\QueryBuilder');
         }
 
-        /* Clone the query builder before altering its field selection and DQL,
-         * lest we leave the query builder in a bad state for fetchSlice().
-         */
+        // Clone the query builder before altering its field selection and DQL,
+        // lest we leave the query builder in a bad state for fetchSlice().
         $qb = clone $queryBuilder;
         $rootAliases = $queryBuilder->getRootAliases();
 
@@ -34,7 +33,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
+     * {@inheritdoc}
      */
     protected function fetchSlice($queryBuilder, $limit, $offset)
     {
@@ -51,9 +50,7 @@ class Provider extends AbstractProvider
         $orderBy = $queryBuilder->getDQLPart('orderBy');
         if (empty($orderBy)) {
             $rootAliases = $queryBuilder->getRootAliases();
-            $identifierFieldNames = $this->managerRegistry
-                ->getManagerForClass($this->objectClass)
-                ->getClassMetadata($this->objectClass)
+            $identifierFieldNames = $this->manager->getClassMetadata($this->objectClass)
                 ->getIdentifierFieldNames();
             foreach ($identifierFieldNames as $fieldName) {
                 $queryBuilder->addOrderBy($rootAliases[0].'.'.$fieldName);
@@ -68,13 +65,11 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::createQueryBuilder()
+     * {@inheritdoc}
      */
     protected function createQueryBuilder()
     {
-        return $this->managerRegistry
-            ->getManagerForClass($this->objectClass)
-            ->getRepository($this->objectClass)
+        return $this->manager->getRepository($this->objectClass)
             // ORM query builders require an alias argument
             ->{$this->options['query_builder_method']}(static::ENTITY_ALIAS);
     }
