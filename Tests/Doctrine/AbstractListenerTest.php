@@ -100,13 +100,13 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener->postUpdate($eventArgs);
 
         $this->assertEmpty($listener->scheduledForUpdate);
-        $this->assertEquals($entity, current($listener->scheduledForDeletion));
+        $this->assertEquals($entity->getId(), current($listener->scheduledForDeletion));
 
         $persister->expects($this->never())
             ->method('replaceOne');
         $persister->expects($this->once())
-            ->method('deleteMany')
-            ->with(array($entity));
+            ->method('deleteManyByIdentifiers')
+            ->with(array($entity->getId()));
 
         $listener->postFlush($eventArgs);
     }
@@ -133,11 +133,11 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener = $this->createListener($persister, get_class($entity), array());
         $listener->preRemove($eventArgs);
 
-        $this->assertEquals($entity, current($listener->scheduledForDeletion));
+        $this->assertEquals($entity->getId(), current($listener->scheduledForDeletion));
 
         $persister->expects($this->once())
-            ->method('deleteMany')
-            ->with(array($entity));
+            ->method('deleteManyByIdentifiers')
+            ->with(array($entity->getId()));
 
         $listener->postFlush($eventArgs);
     }
@@ -149,6 +149,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $persister = $this->getMockPersister();
 
         $entity = new Listener\Entity(1);
+        $entity->identifier = 'foo';
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
 
         $objectManager->expects($this->any())
@@ -164,11 +165,11 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener = $this->createListener($persister, get_class($entity), array(), 'identifier');
         $listener->preRemove($eventArgs);
 
-        $this->assertEquals($entity, current($listener->scheduledForDeletion));
+        $this->assertEquals($entity->identifier, current($listener->scheduledForDeletion));
 
         $persister->expects($this->once())
-            ->method('deleteMany')
-            ->with(array($entity));
+            ->method('deleteManyByIdentifiers')
+            ->with(array($entity->identifier));
 
         $listener->postFlush($eventArgs);
     }

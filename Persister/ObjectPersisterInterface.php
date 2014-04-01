@@ -61,4 +61,11 @@ interface ObjectPersisterInterface
      * @param array $objects array of domain model objects
      */
     function deleteMany(array $objects);
+
+    /**
+     * Bulk deletes records from an array of identifiers
+     *
+     * @param array $identifiers array of domain model object identifiers
+     */
+    public function deleteManyByIdentifiers(array $identifiers);
 }

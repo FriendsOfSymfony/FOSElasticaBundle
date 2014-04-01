@@ -9,7 +9,12 @@ use FOS\ElasticaBundle\Persister\ObjectPersister;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
+/**
+ * Automatically update ElasticSearch based on changes to the Doctrine source
+ * data. One listener is generated for each Doctrine entity / ElasticSearch type.
+ */
 class Listener implements EventSubscriber
 {
     /**
@@ -48,10 +53,14 @@ class Listener implements EventSubscriber
     protected $isIndexableCallback;
 
     /**
-     * Objects scheduled for insertion, replacement, or removal
+     * Objects scheduled for insertion and replacement
      */
     public $scheduledForInsertion = array();
     public $scheduledForUpdate = array();
+
+    /**
+     * IDs of objects scheduled for removal
+     */
     public $scheduledForDeletion = array();
 
     /**
@@ -60,6 +69,13 @@ class Listener implements EventSubscriber
      * @var ExpressionLanguage
      */
     protected $expressionLanguage;
+
+    /**
+     * PropertyAccessor instance
+     *
+     * @var PropertyAccessorInterface
+     */
+    protected $propertyAccessor;
 
     /**
      * Constructor.
@@ -75,6 +91,8 @@ class Listener implements EventSubscriber
         $this->objectClass         = $objectClass;
         $this->events              = $events;
         $this->esIdentifierField   = $esIdentifierField;
+
+        $this->propertyAccessor    = PropertyAccess::createPropertyAccessor();
     }
 
     /**
@@ -195,17 +213,21 @@ class Listener implements EventSubscriber
                 $this->scheduledForUpdate[] = $entity;
             } else {
                 // Delete if no longer indexable
-                $this->scheduledForDeletion[] = $entity;
+                $this->scheduleForDeletion($entity);
             }
         }
     }
 
+    /**
+     * Delete objects preRemove instead of postRemove so that we have access to the id.  Because this is called
+     * preRemove, first check that the entity is managed by Doctrine
+     */
     public function preRemove(EventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof $this->objectClass) {
-            $this->scheduledForDeletion[] = $entity;
+            $this->scheduleForDeletion($entity);
         }
     }
 
@@ -221,7 +243,7 @@ class Listener implements EventSubscriber
             $this->objectPersister->replaceMany($this->scheduledForUpdate);
         }
         if (count($this->scheduledForDeletion)) {
-            $this->objectPersister->deleteMany($this->scheduledForDeletion);
+            $this->objectPersister->deleteManyByIdentifiers($this->scheduledForDeletion);
         }
     }
 
@@ -241,5 +263,17 @@ class Listener implements EventSubscriber
     public function postFlush(EventArgs $eventArgs)
     {
         $this->persistScheduled();
+    }
+
+    /**
+     * Record the specified identifier to delete. Do not need to entire object.
+     * @param  mixed  $object
+     * @return mixed
+     */
+    protected function scheduleForDeletion($object)
+    {
+        if ($identifierValue = $this->propertyAccessor->getValue($object, $this->esIdentifierField)) {
+            $this->scheduledForDeletion[] = $identifierValue;
+        }
     }
 }
