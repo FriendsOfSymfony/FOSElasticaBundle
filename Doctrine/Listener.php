@@ -197,7 +197,7 @@ class Listener implements EventSubscriber
 
     public function postPersist(EventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
+        $entity = (method_exists($eventArgs, 'getEntity')) ? $eventArgs->getEntity() : $eventArgs->getDocument();
 
         if ($entity instanceof $this->objectClass && $this->isObjectIndexable($entity)) {
             $this->scheduledForInsertion[] = $entity;
@@ -206,7 +206,7 @@ class Listener implements EventSubscriber
 
     public function postUpdate(EventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
+        $entity = (method_exists($eventArgs, 'getEntity')) ? $eventArgs->getEntity() : $eventArgs->getDocument();
 
         if ($entity instanceof $this->objectClass) {
             if ($this->isObjectIndexable($entity)) {
@@ -224,7 +224,7 @@ class Listener implements EventSubscriber
      */
     public function preRemove(EventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
+        $entity = (method_exists($eventArgs, 'getEntity')) ? $eventArgs->getEntity() : $eventArgs->getDocument();
 
         if ($entity instanceof $this->objectClass) {
             $this->scheduleForDeletion($entity);
