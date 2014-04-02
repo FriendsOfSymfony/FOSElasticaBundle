@@ -24,7 +24,7 @@ use Elastica\Response;
 
 class Client extends BaseClient
 {
-    public function request($path, $method, $data = array())
+    public function request($path, $method = Request::GET, $data = array(), array $query = array())
     {
         try {
             return parent::request($path, $method, $data);
