@@ -112,9 +112,33 @@ circumstances this is not ideal and you'd prefer to use a different method to jo
 any entity relations that are required on the page that will be displaying the results.
 
 ```yaml
-                user:
+            user:
+                persistence:
                     elastica_to_model_transformer:
                         query_builder_method: createSearchQueryBuilder
+```
+
+An example for using a custom query builder method:
+
+```php
+class UserRepository extends EntityRepository
+{
+    /**
+     * Used by Elastica to transform results to model
+     * 
+     * @param string $entityAlias
+     * @return  Doctrine\ORM\QueryBuilder
+     */
+    public function createSearchQueryBuilder($entityAlias)
+    {
+        $qb = $this->createQueryBuilder($entityAlias);
+        
+        $qb->select($entityAlias, 'g')
+            ->innerJoin($entityAlias.'.groups', 'g');
+            
+        return $qb;
+    }
+}
 ```
 
 Advanced Searching Example
