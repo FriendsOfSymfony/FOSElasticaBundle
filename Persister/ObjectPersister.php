@@ -99,7 +99,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk updates an array of objects in the type
+     * Bulk update an array of objects in the type.  Create document if it does not already exist.
      *
      * @param array $objects array of domain model objects
      */
@@ -108,13 +108,7 @@ class ObjectPersister implements ObjectPersisterInterface
         $documents = array();
         foreach ($objects as $object) {
             $document = $this->transformToElasticaDocument($object);
-
-            try {
-                $this->type->getDocument($document->getId());
-            } catch (NotFoundException $e) {
-                $this->type->addDocument($document);
-            }
-
+            $document->setDocAsUpsert(true);
             $documents[] = $document;
         }
         $this->type->updateDocuments($documents);
