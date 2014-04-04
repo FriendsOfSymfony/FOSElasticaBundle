@@ -270,9 +270,9 @@ FOSElasticaBundle, since 3.0.0 performs its indexing in the postFlush Doctrine e
 instead of prePersist and preUpdate which means that indexing will only occur when there
 has been a successful flush. This new default makes more sense but in the instance where
 you want to perform indexing before the flush is confirmed you may set the `immediate`
-option on a type persistence configuration to false.
+option on a type persistence configuration to `true`.
 
 ```yaml
                     persistence:
-                        immediate: false
+                        immediate: true
 ```
