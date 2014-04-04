@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
+use Psr\Log\LoggerInterface;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
@@ -85,12 +86,16 @@ class Listener implements EventSubscriber
      * @param array                    $events
      * @param string                   $esIdentifierField
      */
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $esIdentifierField = 'id')
+    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $esIdentifierField = 'id', $logger = null)
     {
         $this->objectPersister     = $objectPersister;
         $this->objectClass         = $objectClass;
         $this->events              = $events;
         $this->esIdentifierField   = $esIdentifierField;
+
+        if ($logger) {
+            $this->objectPersister->setLogger($logger);
+        }
 
         $this->propertyAccessor    = PropertyAccess::createPropertyAccessor();
     }

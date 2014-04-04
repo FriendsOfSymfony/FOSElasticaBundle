@@ -2,6 +2,8 @@
 
 namespace FOS\ElasticaBundle\Persister;
 
+use Psr\Log\LoggerInterface;
+use Elastica\Exception\BulkException;
 use Elastica\Exception\NotFoundException;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Elastica\Type;
@@ -19,6 +21,7 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $transformer;
     protected $objectClass;
     protected $fields;
+    protected $logger;
 
     public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields)
     {
@@ -26,6 +29,18 @@ class ObjectPersister implements ObjectPersisterInterface
         $this->transformer     = $transformer;
         $this->objectClass     = $objectClass;
         $this->fields          = $fields;
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    private function log(BulkException $e)
+    {
+        if ($this->logger) {
+            $this->logger->error($e);
+        }
     }
 
     /**
@@ -95,7 +110,11 @@ class ObjectPersister implements ObjectPersisterInterface
         foreach ($objects as $object) {
             $documents[] = $this->transformToElasticaDocument($object);
         }
-        $this->type->addDocuments($documents);
+        try {
+            $this->type->addDocuments($documents);
+        } catch (BulkException $e) {
+            $this->log($e);
+        }
     }
 
     /**
@@ -111,7 +130,12 @@ class ObjectPersister implements ObjectPersisterInterface
             $document->setDocAsUpsert(true);
             $documents[] = $document;
         }
-        $this->type->updateDocuments($documents);
+
+        try {
+            $this->type->updateDocuments($documents);
+        } catch (BulkException $e) {
+            $this->log($e);
+        }
     }
 
     /**
@@ -125,7 +149,11 @@ class ObjectPersister implements ObjectPersisterInterface
         foreach ($objects as $object) {
             $documents[] = $this->transformToElasticaDocument($object);
         }
-        $this->type->deleteDocuments($documents);
+        try {
+            $this->type->deleteDocuments($documents);
+        } catch (BulkException $e) {
+            $this->log($e);
+        }
     }
 
     /**
@@ -135,7 +163,11 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function deleteManyByIdentifiers(array $identifiers)
     {
-        $this->type->getIndex()->getClient()->deleteIds($identifiers, $this->type->getIndex(), $this->type);
+        try {
+            $this->type->getIndex()->getClient()->deleteIds($identifiers, $this->type->getIndex(), $this->type);
+        } catch (BulkException $e) {
+            $this->log($e);
+        }
     }
 
     /**
