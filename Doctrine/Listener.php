@@ -180,6 +180,34 @@ class Listener implements EventSubscriber
     }
 
     /**
+     * Provides unified method for retrieving a doctrine object from an EventArgs instance
+     *
+     * @param   EventArgs           $eventArgs
+     * @return  object              Entity | Document
+     * @throws  \RuntimeException   if no valid getter is found.
+     */
+    private function getDoctrineObject(EventArgs $eventArgs)
+    {
+
+        if (method_exists($eventArgs, 'getObject')) {
+
+            return $eventArgs->getObject();
+
+        } elseif (method_exists($eventArgs, 'getEntity')) {
+
+            return $eventArgs->getEntity();
+
+        } elseif (method_exists($eventArgs, 'getDocument')) {
+
+            return $eventArgs->getDocument();
+
+        }
+
+        throw new \RuntimeException('Unable to retrieve object from EventArgs.');
+
+    }
+
+    /**
      * @return bool|ExpressionLanguage
      */
     private function getExpressionLanguage()
@@ -197,7 +225,7 @@ class Listener implements EventSubscriber
 
     public function postPersist(EventArgs $eventArgs)
     {
-        $entity = (method_exists($eventArgs, 'getEntity')) ? $eventArgs->getEntity() : $eventArgs->getDocument();
+        $entity = $this->getDoctrineObject($eventArgs);
 
         if ($entity instanceof $this->objectClass && $this->isObjectIndexable($entity)) {
             $this->scheduledForInsertion[] = $entity;
@@ -206,7 +234,7 @@ class Listener implements EventSubscriber
 
     public function postUpdate(EventArgs $eventArgs)
     {
-        $entity = (method_exists($eventArgs, 'getEntity')) ? $eventArgs->getEntity() : $eventArgs->getDocument();
+        $entity = $this->getDoctrineObject($eventArgs);
 
         if ($entity instanceof $this->objectClass) {
             if ($this->isObjectIndexable($entity)) {
@@ -224,7 +252,7 @@ class Listener implements EventSubscriber
      */
     public function preRemove(EventArgs $eventArgs)
     {
-        $entity = (method_exists($eventArgs, 'getEntity')) ? $eventArgs->getEntity() : $eventArgs->getDocument();
+        $entity = $this->getDoctrineObject($eventArgs);
 
         if ($entity instanceof $this->objectClass) {
             $this->scheduleForDeletion($entity);
