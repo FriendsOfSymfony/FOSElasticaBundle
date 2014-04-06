@@ -101,7 +101,7 @@ $users = $repository->find('bob');
 ```
 
 For more information about customising repositories, see the cookbook entry
-[Custom Repositories](custom-repositories.md).
+[Custom Repositories](cookbook/custom-repositories.md).
 
 Using a custom query builder method for transforming results
 ------------------------------------------------------------
