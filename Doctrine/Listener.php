@@ -190,17 +190,11 @@ class Listener implements EventSubscriber
     {
 
         if (method_exists($eventArgs, 'getObject')) {
-
             return $eventArgs->getObject();
-
         } elseif (method_exists($eventArgs, 'getEntity')) {
-
             return $eventArgs->getEntity();
-
         } elseif (method_exists($eventArgs, 'getDocument')) {
-
             return $eventArgs->getDocument();
-
         }
 
         throw new \RuntimeException('Unable to retrieve object from EventArgs.');
