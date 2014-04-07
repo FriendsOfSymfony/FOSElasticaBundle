@@ -36,11 +36,20 @@ class ObjectPersister implements ObjectPersisterInterface
         $this->logger = $logger;
     }
 
+    /**
+     * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw
+     *
+     * @param BulkException $e
+     * @throws BulkException
+     * @return null
+     */
     private function log(BulkException $e)
     {
-        if ($this->logger) {
-            $this->logger->error($e);
+        if (! $this->logger) {
+            throw $e;
         }
+
+        $this->logger->error($e);
     }
 
     /**
