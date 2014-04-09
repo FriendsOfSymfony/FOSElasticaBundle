@@ -28,4 +28,11 @@ interface PartialResultsInterface
      * @return array
      */
     function getFacets();
+
+    /**
+     * Returns the aggregations
+     *
+     * @return array
+     */
+    function getAggregations();
 }
