@@ -276,3 +276,18 @@ option on a type persistence configuration to `true`.
                     persistence:
                         immediate: true
 ```
+
+Logging Errors
+--------------
+
+By default FOSElasticaBundle will not catch errors thrown by Elastica/ElasticSearch.
+Configure a logger per listener if you would rather catch and log these.
+
+```yaml
+                    persistence:
+                        listener:
+                            logger: true
+```
+
+Specifying `true` will use the default Elastica logger.  Alternatively define your own
+logger service id.
