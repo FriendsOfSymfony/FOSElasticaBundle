@@ -290,6 +290,7 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('delete')->defaultTrue()->end()
                                     ->booleanNode('immediate')->defaultFalse()->end()
                                     ->scalarNode('logger')
+                                        ->defaultFalse()
                                         ->treatNullLike('fos_elastica.logger')
                                         ->treatTrueLike('fos_elastica.logger')
                                     ->end()
