@@ -208,7 +208,7 @@ class FOSElasticaExtension extends Extension
                 }
                 $callbackClassImplementedInterfaces = class_implements($this->serializerConfig['callback_class']); // PHP < 5.4 friendly
                 if (isset($callbackClassImplementedInterfaces['Symfony\Component\DependencyInjection\ContainerAwareInterface'])) {
-                    $callbackDef->addMethodCall('setContainer', array(new Reference('service_container')));                    
+                    $callbackDef->addMethodCall('setContainer', array(new Reference('service_container')));
                 }
 
                 $container->setDefinition($callbackId, $callbackDef);
@@ -434,7 +434,7 @@ class FOSElasticaExtension extends Extension
         $listenerDef->replaceArgument(1, $typeConfig['model']);
         $listenerDef->replaceArgument(2, $this->getDoctrineEvents($typeConfig));
         $listenerDef->replaceArgument(3, $typeConfig['identifier']);
-        if (isset($typeConfig['listener']['logger'])) {
+        if ($typeConfig['listener']['logger']) {
             $listenerDef->replaceArgument(4, new Reference($typeConfig['listener']['logger']));
         }
 
