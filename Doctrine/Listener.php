@@ -188,7 +188,6 @@ class Listener implements EventSubscriber
      */
     private function getDoctrineObject(EventArgs $eventArgs)
     {
-
         if (method_exists($eventArgs, 'getObject')) {
             return $eventArgs->getObject();
         } elseif (method_exists($eventArgs, 'getEntity')) {
@@ -198,7 +197,6 @@ class Listener implements EventSubscriber
         }
 
         throw new \RuntimeException('Unable to retrieve object from EventArgs.');
-
     }
 
     /**
