@@ -258,17 +258,21 @@ class Listener implements EventSubscriber
 
     /**
      * Persist scheduled objects to ElasticSearch
+     * After persisting, clear the scheduled queue to prevent multiple data updates when using multiple flush calls
      */
     private function persistScheduled()
     {
         if (count($this->scheduledForInsertion)) {
             $this->objectPersister->insertMany($this->scheduledForInsertion);
+            $this->scheduledForInsertion = array();
         }
         if (count($this->scheduledForUpdate)) {
             $this->objectPersister->replaceMany($this->scheduledForUpdate);
+            $this->scheduledForUpdate = array();
         }
         if (count($this->scheduledForDeletion)) {
             $this->objectPersister->deleteManyByIdentifiers($this->scheduledForDeletion);
+            $this->scheduledForDeletion = array();
         }
     }
 
