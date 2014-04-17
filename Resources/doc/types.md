@@ -274,7 +274,8 @@ option on a type persistence configuration to `true`.
 
 ```yaml
                     persistence:
-                        immediate: true
+                        listener:
+                            immediate: true
 ```
 
 Logging Errors
