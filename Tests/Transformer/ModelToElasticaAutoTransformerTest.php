@@ -107,6 +107,11 @@ class POPO
         return array('foo' => 'foo', 'bar' => 'foo', 'id' => 1);
     }
 
+    public function getNestedObject()
+    {
+        return array('key1' => (object)array('id' => 1, 'key1sub1' => 'value1sub1', 'key1sub2' => 'value1sub2'));
+    }
+
     public function getUpper()
     {
         return (object) array('id' => 'parent', 'name' => 'a random name');
@@ -294,6 +299,51 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
              'bar' => 'foo', 
              'id' => 1
            ), $data['obj']);
+    }
+
+    public function testObjectsMappingOfAtLeastOneAutoMappedObjectAndAtLeastOneManuallyMappedObject()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(
+            new POPO(),
+            array(
+                'obj'          => array('type' => 'object', 'properties' => array()),
+                'nestedObject' => array(
+                    'type'       => 'object',
+                    'properties' => array(
+                        'key1sub1' => array(
+                            'type'       => 'string',
+                            'properties' => array()
+                        ),
+                        'key1sub2' => array(
+                            'type'       => 'string',
+                            'properties' => array()
+                        )
+                    )
+                )
+            )
+        );
+        $data        = $document->getData();
+
+        $this->assertTrue(array_key_exists('obj', $data));
+        $this->assertTrue(array_key_exists('nestedObject', $data));
+        $this->assertInternalType('array', $data['obj']);
+        $this->assertInternalType('array', $data['nestedObject']);
+        $this->assertEquals(
+            array(
+                'foo' => 'foo',
+                'bar' => 'foo',
+                'id'  => 1
+            ),
+            $data['obj']
+        );
+        $this->assertEquals(
+            array(
+                'key1sub1' => 'value1sub1',
+                'key1sub2' => 'value1sub2'
+            ),
+            $data['nestedObject'][0]
+        );
     }
 
     public function testParentMapping()
