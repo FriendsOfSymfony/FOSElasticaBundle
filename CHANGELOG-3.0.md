@@ -12,7 +12,19 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.0...v3.0.1
 To generate a changelog summary since the last version, run
 `git log --no-merges --oneline v3.0.0...3.0.x`
 
-* 3.0.0-ALPHA3 (xxxx-xx-xx)
+* 3.0.0
+
+ * Deprecated FOS\ElasticaBundle\Client in favour of FOS\ElasticaBundle\Elastica\LoggingClient
+ * Deprecated FOS\ElasticaBundle\DynamicIndex in favour of FOS\ElasticaBundle\Elastica\TransformingIndex
+ * Deprecated FOS\ElasticaBundle\IndexManager in favour of FOS\ElasticaBundle\Index\IndexManager
+ * Deprecated FOS\ElasticaBundle\Resetter in favour of FOS\ElasticaBundle\Index\Resetter
+
+* 3.0.0-ALPHA4 (2014-04-10)
+
+ * Indexes are now capable of logging errors with Elastica
+ * Fixed deferred indexing of deleted documents
+
+* 3.0.0-ALPHA3 (2014-04-01)
 
  * a9c4c93: Logger is now only enabled in debug mode by default
  * #463: allowing hot swappable reindexing
