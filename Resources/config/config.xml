@@ -8,6 +8,10 @@
         <parameter key="fos_elastica.client.class">FOS\ElasticaBundle\Client</parameter>
         <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\DynamicIndex</parameter>
         <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
+        <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\IndexManager</parameter>
+        <parameter key="fos_elastica.resetter.class">FOS\ElasticaBundle\Resetter</parameter>
+        <parameter key="fos_elastica.finder.class">FOS\ElasticaBundle\Finder\TransformedFinder</parameter>
+        <parameter key="fos_elastica.paginator_subscriber.class">FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber</parameter>
         <parameter key="fos_elastica.logger.class">FOS\ElasticaBundle\Logger\ElasticaLogger</parameter>
         <parameter key="fos_elastica.data_collector.class">FOS\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
         <parameter key="fos_elastica.manager.class">FOS\ElasticaBundle\Manager\RepositoryManager</parameter>
@@ -32,12 +36,12 @@
             <argument type="service" id="fos_elastica.logger" />
         </service>
 
-        <service id="fos_elastica.index_manager" class="FOS\ElasticaBundle\IndexManager">
+        <service id="fos_elastica.index_manager" class="%fos_elastica.index_manager.class%">
             <argument /> <!-- indexes -->
             <argument /> <!-- default index -->
         </service>
 
-        <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Resetter">
+        <service id="fos_elastica.resetter" class="%fos_elastica.resetter.class%">
             <argument /> <!-- index configs -->
         </service>
 
@@ -48,7 +52,7 @@
             <argument /> <!-- properties mapping -->
         </service>
 
-        <service id="fos_elastica.finder" class="FOS\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
+        <service id="fos_elastica.finder" class="%fos_elastica.finder.class%" public="true" abstract="true">
             <argument /> <!-- searchable -->
             <argument /> <!-- transformer -->
         </service>
@@ -84,7 +88,7 @@
             </call>
         </service>
 
-        <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
+        <service id="fos_elastica.paginator.subscriber" class="%fos_elastica.paginator_subscriber.class%">
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>
