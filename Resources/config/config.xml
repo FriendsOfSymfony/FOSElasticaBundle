@@ -5,8 +5,8 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="fos_elastica.client.class">FOS\ElasticaBundle\Client</parameter>
-        <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\DynamicIndex</parameter>
+        <parameter key="fos_elastica.client.class">FOS\ElasticaBundle\Elastica\Client</parameter>
+        <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\Elastica\Index</parameter>
         <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
         <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\IndexManager</parameter>
         <parameter key="fos_elastica.resetter.class">FOS\ElasticaBundle\Resetter</parameter>
