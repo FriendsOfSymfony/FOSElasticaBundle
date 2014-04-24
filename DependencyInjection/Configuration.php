@@ -667,6 +667,8 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
             ->scalarNode('enabled')->defaultValue(true)->end()
+            ->scalarNode('index_analyzer')->end()
+            ->scalarNode('search_analyzer')->end()
             ->end()
         ;
 
