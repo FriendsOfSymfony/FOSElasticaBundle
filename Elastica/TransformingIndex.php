@@ -1,8 +1,11 @@
 <?php
 
-namespace FOS\ElasticaBundle\Index;
+namespace FOS\ElasticaBundle\Elastica;
 
+use Elastica\Client;
+use Elastica\Exception\InvalidException;
 use Elastica\Index;
+use FOS\ElasticaBundle\Transformer\CombinedResultTransformer;
 
 /**
  * Overridden Elastica Index class that provides dynamic index name changes
@@ -14,18 +17,30 @@ use Elastica\Index;
 class TransformingIndex extends Index
 {
     /**
-     * Indexes a
-     * @param  string $query
-     * @param  int|array $options
-     * @return \Elastica\Search
+     * Creates a TransformingSearch instance instead of the default Elastica Search
+     *
+     * @param string $query
+     * @param int|array $options
+     * @return TransformingSearch
      */
     public function createSearch($query = '', $options = null)
     {
-        $search = new Search($this->getClient());
+        $search = new TransformingSearch($this->getClient());
         $search->addIndex($this);
         $search->setOptionsAndQuery($options, $query);
 
         return $search;
+    }
+
+    /**
+     * Returns a type object for the current index with the given name
+     *
+     * @param  string $type Type name
+     * @return TransformingType Type object
+     */
+    public function getType($type)
+    {
+        return new TransformingType($this, $type);
     }
 
     /**
@@ -35,8 +50,6 @@ class TransformingIndex extends Index
      * since it's used for a very specific case and normally should not be used
      *
      * @param string $name Index name
-     *
-     * @return void
      */
     public function overrideName($name)
     {

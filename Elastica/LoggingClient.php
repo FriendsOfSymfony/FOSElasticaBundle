@@ -5,6 +5,7 @@ namespace FOS\ElasticaBundle\Elastica;
 use Elastica\Client as Client;
 use Elastica\Request;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use FOS\ElasticaBundle\Transformer\CombinedResultTransformer;
 
 /**
  * Extends the default Elastica client to provide logging for errors that occur
@@ -14,6 +15,38 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
  */
 class LoggingClient extends Client
 {
+    /**
+     * @var CombinedResultTransformer
+     */
+    private $resultTransformer;
+
+    public function __construct(array $config = array(), $callback = null, CombinedResultTransformer $resultTransformer)
+    {
+        parent::__construct($config, $callback);
+
+        $this->resultTransformer = $resultTransformer;
+    }
+
+    /**
+     * Overridden Elastica method to return TransformingIndex instances instead of the
+     * default Index instances.
+     *
+     * @param string $name
+     * @return TransformingIndex
+     */
+    public function getIndex($name)
+    {
+        return new TransformingIndex($this, $name, $this->resultTransformer);
+    }
+
+    /**
+     * @return CombinedResultTransformer
+     */
+    public function getResultTransformer()
+    {
+        return $this->resultTransformer;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -38,10 +71,5 @@ class LoggingClient extends Client
         }
 
         return $response;
-    }
-
-    public function getIndex($name)
-    {
-        return new DynamicIndex($this, $name);
     }
 }
