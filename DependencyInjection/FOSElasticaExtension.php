@@ -574,11 +574,16 @@ class FOSElasticaExtension extends Extension
 
     protected function cleanUpMapping(&$mappings)
     {
-        foreach ($mappings as &$fieldProperties)
-        if (empty($fieldProperties['fields'])) {
-            unset($fieldProperties['fields']);
-        } else {
-            $this->cleanUpMapping($fieldProperties['fields']);
+        foreach ($mappings as &$fieldProperties) {
+            if (empty($fieldProperties['fields'])) {
+                unset($fieldProperties['fields']);
+            } else {
+                $this->cleanUpMapping($fieldProperties['fields']);
+            }
+
+            if (!empty($fieldProperties['properties'])) {
+                $this->cleanUpMapping($fieldProperties['properties']);
+            }
         }
     }
 }
