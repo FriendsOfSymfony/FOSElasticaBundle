@@ -234,6 +234,7 @@ class FOSElasticaExtension extends Extension
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['_routing'] = $type['_routing'];
             }
             if (isset($type['mappings']) && !empty($type['mappings'])) {
+                $this->cleanUpMapping($type['mappings']);
                 $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
                 $typeName = sprintf('%s/%s', $indexName, $name);
                 $this->typeFields[$typeName] = $type['mappings'];
@@ -569,5 +570,20 @@ class FOSElasticaExtension extends Extension
         }
 
         $container->setAlias('fos_elastica.manager', sprintf('fos_elastica.manager.%s', $defaultManagerService));
+    }
+
+    protected function cleanUpMapping(&$mappings)
+    {
+        foreach ($mappings as &$fieldProperties) {
+            if (empty($fieldProperties['fields'])) {
+                unset($fieldProperties['fields']);
+            } else {
+                $this->cleanUpMapping($fieldProperties['fields']);
+            }
+
+            if (!empty($fieldProperties['properties'])) {
+                $this->cleanUpMapping($fieldProperties['properties']);
+            }
+        }
     }
 }
