@@ -112,7 +112,10 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         $propertyAccessor = $this->propertyAccessor;
         usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor)
         {
-            return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
+            $aIdentifier = is_array($a) ? "[$identifier]" : $identifier;
+            $bIdentifier = is_array($b) ? "[$identifier]" : $identifier;
+
+            return $idPos[$propertyAccessor->getValue($a, $aIdentifier)] > $idPos[$propertyAccessor->getValue($b, $bIdentifier)];
         });
 
         return $objects;
