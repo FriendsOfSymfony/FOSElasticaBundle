@@ -1,8 +1,8 @@
 <?php
 
-namespace FOS\ElasticaBundle\Tests\IndexManager;
+namespace FOS\ElasticaBundle\Tests\Index;
 
-use FOS\ElasticaBundle\IndexManager;
+use FOS\ElasticaBundle\Index\IndexManager;
 
 class IndexManagerTest extends \PHPUnit_Framework_TestCase
 {
