@@ -465,9 +465,6 @@ class FOSElasticaExtension extends Extension
      */
     private function getDoctrineEvents(array $typeConfig)
     {
-        // Flush always calls depending on actions scheduled in lifecycle listeners
-        $typeConfig['listener']['flush'] = true;
-
         switch ($typeConfig['driver']) {
             case 'orm':
                 $eventsClass = '\Doctrine\ORM\Events';
