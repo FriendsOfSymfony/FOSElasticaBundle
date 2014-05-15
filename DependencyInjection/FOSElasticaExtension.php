@@ -4,7 +4,6 @@ namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -14,6 +13,13 @@ use InvalidArgumentException;
 
 class FOSElasticaExtension extends Extension
 {
+    /**
+     * Stores references to all defined clients loaded by the extension.
+     *
+     * @var array
+     */
+    private $clients = array();
+
     protected $indexConfigs     = array();
     protected $typeFields       = array();
     protected $loadedDrivers    = array();
@@ -21,9 +27,7 @@ class FOSElasticaExtension extends Extension
 
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = $this->getConfiguration($configs, $container);
-        $config        = $this->processConfiguration($configuration, $configs);
-
+        $config = $this->processConfiguration(new Configuration($configs, $container), $configs);
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         if (empty($config['clients']) || empty($config['indexes'])) {
@@ -43,25 +47,19 @@ class FOSElasticaExtension extends Extension
             $config['default_index'] = reset($keys);
         }
 
-        $clientIdsByName = $this->loadClients($config['clients'], $container);
-        $this->serializerConfig = isset($config['serializer']) ? $config['serializer'] : null;
-        $indexIdsByName  = $this->loadIndexes($config['indexes'], $container, $clientIdsByName, $config['default_client']);
-        $indexRefsByName = array_map(function($id) {
-            return new Reference($id);
-        }, $indexIdsByName);
-
-        $this->loadIndexManager($indexRefsByName, $container);
-        $this->loadResetter($this->indexConfigs, $container);
-
+        $this->loadClients($config['clients'], $container);
         $container->setAlias('fos_elastica.client', sprintf('fos_elastica.client.%s', $config['default_client']));
+
+        // XX serializer can be done better....
+        // $this->serializerConfig = isset($config['serializer']) ? $config['serializer'] : null;
+
+        $this->loadIndexes($config['indexes'], $container);
         $container->setAlias('fos_elastica.index', sprintf('fos_elastica.index.%s', $config['default_index']));
 
-        $this->createDefaultManagerAlias($config['default_manager'], $container);
-    }
+        $this->loadIndexManager($container);
+        $this->loadResetter($container);
 
-    public function getConfiguration(array $config, ContainerBuilder $container)
-    {
-        return new Configuration($config);
+        $this->createDefaultManagerAlias($config['default_manager'], $container);
     }
 
     /**
@@ -73,22 +71,24 @@ class FOSElasticaExtension extends Extension
      */
     protected function loadClients(array $clients, ContainerBuilder $container)
     {
-        $clientIds = array();
         foreach ($clients as $name => $clientConfig) {
             $clientId = sprintf('fos_elastica.client.%s', $name);
-            $clientDef = new Definition('%fos_elastica.client.class%', array($clientConfig));
+
+            $clientDef = new DefinitionDecorator('fos_elastica.client_prototype');
+            $clientDef->replaceArgument(0, $clientConfig);
+
             $logger = $clientConfig['servers'][0]['logger'];
             if (false !== $logger) {
                 $clientDef->addMethodCall('setLogger', array(new Reference($logger)));
             }
-            $clientDef->addTag('fos_elastica.client');
 
             $container->setDefinition($clientId, $clientDef);
 
-            $clientIds[$name] = $clientId;
+            $this->clients[$name] = array(
+                'id' => $clientId,
+                'reference' => new Reference($clientId)
+            );
         }
-
-        return $clientIds;
     }
 
     /**
@@ -96,35 +96,29 @@ class FOSElasticaExtension extends Extension
      *
      * @param array $indexes An array of indexes configurations
      * @param ContainerBuilder $container A ContainerBuilder instance
-     * @param array $clientIdsByName
-     * @param $defaultClientName
-     * @param $serializerConfig
      * @throws \InvalidArgumentException
      * @return array
      */
-    protected function loadIndexes(array $indexes, ContainerBuilder $container, array $clientIdsByName, $defaultClientName)
+    protected function loadIndexes(array $indexes, ContainerBuilder $container)
     {
         $indexIds = array();
+
         foreach ($indexes as $name => $index) {
-            if (isset($index['client'])) {
-                $clientName = $index['client'];
-                if (!isset($clientIdsByName[$clientName])) {
-                    throw new InvalidArgumentException(sprintf('The elastica client with name "%s" is not defined', $clientName));
-                }
-            } else {
-                $clientName = $defaultClientName;
+            $indexId = sprintf('fos_elastica.index.%s', $name);
+            $indexName = $index['index_name'] ?: $name;
+
+            $indexDef = new DefinitionDecorator('fos_elastica.index_prototype');
+            $indexDef->replaceArgument(0, $indexName);
+
+            if ($index['client']) {
+                $client = $this->getClient($index['client']);
+                $indexDef->setFactoryService($client);
             }
 
-            $clientId = $clientIdsByName[$clientName];
-            $indexId = sprintf('fos_elastica.index.%s', $name);
-            $indexName = isset($index['index_name']) ? $index['index_name'] : $name;
-            $indexDefArgs = array($indexName);
-            $indexDef = new Definition('%fos_elastica.index.class%', $indexDefArgs);
-            $indexDef->setFactoryService($clientId);
-            $indexDef->setFactoryMethod('getIndex');
             $container->setDefinition($indexId, $indexDef);
+
             $typePrototypeConfig = isset($index['type_prototype']) ? $index['type_prototype'] : array();
-            $indexIds[$name] = $indexId;
+
             $this->indexConfigs[$name] = array(
                 'index' => new Reference($indexId),
                 'name_or_alias' => $indexName,
@@ -132,10 +126,13 @@ class FOSElasticaExtension extends Extension
                     'mappings' => array()
                 )
             );
+
             if ($index['finder']) {
+                // XX Deprecated
                 $this->loadIndexFinder($container, $name, $indexId);
             }
             if (!empty($index['settings'])) {
+                // XX What is this for?
                 $this->indexConfigs[$name]['config']['settings'] = $index['settings'];
             }
             if ($index['use_alias']) {
@@ -522,26 +519,26 @@ class FOSElasticaExtension extends Extension
     /**
      * Loads the index manager
      *
-     * @param array            $indexRefsByName
      * @param ContainerBuilder $container
-     **/
-    protected function loadIndexManager(array $indexRefsByName, ContainerBuilder $container)
+     */
+    protected function loadIndexManager(ContainerBuilder $container)
     {
+        $indexRefs = array_map(function ($index) { return $index['index']; }, $this->indexConfigs);
+
         $managerDef = $container->getDefinition('fos_elastica.index_manager');
-        $managerDef->replaceArgument(0, $indexRefsByName);
+        $managerDef->replaceArgument(0, $indexRefs);
         $managerDef->replaceArgument(1, new Reference('fos_elastica.index'));
     }
 
     /**
      * Loads the resetter
      *
-     * @param array $indexConfigs
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param ContainerBuilder $container
      */
-    protected function loadResetter(array $indexConfigs, ContainerBuilder $container)
+    protected function loadResetter(ContainerBuilder $container)
     {
         $resetterDef = $container->getDefinition('fos_elastica.resetter');
-        $resetterDef->replaceArgument(0, $indexConfigs);
+        $resetterDef->replaceArgument(0, $this->indexConfigs);
     }
 
     protected function loadDriver(ContainerBuilder $container, $driver)
@@ -549,6 +546,7 @@ class FOSElasticaExtension extends Extension
         if (in_array($driver, $this->loadedDrivers)) {
             return;
         }
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load($driver.'.xml');
         $this->loadedDrivers[] = $driver;
@@ -569,5 +567,21 @@ class FOSElasticaExtension extends Extension
         }
 
         $container->setAlias('fos_elastica.manager', sprintf('fos_elastica.manager.%s', $defaultManagerService));
+    }
+
+    /**
+     * Returns a reference to a client.
+     *
+     * @param string $clientName
+     * @return Reference
+     * @throws \InvalidArgumentException
+     */
+    private function getClient($clientName)
+    {
+        if (!array_key_exists($clientName, $this->clients)) {
+            throw new InvalidArgumentException(sprintf('The elastica client with name "%s" is not defined', $clientName));
+        }
+
+        return $this->clients[$clientName]['reference'];
     }
 }

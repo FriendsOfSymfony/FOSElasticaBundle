@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\Elastica\TransformingIndex</parameter>
+        <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
+        <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\IndexManager</parameter>
+        <parameter key="fos_elastica.resetter.class">FOS\ElasticaBundle\Resetter</parameter>
+        <parameter key="fos_elastica.finder.class">FOS\ElasticaBundle\Finder\TransformedFinder</parameter>
+    </parameters>
+
+    <services>
+        <service id="fos_elastica.index_prototype" factory-service="fos_elastica.client" factory-method="getIndex" abstract="true">
+            <argument /> <!-- index name -->
+        </service>
+
+        <service id="fos_elastica.index_manager" class="%fos_elastica.index_manager.class%">
+            <argument /> <!-- indexes -->
+            <argument /> <!-- default index -->
+        </service>
+
+        <service id="fos_elastica.resetter" class="%fos_elastica.resetter.class%">
+            <argument /> <!-- index configs -->
+        </service>
+
+        <!-- Abstract definition for all finders. -->
+        <service id="fos_elastica.finder" class="%fos_elastica.finder.class%" public="true" abstract="true">
+            <argument /> <!-- searchable -->
+            <argument /> <!-- transformer -->
+        </service>
+    </services>
+</container>

@@ -2,20 +2,25 @@
 
 namespace FOS\ElasticaBundle\Index;
 
-use Elastica\Index;
+use FOS\ElasticaBundle\Elastica\TransformingIndex;
 
 class IndexManager
 {
+    /**
+     * @var TransformingIndex[]
+     */
     protected $indexesByName;
+
+    /**
+     * @var string
+     */
     protected $defaultIndexName;
 
     /**
-     * Constructor.
-     *
-     * @param array $indexesByName
-     * @param Index $defaultIndex
+     * @param TransformingIndex[] $indexesByName
+     * @param TransformingIndex $defaultIndex
      */
-    public function __construct(array $indexesByName, Index $defaultIndex)
+    public function __construct(array $indexesByName, TransformingIndex $defaultIndex)
     {
         $this->indexesByName = $indexesByName;
         $this->defaultIndexName = $defaultIndex->getName();
@@ -24,7 +29,7 @@ class IndexManager
     /**
      * Gets all registered indexes
      *
-     * @return array
+     * @return TransformingIndex[]
      */
     public function getAllIndexes()
     {
@@ -35,7 +40,7 @@ class IndexManager
      * Gets an index by its name
      *
      * @param string $name Index to return, or the default index if null
-     * @return Index
+     * @return TransformingIndex
      * @throws \InvalidArgumentException if no index exists for the given name
      */
     public function getIndex($name = null)
@@ -54,7 +59,7 @@ class IndexManager
     /**
      * Gets the default index
      *
-     * @return Index
+     * @return TransformingIndex
      */
     public function getDefaultIndex()
     {

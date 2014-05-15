@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
 use FOS\ElasticaBundle\Doctrine\AbstractLookup;
-use FOS\ElasticaBundle\Type\TypeConfigurationInterface;
+use FOS\ElasticaBundle\Type\TypeConfiguration;
 
 class Lookup extends AbstractLookup
 {
@@ -20,11 +20,11 @@ class Lookup extends AbstractLookup
     /**
      * Look up objects of a specific type with ids as supplied.
      *
-     * @param TypeConfigurationInterface $configuration
+     * @param TypeConfiguration $configuration
      * @param array $ids
      * @return array
      */
-    public function lookup(TypeConfigurationInterface $configuration, array $ids)
+    public function lookup(TypeConfiguration $configuration, array $ids)
     {
         $qb = $this->createQueryBuilder($configuration);
         $qb->hydrate($configuration->isHydrate());
@@ -36,10 +36,10 @@ class Lookup extends AbstractLookup
     }
 
     /**
-     * @param TypeConfigurationInterface $configuration
+     * @param TypeConfiguration $configuration
      * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
-    private function createQueryBuilder(TypeConfigurationInterface $configuration)
+    private function createQueryBuilder(TypeConfiguration $configuration)
     {
         $method = $configuration->getRepositoryMethod();
         $manager = $this->registry->getManagerForClass($configuration->getModelClass());

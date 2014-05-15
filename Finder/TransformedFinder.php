@@ -13,7 +13,7 @@ use Elastica\Query;
 /**
  * Finds elastica documents and map them to persisted objects
  */
-class TransformedFinder implements PaginatedFinderInterface
+class TransformedFinder implements FinderInterface
 {
     protected $searchable;
     protected $transformer;
@@ -31,7 +31,7 @@ class TransformedFinder implements PaginatedFinderInterface
      * @param integer $limit
      * @param array $options
      * @return array of model objects
-     **/
+     */
     public function find($query, $limit = null, $options = array())
     {
         $results = $this->search($query, $limit, $options);
@@ -77,30 +77,5 @@ class TransformedFinder implements PaginatedFinderInterface
         $results = $this->searchable->search($queryObject, $options)->getResults();
 
         return $results;
-    }
-
-    /**
-     * Gets a paginator wrapping the result of a search
-     *
-     * @param string $query
-     * @param array $options
-     * @return Pagerfanta
-     */
-    public function findPaginated($query, $options = array())
-    {
-        $queryObject = Query::create($query);
-        $paginatorAdapter = $this->createPaginatorAdapter($queryObject, $options);
-
-        return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createPaginatorAdapter($query, $options = array())
-    {
-        $query = Query::create($query);
-
-        return new TransformedPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
     }
 }

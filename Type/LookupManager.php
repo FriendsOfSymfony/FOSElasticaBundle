@@ -19,7 +19,6 @@ class LookupManager
         }
     }
 
-
     /**
      * @param string $type
      * @return LookupInterface

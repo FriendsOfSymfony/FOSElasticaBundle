@@ -5,8 +5,7 @@ namespace FOS\ElasticaBundle\Transformer;
 use FOS\ElasticaBundle\Exception\MissingModelException;
 use FOS\ElasticaBundle\Exception\UnexpectedObjectException;
 use FOS\ElasticaBundle\Type\LookupManager;
-use FOS\ElasticaBundle\Type\TypeConfigurationInterface;
-use Psr\Log\LoggerInterface;
+use FOS\ElasticaBundle\Type\TypeConfiguration;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
@@ -35,12 +34,12 @@ class ResultTransformer implements ResultTransformerInterface
     /**
      * Transforms Elastica results into Models.
      *
-     * @param TypeConfigurationInterface $configuration
+     * @param TypeConfiguration $configuration
      * @param \FOS\ElasticaBundle\Elastica\TransformingResult[] $results
      * @throws \FOS\ElasticaBundle\Exception\MissingModelException
      * @throws \FOS\ElasticaBundle\Exception\UnexpectedObjectException
      */
-    public function transform(TypeConfigurationInterface $configuration, $results)
+    public function transform(TypeConfiguration $configuration, $results)
     {
         $results = $this->processResults($results);
         $lookup = $this->lookupManager->getLookup($configuration->getType());

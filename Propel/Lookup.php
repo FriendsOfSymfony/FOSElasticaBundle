@@ -4,7 +4,7 @@ namespace FOS\ElasticaBundle\Propel;
 
 use Doctrine\Common\Util\Inflector;
 use FOS\ElasticaBundle\Type\LookupInterface;
-use FOS\ElasticaBundle\Type\TypeConfigurationInterface;
+use FOS\ElasticaBundle\Type\TypeConfiguration;
 
 class Lookup implements LookupInterface
 {
@@ -21,11 +21,11 @@ class Lookup implements LookupInterface
     /**
      * Look up objects of a specific type with ids as supplied.
      *
-     * @param TypeConfigurationInterface $configuration
+     * @param TypeConfiguration $configuration
      * @param int[] $ids
      * @return object[]
      */
-    public function lookup(TypeConfigurationInterface $configuration, array $ids)
+    public function lookup(TypeConfiguration $configuration, array $ids)
     {
         $query = $this->createQuery($configuration, $ids);
 
@@ -39,11 +39,11 @@ class Lookup implements LookupInterface
     /**
      * Create a query to use in the findByIdentifiers() method.
      *
-     * @param TypeConfigurationInterface $configuration
+     * @param TypeConfiguration $configuration
      * @param array $ids
      * @return \ModelCriteria
      */
-    protected function createQuery(TypeConfigurationInterface $configuration, array $ids)
+    protected function createQuery(TypeConfiguration $configuration, array $ids)
     {
         $queryClass = $configuration->getModelClass() . 'Query';
         $query = $queryClass::create();

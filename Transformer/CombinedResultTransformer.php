@@ -12,7 +12,7 @@ use FOS\ElasticaBundle\Elastica\TransformingResult;
 class CombinedResultTransformer
 {
     /**
-     * @var \FOS\ElasticaBundle\Type\TypeConfigurationInterface
+     * @var \FOS\ElasticaBundle\Type\TypeConfiguration
      */
     private $configurations;
 
@@ -22,7 +22,7 @@ class CombinedResultTransformer
     private $transformer;
 
     /**
-     * @param \FOS\ElasticaBundle\Type\TypeConfigurationInterface[] $configurations
+     * @param \FOS\ElasticaBundle\Type\TypeConfiguration[] $configurations
      * @param ResultTransformerInterface $transformer
      */
     public function __construct(array $configurations, ResultTransformerInterface $transformer)
@@ -54,7 +54,7 @@ class CombinedResultTransformer
      * Retrieves the transformer for a given type.
      *
      * @param string $type
-     * @return \FOS\ElasticaBundle\Type\TypeConfigurationInterface
+     * @return \FOS\ElasticaBundle\Type\TypeConfiguration
      * @throws \InvalidArgumentException
      */
     private function getConfiguration($type)

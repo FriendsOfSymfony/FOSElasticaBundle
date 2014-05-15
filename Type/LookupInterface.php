@@ -19,9 +19,9 @@ interface LookupInterface
     /**
      * Look up objects of a specific type with ids as supplied.
      *
-     * @param TypeConfigurationInterface $configuration
+     * @param TypeConfiguration $configuration
      * @param int[] $ids
      * @return object[]
      */
-    public function lookup(TypeConfigurationInterface $configuration, array $ids);
+    public function lookup(TypeConfiguration $configuration, array $ids);
 }

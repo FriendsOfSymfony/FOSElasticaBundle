@@ -2,15 +2,15 @@
 
 namespace FOS\ElasticaBundle\Transformer;
 
-use FOS\ElasticaBundle\Type\TypeConfigurationInterface;
+use FOS\ElasticaBundle\Type\TypeConfiguration;
 
 interface ResultTransformerInterface
 {
     /**
      * Transforms Elastica results into Models.
      *
-     * @param TypeConfigurationInterface $configuration
+     * @param TypeConfiguration $configuration
      * @param array $results
      */
-    public function transform(TypeConfigurationInterface $configuration, $results);
+    public function transform(TypeConfiguration $configuration, $results);
 }

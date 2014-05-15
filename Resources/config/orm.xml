@@ -31,8 +31,8 @@
         </service>
 
         <service id="fos_elastica.manager.orm" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
-            <argument type="service" id="doctrine"/>
-            <argument type="service" id="annotation_reader"/>
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="annotation_reader" />
         </service>
 
     </services>
