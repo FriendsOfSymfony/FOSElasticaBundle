@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     private $configArray = array();
     private $debug;
 
-    public function __construct($configArray, $debug)
+    public function __construct($configArray, $debug = 'fos_elastica.logger')
     {
         $this->configArray = $configArray;
         $this->debug = ($debug) ? 'fos_elastica.logger' : false;
