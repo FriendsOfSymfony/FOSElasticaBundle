@@ -18,10 +18,11 @@ class Configuration implements ConfigurationInterface
     private $configArray = array();
     private $debug;
 
-    public function __construct($configArray, $debug = 'fos_elastica.logger')
+    public function __construct($configArray, $debug)
     {
+
         $this->configArray = $configArray;
-        $this->debug = ($debug) ? 'fos_elastica.logger' : false;
+        $this->debug = $debug;
     }
 
     /**
@@ -123,7 +124,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
                                         ->scalarNode('logger')
-                                            ->defaultValue($this->debug)
+                                            ->defaultValue(($this->debug) ? 'fos_elastica.logger' : false)
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
                                         ->end()

@@ -17,7 +17,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->configuration = new Configuration(array());
+        $this->configuration = new Configuration(array(), false);
     }
 
     public function testEmptyConfigContainsFormatMappingOptionNode()
@@ -140,7 +140,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $processor = new Processor();
 
-        $configuration = $processor->processConfiguration(new Configuration(array($config)), array($config));
+        $configuration = $processor->processConfiguration(new Configuration(array($config), false), array($config));
 
         $this->assertArrayNotHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['content']);
         $this->assertArrayHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['title']);
