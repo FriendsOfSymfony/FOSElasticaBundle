@@ -192,7 +192,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $processor = new Processor();
 
-        $configuration = $processor->processConfiguration(new Configuration(array($config)), array($config));
+        $configuration = $processor->processConfiguration(new Configuration(array($config), false), array($config));
 
         $mapping = $configuration['indexes']['test']['types']['test']['mappings'];
         $this->assertArrayNotHasKey('properties', $mapping['content']);
