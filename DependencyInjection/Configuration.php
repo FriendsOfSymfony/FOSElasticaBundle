@@ -291,6 +291,7 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('insert')->defaultTrue()->end()
                                     ->scalarNode('update')->defaultTrue()->end()
                                     ->scalarNode('delete')->defaultTrue()->end()
+                                    ->scalarNode('flush')->defaultTrue()->end()
                                     ->booleanNode('immediate')->defaultFalse()->end()
                                     ->scalarNode('logger')
                                         ->defaultFalse()
@@ -354,8 +355,16 @@ class Configuration implements ConfigurationInterface
             ->useAttributeAsKey('name')
             ->prototype('array')
                 ->validate()
-                ->ifTrue(function($v) { return isset($v['fields']) && empty($v['fields']); })
-                    ->then(function($v) { unset($v['fields']); return $v; })
+                    ->always()
+                    ->then(function($v) {
+                        foreach (array('fields','properties') as $prop) {
+                            if (isset($v[$prop]) && empty($v[$prop])) {
+                                unset($v[$prop]);
+                            }
+                        }
+                        
+                        return $v;
+                    })
                 ->end()
                 ->treatNullLike(array())
                 ->addDefaultsIfNotSet()
@@ -467,8 +476,16 @@ class Configuration implements ConfigurationInterface
                 ->useAttributeAsKey('name')
                 ->prototype('array')
                     ->validate()
-                        ->ifTrue(function($v) { return isset($v['fields']) && empty($v['fields']); })
-                        ->then(function($v) { unset($v['fields']); return $v; })
+                        ->always()
+                        ->then(function($v) {
+                            foreach (array('fields','properties') as $prop) {
+                                if (isset($v[$prop]) && empty($v[$prop])) {
+                                    unset($v[$prop]);
+                                }
+                            }
+
+                            return $v;
+                        })
                     ->end()
                     ->treatNullLike(array())
                     ->addDefaultsIfNotSet()
@@ -690,6 +707,8 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
             ->scalarNode('enabled')->defaultValue(true)->end()
+            ->scalarNode('index_analyzer')->end()
+            ->scalarNode('search_analyzer')->end()
             ->end()
         ;
 
