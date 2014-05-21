@@ -16,10 +16,13 @@ class Configuration implements ConfigurationInterface
     private $supportedDrivers = array('orm', 'mongodb', 'propel');
 
     private $configArray = array();
+    private $debug;
 
-    public function __construct($configArray)
+    public function __construct($configArray, $debug)
     {
+
         $this->configArray = $configArray;
+        $this->debug = $debug;
     }
 
     /**
@@ -121,7 +124,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
                                         ->scalarNode('logger')
-                                            ->defaultValue('%kernel.debug%')
+                                            ->defaultValue(($this->debug) ? 'fos_elastica.logger' : false)
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
                                         ->end()
