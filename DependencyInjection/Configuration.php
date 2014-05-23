@@ -102,6 +102,7 @@ class Configuration implements ConfigurationInterface
                                         ->end()
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
+                                        ->scalarNode('proxy')->end()
                                         ->scalarNode('logger')
                                             ->defaultValue(($this->debug) ? 'fos_elastica.logger' : false)
                                             ->treatNullLike('fos_elastica.logger')
