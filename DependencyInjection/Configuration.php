@@ -61,16 +61,6 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Generates the configuration tree.
-     *
-     * @return \Symfony\Component\DependencyInjection\Configuration\NodeInterface
-     */
-    public function getConfigTree()
-    {
-        return $this->getConfigTreeBuilder()->buildTree();
-    }
-
-    /**
      * Adds the configuration for the "clients" key
      */
     private function addClientsSection(ArrayNodeDefinition $rootNode)
@@ -83,28 +73,17 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->performNoDeepMerging()
                         ->beforeNormalization()
-                            ->ifTrue(function($v) { return isset($v['host']) && isset($v['port']); })
+                            ->ifTrue(function($v) { return (isset($v['host']) && isset($v['port'])) || isset($v['url']); })
                             ->then(function($v) {
                                 return array(
                                     'servers' => array(
                                         array(
-                                            'host'   => $v['host'],
-                                            'port'   => $v['port'],
+                                            'host' => isset($v['host']) ? $v['host'] : null,
+                                            'port' => isset($v['port']) ? $v['port'] : null,
+                                            'url' => isset($v['url']) ? $v['url'] : null,
                                             'logger' => isset($v['logger']) ? $v['logger'] : null,
                                             'headers' => isset($v['headers']) ? $v['headers'] : null,
-                                        )
-                                    )
-                                );
-                            })
-                        ->end()
-                        ->beforeNormalization()
-                            ->ifTrue(function($v) { return isset($v['url']); })
-                            ->then(function($v) {
-                                return array(
-                                    'servers' => array(
-                                        array(
-                                            'url'    => $v['url'],
-                                            'logger' => isset($v['logger']) ? $v['logger'] : null
+                                            'timeout' => isset($v['timeout']) ? $v['timeout'] : null,
                                         )
                                     )
                                 );
