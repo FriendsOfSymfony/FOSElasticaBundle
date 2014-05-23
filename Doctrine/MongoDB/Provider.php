@@ -9,6 +9,40 @@ use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 class Provider extends AbstractProvider
 {
     /**
+     * Disables logging and returns the logger that was previously set.
+     *
+     * @return mixed
+     */
+    protected function disableLogging()
+    {
+        $configuration = $this->managerRegistry
+            ->getManagerForClass($this->objectClass)
+            ->getConnection()
+            ->getConfiguration();
+
+        $logger = $configuration->getLoggerCallable();
+        $configuration->setLoggerCallable(null);
+
+        return $logger;
+    }
+
+    /**
+     * Reenables the logger with the previously returned logger from disableLogging();
+     *
+     * @param mixed $logger
+     * @return mixed
+     */
+    protected function enableLogging($logger)
+    {
+        $configuration = $this->managerRegistry
+            ->getManagerForClass($this->objectClass)
+            ->getConnection()
+            ->getConfiguration();
+
+        $configuration->setLoggerCallable($logger);
+    }
+
+    /**
      * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
      */
     protected function countObjects($queryBuilder)

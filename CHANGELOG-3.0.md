@@ -19,6 +19,7 @@ To generate a changelog summary since the last version, run
  * #415: BC BREAK: document indexing occurs in postFlush rather than the pre* events previously.
  * 7d13823: Dropped (broken) support for Symfony <2.3
  * #496: Added support for HTTP headers
+ * #528: FOSElasticaBundle will disable Doctrine logging when populating for a large increase in speed
 
 * 3.0.0-ALPHA2 (2014-03-17)
 

@@ -3,12 +3,47 @@
 namespace FOS\ElasticaBundle\Doctrine\ORM;
 
 use Doctrine\ORM\QueryBuilder;
+use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
 use FOS\ElasticaBundle\Doctrine\AbstractProvider;
 use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 
 class Provider extends AbstractProvider
 {
     const ENTITY_ALIAS = 'a';
+
+    /**
+     * Disables logging and returns the logger that was previously set.
+     *
+     * @return mixed
+     */
+    protected function disableLogging()
+    {
+        $configuration = $this->managerRegistry
+            ->getManagerForClass($this->objectClass)
+            ->getConnection()
+            ->getConfiguration();
+
+        $logger = $configuration->getSQLLogger();
+        $configuration->setSQLLogger(null);
+
+        return $logger;
+    }
+
+    /**
+     * Reenables the logger with the previously returned logger from disableLogging();
+     *
+     * @param mixed $logger
+     * @return mixed
+     */
+    protected function enableLogging($logger)
+    {
+        $configuration = $this->managerRegistry
+            ->getManagerForClass($this->objectClass)
+            ->getConnection()
+            ->getConfiguration();
+
+        $configuration->setSQLLogger($logger);
+    }
 
     /**
      * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()

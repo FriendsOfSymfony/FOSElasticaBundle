@@ -23,6 +23,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
     {
         parent::__construct($objectPersister, $objectClass, array_merge(array(
             'clear_object_manager' => true,
+            'disable_logging'      => false,
             'ignore_errors'        => false,
             'query_builder_method' => 'createQueryBuilder',
         ), $options));
@@ -35,12 +36,17 @@ abstract class AbstractProvider extends BaseAbstractProvider
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
+        if (!$this->options['disable_logging']) {
+            $logger = $this->disableLogging();
+        }
+
         $queryBuilder = $this->createQueryBuilder();
         $nbObjects = $this->countObjects($queryBuilder);
         $offset = isset($options['offset']) ? intval($options['offset']) : 0;
         $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
         $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
+        $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
 
         for (; $offset < $nbObjects; $offset += $batchSize) {
             if ($loggerClosure) {
@@ -61,7 +67,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             }
 
             if ($this->options['clear_object_manager']) {
-                $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
+                $manager->clear();
             }
 
             usleep($sleep);
@@ -75,6 +81,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
                 $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s %s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond, $this->getMemoryUsage()));
             }
         }
+
+        if (!$this->options['disable_logging']) {
+            $this->enableLogging($logger);
+        }
     }
 
     /**
@@ -84,6 +94,21 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * @return integer
      */
     protected abstract function countObjects($queryBuilder);
+
+    /**
+     * Disables logging and returns the logger that was previously set.
+     *
+     * @return mixed
+     */
+    protected abstract function disableLogging();
+
+    /**
+     * Reenables the logger with the previously returned logger from disableLogging();
+     *
+     * @param mixed $logger
+     * @return mixed
+     */
+    protected abstract function enableLogging($logger);
 
     /**
      * Fetches a slice of objects using the query builder.
