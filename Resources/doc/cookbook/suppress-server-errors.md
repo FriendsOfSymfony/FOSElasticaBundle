@@ -32,6 +32,16 @@ class Client extends BaseClient
         try {
             return parent::request($path, $method, $data, $query);
         } catch (ExceptionInterface $e) {
+            if ($this->_logger) {
+                $this->_logger->warning('Failed to send a request to ElasticSearch', array(
+                    'exception' => $e->getMessage(),
+                    'path' => $path,
+                    'method' => $method,
+                    'data' => $data,
+                    'query' => $query
+                ));
+            }
+
             return new Response('{"took":0,"timed_out":false,"hits":{"total":0,"max_score":0,"hits":[]}}');
         }
     }
@@ -41,15 +51,9 @@ class Client extends BaseClient
 Configuration change:
 ---------------------
 
-```xml
-<?xml version="1.0"?>
+You must update a parameter in your `app/config/config.yml` file to point to your overridden client:
 
-<container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
-    <parameters>
-        <parameter key="fos_elastica.client.class">Acme\ElasticaBundle\Client</parameter>
-    </parameters>
-
-</container>
+```yaml
+parameters:
+    fos_elastica.client.class: Acme\ElasticaBundle\Client
+```
