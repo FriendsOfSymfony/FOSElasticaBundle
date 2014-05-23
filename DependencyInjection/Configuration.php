@@ -61,16 +61,6 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Generates the configuration tree.
-     *
-     * @return \Symfony\Component\DependencyInjection\Configuration\NodeInterface
-     */
-    public function getConfigTree()
-    {
-        return $this->getConfigTreeBuilder()->buildTree();
-    }
-
-    /**
      * Adds the configuration for the "clients" key
      */
     private function addClientsSection(ArrayNodeDefinition $rootNode)
@@ -83,28 +73,17 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->performNoDeepMerging()
                         ->beforeNormalization()
-                            ->ifTrue(function($v) { return isset($v['host']) && isset($v['port']); })
+                            ->ifTrue(function($v) { return (isset($v['host']) && isset($v['port'])) || isset($v['url']); })
                             ->then(function($v) {
                                 return array(
                                     'servers' => array(
                                         array(
-                                            'host'   => $v['host'],
-                                            'port'   => $v['port'],
+                                            'host' => isset($v['host']) ? $v['host'] : null,
+                                            'port' => isset($v['port']) ? $v['port'] : null,
+                                            'url' => isset($v['url']) ? $v['url'] : null,
                                             'logger' => isset($v['logger']) ? $v['logger'] : null,
                                             'headers' => isset($v['headers']) ? $v['headers'] : null,
-                                        )
-                                    )
-                                );
-                            })
-                        ->end()
-                        ->beforeNormalization()
-                            ->ifTrue(function($v) { return isset($v['url']); })
-                            ->then(function($v) {
-                                return array(
-                                    'servers' => array(
-                                        array(
-                                            'url'    => $v['url'],
-                                            'logger' => isset($v['logger']) ? $v['logger'] : null
+                                            'timeout' => isset($v['timeout']) ? $v['timeout'] : null,
                                         )
                                     )
                                 );
@@ -170,65 +149,8 @@ class Configuration implements ConfigurationInterface
                                 ->children()
                                     ->scalarNode('index_analyzer')->end()
                                     ->scalarNode('search_analyzer')->end()
-                                    ->arrayNode('persistence')
-                                        ->validate()
-                                            ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
-                                            ->thenInvalid('Propel doesn\'t support listeners')
-                                            ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
-                                            ->thenInvalid('Propel doesn\'t support the "repository" parameter')
-                                        ->end()
-                                        ->children()
-                                            ->scalarNode('driver')
-                                                ->validate()
-                                                    ->ifNotInArray($this->supportedDrivers)
-                                                    ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
-                                                ->end()
-                                            ->end()
-                                            ->scalarNode('identifier')->defaultValue('id')->end()
-                                            ->arrayNode('provider')
-                                                ->children()
-                                                    ->scalarNode('batch_size')->defaultValue(100)->end()
-                                                    ->scalarNode('clear_object_manager')->defaultTrue()->end()
-                                                    ->booleanNode('debug_logging')
-                                                        ->defaultValue($this->debug)
-                                                        ->treatNullLike($this->debug)
-                                                    ->end()
-                                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
-                                                    ->scalarNode('service')->end()
-                                                ->end()
-                                            ->end()
-                                            ->arrayNode('listener')
-                                                ->children()
-                                                    ->scalarNode('insert')->defaultTrue()->end()
-                                                    ->scalarNode('update')->defaultTrue()->end()
-                                                    ->scalarNode('delete')->defaultTrue()->end()
-                                                    ->scalarNode('persist')->defaultValue('postFlush')->end()
-                                                    ->scalarNode('service')->end()
-                                                    ->variableNode('is_indexable_callback')->defaultNull()->end()
-                                                ->end()
-                                            ->end()
-                                            ->arrayNode('finder')
-                                                ->children()
-                                                    ->scalarNode('service')->end()
-                                                ->end()
-                                            ->end()
-                                            ->arrayNode('elastica_to_model_transformer')
-                                                ->addDefaultsIfNotSet()
-                                                ->children()
-                                                    ->scalarNode('hydrate')->defaultTrue()->end()
-                                                    ->scalarNode('ignore_missing')->defaultFalse()->end()
-                                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
-                                                    ->scalarNode('service')->end()
-                                                ->end()
-                                            ->end()
-                                            ->arrayNode('model_to_elastica_transformer')
-                                                ->addDefaultsIfNotSet()
-                                                ->children()
-                                                    ->scalarNode('service')->end()
-                                                ->end()
-                                            ->end()
-                                        ->end()
-                                    ->end()
+                                    ->append($this->getPersistenceNode())
+                                    ->append($this->getSerializerNode())
                                 ->end()
                             ->end()
                             ->variableNode('settings')->defaultValue(array())->end()
@@ -253,81 +175,10 @@ class Configuration implements ConfigurationInterface
             ->prototype('array')
                 ->treatNullLike(array())
                 ->children()
-                    ->arrayNode('serializer')
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->arrayNode('groups')
-                                ->treatNullLike(array())
-                                ->prototype('scalar')->end()
-                            ->end()
-                            ->scalarNode('version')->end()
-                        ->end()
-                    ->end()
                     ->scalarNode('index_analyzer')->end()
                     ->scalarNode('search_analyzer')->end()
-                    ->arrayNode('persistence')
-                        ->validate()
-                            ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
-                            ->thenInvalid('Propel doesn\'t support listeners')
-                            ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
-                            ->thenInvalid('Propel doesn\'t support the "repository" parameter')
-                        ->end()
-                        ->children()
-                            ->scalarNode('driver')
-                                ->validate()
-                                    ->ifNotInArray($this->supportedDrivers)
-                                    ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
-                                ->end()
-                            ->end()
-                            ->scalarNode('model')->end()
-                            ->scalarNode('repository')->end()
-                            ->scalarNode('identifier')->defaultValue('id')->end()
-                            ->arrayNode('provider')
-                                ->children()
-                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
-                                    ->scalarNode('batch_size')->defaultValue(100)->end()
-                                    ->scalarNode('clear_object_manager')->defaultTrue()->end()
-                                    ->scalarNode('service')->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('listener')
-                                ->children()
-                                    ->scalarNode('insert')->defaultTrue()->end()
-                                    ->scalarNode('update')->defaultTrue()->end()
-                                    ->scalarNode('delete')->defaultTrue()->end()
-                                    ->scalarNode('flush')->defaultTrue()->end()
-                                    ->booleanNode('immediate')->defaultFalse()->end()
-                                    ->scalarNode('logger')
-                                        ->defaultFalse()
-                                        ->treatNullLike('fos_elastica.logger')
-                                        ->treatTrueLike('fos_elastica.logger')
-                                    ->end()
-                                    ->scalarNode('service')->end()
-                                    ->variableNode('is_indexable_callback')->defaultNull()->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('finder')
-                                ->children()
-                                    ->scalarNode('service')->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('elastica_to_model_transformer')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->scalarNode('hydrate')->defaultTrue()->end()
-                                    ->scalarNode('ignore_missing')->defaultFalse()->end()
-                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
-                                    ->scalarNode('service')->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('model_to_elastica_transformer')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->scalarNode('service')->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
+                    ->append($this->getPersistenceNode())
+                    ->append($this->getSerializerNode())
                 ->end()
                 ->append($this->getIdNode())
                 ->append($this->getMappingsNode())
@@ -760,6 +611,100 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('index')->end()
             ->end()
         ;
+
+        return $node;
+    }
+
+    /**
+     * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
+     */
+    protected function getPersistenceNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('persistence');
+
+        $node
+            ->validate()
+                ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
+                    ->thenInvalid('Propel doesn\'t support listeners')
+                ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
+                    ->thenInvalid('Propel doesn\'t support the "repository" parameter')
+            ->end()
+            ->children()
+                ->scalarNode('driver')
+                    ->validate()
+                    ->ifNotInArray($this->supportedDrivers)
+                        ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
+                    ->end()
+                ->end()
+                ->scalarNode('model')->end()
+                ->scalarNode('repository')->end()
+                ->scalarNode('identifier')->defaultValue('id')->end()
+                ->arrayNode('provider')
+                    ->children()
+                        ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
+                        ->scalarNode('batch_size')->defaultValue(100)->end()
+                        ->scalarNode('clear_object_manager')->defaultTrue()->end()
+                        ->scalarNode('service')->end()
+                    ->end()
+                ->end()
+                ->arrayNode('listener')
+                    ->children()
+                        ->scalarNode('insert')->defaultTrue()->end()
+                        ->scalarNode('update')->defaultTrue()->end()
+                        ->scalarNode('delete')->defaultTrue()->end()
+                        ->booleanNode('immediate')->defaultFalse()->end()
+                        ->scalarNode('logger')
+                            ->defaultFalse()
+                            ->treatNullLike('fos_elastica.logger')
+                            ->treatTrueLike('fos_elastica.logger')
+                        ->end()
+                        ->scalarNode('service')->end()
+                        ->variableNode('is_indexable_callback')->defaultNull()->end()
+                    ->end()
+                ->end()
+                ->arrayNode('finder')
+                    ->children()
+                        ->scalarNode('service')->end()
+                    ->end()
+                ->end()
+                ->arrayNode('elastica_to_model_transformer')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('hydrate')->defaultTrue()->end()
+                        ->scalarNode('ignore_missing')->defaultFalse()->end()
+                        ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
+                        ->scalarNode('service')->end()
+                    ->end()
+                ->end()
+                ->arrayNode('model_to_elastica_transformer')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('service')->end()
+                    ->end()
+                ->end()
+            ->end();
+
+        return $node;
+    }
+
+    /**
+     * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
+     */
+    protected function getSerializerNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('serializer');
+
+        $node
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('groups')
+                    ->treatNullLike(array())
+                    ->prototype('scalar')->end()
+                ->end()
+                ->scalarNode('version')->end()
+            ->end();
 
         return $node;
     }

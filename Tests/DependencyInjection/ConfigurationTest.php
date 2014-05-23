@@ -11,141 +11,157 @@ use Symfony\Component\Config\Definition\Processor;
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Configuration
+     * @var Processor
      */
-    private $configuration;
+    private $processor;
 
     public function setUp()
     {
-        $this->configuration = new Configuration(array(), false);
+        $this->processor = new Processor();
     }
 
-    public function testEmptyConfigContainsFormatMappingOptionNode()
+    private function getConfigs(array $configArray)
     {
-        $tree = $this->configuration->getConfigTree();
-        $children = $tree->getChildren();
-        $children = $children['indexes']->getPrototype()->getChildren();
-        $typeNodes = $children['types']->getPrototype()->getChildren();
-        $mappings = $typeNodes['mappings']->getPrototype()->getChildren();
+        $configuration = new Configuration($configArray, true);
 
-        $this->assertArrayHasKey('format', $mappings);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $mappings['format']);
-        $this->assertNull($mappings['format']->getDefaultValue());
+        return $this->processor->processConfiguration($configuration, array($configArray));
     }
 
-    public function testDynamicTemplateNodes()
+    public function testUnconfiguredConfiguration()
     {
-        $tree = $this->configuration->getConfigTree();
-        $children = $tree->getChildren();
-        $children = $children['indexes']->getPrototype()->getChildren();
-        $typeNodes = $children['types']->getPrototype()->getChildren();
-        $dynamicTemplates = $typeNodes['dynamic_templates']->getPrototype()->getChildren();
+        $configuration = $this->getConfigs(array());
 
-        $this->assertArrayHasKey('match', $dynamicTemplates);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['match']);
-        $this->assertNull($dynamicTemplates['match']->getDefaultValue());
-
-        $this->assertArrayHasKey('match_mapping_type', $dynamicTemplates);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['match_mapping_type']);
-        $this->assertNull($dynamicTemplates['match_mapping_type']->getDefaultValue());
-
-        $this->assertArrayHasKey('unmatch', $dynamicTemplates);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['unmatch']);
-        $this->assertNull($dynamicTemplates['unmatch']->getDefaultValue());
-
-        $this->assertArrayHasKey('path_match', $dynamicTemplates);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['path_match']);
-        $this->assertNull($dynamicTemplates['path_match']->getDefaultValue());
-
-        $this->assertArrayHasKey('path_unmatch', $dynamicTemplates);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['path_unmatch']);
-        $this->assertNull($dynamicTemplates['path_unmatch']->getDefaultValue());
-
-        $this->assertArrayHasKey('match_pattern', $dynamicTemplates);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $dynamicTemplates['match_pattern']);
-        $this->assertNull($dynamicTemplates['match_pattern']->getDefaultValue());
-
-        $this->assertArrayHasKey('mapping', $dynamicTemplates);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ArrayNode', $dynamicTemplates['mapping']);
+        $this->assertSame(array(
+            'clients' => array(),
+            'indexes' => array(),
+            'default_manager' => 'orm'
+        ), $configuration);
     }
 
-    public function testDynamicTemplateMappingNodes()
+    public function testClientConfiguration()
     {
-        $tree = $this->configuration->getConfigTree();
-        $children = $tree->getChildren();
-        $children = $children['indexes']->getPrototype()->getChildren();
-        $typeNodes = $children['types']->getPrototype()->getChildren();
-        $dynamicTemplates = $typeNodes['dynamic_templates']->getPrototype()->getChildren();
-        $mapping = $dynamicTemplates['mapping']->getChildren();
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'default' => array(
+                    'url' => 'http://localhost:9200',
+                ),
+                'clustered' => array(
+                    'servers' => array(
+                        array(
+                            'url' => 'http://es1:9200',
+                            'headers' => array(
+                                'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=='
+                            )
+                        ),
+                        array(
+                            'url' => 'http://es2:9200',
+                            'headers' => array(
+                                'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=='
+                            )
+                        ),
+                    )
+                )
+            )
+        ));
 
-        $this->assertArrayHasKey('type', $mapping);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $mapping['type']);
-        $this->assertSame('string', $mapping['type']->getDefaultValue());
+        $this->assertCount(2, $configuration['clients']);
+        $this->assertCount(1, $configuration['clients']['default']['servers']);
+        $this->assertCount(0, $configuration['clients']['default']['servers'][0]['headers']);
 
-        $this->assertArrayHasKey('index', $mapping);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\ScalarNode', $mapping['index']);
-        $this->assertNull($mapping['index']->getDefaultValue());
+        $this->assertCount(2, $configuration['clients']['clustered']['servers']);
+        $this->assertEquals('http://es2:9200/', $configuration['clients']['clustered']['servers'][1]['url']);
+        $this->assertCount(1, $configuration['clients']['clustered']['servers'][1]['headers']);
+        $this->assertEquals('Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==', $configuration['clients']['clustered']['servers'][0]['headers'][0]);
+    }
+
+    public function testLogging()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'logging_enabled' => array(
+                    'url' => 'http://localhost:9200',
+                    'logger' => true,
+                ),
+                'logging_disabled' => array(
+                    'url' => 'http://localhost:9200',
+                    'logger' => false,
+                ),
+                'logging_not_mentioned' => array(
+                    'url' => 'http://localhost:9200',
+                ),
+                'logging_custom' => array(
+                    'url' => 'http://localhost:9200',
+                    'logger' => 'custom.service'
+                ),
+            )
+        ));
+
+        $this->assertCount(4, $configuration['clients']);
+
+        $this->assertEquals('fos_elastica.logger', $configuration['clients']['logging_enabled']['servers'][0]['logger']);
+        $this->assertFalse($configuration['clients']['logging_disabled']['servers'][0]['logger']);
+        $this->assertEquals('fos_elastica.logger', $configuration['clients']['logging_not_mentioned']['servers'][0]['logger']);
+        $this->assertEquals('custom.service', $configuration['clients']['logging_custom']['servers'][0]['logger']);
     }
 
     public function testSlashIsAddedAtTheEndOfServerUrl()
     {
         $config = array(
             'clients' => array(
-                'default' => array(
-                    'url' => 'http://www.github.com',
-                ),
+                'default' => array('url' => 'http://www.github.com'),
             ),
-        ); 
-        
-        $processor = new Processor();
-
-        $configuration = $processor->processConfiguration($this->configuration, array($config));
+        );
+        $configuration = $this->getConfigs($config);
 
         $this->assertEquals('http://www.github.com/', $configuration['clients']['default']['servers'][0]['url']);
     }
 
-    public function testEmptyFieldsIndexIsUnset()
+    public function testTypeConfig()
     {
-        $config = array(
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'default' => array('url' => 'http://localhost:9200'),
+            ),
             'indexes' => array(
                 'test' => array(
+                    'type_prototype' => array(
+                        'index_analyzer' => 'custom_analyzer',
+                        'persistence' => array(
+                            'identifier' => 'ID',
+                        ),
+                        'serializer' => array(
+                            'groups' => array('Search'),
+                            'version' => 1
+                        )
+                    ),
                     'types' => array(
                         'test' => array(
                             'mappings' => array(
-                                'title' => array(
-                                    'type' => 'string',
-                                    'fields' => array(
-                                        'autocomplete' => null
-                                    )
-                                ),
-                                'content' => null,
+                                'title' => array(),
+                                'published' => array('type' => 'datetime'),
+                                'body' => null,
+                            ),
+                            'persistence' => array(
+                                'listener' => array(
+                                    'logger' => true,
+                                )
+                            )
+                        ),
+                        'test2' => array(
+                            'mappings' => array(
+                                'title' => null,
                                 'children' => array(
                                     'type' => 'nested',
-                                    'properties' => array(
-                                        'title' => array(
-                                            'type' => 'string',
-                                            'fields' => array(
-                                                'autocomplete' => null
-                                            )
-                                        ),
-                                        'content' => null
-                                    )
                                 )
                             )
                         )
                     )
                 )
             )
-        );
+        ));
 
-        $processor = new Processor();
-
-        $configuration = $processor->processConfiguration(new Configuration(array($config), false), array($config));
-
-        $this->assertArrayNotHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['content']);
-        $this->assertArrayHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['title']);
-        $this->assertArrayNotHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['children']['properties']['content']);
-        $this->assertArrayHasKey('fields', $configuration['indexes']['test']['types']['test']['mappings']['children']['properties']['title']);
+        $this->assertEquals('string', $configuration['indexes']['test']['types']['test']['mappings']['title']['type']);
+        $this->assertTrue($configuration['indexes']['test']['types']['test']['mappings']['title']['include_in_all']);
     }
 
     public function testEmptyPropertiesIndexIsUnset()
