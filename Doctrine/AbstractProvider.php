@@ -23,7 +23,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
     {
         parent::__construct($objectPersister, $objectClass, array_merge(array(
             'clear_object_manager' => true,
-            'disable_logging'      => false,
+            'debug_logging'        => false,
             'ignore_errors'        => false,
             'query_builder_method' => 'createQueryBuilder',
         ), $options));
@@ -36,7 +36,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
-        if (!$this->options['disable_logging']) {
+        if (!$this->options['debug_logging']) {
             $logger = $this->disableLogging();
         }
 
@@ -82,7 +82,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             }
         }
 
-        if (!$this->options['disable_logging']) {
+        if (!$this->options['debug_logging']) {
             $this->enableLogging($logger);
         }
     }
