@@ -143,6 +143,8 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         if ( ! isset($this->aggregations)) {
             $this->aggregations = $this->searchable->search($this->query)->getAggregations();
         }
+
+        return $this->aggregations;
     }
 
     /**
