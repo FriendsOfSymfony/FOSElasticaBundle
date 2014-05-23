@@ -439,6 +439,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('tree')->end()
             ->scalarNode('precision')->end()
             ->scalarNode('tree_levels')->end()
+            ->scalarNode('geohash')->end()
             ->scalarNode('index_name')->end()
             ->booleanNode('omit_norms')->end()
             ->scalarNode('index_options')->end()
