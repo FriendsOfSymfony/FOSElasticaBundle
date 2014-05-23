@@ -17,7 +17,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
        }
 
        $this->objectClass = 'objectClass';
-       $this->options = array();
+       $this->options = array('debug_logging' => true);
 
        $this->objectPersister = $this->getMockObjectPersister();
        $this->managerRegistry = $this->getMockManagerRegistry();
