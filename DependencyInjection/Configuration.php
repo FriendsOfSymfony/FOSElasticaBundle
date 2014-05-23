@@ -435,6 +435,7 @@ class Configuration implements ConfigurationInterface
             ->booleanNode('include_in_all')->defaultValue(true)->end()
             ->booleanNode('enabled')->defaultValue(true)->end()
             ->scalarNode('lat_lon')->end()
+            ->scalarNode('geohash')->end()
             ->scalarNode('index_name')->end()
             ->booleanNode('omit_norms')->end()
             ->scalarNode('index_options')->end()
