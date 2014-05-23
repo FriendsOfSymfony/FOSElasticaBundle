@@ -4,12 +4,16 @@ namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
+use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
 
 abstract class AbstractProvider extends BaseAbstractProvider
 {
-    protected $managerRegistry;
+    /**
+     * @var ManagerRegistry
+     */
+    protected $manager;
 
     /**
      * Constructor.
@@ -19,19 +23,18 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * @param array                    $options
      * @param ManagerRegistry          $managerRegistry
      */
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $options, $managerRegistry)
+    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $options, ManagerRegistry $managerRegistry)
     {
         parent::__construct($objectPersister, $objectClass, array_merge(array(
             'clear_object_manager' => true,
-            'ignore_errors'        => false,
             'query_builder_method' => 'createQueryBuilder',
         ), $options));
 
-        $this->managerRegistry = $managerRegistry;
+        $this->manager = $managerRegistry->getManagerForClass($this->objectClass);
     }
 
     /**
-     * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
+     * {@inheritdoc}
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
@@ -42,26 +45,28 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
         $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
 
+        if ($loggerClosure && !$this->options['disable_logging']) {
+            $loggerClosure = null;
+        }
+
         for (; $offset < $nbObjects; $offset += $batchSize) {
             if ($loggerClosure) {
                 $stepStartTime = microtime(true);
             }
             $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
 
-            if (!$ignoreErrors) {
+            try {
                 $this->objectPersister->insertMany($objects);
-            } else {
-                try {
-                    $this->objectPersister->insertMany($objects);
-                } catch(BulkResponseException $e) {
-                    if ($loggerClosure) {
-                        $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
-                    }
+            } catch(BulkResponseException $e) {
+                if ($ignoreErrors && $loggerClosure) {
+                    $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
+                } else {
+                    throw $e;
                 }
             }
 
             if ($this->options['clear_object_manager']) {
-                $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
+                $this->manager->clear();
             }
 
             usleep($sleep);
@@ -81,7 +86,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * Counts objects that would be indexed using the query builder.
      *
      * @param object $queryBuilder
+     *
      * @return integer
+     *
+     * @throws InvalidArgumentTypeException
      */
     protected abstract function countObjects($queryBuilder);
 
@@ -91,6 +99,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * @param object  $queryBuilder
      * @param integer $limit
      * @param integer $offset
+     *
      * @return array
      */
     protected abstract function fetchSlice($queryBuilder, $limit, $offset);

@@ -4,9 +4,6 @@ namespace FOS\ElasticaBundle\Provider;
 
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 
-/**
- * AbstractProvider
- */
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
@@ -37,7 +34,9 @@ abstract class AbstractProvider implements ProviderInterface
         $this->objectClass = $objectClass;
 
         $this->options = array_merge(array(
-            'batch_size' => 100,
+            'batch_size'      => 100,
+            'disable_logging' => false,
+            'ignore_errors'   => false,
         ), $options);
     }
 

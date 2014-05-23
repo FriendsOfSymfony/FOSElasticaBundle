@@ -9,7 +9,7 @@ use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 class Provider extends AbstractProvider
 {
     /**
-     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
+     * {@inheritdoc}
      */
     protected function countObjects($queryBuilder)
     {
@@ -23,7 +23,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
+     * {@inheritdoc}
      */
     protected function fetchSlice($queryBuilder, $limit, $offset)
     {
@@ -40,13 +40,11 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::createQueryBuilder()
+     * {@inheritdoc}
      */
     protected function createQueryBuilder()
     {
-        return $this->managerRegistry
-            ->getManagerForClass($this->objectClass)
-            ->getRepository($this->objectClass)
+        return $this->manager->getRepository($this->objectClass)
             ->{$this->options['query_builder_method']}();
     }
 }

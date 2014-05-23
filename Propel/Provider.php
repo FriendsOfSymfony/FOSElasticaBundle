@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Propel;
 
 use FOS\ElasticaBundle\Provider\AbstractProvider;
+use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
 
 /**
  * Propel provider
@@ -12,7 +13,7 @@ use FOS\ElasticaBundle\Provider\AbstractProvider;
 class Provider extends AbstractProvider
 {
     /**
-     * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
+     * {@inheritdoc}
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
@@ -21,6 +22,11 @@ class Provider extends AbstractProvider
         $offset = isset($options['offset']) ? intval($options['offset']) : 0;
         $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
+        $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
+
+        if ($loggerClosure && !$this->options['disable_logging']) {
+            $loggerClosure = null;
+        }
 
         for (; $offset < $nbObjects; $offset += $batchSize) {
             if ($loggerClosure) {
@@ -32,7 +38,15 @@ class Provider extends AbstractProvider
                 ->offset($offset)
                 ->find();
 
-            $this->objectPersister->insertMany($objects->getArrayCopy());
+            try {
+                $this->objectPersister->insertMany($objects->getArrayCopy());
+            } catch(BulkResponseException $e) {
+                if ($ignoreErrors && $loggerClosure) {
+                    $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
+                } else {
+                    throw $e;
+                }
+            }
 
             usleep($sleep);
 

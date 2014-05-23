@@ -3,8 +3,10 @@
 namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\NodeInterface;
 
 class Configuration implements ConfigurationInterface
 {
@@ -28,7 +30,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Generates the configuration tree.
      *
-     * @return \Symfony\Component\Config\Definition\NodeInterface
+     * @return NodeInterface
      */
     public function getConfigTreeBuilder()
     {
@@ -63,7 +65,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Generates the configuration tree.
      *
-     * @return \Symfony\Component\DependencyInjection\Configuration\NodeInterface
+     * @return NodeInterface
      */
     public function getConfigTree()
     {
@@ -187,9 +189,10 @@ class Configuration implements ConfigurationInterface
                                             ->scalarNode('identifier')->defaultValue('id')->end()
                                             ->arrayNode('provider')
                                                 ->children()
-                                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
                                                     ->scalarNode('batch_size')->defaultValue(100)->end()
                                                     ->scalarNode('clear_object_manager')->defaultTrue()->end()
+                                                    ->scalarNode('disable_logger')->defaultValue('%kernel.debug%')->end()
+                                                    ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
                                                     ->scalarNode('service')->end()
                                                 ->end()
                                             ->end()
@@ -402,7 +405,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @return the array node used for mapping in dynamic templates
+     * @return NodeInterface[] the array node used for mapping in dynamic templates
      */
     protected function getDynamicTemplateMapping()
     {
@@ -417,8 +420,8 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param \Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the field config to
-     * @param array $nestings the nested mappings for the current field level
+     * @param NodeBuilder $node     The node to which to attach the field config to
+     * @param array       $nestings the nested mappings for the current field level
      */
     protected function addFieldConfig($node, $nestings)
     {
@@ -468,9 +471,9 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param \Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the nested config to
-     * @param array $nestings The nestings for the current field level
-     * @param string $property the name of the nested property ('fields' or 'properties')
+     * @param NodeBuilder $node     The node to which to attach the nested config to
+     * @param array       $nestings The nestings for the current field level
+     * @param string      $property the name of the nested property ('fields' or 'properties')
      */
     protected function addNestedFieldConfig($node, $nestings, $property)
     {
@@ -566,6 +569,7 @@ class Configuration implements ConfigurationInterface
 
     /**
      * @param array $mappings The mappings for the current type
+     *
      * @return array The nested mappings defined for this type
      */
     protected function getNestingsForType(array $mappings = null)
@@ -588,9 +592,9 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param array $field      The field mapping definition
-     * @param array $nestings   The nestings array
-     * @param string $property  The nested property name ('fields' or 'properties')
+     * @param array  $field    The field mapping definition
+     * @param array  $nestings The nestings array
+     * @param string $property The nested property name ('fields' or 'properties')
      */
     protected function addPropertyNesting($field, &$nestings, $property)
     {
