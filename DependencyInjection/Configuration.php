@@ -150,6 +150,7 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('index_analyzer')->end()
                                     ->scalarNode('search_analyzer')->end()
                                     ->append($this->getPersistenceNode())
+                                    ->append($this->getSerializerNode())
                                 ->end()
                             ->end()
                             ->variableNode('settings')->defaultValue(array())->end()
@@ -174,19 +175,10 @@ class Configuration implements ConfigurationInterface
             ->prototype('array')
                 ->treatNullLike(array())
                 ->children()
-                    ->arrayNode('serializer')
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->arrayNode('groups')
-                                ->treatNullLike(array())
-                                ->prototype('scalar')->end()
-                            ->end()
-                            ->scalarNode('version')->end()
-                        ->end()
-                    ->end()
                     ->scalarNode('index_analyzer')->end()
                     ->scalarNode('search_analyzer')->end()
                     ->append($this->getPersistenceNode())
+                    ->append($this->getSerializerNode())
                 ->end()
                 ->append($this->getIdNode())
                 ->append($this->getMappingsNode())
@@ -690,6 +682,27 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('service')->end()
                     ->end()
                 ->end()
+            ->end();
+
+        return $node;
+    }
+
+    /**
+     * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
+     */
+    protected function getSerializerNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('serializer');
+
+        $node
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('groups')
+                    ->treatNullLike(array())
+                    ->prototype('scalar')->end()
+                ->end()
+                ->scalarNode('version')->end()
             ->end();
 
         return $node;
