@@ -219,4 +219,18 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('properties', $mapping['children']['properties']['tags']);
         $this->assertArrayNotHasKey('properties', $mapping['children']['properties']['tags']['properties']['tag']);
     }
+
+    public function testClientConfigurationNoUrl()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'default' => array(
+                    'host' => 'localhost',
+                    'port' => 9200,
+                ),
+            )
+        ));
+
+        $this->assertTrue(empty($configuration['clients']['default']['servers'][0]['url']));
+    }
 }
