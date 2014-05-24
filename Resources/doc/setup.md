@@ -114,9 +114,9 @@ Below is an example for the Doctrine ORM.
                         driver: orm
                         model: Acme\ApplicationBundle\Entity\User
                         provider: ~
-                        listener: ~
+                        listener:
+                            immediate: ~
                         finder: ~
-                        immediate: ~
 ```
 
 There are a significant number of options available for types, that can be
