@@ -177,6 +177,16 @@ class Configuration implements ConfigurationInterface
             ->useAttributeAsKey('name')
             ->prototype('array')
                 ->treatNullLike(array())
+                // BC - Renaming 'mappings' node to 'properties'
+                ->beforeNormalization()
+                ->ifTrue(function($v) { return isset($v['mappings']); })
+                ->then(function($v) {
+                        $v['properties'] = $v['mappings'];
+                        unset($v['mappings']);
+
+                        return $v;
+                    })
+                ->end()
                 ->children()
                     ->scalarNode('index_analyzer')->end()
                     ->scalarNode('search_analyzer')->end()
@@ -184,7 +194,7 @@ class Configuration implements ConfigurationInterface
                     ->append($this->getSerializerNode())
                 ->end()
                 ->append($this->getIdNode())
-                ->append($this->getMappingsNode())
+                ->append($this->getPropertiesNode())
                 ->append($this->getDynamicTemplateNode())
                 ->append($this->getSourceNode())
                 ->append($this->getBoostNode())
@@ -200,12 +210,12 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Returns the array node used for "mappings".
+     * Returns the array node used for "properties".
      */
-    protected function getMappingsNode()
+    protected function getPropertiesNode()
     {
         $builder = new TreeBuilder();
-        $node = $builder->root('mappings');
+        $node = $builder->root('properties');
 
         $node
             ->useAttributeAsKey('name')

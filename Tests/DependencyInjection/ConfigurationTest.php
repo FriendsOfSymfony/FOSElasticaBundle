@@ -174,4 +174,28 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(empty($configuration['clients']['default']['servers'][0]['url']));
     }
+
+    public function testMappingsRenamedToProperties()
+    {
+        $configuration = $this->getConfigs(array(
+                'clients' => array(
+                    'default' => array('url' => 'http://localhost:9200'),
+                ),
+                'indexes' => array(
+                    'test' => array(
+                        'types' => array(
+                            'test' => array(
+                                'mappings' => array(
+                                    'title' => array(),
+                                    'published' => array('type' => 'datetime'),
+                                    'body' => null,
+                                )
+                            )
+                        )
+                    )
+                )
+            ));
+
+        $this->assertCount(3, $configuration['indexes']['test']['types']['test']['properties']);
+    }
 }

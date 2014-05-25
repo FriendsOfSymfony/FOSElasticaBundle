@@ -68,7 +68,7 @@ class Resetter
     {
         $indexConfig = $this->getIndexConfig($indexName);
 
-        if (!isset($indexConfig['config']['mappings'][$typeName]['properties'])) {
+        if (!isset($indexConfig['config']['properties'][$typeName]['properties'])) {
             throw new \InvalidArgumentException(sprintf('The mapping for index "%s" and type "%s" does not exist.', $indexName, $typeName));
         }
 
@@ -80,7 +80,7 @@ class Resetter
                 throw $e;
             }
         }
-        $mapping = $this->createMapping($indexConfig['config']['mappings'][$typeName]);
+        $mapping = $this->createMapping($indexConfig['config']['properties'][$typeName]);
         $type->setMapping($mapping);
     }
 
