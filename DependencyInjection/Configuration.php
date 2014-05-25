@@ -654,6 +654,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('insert')->defaultTrue()->end()
                         ->scalarNode('update')->defaultTrue()->end()
                         ->scalarNode('delete')->defaultTrue()->end()
+                        ->scalarNode('flush')->defaultTrue()->end()
                         ->booleanNode('immediate')->defaultFalse()->end()
                         ->scalarNode('logger')
                             ->defaultFalse()
