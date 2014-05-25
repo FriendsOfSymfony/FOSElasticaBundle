@@ -160,8 +160,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             )
         ));
 
-        $this->assertEquals('string', $configuration['indexes']['test']['types']['test']['mappings']['title']['type']);
-        $this->assertTrue($configuration['indexes']['test']['types']['test']['mappings']['title']['include_in_all']);
+        $this->assertEquals('string', $configuration['indexes']['test']['types']['test']['properties']['title']['type']);
+        $this->assertTrue($configuration['indexes']['test']['types']['test']['properties']['title']['include_in_all']);
     }
 
     public function testEmptyPropertiesIndexIsUnset()
@@ -210,7 +210,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $configuration = $processor->processConfiguration(new Configuration(array($config), false), array($config));
 
-        $mapping = $configuration['indexes']['test']['types']['test']['mappings'];
+        $mapping = $configuration['indexes']['test']['types']['test']['properties'];
         $this->assertArrayNotHasKey('properties', $mapping['content']);
         $this->assertArrayNotHasKey('properties', $mapping['title']);
         $this->assertArrayHasKey('properties', $mapping['children']);
@@ -232,5 +232,29 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertTrue(empty($configuration['clients']['default']['servers'][0]['url']));
+    }
+
+    public function testMappingsRenamedToProperties()
+    {
+        $configuration = $this->getConfigs(array(
+                'clients' => array(
+                    'default' => array('url' => 'http://localhost:9200'),
+                ),
+                'indexes' => array(
+                    'test' => array(
+                        'types' => array(
+                            'test' => array(
+                                'mappings' => array(
+                                    'title' => array(),
+                                    'published' => array('type' => 'datetime'),
+                                    'body' => null,
+                                )
+                            )
+                        )
+                    )
+                )
+            ));
+
+        $this->assertCount(3, $configuration['indexes']['test']['types']['test']['properties']);
     }
 }

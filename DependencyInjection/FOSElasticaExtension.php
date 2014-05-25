@@ -4,7 +4,6 @@ namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -129,7 +128,7 @@ class FOSElasticaExtension extends Extension
                 'index' => new Reference($indexId),
                 'name_or_alias' => $indexName,
                 'config' => array(
-                    'mappings' => array()
+                    'properties' => array()
                 )
             );
             if ($index['finder']) {
@@ -217,30 +216,30 @@ class FOSElasticaExtension extends Extension
             }
             $container->setDefinition($typeId, $typeDef);
 
-            $this->indexConfigs[$indexName]['config']['mappings'][$name] = array(
+            $this->indexConfigs[$indexName]['config']['properties'][$name] = array(
                 "_source" => array("enabled" => true), // Add a default setting for empty mapping settings
             );
 
             if (isset($type['_id'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_id'] = $type['_id'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['_id'] = $type['_id'];
             }
             if (isset($type['_source'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_source'] = $type['_source'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['_source'] = $type['_source'];
             }
             if (isset($type['_boost'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_boost'] = $type['_boost'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['_boost'] = $type['_boost'];
             }
             if (isset($type['_routing'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_routing'] = $type['_routing'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['_routing'] = $type['_routing'];
             }
-            if (isset($type['mappings']) && !empty($type['mappings'])) {
-                $this->cleanUpMapping($type['mappings']);
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['properties'] = $type['mappings'];
+            if (isset($type['properties']) && !empty($type['properties'])) {
+                $this->cleanUpProperties($type['properties']);
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['properties'] = $type['properties'];
                 $typeName = sprintf('%s/%s', $indexName, $name);
-                $this->typeFields[$typeName] = $type['mappings'];
+                $this->typeFields[$typeName] = $type['properties'];
             }
             if (isset($type['_parent'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_parent'] = array('type' => $type['_parent']['type']);
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['_parent'] = array('type' => $type['_parent']['type']);
                 $typeName = sprintf('%s/%s', $indexName, $name);
                 $this->typeFields[$typeName]['_parent'] = $type['_parent'];
             }
@@ -248,27 +247,27 @@ class FOSElasticaExtension extends Extension
                 $this->loadTypePersistenceIntegration($type['persistence'], $container, $typeDef, $indexName, $name);
             }
             if (isset($type['index_analyzer'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['index_analyzer'] = $type['index_analyzer'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['index_analyzer'] = $type['index_analyzer'];
             }
             if (isset($type['search_analyzer'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['search_analyzer'] = $type['search_analyzer'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['search_analyzer'] = $type['search_analyzer'];
             }
             if (isset($type['index'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['index'] = $type['index'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['index'] = $type['index'];
             }
             if (isset($type['_all'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_all'] = $type['_all'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['_all'] = $type['_all'];
             }
             if (isset($type['_timestamp'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_timestamp'] = $type['_timestamp'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['_timestamp'] = $type['_timestamp'];
             }
             if (isset($type['_ttl'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['_ttl'] = $type['_ttl'];
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['_ttl'] = $type['_ttl'];
             }
             if (!empty($type['dynamic_templates'])) {
-                $this->indexConfigs[$indexName]['config']['mappings'][$name]['dynamic_templates'] = array();
+                $this->indexConfigs[$indexName]['config']['properties'][$name]['dynamic_templates'] = array();
                 foreach ($type['dynamic_templates'] as $templateName => $templateData) {
-                    $this->indexConfigs[$indexName]['config']['mappings'][$name]['dynamic_templates'][] = array($templateName => $templateData);
+                    $this->indexConfigs[$indexName]['config']['properties'][$name]['dynamic_templates'][] = array($templateName => $templateData);
                 }
             }
         }
@@ -569,17 +568,17 @@ class FOSElasticaExtension extends Extension
         $container->setAlias('fos_elastica.manager', sprintf('fos_elastica.manager.%s', $defaultManagerService));
     }
 
-    protected function cleanUpMapping(&$mappings)
+    protected function cleanUpProperties(&$properties)
     {
-        foreach ($mappings as &$fieldProperties) {
+        foreach ($properties as &$fieldProperties) {
             if (empty($fieldProperties['fields'])) {
                 unset($fieldProperties['fields']);
             } else {
-                $this->cleanUpMapping($fieldProperties['fields']);
+                $this->cleanUpProperties($fieldProperties['fields']);
             }
 
             if (!empty($fieldProperties['properties'])) {
-                $this->cleanUpMapping($fieldProperties['properties']);
+                $this->cleanUpProperties($fieldProperties['properties']);
             }
         }
     }

@@ -18,7 +18,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             'foo' => array(
                 'index' => $this->getMockElasticaIndex(),
                 'config' => array(
-                    'mappings' => array(
+                    'properties' => array(
                         'a' => array(
                             'dynamic_templates' => array(),
                             'properties' => array(),
@@ -30,7 +30,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             'bar' => array(
                 'index' => $this->getMockElasticaIndex(),
                 'config' => array(
-                    'mappings' => array(
+                    'properties' => array(
                         'a' => array('properties' => array()),
                         'b' => array('properties' => array()),
                     ),
@@ -39,7 +39,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             'parent' => array(
                 'index' => $this->getMockElasticaIndex(),
                 'config' => array(
-                    'mappings' => array(
+                    'properties' => array(
                         'a' => array(
                             'properties' => array(
                                 'field_2' => array()
@@ -105,8 +105,8 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $type->expects($this->once())
             ->method('delete');
 
-        $mapping = Mapping::create($this->indexConfigsByName['foo']['config']['mappings']['a']['properties']);
-        $mapping->setParam('dynamic_templates', $this->indexConfigsByName['foo']['config']['mappings']['a']['dynamic_templates']);
+        $mapping = Mapping::create($this->indexConfigsByName['foo']['config']['properties']['a']['properties']);
+        $mapping->setParam('dynamic_templates', $this->indexConfigsByName['foo']['config']['properties']['a']['dynamic_templates']);
         $type->expects($this->once())
             ->method('setMapping')
             ->with($mapping);
@@ -149,8 +149,8 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
                 new Response(array('error' => 'TypeMissingException[[de_20131022] type[bla] missing]', 'status' => 404)))
             ));
 
-        $mapping = Mapping::create($this->indexConfigsByName['foo']['config']['mappings']['a']['properties']);
-        $mapping->setParam('dynamic_templates', $this->indexConfigsByName['foo']['config']['mappings']['a']['dynamic_templates']);
+        $mapping = Mapping::create($this->indexConfigsByName['foo']['config']['properties']['a']['properties']);
+        $mapping->setParam('dynamic_templates', $this->indexConfigsByName['foo']['config']['properties']['a']['dynamic_templates']);
         $type->expects($this->once())
             ->method('setMapping')
             ->with($mapping);
@@ -171,7 +171,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $type->expects($this->once())
             ->method('delete');
 
-        $mapping = Mapping::create($this->indexConfigsByName['parent']['config']['mappings']['a']['properties']);
+        $mapping = Mapping::create($this->indexConfigsByName['parent']['config']['properties']['a']['properties']);
         $mapping->setParam('_parent', array('type' => 'b'));
         $type->expects($this->once())
             ->method('setMapping')
