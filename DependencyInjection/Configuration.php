@@ -243,7 +243,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('path_match')->end()
                     ->scalarNode('path_unmatch')->end()
                     ->scalarNode('match_pattern')->end()
-                    ->append($this->getMappingsNode())
+                    ->append($this->getPropertiesNode())
                 ->end()
             ->end()
         ;
