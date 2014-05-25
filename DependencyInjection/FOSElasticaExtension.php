@@ -22,7 +22,7 @@ class FOSElasticaExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = $this->getConfiguration($configs, $container);
-        $config        = $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
@@ -61,7 +61,7 @@ class FOSElasticaExtension extends Extension
 
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        return new Configuration($config, $container->getParameter('kernel.debug'));
+        return new Configuration($container->getParameter('kernel.debug'));
     }
 
     /**

@@ -15,13 +15,15 @@ class Configuration implements ConfigurationInterface
      */
     private $supportedDrivers = array('orm', 'mongodb', 'propel');
 
-    private $configArray = array();
+    /**
+     * If the kernel is running in debug mode.
+     *
+     * @var bool
+     */
     private $debug;
 
-    public function __construct($configArray, $debug)
+    public function __construct($debug)
     {
-
-        $this->configArray = $configArray;
         $this->debug = $debug;
     }
 
@@ -104,7 +106,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('port')->end()
                                         ->scalarNode('proxy')->end()
                                         ->scalarNode('logger')
-                                            ->defaultValue(($this->debug) ? 'fos_elastica.logger' : false)
+                                            ->defaultValue($this->debug ? 'fos_elastica.logger' : false)
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
                                         ->end()
@@ -205,28 +207,10 @@ class Configuration implements ConfigurationInterface
         $builder = new TreeBuilder();
         $node = $builder->root('mappings');
 
-        $nestings = $this->getNestings();
-
-        $childrenNode = $node
+        $node
             ->useAttributeAsKey('name')
-            ->prototype('array')
-                ->validate()
-                    ->always()
-                    ->then(function($v) {
-                        foreach (array('fields','properties') as $prop) {
-                            if (isset($v[$prop]) && empty($v[$prop])) {
-                                unset($v[$prop]);
-                            }
-                        }
-                        
-                        return $v;
-                    })
-                ->end()
-                ->treatNullLike(array())
-                ->addDefaultsIfNotSet()
-                ->children();
-
-        $this->addFieldConfig($childrenNode, $nestings);
+            ->prototype('variable')
+                ->treatNullLike(array());
 
         return $node;
     }
@@ -249,212 +233,12 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('path_match')->end()
                     ->scalarNode('path_unmatch')->end()
                     ->scalarNode('match_pattern')->end()
-                    ->append($this->getDynamicTemplateMapping())
+                    ->append($this->getMappingsNode())
                 ->end()
             ->end()
         ;
 
         return $node;
-    }
-
-    /**
-     * @return the array node used for mapping in dynamic templates
-     */
-    protected function getDynamicTemplateMapping()
-    {
-        $builder = new TreeBuilder();
-        $node = $builder->root('mapping');
-
-        $nestings = $this->getNestingsForDynamicTemplates();
-
-        $this->addFieldConfig($node->children(), $nestings);
-
-        return $node;
-    }
-
-    /**
-     * @param \Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the field config to
-     * @param array $nestings the nested mappings for the current field level
-     */
-    protected function addFieldConfig($node, $nestings)
-    {
-        $node
-            ->scalarNode('type')->defaultValue('string')->end()
-            ->scalarNode('boost')->end()
-            ->scalarNode('store')->end()
-            ->scalarNode('index')->end()
-            ->scalarNode('index_analyzer')->end()
-            ->scalarNode('search_analyzer')->end()
-            ->scalarNode('analyzer')->end()
-            ->scalarNode('term_vector')->end()
-            ->scalarNode('null_value')->end()
-            ->booleanNode('include_in_all')->defaultValue(true)->end()
-            ->booleanNode('enabled')->defaultValue(true)->end()
-            ->scalarNode('lat_lon')->end()
-            ->scalarNode('tree')->end()
-            ->scalarNode('precision')->end()
-            ->scalarNode('tree_levels')->end()
-            ->scalarNode('geohash')->end()
-            ->scalarNode('index_name')->end()
-            ->booleanNode('omit_norms')->end()
-            ->scalarNode('index_options')->end()
-            ->scalarNode('ignore_above')->end()
-            ->scalarNode('position_offset_gap')->end()
-            ->arrayNode('_parent')
-                ->treatNullLike(array())
-                ->children()
-                    ->scalarNode('type')->end()
-                    ->scalarNode('identifier')->defaultValue('id')->end()
-                ->end()
-            ->end()
-            ->scalarNode('format')->end()
-            ->scalarNode('similarity')->end();
-        ;
-
-        if (isset($nestings['fields'])) {
-            $this->addNestedFieldConfig($node, $nestings, 'fields');
-        }
-
-        if (isset($nestings['properties'])) {
-            $node
-                ->booleanNode('include_in_parent')->end()
-                ->booleanNode('include_in_root')->end()
-            ;
-            $this->addNestedFieldConfig($node, $nestings, 'properties');
-        }
-    }
-
-    /**
-     * @param \Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the nested config to
-     * @param array $nestings The nestings for the current field level
-     * @param string $property the name of the nested property ('fields' or 'properties')
-     */
-    protected function addNestedFieldConfig($node, $nestings, $property)
-    {
-        $childrenNode = $node
-            ->arrayNode($property)
-                ->useAttributeAsKey('name')
-                ->prototype('array')
-                    ->validate()
-                        ->always()
-                        ->then(function($v) {
-                            foreach (array('fields','properties') as $prop) {
-                                if (isset($v[$prop]) && empty($v[$prop])) {
-                                    unset($v[$prop]);
-                                }
-                            }
-
-                            return $v;
-                        })
-                    ->end()
-                    ->treatNullLike(array())
-                    ->addDefaultsIfNotSet()
-                    ->children();
-
-        $this->addFieldConfig($childrenNode, $nestings[$property]);
-
-        $childrenNode
-                    ->end()
-                ->end()
-            ->end()
-        ;
-    }
-
-    /**
-     * @return array The unique nested mappings for all types
-     */
-    protected function getNestings()
-    {
-        if (!isset($this->configArray[0]['indexes'])) {
-            return array();
-        }
-
-        $nestings = array();
-        foreach ($this->configArray[0]['indexes'] as $index) {
-            if (empty($index['types'])) {
-                continue;
-            }
-
-            foreach ($index['types'] as $type) {
-                if (empty($type['mappings'])) {
-                    continue;
-                }
-
-                $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['mappings'], $nestings));
-            }
-        }
-        return $nestings;
-    }
-
-    /**
-     * @return array The unique nested mappings for all dynamic templates
-     */
-    protected function getNestingsForDynamicTemplates()
-    {
-        if (!isset($this->configArray[0]['indexes'])) {
-            return array();
-        }
-
-        $nestings = array();
-        foreach ($this->configArray[0]['indexes'] as $index) {
-            if (empty($index['types'])) {
-                continue;
-            }
-
-            foreach ($index['types'] as $type) {
-                if (empty($type['dynamic_templates'])) {
-                    continue;
-                }
-
-                foreach ($type['dynamic_templates'] as $definition) {
-                    $field = $definition['mapping'];
-
-                    if (isset($field['fields'])) {
-                        $this->addPropertyNesting($field, $nestings, 'fields');
-                    } else if (isset($field['properties'])) {
-                        $this->addPropertyNesting($field, $nestings, 'properties');
-                    }
-                }
-
-            }
-        }
-        return $nestings;
-    }
-
-    /**
-     * @param array $mappings The mappings for the current type
-     * @return array The nested mappings defined for this type
-     */
-    protected function getNestingsForType(array $mappings = null)
-    {
-        if ($mappings === null) {
-            return array();
-        }
-
-        $nestings = array();
-
-        foreach ($mappings as $field) {
-            if (isset($field['fields'])) {
-                $this->addPropertyNesting($field, $nestings, 'fields');
-            } else if (isset($field['properties'])) {
-                $this->addPropertyNesting($field, $nestings, 'properties');
-            }
-        }
-
-        return $nestings;
-    }
-
-    /**
-     * @param array $field      The field mapping definition
-     * @param array $nestings   The nestings array
-     * @param string $property  The nested property name ('fields' or 'properties')
-     */
-    protected function addPropertyNesting($field, &$nestings, $property)
-    {
-        if (!isset($nestings[$property])) {
-            $nestings[$property] = array();
-        }
-        $nestings[$property] = array_merge_recursive($nestings[$property], $this->getNestingsForType($field[$property]));
     }
 
     /**
