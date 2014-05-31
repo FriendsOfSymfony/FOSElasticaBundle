@@ -184,7 +184,7 @@ The following code will execute a search against the Elasticsearch server:
 $finder = $this->container->get('fos_elastica.finder.site.article');
 $boolQuery = new \Elastica\Query\Bool();
 
-$fieldQuery = new \Elastica\Query\Text();
+$fieldQuery = new \Elastica\Query\Match();
 $fieldQuery->setFieldQuery('title', 'I am a title string');
 $fieldQuery->setFieldParam('title', 'analyzer', 'my_analyzer');
 $boolQuery->addShould($fieldQuery);
