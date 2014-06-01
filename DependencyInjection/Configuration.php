@@ -288,7 +288,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('compress')->end()
                 ->scalarNode('compress_threshold')->end()
-                ->scalarNode('enabled')->end()
+                ->scalarNode('enabled')->defaultTrue()->end()
             ->end()
         ;
 
