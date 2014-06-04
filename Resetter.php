@@ -191,7 +191,7 @@ class Resetter
                 $additionalError = sprintf(
                     'Tried to delete newly built index %s, but also failed: %s',
                     $newIndexName,
-                    $deleteNewIndexException->getError()
+                    $deleteNewIndexException->getMessage()
                 );
             }
 
