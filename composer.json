@@ -20,20 +20,21 @@
         "psr/log": "~1.0"
     },
     "require-dev":{
-        "doctrine/orm": ">=2.2,<2.5-dev",
+        "doctrine/orm": "~2.2",
         "doctrine/mongodb-odm": "1.0.*@dev",
         "propel/propel1": "1.6.*",
         "pagerfanta/pagerfanta": "1.0.*@dev",
-        "knplabs/knp-components": "1.2.*",
-        "symfony/expression-language" : "2.4.*@dev"
+        "knplabs/knp-components": "~1.2",
+        "symfony/browser-kit" : "~2.3",
+        "symfony/expression-language" : "~2.4"
     },
     "suggest": {
-        "doctrine/orm": ">=2.2,<2.5-dev",
+        "doctrine/orm": "~2.2",
         "doctrine/mongodb-odm": "1.0.*@dev",
         "propel/propel1": "1.6.*",
         "pagerfanta/pagerfanta": "1.0.*@dev",
-        "knplabs/knp-components": "1.2.*",
-        "symfony/expression-language" : "2.4.*@dev"
+        "knplabs/knp-components": "~1.2",
+        "symfony/expression-language" : "~2.4"
     },
     "autoload": {
         "psr-0": { "FOS\\ElasticaBundle": "" }
