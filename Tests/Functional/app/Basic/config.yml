@@ -1,0 +1,53 @@
+imports:
+    - { resource: ./../config/config.yml }
+
+fos_elastica:
+    clients:
+        default:
+            url: http://localhost:9200
+    indexes:
+        index:
+            index_name: foselastica_test_%kernel.environment%
+            settings:
+                analysis:
+                    analyzer:
+                        my_analyzer:
+                            type: custom
+                            tokenizer: lowercase
+                            filter: [my_ngram]
+                    filter:
+                        my_ngram:
+                            type: "nGram"
+                            min_gram: 3
+                            max_gram: 5
+            types:
+                parent:
+                    mappings:
+                        field1: ~
+                        field2: ~
+                type:
+                    search_analyzer: my_analyzer
+                    mappings:
+                        field1: ~
+                        field2:
+                            type: integer
+                        date: { boost: 5 }
+                        title: { boost: 8, analyzer: my_analyzer }
+                        content: ~
+                        comments:
+                            type: "nested"
+                            properties:
+                                date: { boost: 5 }
+                                content: ~
+                        user:
+                            type: "object"
+                        approver:
+                            type: "object"
+                            properties:
+                                date: { boost: 5 }
+                        lastlogin: { type: date, format: basic_date_time }
+                        birthday: { type: date, format: "yyyy-MM-dd" }
+                    _parent:
+                        type: "parent"
+                        property: "parent"
+                        identifier: "id"

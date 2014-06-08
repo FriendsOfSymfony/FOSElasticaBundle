@@ -8,3 +8,6 @@ php:
 before_script:
   - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer install --dev --prefer-source
+
+services:
+  - elasticsearch
