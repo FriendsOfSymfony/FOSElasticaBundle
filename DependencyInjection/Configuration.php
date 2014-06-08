@@ -84,6 +84,7 @@ class Configuration implements ConfigurationInterface
                                             'logger' => isset($v['logger']) ? $v['logger'] : null,
                                             'headers' => isset($v['headers']) ? $v['headers'] : null,
                                             'timeout' => isset($v['timeout']) ? $v['timeout'] : null,
+                                            'transport' => isset($v['transport']) ? $v['transport'] : null,
                                         )
                                     )
                                 );
@@ -112,6 +113,7 @@ class Configuration implements ConfigurationInterface
                                             ->useAttributeAsKey('name')
                                             ->prototype('scalar')->end()
                                         ->end()
+                                        ->scalarNode('transport')->end()
                                         ->scalarNode('timeout')->end()
                                     ->end()
                                 ->end()
