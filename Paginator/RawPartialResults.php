@@ -27,8 +27,9 @@ class RawPartialResults implements PartialResultsInterface
     {
         return array_map(function(Result $result) {
              return array(
-                '_source' => $result->getSource(),
-                'highlights' => $result->getHighlights()
+                $array_maped = $result->getSource();
+                $array_maped['_highlights'] = $result->getHighlights();
+                return $array_maped;
             );
         }, $this->resultSet->getResults());
     }
