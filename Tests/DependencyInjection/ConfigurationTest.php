@@ -22,7 +22,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     private function getConfigs(array $configArray)
     {
-        $configuration = new Configuration($configArray, true);
+        $configuration = new Configuration(true);
 
         return $this->processor->processConfiguration($configuration, array($configArray));
     }
@@ -118,7 +118,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     public function testTypeConfig()
     {
-        $configuration = $this->getConfigs(array(
+        $this->getConfigs(array(
             'clients' => array(
                 'default' => array('url' => 'http://localhost:9200'),
             ),
@@ -159,65 +159,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 )
             )
         ));
-
-        $this->assertEquals('string', $configuration['indexes']['test']['types']['test']['properties']['title']['type']);
-        $this->assertTrue($configuration['indexes']['test']['types']['test']['properties']['title']['include_in_all']);
-    }
-
-    public function testEmptyPropertiesIndexIsUnset()
-    {
-        $config = array(
-            'indexes' => array(
-                'test' => array(
-                    'types' => array(
-                        'test' => array(
-                            'mappings' => array(
-                                'title' => array(
-                                    'type' => 'string',
-                                    'fields' => array(
-                                        'autocomplete' => null
-                                    )
-                                ),
-                                'content' => null,
-                                'children' => array(
-                                    'type' => 'object',
-                                    'properties' => array(
-                                        'title' => array(
-                                            'type' => 'string',
-                                            'fields' => array(
-                                                'autocomplete' => null
-                                            )
-                                        ),
-                                        'content' => null,
-                                        'tags' => array(
-                                            'properties' => array(
-                                                'tag' => array(
-                                                    'type' => 'string',
-                                                    'index' => 'not_analyzed'
-                                                )
-                                            )
-                                        )
-                                    )
-                                ),
-                            )
-                        )
-                    )
-                )
-            )
-        );
-
-        $processor = new Processor();
-
-        $configuration = $processor->processConfiguration(new Configuration(array($config), false), array($config));
-
-        $mapping = $configuration['indexes']['test']['types']['test']['properties'];
-        $this->assertArrayNotHasKey('properties', $mapping['content']);
-        $this->assertArrayNotHasKey('properties', $mapping['title']);
-        $this->assertArrayHasKey('properties', $mapping['children']);
-        $this->assertArrayNotHasKey('properties', $mapping['children']['properties']['title']);
-        $this->assertArrayNotHasKey('properties', $mapping['children']['properties']['content']);
-        $this->assertArrayHasKey('properties', $mapping['children']['properties']['tags']);
-        $this->assertArrayNotHasKey('properties', $mapping['children']['properties']['tags']['properties']['tag']);
     }
 
     public function testClientConfigurationNoUrl()

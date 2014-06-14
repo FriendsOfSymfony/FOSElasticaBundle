@@ -1,12 +1,12 @@
 <?php
 
-namespace FOS\ElasticaBundle\Tests\Resetter;
+namespace FOS\ElasticaBundle\Tests\Index;
 
 use Elastica\Exception\ResponseException;
 use Elastica\Request;
 use Elastica\Response;
-use FOS\ElasticaBundle\Resetter;
 use Elastica\Type\Mapping;
+use FOS\ElasticaBundle\Index\Resetter;
 
 class ResetterTest extends \PHPUnit_Framework_TestCase
 {
