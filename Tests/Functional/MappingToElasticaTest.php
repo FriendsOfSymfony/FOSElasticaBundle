@@ -18,13 +18,28 @@ use Symfony\Bundle\FrameworkBundle\Client;
  */
 class MappingToElasticaTest extends WebTestCase
 {
-    public function testReset()
+    public function testResetIndexAddsMappings()
     {
         $client = $this->createClient(array('test_case' => 'Basic'));
         $resetter = $this->getResetter($client);
-
         $resetter->resetIndex('index');
+
+        $type = $this->getType($client);
+        $mapping = $type->getMapping();
+
+        $this->assertNotEmpty($mapping, 'Mapping was populated');
+    }
+
+    public function testResetType()
+    {
+        $client = $this->createClient(array('test_case' => 'Basic'));
+        $resetter = $this->getResetter($client);
         $resetter->resetIndexType('index', 'type');
+
+        $type = $this->getType($client);
+        $mapping = $type->getMapping();
+
+        $this->assertNotEmpty($mapping, 'Mapping was populated');
     }
 
     /**
@@ -34,6 +49,15 @@ class MappingToElasticaTest extends WebTestCase
     private function getResetter(Client $client)
     {
         return $client->getContainer()->get('fos_elastica.resetter');
+    }
+
+    /**
+     * @param Client $client
+     * @return \Elastica\Type
+     */
+    private function getType(Client $client)
+    {
+        return $client->getContainer()->get('fos_elastica.index.index.type');
     }
 
     protected function setUp()

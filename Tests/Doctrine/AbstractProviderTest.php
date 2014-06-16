@@ -2,6 +2,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
+use Elastica\Bulk\ResponseSet;
+use Elastica\Response;
+
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
     private $objectClass;
@@ -177,9 +180,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockBulkResponseException()
     {
-        return $this->getMockBuilder('Elastica\Exception\Bulk\ResponseException')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->getMock('Elastica\Exception\Bulk\ResponseException', null, array(
+            new ResponseSet(new Response(array()), array())
+        ));
     }
 
     /**
