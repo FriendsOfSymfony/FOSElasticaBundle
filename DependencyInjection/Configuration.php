@@ -20,7 +20,6 @@ class Configuration implements ConfigurationInterface
 
     public function __construct($configArray, $debug)
     {
-
         $this->configArray = $configArray;
         $this->debug = $debug;
     }
@@ -388,13 +387,16 @@ class Configuration implements ConfigurationInterface
             }
 
             foreach ($index['types'] as $type) {
-                if (empty($type['mappings'])) {
-                    continue;
+                if (array_key_exists('mappings', $type) and !empty($type['mappings'])) {
+                    $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['mappings'], $nestings));
                 }
 
-                $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['mappings'], $nestings));
+                if (array_key_exists('properties', $type) and !empty($type['properties'])) {
+                    $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['properties'], $nestings));
+                }
             }
         }
+
         return $nestings;
     }
 

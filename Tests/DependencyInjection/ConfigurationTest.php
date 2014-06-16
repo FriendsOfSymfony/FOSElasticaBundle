@@ -22,7 +22,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     private function getConfigs(array $configArray)
     {
-        $configuration = new Configuration($configArray, true);
+        $configuration = new Configuration(array($configArray), true);
 
         return $this->processor->processConfiguration($configuration, array($configArray));
     }
@@ -256,5 +256,51 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             ));
 
         $this->assertCount(3, $configuration['indexes']['test']['types']['test']['properties']);
+    }
+
+    public function testNestedProperties()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'default' => array('url' => 'http://localhost:9200'),
+            ),
+            'indexes' => array(
+                'test' => array(
+                    'types' => array(
+                        'user' => array(
+                            'properties' => array(
+                                'field1' => array(),
+                            ),
+                            'persistence' => array(),
+                        ),
+                        'user_profile' => array(
+                            '_parent' => array(
+                                'type' => 'user',
+                                'property' => 'owner',
+                            ),
+                            'properties' => array(
+                                'field1' => array(),
+                                'field2' => array(
+                                    'type' => 'nested',
+                                    'properties' => array(
+                                        'nested_field1' => array(
+                                            'type' => 'integer'
+                                        ),
+                                        'nested_field2' => array(
+                                            'type' => 'object',
+                                            'properties' => array(
+                                                'id' => array(
+                                                    'type' => 'integer'
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        ));
     }
 }
