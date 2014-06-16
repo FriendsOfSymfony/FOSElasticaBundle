@@ -186,8 +186,11 @@ class FOSElasticaExtension extends Extension
      */
     protected function loadTypes(array $types, ContainerBuilder $container, $indexName, $indexId, array $typePrototypeConfig)
     {
+        $indexableCallbacks = array();
+
         foreach ($types as $name => $type) {
             $type = self::deepArrayUnion($typePrototypeConfig, $type);
+            $typeName = sprintf('%s/%s', $indexName, $name);
             $typeId = sprintf('%s.%s', $indexId, $name);
             $typeDefArgs = array($name);
             $typeDef = new Definition('%fos_elastica.type.class%', $typeDefArgs);
@@ -240,7 +243,6 @@ class FOSElasticaExtension extends Extension
             }
             if (isset($type['_parent'])) {
                 $this->indexConfigs[$indexName]['config']['properties'][$name]['_parent'] = array('type' => $type['_parent']['type']);
-                $typeName = sprintf('%s/%s', $indexName, $name);
                 $this->typeFields[$typeName]['_parent'] = $type['_parent'];
             }
             if (isset($type['persistence'])) {
@@ -251,6 +253,9 @@ class FOSElasticaExtension extends Extension
             }
             if (isset($type['search_analyzer'])) {
                 $this->indexConfigs[$indexName]['config']['properties'][$name]['search_analyzer'] = $type['search_analyzer'];
+            }
+            if (isset($type['indexable_callback'])) {
+                $indexableCallbacks[$typeName] = $type['indexable_callback'];
             }
             if (isset($type['index'])) {
                 $this->indexConfigs[$indexName]['config']['properties'][$name]['index'] = $type['index'];
@@ -271,6 +276,9 @@ class FOSElasticaExtension extends Extension
                 }
             }
         }
+
+        $indexable = $container->getDefinition('fos_elastica.indexable');
+        $indexable->replaceArgument(0, $indexableCallbacks);
     }
 
     /**
@@ -431,8 +439,7 @@ class FOSElasticaExtension extends Extension
         $listenerId = sprintf('fos_elastica.listener.%s.%s', $indexName, $typeName);
         $listenerDef = new DefinitionDecorator($abstractListenerId);
         $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
-        $listenerDef->replaceArgument(1, $typeConfig['model']);
-        $listenerDef->replaceArgument(2, $this->getDoctrineEvents($typeConfig));
+        $listenerDef->replaceArgument(1, $this->getDoctrineEvents($typeConfig));
         $listenerDef->replaceArgument(3, $typeConfig['identifier']);
         if ($typeConfig['listener']['logger']) {
             $listenerDef->replaceArgument(4, new Reference($typeConfig['listener']['logger']));
@@ -442,18 +449,7 @@ class FOSElasticaExtension extends Extension
             case 'orm': $listenerDef->addTag('doctrine.event_subscriber'); break;
             case 'mongodb': $listenerDef->addTag('doctrine_mongodb.odm.event_subscriber'); break;
         }
-        if (isset($typeConfig['listener']['is_indexable_callback'])) {
-            $callback = $typeConfig['listener']['is_indexable_callback'];
 
-            if (is_array($callback)) {
-                list($class) = $callback + array(null);
-                if (is_string($class) && !class_exists($class)) {
-                    $callback[0] = new Reference($class);
-                }
-            }
-
-            $listenerDef->addMethodCall('setIsIndexableCallback', array($callback));
-        }
         $container->setDefinition($listenerId, $listenerDef);
 
         return $listenerId;

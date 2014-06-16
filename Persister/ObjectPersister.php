@@ -31,6 +31,27 @@ class ObjectPersister implements ObjectPersisterInterface
         $this->fields          = $fields;
     }
 
+    /**
+     * @internal Temporary method that will be removed.
+     *
+     * @return Type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * If the ObjectPersister handles a given object.
+     *
+     * @param object $object
+     * @return bool
+     */
+    public function handlesObject($object)
+    {
+        return $object instanceof $this->objectClass;
+    }
+
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;

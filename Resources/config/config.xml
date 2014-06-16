@@ -9,6 +9,7 @@
         <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\DynamicIndex</parameter>
         <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
         <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\IndexManager</parameter>
+        <parameter key="fos_elastica.indexable.class">FOS\ElasticaBundle\Provider\Indexable</parameter>
         <parameter key="fos_elastica.resetter.class">FOS\ElasticaBundle\Resetter</parameter>
         <parameter key="fos_elastica.finder.class">FOS\ElasticaBundle\Finder\TransformedFinder</parameter>
         <parameter key="fos_elastica.logger.class">FOS\ElasticaBundle\Logger\ElasticaLogger</parameter>
@@ -42,6 +43,10 @@
 
         <service id="fos_elastica.resetter" class="%fos_elastica.resetter.class%">
             <argument /> <!-- index configs -->
+        </service>
+
+        <service id="fos_elastica.indexable" class="%fos_elastica.indexable.class%">
+            <argument type="collection" /> <!-- array of indexable callbacks keyed by type name -->
         </service>
 
         <service id="fos_elastica.object_persister" class="%fos_elastica.object_persister.class%" abstract="true">

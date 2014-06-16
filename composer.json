@@ -21,6 +21,7 @@
     },
     "require-dev":{
         "doctrine/orm": "~2.2",
+        "doctrine/doctrine-bundle": "~1.2@beta",
         "doctrine/mongodb-odm": "1.0.*@dev",
         "propel/propel1": "1.6.*",
         "pagerfanta/pagerfanta": "1.0.*@dev",
