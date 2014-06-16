@@ -28,7 +28,7 @@ class LoggingClientTest extends \PHPUnit_Framework_TestCase
                 $this->isType('array')
             );
 
-        $client = $this->getMockBuilder('FOS\ElasticaBundle\Elastica\LoggingClient')
+        $client = $this->getMockBuilder('FOS\ElasticaBundle\Elastica\Client')
             ->setMethods(array('getConnection'))
             ->getMock();
 

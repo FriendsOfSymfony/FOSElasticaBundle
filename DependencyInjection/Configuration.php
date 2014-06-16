@@ -183,11 +183,11 @@ class Configuration implements ConfigurationInterface
                 ->beforeNormalization()
                 ->ifTrue(function($v) { return isset($v['mappings']); })
                 ->then(function($v) {
-                        $v['properties'] = $v['mappings'];
-                        unset($v['mappings']);
+                    $v['properties'] = $v['mappings'];
+                    unset($v['mappings']);
 
-                        return $v;
-                    })
+                    return $v;
+                })
                 ->end()
                 ->children()
                     ->scalarNode('index_analyzer')->end()

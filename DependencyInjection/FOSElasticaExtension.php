@@ -72,6 +72,7 @@ class FOSElasticaExtension extends Extension
         $container->setAlias('fos_elastica.index', sprintf('fos_elastica.index.%s', $config['default_index']));
 
         $this->loadIndexManager($container);
+        $this->loadResetter($container);
 
         $this->createDefaultManagerAlias($config['default_manager'], $container);
     }
@@ -132,7 +133,7 @@ class FOSElasticaExtension extends Extension
             $indexDef = new DefinitionDecorator('fos_elastica.index_prototype');
             $indexDef->replaceArgument(0, $indexName);
 
-            if ($index['client']) {
+            if (isset($index['client'])) {
                 $client = $this->getClient($index['client']);
                 $indexDef->setFactoryService($client);
             }
@@ -146,7 +147,7 @@ class FOSElasticaExtension extends Extension
                     'settings' => $index['settings']
                 ),
                 'elasticsearch_name' => $indexName,
-                'index' => $reference,
+                'reference' => $reference,
                 'name' => $name,
                 'type_prototype' => isset($index['type_prototype']) ? $index['type_prototype'] : array(),
                 'use_alias' => $index['use_alias'],
@@ -220,7 +221,9 @@ class FOSElasticaExtension extends Extension
                 '_timestamp',
                 '_ttl',
             ) as $field) {
-                $this->indexConfigs[$indexName]['config']['properties'][$name][$field] = $type[$field];
+                if (array_key_exists($field, $type)) {
+                    $this->indexConfigs[$indexName]['config']['properties'][$name][$field] = $type[$field];
+                }
             }
 
             if (!empty($type['dynamic_templates'])) {
@@ -390,7 +393,7 @@ class FOSElasticaExtension extends Extension
 
         if ($this->serializerConfig) {
             $abstractId = 'fos_elastica.object_serializer_persister';
-            $callbackId = sprintf('%s.%s.serializer.callback', $this->indexConfigs[$indexName]['index'], $typeName);
+            $callbackId = sprintf('%s.%s.serializer.callback', $this->indexConfigs[$indexName]['reference'], $typeName);
             $arguments[] = array(new Reference($callbackId), 'serialize');
         } else {
             $abstractId = 'fos_elastica.object_persister';
@@ -621,5 +624,16 @@ class FOSElasticaExtension extends Extension
         }
 
         return $this->clients[$clientName]['reference'];
+    }
+
+    /**
+     * Loads the resetter
+     *
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     */
+    private function loadResetter(ContainerBuilder $container)
+    {
+        $resetterDef = $container->getDefinition('fos_elastica.resetter');
+        $resetterDef->replaceArgument(0, $this->indexConfigs);
     }
 }

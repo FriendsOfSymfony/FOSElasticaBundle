@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="fos_elastica.client.class">FOS\ElasticaBundle\Elastica\LoggingClient</parameter>
+        <parameter key="fos_elastica.client.class">FOS\ElasticaBundle\Elastica\Client</parameter>
         <parameter key="fos_elastica.logger.class">FOS\ElasticaBundle\Logger\ElasticaLogger</parameter>
         <parameter key="fos_elastica.data_collector.class">FOS\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
         <parameter key="fos_elastica.property_accessor.class">Symfony\Component\PropertyAccess\PropertyAccessor</parameter>
@@ -15,18 +15,17 @@
         <service id="fos_elastica.client_prototype" class="%fos_elastica.client.class%" abstract="true">
             <argument type="collection" /> <!-- configuration -->
             <argument /> <!-- callback -->
-            <argument type="service" id="fos_elastica.transformer.combined" />
+        </service>
+
+        <service id="fos_elastica.data_collector" class="%fos_elastica.data_collector.class%">
+            <tag name="data_collector" template="FOSElasticaBundle:Collector:elastica" id="elastica" />
+            <argument type="service" id="fos_elastica.logger" />
         </service>
 
         <service id="fos_elastica.logger" class="%fos_elastica.logger.class%">
             <argument type="service" id="logger" on-invalid="null" />
             <argument>%kernel.debug%</argument>
             <tag name="monolog.logger" channel="elastica" />
-        </service>
-
-        <service id="fos_elastica.data_collector" class="%fos_elastica.data_collector.class%" public="true">
-            <tag name="data_collector" template="FOSElasticaBundle:Collector:elastica" id="elastica" />
-            <argument type="service" id="fos_elastica.logger" />
         </service>
 
         <service id="fos_elastica.property_accessor" class="%fos_elastica.property_accessor.class%" />
