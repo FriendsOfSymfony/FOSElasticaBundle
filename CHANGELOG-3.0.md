@@ -12,7 +12,17 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.0...v3.0.1
 To generate a changelog summary since the last version, run
 `git log --no-merges --oneline v3.0.0...3.0.x`
 
-* 3.0.0-ALPHA3 (xxxx-xx-xx)
+* 3.0.0-ALPHA6 (xxxx-xx-xx)
+
+ * Moved `is_indexable_callback` from the listener properties to a type property called
+   `indexable_callback` which is run when both populating and listening for object
+   changes.
+ * BC BREAK `ObjectPersisterInterface` added method getType() (To be removed during
+   ObjectPersister refactoring before 3.0.0 stable when ObjectPersister will change)
+ * AbstractProvider constructor change: Second argument is now an `IndexableInterface`
+   instance.
+
+* 3.0.0-ALPHA3 (2014-04-01)
 
  * a9c4c93: Logger is now only enabled in debug mode by default
  * #463: allowing hot swappable reindexing
