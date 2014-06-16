@@ -14,6 +14,7 @@ To generate a changelog summary since the last version, run
 
 * 3.0.0-ALPHA6
 
+ * Annotation @Search moved to FOS\ElasticaBundle\Annotation\Search with FOS\ElasticaBundle\Configuration\Search deprecated
  * Deprecated FOS\ElasticaBundle\Client in favour of FOS\ElasticaBundle\Elastica\Client
  * Deprecated FOS\ElasticaBundle\DynamicIndex in favour of FOS\ElasticaBundle\Elastica\Index
  * Deprecated FOS\ElasticaBundle\IndexManager in favour of FOS\ElasticaBundle\Index\IndexManager
@@ -21,7 +22,7 @@ To generate a changelog summary since the last version, run
 
 * 3.0.0-ALPHA5 (2014-05-23)
 
-* Doctrine Provider speed up by disabling persistence logging while populating documents
+ * Doctrine Provider speed up by disabling persistence logging while populating documents
 
 * 3.0.0-ALPHA4 (2014-04-10)
 
