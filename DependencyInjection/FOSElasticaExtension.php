@@ -49,7 +49,7 @@ class FOSElasticaExtension extends Extension
             return;
         }
 
-        foreach (array('config', 'index', 'persister', 'provider', 'transformer') as $basename) {
+        foreach (array('config', 'index', 'persister', 'provider', 'source', 'transformer') as $basename) {
             $loader->load(sprintf('%s.xml', $basename));
         }
 
@@ -70,6 +70,8 @@ class FOSElasticaExtension extends Extension
 
         $this->loadIndexes($config['indexes'], $container);
         $container->setAlias('fos_elastica.index', sprintf('fos_elastica.index.%s', $config['default_index']));
+
+        $container->getDefinition('fos_elastica.config_source.container')->replaceArgument(0, $this->indexConfigs);
 
         $this->loadIndexManager($container);
         $this->loadResetter($container);
@@ -142,13 +144,10 @@ class FOSElasticaExtension extends Extension
             $reference = new Reference($indexId);
 
             $this->indexConfigs[$name] = array(
-                'config' => array(
-                    'properties' => array(),
-                    'settings' => $index['settings']
-                ),
                 'elasticsearch_name' => $indexName,
                 'reference' => $reference,
                 'name' => $name,
+                'settings' => $index['settings'],
                 'type_prototype' => isset($index['type_prototype']) ? $index['type_prototype'] : array(),
                 'use_alias' => $index['use_alias'],
             );
@@ -197,7 +196,6 @@ class FOSElasticaExtension extends Extension
     {
         foreach ($types as $name => $type) {
             $indexName = $indexConfig['name'];
-            $type = self::deepArrayUnion($indexConfig['type_prototype'], $type);
 
             $typeId = sprintf('%s.%s', $indexName, $name);
             $typeDef = new DefinitionDecorator('fos_elastica.type_prototype');
@@ -208,7 +206,14 @@ class FOSElasticaExtension extends Extension
                 $this->loadTypePersistenceIntegration($type['persistence'], $container, $typeDef, $indexName, $name);
             }
 
+            $this->indexConfigs[$indexName]['types'][$name] = array(
+                'dynamic_templates' => array(),
+                'name' => $name,
+                'properties' => array()
+            );
+
             foreach (array(
+                'dynamic_templates',
                 'index_analyzer',
                 'properties',
                 'search_analyzer',
@@ -222,14 +227,7 @@ class FOSElasticaExtension extends Extension
                 '_ttl',
             ) as $field) {
                 if (array_key_exists($field, $type)) {
-                    $this->indexConfigs[$indexName]['config']['properties'][$name][$field] = $type[$field];
-                }
-            }
-
-            if (!empty($type['dynamic_templates'])) {
-                $this->indexConfigs[$indexName]['config']['properties'][$name]['dynamic_templates'] = array();
-                foreach ($type['dynamic_templates'] as $templateName => $templateData) {
-                    $this->indexConfigs[$indexName]['config']['properties'][$name]['dynamic_templates'][] = array($templateName => $templateData);
+                    $this->indexConfigs[$indexName]['types'][$name]['properties'][$field] = $type[$field];
                 }
             }
 
@@ -257,27 +255,6 @@ class FOSElasticaExtension extends Extension
                 $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));
             }*/
         }
-    }
-
-    /**
-     * Merges two arrays without reindexing numeric keys.
-     *
-     * @param array $array1 An array to merge
-     * @param array $array2 An array to merge
-     *
-     * @return array The merged array
-     */
-    private static function deepArrayUnion($array1, $array2)
-    {
-        foreach ($array2 as $key => $value) {
-            if (is_array($value) && isset($array1[$key]) && is_array($array1[$key])) {
-                $array1[$key] = self::deepArrayUnion($array1[$key], $value);
-            } else {
-                $array1[$key] = $value;
-            }
-        }
-
-        return $array1;
     }
 
     /**
@@ -397,7 +374,7 @@ class FOSElasticaExtension extends Extension
             $arguments[] = array(new Reference($callbackId), 'serialize');
         } else {
             $abstractId = 'fos_elastica.object_persister';
-            $arguments[] = $this->indexConfigs[$indexName]['config']['properties'][$typeName]['properties'];
+            $arguments[] = $this->indexConfigs[$indexName]['types'][$typeName]['properties'];
         }
 
         $serviceId = sprintf('fos_elastica.object_persister.%s.%s', $indexName, $typeName);
