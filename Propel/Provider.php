@@ -30,14 +30,18 @@ class Provider extends AbstractProvider
             $objects = $queryClass::create()
                 ->limit($batchSize)
                 ->offset($offset)
-                ->find();
+                ->find()
+                ->getArrayCopy();
+            if ($loggerClosure) {
+                $stepNbObjects = count($objects);
+            }
+            $objects = array_filter($objects, array($this, 'isObjectIndexable'));
 
-            $this->objectPersister->insertMany($objects->getArrayCopy());
+            $this->objectPersister->insertMany($objects);
 
             usleep($sleep);
 
             if ($loggerClosure) {
-                $stepNbObjects = count($objects);
                 $stepCount = $stepNbObjects + $offset;
                 $percentComplete = 100 * $stepCount / $nbObjects;
                 $objectsPerSecond = $stepNbObjects / (microtime(true) - $stepStartTime);

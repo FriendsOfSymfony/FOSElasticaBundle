@@ -23,7 +23,7 @@
 
         <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" public="false">
             <argument type="service" id="doctrine" />
-            <argument /> <!-- model -->
+            <argument type="service" id="fos_elastica.indexable" />
             <argument type="collection" /> <!-- options -->
             <call method="setPropertyAccessor">
                 <argument type="service" id="fos_elastica.property_accessor" />
