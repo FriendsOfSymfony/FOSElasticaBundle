@@ -22,6 +22,7 @@
     },
     "require-dev":{
         "doctrine/orm": "~2.2",
+        "doctrine/doctrine-bundle": "~1.2@beta",
         "doctrine/mongodb-odm": "1.0.*@beta",
         "phpunit/phpunit": "~4.1",
         "propel/propel1": "1.6.*",

@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
+use FOS\ElasticaBundle\Provider\IndexableInterface;
 
 abstract class AbstractProvider extends BaseAbstractProvider
 {
@@ -15,13 +16,19 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
-     * @param string                   $objectClass
-     * @param array                    $options
-     * @param ManagerRegistry          $managerRegistry
+     * @param IndexableInterface $indexable
+     * @param string $objectClass
+     * @param array $options
+     * @param ManagerRegistry $managerRegistry
      */
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $options, $managerRegistry)
-    {
-        parent::__construct($objectPersister, $objectClass, array_merge(array(
+    public function __construct(
+        ObjectPersisterInterface $objectPersister,
+        IndexableInterface $indexable,
+        $objectClass,
+        array $options,
+        ManagerRegistry $managerRegistry
+    ) {
+        parent::__construct($objectPersister, $indexable, $objectClass, array_merge(array(
             'clear_object_manager' => true,
             'debug_logging'        => false,
             'ignore_errors'        => false,
@@ -53,6 +60,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
                 $stepStartTime = microtime(true);
             }
             $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
+            if ($loggerClosure) {
+                $stepNbObjects = count($objects);
+            }
+            $objects = array_filter($objects, array($this, 'isObjectIndexable'));
 
             if (!$ignoreErrors) {
                 $this->objectPersister->insertMany($objects);
@@ -73,7 +84,6 @@ abstract class AbstractProvider extends BaseAbstractProvider
             usleep($sleep);
 
             if ($loggerClosure) {
-                $stepNbObjects = count($objects);
                 $stepCount = $stepNbObjects + $offset;
                 $percentComplete = 100 * $stepCount / $nbObjects;
                 $timeDifference = microtime(true) - $stepStartTime;

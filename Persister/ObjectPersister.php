@@ -31,6 +31,17 @@ class ObjectPersister implements ObjectPersisterInterface
         $this->fields          = $fields;
     }
 
+    /**
+     * If the ObjectPersister handles a given object.
+     *
+     * @param object $object
+     * @return bool
+     */
+    public function handlesObject($object)
+    {
+        return $object instanceof $this->objectClass;
+    }
+
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;

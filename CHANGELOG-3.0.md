@@ -14,6 +14,13 @@ To generate a changelog summary since the last version, run
 
 * 3.0.0-ALPHA6
 
+ * Moved `is_indexable_callback` from the listener properties to a type property called
+   `indexable_callback` which is run when both populating and listening for object
+   changes.
+ * BC BREAK `ObjectPersisterInterface` added method getType() (To be removed during
+   ObjectPersister refactoring before 3.0.0 stable when ObjectPersister will change)
+ * AbstractProvider constructor change: Second argument is now an `IndexableInterface`
+   instance.
  * Annotation @Search moved to FOS\ElasticaBundle\Annotation\Search with FOS\ElasticaBundle\Configuration\Search deprecated
  * Deprecated FOS\ElasticaBundle\Client in favour of FOS\ElasticaBundle\Elastica\Client
  * Deprecated FOS\ElasticaBundle\DynamicIndex in favour of FOS\ElasticaBundle\Elastica\Index

@@ -6,6 +6,7 @@
     <services>
         <service id="fos_elastica.provider.prototype.propel" class="FOS\ElasticaBundle\Propel\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
+            <argument type="service" id="fos_elastica.indexable" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
         </service>

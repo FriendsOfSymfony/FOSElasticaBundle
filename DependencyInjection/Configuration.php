@@ -189,9 +189,23 @@ class Configuration implements ConfigurationInterface
                     return $v;
                 })
                 ->end()
+                ->beforeNormalization()
+                ->ifTrue(function ($v) {
+                    return isset($v['persistence']) &&
+                        isset($v['persistence']['listener']) &&
+                        isset($v['persistence']['listener']['is_indexable_callback']);
+                })
+                ->then(function ($v) {
+                    $v['indexable_callback'] = $v['persistence']['listener']['is_indexable_callback'];
+                    unset($v['persistence']['listener']['is_indexable_callback']);
+
+                    return $v;
+                })
+                ->end()
                 ->children()
                     ->scalarNode('index_analyzer')->end()
                     ->scalarNode('search_analyzer')->end()
+                    ->scalarNode('indexable_callback')->end()
                     ->append($this->getPersistenceNode())
                     ->append($this->getSerializerNode())
                 ->end()
@@ -458,7 +472,6 @@ class Configuration implements ConfigurationInterface
                             ->treatTrueLike('fos_elastica.logger')
                         ->end()
                         ->scalarNode('service')->end()
-                        ->variableNode('is_indexable_callback')->defaultNull()->end()
                     ->end()
                 ->end()
                 ->arrayNode('finder')

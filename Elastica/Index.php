@@ -11,6 +11,19 @@ use Elastica\Index as BaseIndex;
  */
 class Index extends BaseIndex
 {
+    private $originalName;
+
+    /**
+     * Returns the original name of the index if the index has been renamed for reindexing
+     * or realiasing purposes.
+     *
+     * @return string
+     */
+    public function getOriginalName()
+    {
+        return $this->originalName ?: $this->_name;
+    }
+
     /**
      * Reassign index name
      *
@@ -23,6 +36,7 @@ class Index extends BaseIndex
      */
     public function overrideName($name)
     {
+        $this->originalName = $this->_name;
         $this->_name = $name;
     }
 }

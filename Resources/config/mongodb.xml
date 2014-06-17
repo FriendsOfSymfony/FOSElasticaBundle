@@ -7,17 +7,18 @@
     <services>
         <service id="fos_elastica.provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
+            <argument type="service" id="fos_elastica.indexable" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
             <argument type="service" id="doctrine_mongodb" />
         </service>
 
         <service id="fos_elastica.listener.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\Listener" public="false">
-            <argument /> <!-- object persister -->
-            <argument /> <!-- model -->
+            <argument type="service" /> <!-- object persister -->
             <argument type="collection" /> <!-- events -->
-            <argument/> <!-- identifier -->
-            <tag name="doctrine_mongodb.odm.event_subscriber" />
+            <argument type="service" id="fos_elastica.indexable" />
+            <argument type="collection" /> <!-- configuration -->
+            <argument type="service" on-invalid="null"/> <!-- logger -->
         </service>
 
         <service id="fos_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer" public="false">

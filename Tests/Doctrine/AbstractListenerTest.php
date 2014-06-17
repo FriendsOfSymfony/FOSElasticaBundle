@@ -11,12 +11,12 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
 {
     public function testObjectInsertedOnPersist()
     {
-        $persister = $this->getMockPersister();
-
         $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', 'type', $entity, true);
 
-        $listener = $this->createListener($persister, get_class($entity), array());
+        $listener = $this->createListener($persister, array(), $indexable, array('indexName' => 'index', 'typeName' => 'type'));
         $listener->postPersist($eventArgs);
 
         $this->assertEquals($entity, current($listener->scheduledForInsertion));
@@ -28,18 +28,14 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener->postFlush($eventArgs);
     }
 
-    /**
-     * @dataProvider provideIsIndexableCallbacks
-     */
-    public function testNonIndexableObjectNotInsertedOnPersist($isIndexableCallback)
+    public function testNonIndexableObjectNotInsertedOnPersist()
     {
-        $persister = $this->getMockPersister();
-
-        $entity = new Listener\Entity(1, false);
+        $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', 'type', $entity, false);
 
-        $listener = $this->createListener($persister, get_class($entity), array());
-        $listener->setIsIndexableCallback($isIndexableCallback);
+        $listener = $this->createListener($persister, array(), $indexable, array('indexName' => 'index', 'typeName' => 'type'));
         $listener->postPersist($eventArgs);
 
         $this->assertEmpty($listener->scheduledForInsertion);
@@ -54,12 +50,12 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testObjectReplacedOnUpdate()
     {
-        $persister = $this->getMockPersister();
-
         $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', 'type', $entity, true);
 
-        $listener = $this->createListener($persister, get_class($entity), array());
+        $listener = $this->createListener($persister, array(), $indexable, array('indexName' => 'index', 'typeName' => 'type'));
         $listener->postUpdate($eventArgs);
 
         $this->assertEquals($entity, current($listener->scheduledForUpdate));
@@ -73,17 +69,15 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener->postFlush($eventArgs);
     }
 
-    /**
-     * @dataProvider provideIsIndexableCallbacks
-     */
-    public function testNonIndexableObjectRemovedOnUpdate($isIndexableCallback)
+    public function testNonIndexableObjectRemovedOnUpdate()
     {
         $classMetadata = $this->getMockClassMetadata();
         $objectManager = $this->getMockObjectManager();
-        $persister = $this->getMockPersister();
 
-        $entity = new Listener\Entity(1, false);
+        $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
+        $indexable = $this->getMockIndexable('index', 'type', $entity, false);
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
@@ -95,8 +89,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->with($entity, 'id')
             ->will($this->returnValue($entity->getId()));
 
-        $listener = $this->createListener($persister, get_class($entity), array());
-        $listener->setIsIndexableCallback($isIndexableCallback);
+        $listener = $this->createListener($persister, array(), $indexable, array('indexName' => 'index', 'typeName' => 'type'));
         $listener->postUpdate($eventArgs);
 
         $this->assertEmpty($listener->scheduledForUpdate);
@@ -115,10 +108,11 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
     {
         $classMetadata = $this->getMockClassMetadata();
         $objectManager = $this->getMockObjectManager();
-        $persister = $this->getMockPersister();
 
         $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
+        $indexable = $this->getMockIndexable('index', 'type', $entity);
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
@@ -130,7 +124,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->with($entity, 'id')
             ->will($this->returnValue($entity->getId()));
 
-        $listener = $this->createListener($persister, get_class($entity), array());
+        $listener = $this->createListener($persister, array(), $indexable, array('indexName' => 'index', 'typeName' => 'type'));
         $listener->preRemove($eventArgs);
 
         $this->assertEquals($entity->getId(), current($listener->scheduledForDeletion));
@@ -146,11 +140,12 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
     {
         $classMetadata = $this->getMockClassMetadata();
         $objectManager = $this->getMockObjectManager();
-        $persister = $this->getMockPersister();
 
         $entity = new Listener\Entity(1);
         $entity->identifier = 'foo';
+        $persister = $this->getMockPersister($entity, 'index', 'type');
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
+        $indexable = $this->getMockIndexable('index', 'type', $entity);
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
@@ -162,7 +157,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->with($entity, 'identifier')
             ->will($this->returnValue($entity->getId()));
 
-        $listener = $this->createListener($persister, get_class($entity), array(), 'identifier');
+        $listener = $this->createListener($persister, array(), $indexable, array('identifier' => 'identifier', 'indexName' => 'index', 'typeName' => 'type'));
         $listener->preRemove($eventArgs);
 
         $this->assertEquals($entity->identifier, current($listener->scheduledForDeletion));
@@ -172,36 +167,6 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->with(array($entity->identifier));
 
         $listener->postFlush($eventArgs);
-    }
-
-    /**
-     * @dataProvider provideInvalidIsIndexableCallbacks
-     * @expectedException \RuntimeException
-     */
-    public function testInvalidIsIndexableCallbacks($isIndexableCallback)
-    {
-        $listener = $this->createListener($this->getMockPersister(), 'FOS\ElasticaBundle\Tests\Doctrine\Listener\Entity', array());
-        $listener->setIsIndexableCallback($isIndexableCallback);
-    }
-
-    public function provideInvalidIsIndexableCallbacks()
-    {
-        return array(
-            array('nonexistentEntityMethod'),
-            array(array(new Listener\IndexableDecider(), 'internalMethod')),
-            array(42),
-            array('entity.getIsIndexable() && nonexistentEntityFunction()'),
-        );
-    }
-
-    public function provideIsIndexableCallbacks()
-    {
-        return array(
-            array('getIsIndexable'),
-            array(array(new Listener\IndexableDecider(), 'isIndexable')),
-            array(function(Listener\Entity $entity) { return $entity->getIsIndexable(); }),
-            array('entity.getIsIndexable()')
-        );
     }
 
     abstract protected function getLifecycleEventArgsClass();
@@ -240,9 +205,48 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    private function getMockPersister()
+    private function getMockPersister($object, $indexName, $typeName)
     {
-        return $this->getMock('FOS\ElasticaBundle\Persister\ObjectPersisterInterface');
+        $mock = $this->getMockBuilder('FOS\ElasticaBundle\Persister\ObjectPersister')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('handlesObject')
+            ->with($object)
+            ->will($this->returnValue(true));
+
+        $index = $this->getMockBuilder('Elastica\Index')->disableOriginalConstructor()->getMock();
+        $index->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue($indexName));
+        $type = $this->getMockBuilder('Elastica\Type')->disableOriginalConstructor()->getMock();
+        $type->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue($typeName));
+        $type->expects($this->any())
+            ->method('getIndex')
+            ->will($this->returnValue($index));
+
+        $mock->expects($this->any())
+            ->method('getType')
+            ->will($this->returnValue($type));
+
+        return $mock;
+    }
+
+    private function getMockIndexable($indexName, $typeName, $object, $return = null)
+    {
+        $mock = $this->getMock('FOS\ElasticaBundle\Provider\IndexableInterface');
+
+        if (null !== $return) {
+            $mock->expects($this->once())
+                ->method('isObjectIndexable')
+                ->with($indexName, $typeName, $object)
+                ->will($this->returnValue($return));
+        }
+
+        return $mock;
     }
 }
 
@@ -251,33 +255,15 @@ namespace FOS\ElasticaBundle\Tests\Doctrine\Listener;
 class Entity
 {
     private $id;
-    private $isIndexable;
 
-    public function __construct($id, $isIndexable = true)
+    public function __construct($id)
     {
         $this->id = $id;
-        $this->isIndexable = $isIndexable;
     }
 
     public function getId()
     {
         return $this->id;
     }
-
-    public function getIsIndexable()
-    {
-        return $this->isIndexable;
-    }
 }
 
-class IndexableDecider
-{
-    public function isIndexable(Entity $entity)
-    {
-        return $entity->getIsIndexable();
-    }
-
-    protected function internalMethod()
-    {
-    }
-}

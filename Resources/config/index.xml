@@ -7,12 +7,17 @@
     <parameters>
         <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\Elastica\Index</parameter>
         <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
+        <parameter key="fos_elastica.indexable.class">FOS\ElasticaBundle\Provider\Indexable</parameter>
         <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\Index\IndexManager</parameter>
         <parameter key="fos_elastica.resetter.class">FOS\ElasticaBundle\Index\Resetter</parameter>
         <parameter key="fos_elastica.finder.class">FOS\ElasticaBundle\Finder\TransformedFinder</parameter>
     </parameters>
 
     <services>
+        <service id="fos_elastica.indexable" class="%fos_elastica.indexable.class%">
+            <argument type="collection" /> <!-- array of indexable callbacks keyed by type name -->
+        </service>
+
         <service id="fos_elastica.index_prototype" class="%fos_elastica.index.class%" factory-service="fos_elastica.client" factory-method="getIndex" abstract="true">
             <argument /> <!-- index name -->
         </service>

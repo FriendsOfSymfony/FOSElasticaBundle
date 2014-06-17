@@ -194,6 +194,8 @@ class FOSElasticaExtension extends Extension
      */
     private function loadTypes(array $types, ContainerBuilder $container, array $indexConfig)
     {
+        $indexableCallbacks = array();
+
         foreach ($types as $name => $type) {
             $indexName = $indexConfig['name'];
 
@@ -231,6 +233,10 @@ class FOSElasticaExtension extends Extension
                 }
             }
 
+            if (isset($type['indexable_callback'])) {
+                $indexableCallbacks[sprintf('%s/%s', $indexName, $name)] = $type['indexable_callback'];
+            }
+
             $container->setDefinition($typeId, $typeDef);
 
             /*if ($this->serializerConfig) {
@@ -255,6 +261,9 @@ class FOSElasticaExtension extends Extension
                 $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));
             }*/
         }
+
+        $indexable = $container->getDefinition('fos_elastica.indexable');
+        $indexable->replaceArgument(0, $indexableCallbacks);
     }
 
     /**
@@ -411,10 +420,12 @@ class FOSElasticaExtension extends Extension
         $providerDef = new DefinitionDecorator('fos_elastica.provider.prototype.' . $typeConfig['driver']);
         $providerDef->addTag('fos_elastica.provider', array('index' => $indexName, 'type' => $typeName));
         $providerDef->replaceArgument(0, new Reference($objectPersisterId));
-        $providerDef->replaceArgument(1, $typeConfig['model']);
+        $providerDef->replaceArgument(2, $typeConfig['model']);
         // Propel provider can simply ignore Doctrine-specific options
-        $providerDef->replaceArgument(2, array_diff_key($typeConfig['provider'], array('service' => 1)));
-
+        $providerDef->replaceArgument(3, array_merge(array_diff_key($typeConfig['provider'], array('service' => 1)), array(
+            'indexName' => $indexName,
+            'typeName' => $typeName,
+        )));
         $container->setDefinition($providerId, $providerDef);
 
         return $providerId;
@@ -443,25 +454,21 @@ class FOSElasticaExtension extends Extension
         $listenerId = sprintf('fos_elastica.listener.%s.%s', $indexName, $typeName);
         $listenerDef = new DefinitionDecorator($abstractListenerId);
         $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
-        $listenerDef->replaceArgument(1, $typeConfig['model']);
-        $listenerDef->replaceArgument(2, $this->getDoctrineEvents($typeConfig));
-        $listenerDef->replaceArgument(3, $typeConfig['identifier']);
+        $listenerDef->replaceArgument(1, $this->getDoctrineEvents($typeConfig));
+        $listenerDef->replaceArgument(3, array(
+            'identifier' => $typeConfig['identifier'],
+            'indexName' => $indexName,
+            'typeName' => $typeName,
+        ));
         if ($typeConfig['listener']['logger']) {
             $listenerDef->replaceArgument(4, new Reference($typeConfig['listener']['logger']));
         }
 
-        if (isset($typeConfig['listener']['is_indexable_callback'])) {
-            $callback = $typeConfig['listener']['is_indexable_callback'];
-
-            if (is_array($callback)) {
-                list($class) = $callback + array(null);
-                if (is_string($class) && !class_exists($class)) {
-                    $callback[0] = new Reference($class);
-                }
-            }
-
-            $listenerDef->addMethodCall('setIsIndexableCallback', array($callback));
+        switch ($typeConfig['driver']) {
+            case 'orm': $listenerDef->addTag('doctrine.event_subscriber'); break;
+            case 'mongodb': $listenerDef->addTag('doctrine_mongodb.odm.event_subscriber'); break;
         }
+
         $container->setDefinition($listenerId, $listenerDef);
 
         return $listenerId;
