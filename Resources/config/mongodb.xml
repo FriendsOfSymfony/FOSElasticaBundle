@@ -8,7 +8,7 @@
 
         <service id="fos_elastica.provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
-            <argument /> <!-- model -->
+            <argument type="service" id="fos_elastica.indexable" />
             <argument type="collection" /> <!-- options -->
             <argument type="service" id="doctrine_mongodb" />
         </service>
@@ -23,7 +23,7 @@
 
         <service id="fos_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer" public="false">
             <argument type="service" id="doctrine_mongodb" />
-            <argument type="service" id="fos_elastica.indexable" />
+            <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
             <call method="setPropertyAccessor">
                 <argument type="service" id="fos_elastica.property_accessor" />
