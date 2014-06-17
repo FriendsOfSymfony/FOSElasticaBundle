@@ -65,7 +65,7 @@ You can now use the index wide finder service `fos_elastica.finder.website`:
 
 ```php
 /** var FOS\ElasticaBundle\Finder\MappedFinder */
-$finder = $container->get('fos_elastica.finder.website');
+$finder = $this->container->get('fos_elastica.finder.website');
 
 // Returns a mixed array of any objects mapped
 $results = $finder->find('bob');
@@ -91,7 +91,7 @@ An example for using a repository:
 
 ```php
 /** var FOS\ElasticaBundle\Manager\RepositoryManager */
-$repositoryManager = $container->get('fos_elastica.manager');
+$repositoryManager = $this->container->get('fos_elastica.manager');
 
 /** var FOS\ElasticaBundle\Repository */
 $repository = $repositoryManager->getRepository('UserBundle:User');
