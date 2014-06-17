@@ -149,6 +149,44 @@ analyzer, you could write:
                         title: { boost: 8, analyzer: my_analyzer }
 ```
 
+Testing if an object should be indexed
+--------------------------------------
+
+FOSElasticaBundle can be configured to automatically index changes made for
+different kinds of objects if your persistence backend supports these methods,
+but in some cases you might want to run an external service or call a property
+on the object to see if it should be indexed.
+
+A property, `indexable_callback` is provided under the type configuration that
+lets you configure this behaviour which will apply for any automated watching
+for changes and for a repopulation of an index.
+
+In the example below, we're checking the enabled property on the user to only
+index enabled users.
+
+```yaml
+    types:
+        users:
+            indexable_callback: 'enabled'
+```
+
+The callback option supports multiple approaches:
+
+* A method on the object itself provided as a string. `enabled` will call
+  `Object->enabled()`
+* An array of a service id and a method which will be called with the object as the first
+  and only argument. `[ @my_custom_service, 'userIndexable' ]` will call the userIndexable
+  method on a service defined as my_custom_service.
+* If you have the ExpressionLanguage component installed, A valid ExpressionLanguage
+  expression provided as a string. The object being indexed will be supplied as `object`
+  in the expression. `object.isEnabled() or object.shouldBeIndexedAnyway()`. For more
+  information on the ExpressionLanguage component and its capabilities see its
+  [documentation](http://symfony.com/doc/current/components/expression_language/index.html)
+
+In all cases, the callback should return a true or false, with true indicating it will be
+indexed, and a false indicating the object should not be indexed, or should be removed
+from the index if we are running an update.
+
 Provider Configuration
 ----------------------
 
@@ -231,49 +269,6 @@ You can also choose to only listen for some of the events:
                             update: false
                             delete: true
 ```
-
-> **Propel** doesn't support this feature yet.
-
-### Checking an entity method for listener
-
-If you use listeners to update your index, you may need to validate your
-entities before you index them (e.g. only index "public" entities). Typically,
-you'll want the listener to be consistent with the provider's query criteria.
-This may be achieved by using the `is_indexable_callback` config parameter:
-
-```yaml
-                    persistence:
-                        listener:
-                            is_indexable_callback: "isPublic"
-```
-
-If `is_indexable_callback` is a string and the entity has a method with the
-specified name, the listener will only index entities for which the method
-returns `true`. Additionally, you may provide a service and method name pair:
-
-```yaml
-                    persistence:
-                        listener:
-                            is_indexable_callback: [ "%custom_service_id%", "isIndexable" ]
-```
-
-In this case, the callback_class will be the `isIndexable()` method on the specified
-service and the object being considered for indexing will be passed as the only
-argument. This allows you to do more complex validation (e.g. ACL checks).
-
-If you have the [Symfony ExpressionLanguage](https://github.com/symfony/expression-language)
-component installed, you can use expressions to evaluate the callback:
-
-```yaml
-                    persistence:
-                        listener:
-                            is_indexable_callback: "user.isActive() && user.hasRole('ROLE_USER')"
-```
-
-As you might expect, new entities will only be indexed if the callback_class returns
-`true`. Additionally, modified entities will be updated or removed from the
-index depending on whether the callback_class returns `true` or `false`, respectively.
-The delete listener disregards the callback_class.
 
 > **Propel** doesn't support this feature yet.
 
