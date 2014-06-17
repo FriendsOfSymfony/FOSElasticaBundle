@@ -401,11 +401,11 @@ class Configuration implements ConfigurationInterface
             }
 
             foreach ($index['types'] as $type) {
-                if (array_key_exists('mappings', $type) and !empty($type['mappings'])) {
+                if (!empty($type['mappings'])) {
                     $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['mappings'], $nestings));
                 }
 
-                if (array_key_exists('properties', $type) and !empty($type['properties'])) {
+                if (!empty($type['properties'])) {
                     $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['properties'], $nestings));
                 }
             }
