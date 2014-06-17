@@ -15,9 +15,10 @@
 
         <service id="fos_elastica.listener.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\Listener" public="false">
             <argument /> <!-- object persister -->
-            <argument /> <!-- model -->
             <argument type="collection" /> <!-- events -->
+            <argument type="service" id="fos_elastica.indexable" />
             <argument/> <!-- identifier -->
+            <argument /> <!-- logger -->
         </service>
 
         <service id="fos_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer" public="false">

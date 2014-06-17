@@ -1,0 +1,44 @@
+imports:
+    - { resource: ./../config/config.yml }
+
+doctrine:
+    dbal:
+        path: %kernel.cache_dir%/db.sqlite
+        charset:  UTF8
+    orm:
+        auto_generate_proxy_classes: false
+        auto_mapping: false
+
+fos_elastica:
+    clients:
+        default:
+            url: http://localhost:9200
+    indexes:
+        index:
+            index_name: foselastica_test_%kernel.environment%
+            types:
+                type:
+                    properties:
+                        field1: ~
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                        listener:
+                            is_indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
+                type2:
+                    properties:
+                        field1: ~
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                        listener:
+                            is_indexable_callback: 'object.isntIndexable()'
+                type3:
+                    properties:
+                        field1: ~
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                        listener:
+                            is_indexable_callback: 'isntIndexable'
+

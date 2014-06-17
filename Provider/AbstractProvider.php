@@ -25,20 +25,45 @@ abstract class AbstractProvider implements ProviderInterface
     protected $options;
 
     /**
+     * @var Indexable
+     */
+    private $indexable;
+
+    /**
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
-     * @param string                   $objectClass
-     * @param array                    $options
+     * @param IndexableInterface $indexable
+     * @param string $objectClass
+     * @param array $options
      */
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $options = array())
-    {
-        $this->objectPersister = $objectPersister;
+    public function __construct(
+        ObjectPersisterInterface $objectPersister,
+        IndexableInterface $indexable,
+        $objectClass,
+        array $options = array()
+    ) {
+        $this->indexable = $indexable;
         $this->objectClass = $objectClass;
+        $this->objectPersister = $objectPersister;
 
         $this->options = array_merge(array(
             'batch_size' => 100,
         ), $options);
+    }
+
+    /**
+     * Checks if a given object should be indexed or not.
+     *
+     * @param object $object
+     * @return bool
+     */
+    protected function isObjectIndexable($object)
+    {
+        $typeName = $this->objectPersister->getType()->getName();
+        $indexName = $this->objectPersister->getType()->getIndex()->getName();
+
+        return $this->indexable->isObjectIndexable($indexName, $typeName, $object);
     }
 
     /**
