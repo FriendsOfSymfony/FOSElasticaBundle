@@ -419,9 +419,12 @@ class FOSElasticaExtension extends Extension
         $providerDef = new DefinitionDecorator('fos_elastica.provider.prototype.' . $typeConfig['driver']);
         $providerDef->addTag('fos_elastica.provider', array('index' => $indexName, 'type' => $typeName));
         $providerDef->replaceArgument(0, new Reference($objectPersisterId));
-        $providerDef->replaceArgument(1, $typeConfig['model']);
+        $providerDef->replaceArgument(2, $typeConfig['model']);
         // Propel provider can simply ignore Doctrine-specific options
-        $providerDef->replaceArgument(2, array_diff_key($typeConfig['provider'], array('service' => 1)));
+        $providerDef->replaceArgument(3, array_merge(array_diff_key($typeConfig['provider'], array('service' => 1)), array(
+            'indexName' => $indexName,
+            'typeName' => $typeName,
+        )));
         $container->setDefinition($providerId, $providerDef);
 
         return $providerId;
@@ -440,7 +443,11 @@ class FOSElasticaExtension extends Extension
         $listenerDef = new DefinitionDecorator($abstractListenerId);
         $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
         $listenerDef->replaceArgument(1, $this->getDoctrineEvents($typeConfig));
-        $listenerDef->replaceArgument(3, $typeConfig['identifier']);
+        $listenerDef->replaceArgument(3, array(
+            'identifier' => $typeConfig['identifier'],
+            'indexName' => $indexName,
+            'typeName' => $typeName,
+        ));
         if ($typeConfig['listener']['logger']) {
             $listenerDef->replaceArgument(4, new Reference($typeConfig['listener']['logger']));
         }

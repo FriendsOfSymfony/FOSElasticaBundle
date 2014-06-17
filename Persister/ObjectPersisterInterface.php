@@ -68,11 +68,4 @@ interface ObjectPersisterInterface
      * @param array $identifiers array of domain model object identifiers
      */
     public function deleteManyByIdentifiers(array $identifiers);
-
-    /**
-     * Returns the elastica type used by this persister
-     *
-     * @return \Elastica\Type
-     */
-    public function getType();
 }

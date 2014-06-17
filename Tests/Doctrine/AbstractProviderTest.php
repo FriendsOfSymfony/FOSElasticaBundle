@@ -21,28 +21,12 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->objectClass = 'objectClass';
-        $this->options = array('debug_logging' => true);
+        $this->options = array('debug_logging' => true, 'indexName' => 'index', 'typeName' => 'type');
 
         $this->objectPersister = $this->getMockObjectPersister();
         $this->managerRegistry = $this->getMockManagerRegistry();
         $this->objectManager = $this->getMockObjectManager();
         $this->indexable = $this->getMockIndexable();
-
-        $index = $this->getMockBuilder('Elastica\Index')->disableOriginalConstructor()->getMock();
-        $index->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('index'));
-        $type = $this->getMockBuilder('Elastica\Type')->disableOriginalConstructor()->getMock();
-        $type->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('type'));
-        $type->expects($this->any())
-            ->method('getIndex')
-            ->will($this->returnValue($index));
-
-        $this->objectPersister->expects($this->any())
-            ->method('getType')
-            ->will($this->returnValue($type));
 
         $this->managerRegistry->expects($this->any())
             ->method('getManagerForClass')

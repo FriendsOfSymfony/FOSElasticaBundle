@@ -32,16 +32,6 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * @internal Temporary method that will be removed.
-     *
-     * @return Type
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
      * If the ObjectPersister handles a given object.
      *
      * @param object $object

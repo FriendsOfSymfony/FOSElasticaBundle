@@ -9,6 +9,7 @@
         <service id="fos_elastica.provider.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
+            <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
             <argument type="service" id="doctrine" />
         </service>

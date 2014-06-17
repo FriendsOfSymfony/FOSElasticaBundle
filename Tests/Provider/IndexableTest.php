@@ -15,6 +15,14 @@ use FOS\ElasticaBundle\Provider\Indexable;
 
 class IndexableTest extends \PHPUnit_Framework_TestCase
 {
+    public function testIndexableUnknown()
+    {
+        $indexable = new Indexable(array());
+        $index = $indexable->isObjectIndexable('index', 'type', new Entity);
+
+        $this->assertTrue($index);
+    }
+
     /**
      * @dataProvider provideIsIndexableCallbacks
      */

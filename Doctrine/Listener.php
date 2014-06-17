@@ -31,11 +31,11 @@ class Listener implements EventSubscriber
     protected $events;
 
     /**
-     * Name of domain model field used as the ES identifier
+     * Configuration for the listener
      *
      * @var string
      */
-    protected $esIdentifierField;
+    private $config;
 
     /**
      * Objects scheduled for insertion and replacement
@@ -66,17 +66,19 @@ class Listener implements EventSubscriber
      * @param ObjectPersisterInterface $objectPersister
      * @param array $events
      * @param IndexableInterface $indexable
-     * @param string $esIdentifierField
+     * @param array $config
      * @param null $logger
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
         array $events,
         IndexableInterface $indexable,
-        $esIdentifierField = 'id',
+        array $config = array(),
         $logger = null
     ) {
-        $this->esIdentifierField = $esIdentifierField;
+        $this->config = array_merge(array(
+            'identifier' => 'id',
+        ), $config);
         $this->events = $events;
         $this->indexable = $indexable;
         $this->objectPersister = $objectPersister;
@@ -196,7 +198,7 @@ class Listener implements EventSubscriber
      */
     protected function scheduleForDeletion($object)
     {
-        if ($identifierValue = $this->propertyAccessor->getValue($object, $this->esIdentifierField)) {
+        if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
             $this->scheduledForDeletion[] = $identifierValue;
         }
     }
@@ -210,8 +212,8 @@ class Listener implements EventSubscriber
     private function isObjectIndexable($object)
     {
         return $this->indexable->isObjectIndexable(
-            $this->objectPersister->getType()->getIndex()->getName(),
-            $this->objectPersister->getType()->getName(),
+            $this->config['indexName'],
+            $this->config['typeName'],
             $object
         );
     }

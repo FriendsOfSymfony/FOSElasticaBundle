@@ -94,7 +94,7 @@ class Indexable implements IndexableInterface
     private function buildCallback($type, $object)
     {
         if (!array_key_exists($type, $this->callbacks)) {
-            throw new \InvalidArgumentException(sprintf('Callback for type "%s" is not configured', $type));
+            return null;
         }
 
         $callback = $this->callbacks[$type];

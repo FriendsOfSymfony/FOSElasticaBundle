@@ -60,10 +60,11 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected function isObjectIndexable($object)
     {
-        $typeName = $this->objectPersister->getType()->getName();
-        $indexName = $this->objectPersister->getType()->getIndex()->getName();
-
-        return $this->indexable->isObjectIndexable($indexName, $typeName, $object);
+        return $this->indexable->isObjectIndexable(
+            $this->options['indexName'],
+            $this->options['typeName'],
+            $object
+        );
     }
 
     /**
