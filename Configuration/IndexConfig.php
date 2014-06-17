@@ -115,7 +115,7 @@ class IndexConfig
     /**
      * @return boolean
      */
-    public function getUseAlias()
+    public function isUseAlias()
     {
         return $this->useAlias;
     }

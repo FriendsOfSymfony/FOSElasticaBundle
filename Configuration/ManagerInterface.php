@@ -25,6 +25,13 @@ interface ManagerInterface
     public function getIndexConfiguration($index);
 
     /**
+     * Returns an array of known index names.
+     *
+     * @return array
+     */
+    public function getIndexNames();
+
+    /**
      * Returns a type configuration.
      *
      * @param string $index

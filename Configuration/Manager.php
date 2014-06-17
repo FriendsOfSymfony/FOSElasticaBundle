@@ -31,6 +31,20 @@ class Manager implements ManagerInterface
         }
     }
 
+    public function getIndexConfiguration($indexName)
+    {
+        if (!$this->hasIndexConfiguration($indexName)) {
+            throw new \InvalidArgumentException(sprintf('Index with name "%s" is not configured.', $indexName));
+        }
+
+        return $this->indexes[$indexName];
+    }
+
+    public function getIndexNames()
+    {
+        return array_keys($this->indexes);
+    }
+
     public function getTypeConfiguration($indexName, $typeName)
     {
         $index = $this->getIndexConfiguration($indexName);
@@ -41,15 +55,6 @@ class Manager implements ManagerInterface
         }
 
         return $type;
-    }
-
-    public function getIndexConfiguration($indexName)
-    {
-        if (!$this->hasIndexConfiguration($indexName)) {
-            throw new \InvalidArgumentException(sprintf('Index with name "%s" is not configured.', $indexName));
-        }
-
-        return $this->indexes[$indexName];
     }
 
     public function hasIndexConfiguration($indexName)

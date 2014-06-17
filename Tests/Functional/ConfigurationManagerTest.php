@@ -24,7 +24,11 @@ class ConfigurationManagerTest extends WebTestCase
         $manager = $this->getManager($client);
 
         $index = $manager->getIndexConfiguration('index');
-        var_dump($index); die;
+
+        $this->assertEquals('index', $index->getName());
+        $this->assertCount(2, $index->getTypes());
+        $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('type'));
+        $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('parent'));
     }
 
     protected function setUp()

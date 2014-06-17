@@ -74,7 +74,6 @@ class FOSElasticaExtension extends Extension
         $container->getDefinition('fos_elastica.config_source.container')->replaceArgument(0, $this->indexConfigs);
 
         $this->loadIndexManager($container);
-        $this->loadResetter($container);
 
         $this->createDefaultManagerAlias($config['default_manager'], $container);
     }
@@ -549,9 +548,12 @@ class FOSElasticaExtension extends Extension
      **/
     private function loadIndexManager(ContainerBuilder $container)
     {
+        $indexRefs = array_map(function ($index) {
+            return $index['reference'];
+        }, $this->indexConfigs);
+
         $managerDef = $container->getDefinition('fos_elastica.index_manager');
-        $managerDef->replaceArgument(0, array_keys($this->clients));
-        $managerDef->replaceArgument(1, new Reference('fos_elastica.index'));
+        $managerDef->replaceArgument(0, $indexRefs);
     }
 
     /**
@@ -608,16 +610,5 @@ class FOSElasticaExtension extends Extension
         }
 
         return $this->clients[$clientName]['reference'];
-    }
-
-    /**
-     * Loads the resetter
-     *
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     */
-    private function loadResetter(ContainerBuilder $container)
-    {
-        $resetterDef = $container->getDefinition('fos_elastica.resetter');
-        $resetterDef->replaceArgument(0, $this->indexConfigs);
     }
 }

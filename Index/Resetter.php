@@ -6,22 +6,27 @@ use Elastica\Exception\ExceptionInterface;
 use Elastica\Index;
 use Elastica\Exception\ResponseException;
 use Elastica\Type\Mapping;
+use FOS\ElasticaBundle\Configuration\Manager;
 
 /**
  * Deletes and recreates indexes
  */
 class Resetter
 {
-    protected $indexConfigsByName;
+    /***
+     * @var \FOS\ElasticaBundle\Configuration\Manager
+     */
+    private $configManager;
 
     /**
-     * Constructor.
-     *
-     * @param array $indexConfigsByName
+     * @var IndexManager
      */
-    public function __construct(array $indexConfigsByName)
+    private $indexManager;
+
+    public function __construct(Manager $configManager, IndexManager $indexManager)
     {
-        $this->indexConfigsByName = $indexConfigsByName;
+        $this->configManager = $configManager;
+        $this->indexManager = $indexManager;
     }
 
     /**
@@ -29,7 +34,7 @@ class Resetter
      */
     public function resetAllIndexes()
     {
-        foreach (array_keys($this->indexConfigsByName) as $name) {
+        foreach ($this->configManager->getIndexNames() as $name) {
             $this->resetIndex($name);
         }
     }
@@ -42,18 +47,17 @@ class Resetter
      */
     public function resetIndex($indexName)
     {
-        $indexConfig = $this->getIndexConfig($indexName);
-        $esIndex = $indexConfig['index'];
-        if (isset($indexConfig['use_alias']) && $indexConfig['use_alias']) {
-            $name = $indexConfig['name_or_alias'];
-            $name .= uniqid();
-            $esIndex->overrideName($name);
-            $esIndex->create($indexConfig['config']);
+        $indexConfig = $this->configManager->getIndexConfiguration($indexName);
+        $index = $this->indexManager->getIndex($indexName);
 
-            return;
+        if ($indexConfig->isUseAlias()) {
+            $name = sprintf('%s_%s', $indexConfig->getElasticSearchName(), uniqid());
+
+            $index->overrideName($name);
         }
 
-        $esIndex->create($indexConfig['config'], true);
+
+        $index->create($indexConfig['config'], true);
     }
 
     /**
@@ -106,24 +110,6 @@ class Resetter
         }
 
         return $mapping;
-    }
-
-    /**
-     * Gets an index config by its name
-     *
-     * @param string $indexName Index name
-     *
-     * @param $indexName
-     * @return array
-     * @throws \InvalidArgumentException if no index config exists for the given name
-     */
-    protected function getIndexConfig($indexName)
-    {
-        if (!isset($this->indexConfigsByName[$indexName])) {
-            throw new \InvalidArgumentException(sprintf('The configuration for index "%s" does not exist.', $indexName));
-        }
-
-        return $this->indexConfigsByName[$indexName];
     }
 
     public function postPopulate($indexName)

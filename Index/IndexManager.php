@@ -2,12 +2,12 @@
 
 namespace FOS\ElasticaBundle\Index;
 
-use Elastica\Index;
+use FOS\ElasticaBundle\Elastica\Index;
 
 class IndexManager
 {
-    protected $indexesByName;
-    protected $defaultIndexName;
+    private $indexesByName;
+    private $defaultIndexName;
 
     /**
      * Constructor.

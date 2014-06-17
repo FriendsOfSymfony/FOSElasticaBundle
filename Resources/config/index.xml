@@ -28,11 +28,12 @@
 
         <service id="fos_elastica.index_manager" class="%fos_elastica.index_manager.class%">
             <argument /> <!-- indexes -->
-            <argument /> <!-- default index -->
+            <argument type="service" id="fos_elastica.index" /> <!-- default index -->
         </service>
 
         <service id="fos_elastica.resetter" class="%fos_elastica.resetter.class%">
-            <argument /> <!-- index configs -->
+            <argument type="service" id="fos_elastica.config_manager" />
+            <argument type="service" id="fos_elastica.index_manager" />
         </service>
 
         <!-- Abstract definition for all finders. -->
