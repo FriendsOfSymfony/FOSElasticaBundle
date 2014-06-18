@@ -59,11 +59,11 @@ class IndexConfig
      */
     public function __construct($name, array $types, array $config)
     {
-        $this->elasticSearchName = $config['elasticSearchName'];
+        $this->elasticSearchName = isset($config['elasticSearchName']) ? $config['elasticSearchName'] : $name;
         $this->name = $name;
-        $this->settings = $config['settings'];
+        $this->settings = isset($config['settings']) ? $config['settings'] : array();
         $this->types = $types;
-        $this->useAlias = $config['useAlias'];
+        $this->useAlias = isset($config['useAlias']) ? $config['useAlias'] : false;
     }
 
     /**

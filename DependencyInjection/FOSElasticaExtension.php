@@ -201,19 +201,16 @@ class FOSElasticaExtension extends Extension
         foreach ($types as $name => $type) {
             $indexName = $indexConfig['name'];
 
-            $typeId = sprintf('%s.%s', $indexName, $name);
+            $typeId = sprintf('%s.%s', $indexConfig['reference'], $name);
             $typeDef = new DefinitionDecorator('fos_elastica.type_prototype');
             $typeDef->replaceArgument(0, $name);
             $typeDef->setFactoryService($indexConfig['reference']);
+            $container->setDefinition($typeId, $typeDef);
 
-            if (isset($type['persistence'])) {
-                $this->loadTypePersistenceIntegration($type['persistence'], $container, $typeDef, $indexName, $name);
-            }
-
-            $this->indexConfigs[$indexName]['types'][$name] = array(
-                'dynamic_templates' => array(),
+            $typeConfig = array(
                 'name' => $name,
-                'properties' => array()
+                'mapping' => array(), // An array containing anything that gets sent directly to ElasticSearch
+                'config' => array(),
             );
 
             foreach (array(
@@ -230,16 +227,31 @@ class FOSElasticaExtension extends Extension
                 '_timestamp',
                 '_ttl',
             ) as $field) {
-                if (array_key_exists($field, $type)) {
-                    $this->indexConfigs[$indexName]['types'][$name]['properties'][$field] = $type[$field];
+                if (isset($type[$field])) {
+                    $typeConfig['mapping'][$field] = $type[$field];
                 }
+            }
+
+            foreach (array(
+                'persistence',
+                'serializer'
+            ) as $field) {
+                $typeConfig['config'][$field] = array_key_exists($field, $type) ?
+                    $type[$field] :
+                    null;
+            }
+
+            $this->indexConfigs[$indexName]['types'][$name] = $typeConfig;
+
+            if (isset($type['persistence'])) {
+                $this->loadTypePersistenceIntegration($type['persistence'], $container, new Reference($typeId), $indexName, $name);
+
+                $typeConfig['persistence'] = $type['persistence'];
             }
 
             if (isset($type['indexable_callback'])) {
                 $indexableCallbacks[sprintf('%s/%s', $indexName, $name)] = $type['indexable_callback'];
             }
-
-            $container->setDefinition($typeId, $typeDef);
 
             /*if ($this->serializerConfig) {
                 $callbackDef = new Definition($this->serializerConfig['callback_class']);
@@ -272,24 +284,24 @@ class FOSElasticaExtension extends Extension
      * Loads the optional provider and finder for a type
      *
      * @param array $typeConfig
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     * @param \Symfony\Component\DependencyInjection\Definition $typeDef
-     * @param $indexName
-     * @param $typeName
+     * @param ContainerBuilder $container
+     * @param Reference $typeRef
+     * @param string $indexName
+     * @param string $typeName
      */
-    private function loadTypePersistenceIntegration(array $typeConfig, ContainerBuilder $container, Definition $typeDef, $indexName, $typeName)
+    private function loadTypePersistenceIntegration(array $typeConfig, ContainerBuilder $container, Reference $typeRef, $indexName, $typeName)
     {
         $this->loadDriver($container, $typeConfig['driver']);
 
         $elasticaToModelTransformerId = $this->loadElasticaToModelTransformer($typeConfig, $container, $indexName, $typeName);
         $modelToElasticaTransformerId = $this->loadModelToElasticaTransformer($typeConfig, $container, $indexName, $typeName);
-        $objectPersisterId = $this->loadObjectPersister($typeConfig, $typeDef, $container, $indexName, $typeName, $modelToElasticaTransformerId);
+        $objectPersisterId = $this->loadObjectPersister($typeConfig, $typeRef, $container, $indexName, $typeName, $modelToElasticaTransformerId);
 
         if (isset($typeConfig['provider'])) {
             $this->loadTypeProvider($typeConfig, $container, $objectPersisterId, $indexName, $typeName);
         }
         if (isset($typeConfig['finder'])) {
-            $this->loadTypeFinder($typeConfig, $container, $elasticaToModelTransformerId, $typeDef, $indexName, $typeName);
+            $this->loadTypeFinder($typeConfig, $container, $elasticaToModelTransformerId, $typeRef, $indexName, $typeName);
         }
         if (isset($typeConfig['listener'])) {
             $this->loadTypeListener($typeConfig, $container, $objectPersisterId, $indexName, $typeName);
@@ -364,17 +376,17 @@ class FOSElasticaExtension extends Extension
      * Creates and loads an object persister for a type.
      *
      * @param array $typeConfig
-     * @param Definition $typeDef
+     * @param Reference $typeRef
      * @param ContainerBuilder $container
      * @param string $indexName
      * @param string $typeName
      * @param string $transformerId
      * @return string
      */
-    private function loadObjectPersister(array $typeConfig, Definition $typeDef, ContainerBuilder $container, $indexName, $typeName, $transformerId)
+    private function loadObjectPersister(array $typeConfig, Reference $typeRef, ContainerBuilder $container, $indexName, $typeName, $transformerId)
     {
         $arguments = array(
-            $typeDef,
+            $typeRef,
             new Reference($transformerId),
             $typeConfig['model'],
         );
@@ -385,7 +397,7 @@ class FOSElasticaExtension extends Extension
             $arguments[] = array(new Reference($callbackId), 'serialize');
         } else {
             $abstractId = 'fos_elastica.object_persister';
-            $arguments[] = $this->indexConfigs[$indexName]['types'][$typeName]['properties'];
+            $arguments[] = $this->indexConfigs[$indexName]['types'][$typeName]['mapping']['properties'];
         }
 
         $serviceId = sprintf('fos_elastica.object_persister.%s.%s', $indexName, $typeName);
@@ -515,20 +527,20 @@ class FOSElasticaExtension extends Extension
      *
      * @param array $typeConfig
      * @param ContainerBuilder $container
-     * @param string $elasticaToModelId
-     * @param Definition $typeDef
+     * @param $elasticaToModelId
+     * @param Reference $typeRef
      * @param string $indexName
      * @param string $typeName
      * @return string
      */
-    private function loadTypeFinder(array $typeConfig, ContainerBuilder $container, $elasticaToModelId, Definition $typeDef, $indexName, $typeName)
+    private function loadTypeFinder(array $typeConfig, ContainerBuilder $container, $elasticaToModelId, Reference $typeRef, $indexName, $typeName)
     {
         if (isset($typeConfig['finder']['service'])) {
             $finderId = $typeConfig['finder']['service'];
         } else {
             $finderId = sprintf('fos_elastica.finder.%s.%s', $indexName, $typeName);
             $finderDef = new DefinitionDecorator('fos_elastica.finder');
-            $finderDef->replaceArgument(0, $typeDef);
+            $finderDef->replaceArgument(0, $typeRef);
             $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
             $container->setDefinition($finderId, $finderDef);
         }

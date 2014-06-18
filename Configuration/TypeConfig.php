@@ -19,13 +19,42 @@ class TypeConfig
     private $config;
 
     /**
+     * @var array
+     */
+    private $mapping;
+
+    /**
      * @var string
      */
     private $name;
 
-    public function __construct($name, array $config, array $prototype)
+    public function __construct($name, array $mapping, array $config = array())
     {
         $this->config = $config;
+        $this->mapping = $mapping;
         $this->name = $name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMapping()
+    {
+        return $this->mapping;
+    }
+
+    public function getModel()
+    {
+        return isset($this->config['persistence']['model']) ?
+            $this->config['persistence']['model'] :
+            null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

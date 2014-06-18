@@ -5,6 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="fos_elastica.alias_processor.class">FOS\ElasticaBundle\Index\AliasProcessor</parameter>
         <parameter key="fos_elastica.finder.class">FOS\ElasticaBundle\Finder\TransformedFinder</parameter>
         <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\Elastica\Index</parameter>
         <parameter key="fos_elastica.indexable.class">FOS\ElasticaBundle\Provider\Indexable</parameter>
@@ -14,6 +15,8 @@
     </parameters>
 
     <services>
+        <service id="fos_elastica.alias_processor" class="%fos_elastica.alias_processor.class%" />
+
         <service id="fos_elastica.indexable" class="%fos_elastica.indexable.class%">
             <argument type="collection" /> <!-- array of indexable callbacks keyed by type name -->
         </service>
@@ -35,6 +38,8 @@
         <service id="fos_elastica.resetter" class="%fos_elastica.resetter.class%">
             <argument type="service" id="fos_elastica.config_manager" />
             <argument type="service" id="fos_elastica.index_manager" />
+            <argument type="service" id="fos_elastica.alias_processor" />
+            <argument type="service" id="fos_elastica.mapping_builder" />
         </service>
 
         <!-- Abstract definition for all finders. -->

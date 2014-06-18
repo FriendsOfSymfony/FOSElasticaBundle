@@ -8,6 +8,7 @@
         <parameter key="fos_elastica.client.class">FOS\ElasticaBundle\Elastica\Client</parameter>
         <parameter key="fos_elastica.logger.class">FOS\ElasticaBundle\Logger\ElasticaLogger</parameter>
         <parameter key="fos_elastica.data_collector.class">FOS\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
+        <parameter key="fos_elastica.mapping_builder.class">FOS\ElasticaBundle\Index\MappingBuilder</parameter>
         <parameter key="fos_elastica.property_accessor.class">Symfony\Component\PropertyAccess\PropertyAccessor</parameter>
     </parameters>
 
@@ -31,6 +32,8 @@
             <argument>%kernel.debug%</argument>
             <tag name="monolog.logger" channel="elastica" />
         </service>
+
+        <service id="fos_elastica.mapping_builder" class="%fos_elastica.mapping_builder.class%" />
 
         <service id="fos_elastica.property_accessor" class="%fos_elastica.property_accessor.class%" />
     </services>
