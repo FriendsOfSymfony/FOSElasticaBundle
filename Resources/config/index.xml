@@ -5,12 +5,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="fos_elastica.finder.class">FOS\ElasticaBundle\Finder\TransformedFinder</parameter>
         <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\Elastica\Index</parameter>
-        <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
         <parameter key="fos_elastica.indexable.class">FOS\ElasticaBundle\Provider\Indexable</parameter>
         <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\Index\IndexManager</parameter>
         <parameter key="fos_elastica.resetter.class">FOS\ElasticaBundle\Index\Resetter</parameter>
-        <parameter key="fos_elastica.finder.class">FOS\ElasticaBundle\Finder\TransformedFinder</parameter>
+        <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
     </parameters>
 
     <services>

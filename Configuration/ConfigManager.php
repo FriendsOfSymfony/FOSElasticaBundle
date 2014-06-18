@@ -14,7 +14,7 @@ namespace FOS\ElasticaBundle\Configuration;
 /**
  * Central manager for index and type configuration.
  */
-class Manager implements ManagerInterface
+class ConfigManager implements ManagerInterface
 {
     /**
      * @var IndexConfig[]
@@ -61,4 +61,4 @@ class Manager implements ManagerInterface
     {
         return isset($this->indexes[$indexName]);
     }
-} 
+}

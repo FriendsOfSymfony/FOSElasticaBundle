@@ -17,7 +17,7 @@
             <argument /> <!-- callback -->
         </service>
 
-        <service id="fos_elastica.config_manager" class="FOS\ElasticaBundle\Configuration\Manager">
+        <service id="fos_elastica.config_manager" class="FOS\ElasticaBundle\Configuration\ConfigManager">
             <argument type="collection" /> <!-- collection of SourceInterface services -->
         </service>
 
