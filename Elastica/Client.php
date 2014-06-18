@@ -15,6 +15,13 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
 class Client extends BaseClient
 {
     /**
+     * Stores created indexes to avoid recreation.
+     *
+     * @var array
+     */
+    private $indexCache = array();
+
+    /**
      * {@inheritdoc}
      */
     public function request($path, $method = Request::GET, $data = array(), array $query = array())
@@ -42,6 +49,10 @@ class Client extends BaseClient
 
     public function getIndex($name)
     {
-        return new Index($this, $name);
+        if (isset($this->indexCache[$name])) {
+            return $this->indexCache[$name];
+        }
+
+        return $this->indexCache[$name] = new Index($this, $name);
     }
 }
