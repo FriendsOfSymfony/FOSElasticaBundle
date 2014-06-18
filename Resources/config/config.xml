@@ -22,7 +22,6 @@
         <parameter key="fos_elastica.object_serializer_persister.class">FOS\ElasticaBundle\Persister\ObjectSerializerPersister</parameter>
         <parameter key="fos_elastica.model_to_elastica_transformer.class">FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer</parameter>
         <parameter key="fos_elastica.model_to_elastica_identifier_transformer.class">FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer</parameter>
-        <parameter key="fos_elastica.paginator_subscriber.class">FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber</parameter>
     </parameters>
 
     <services>
@@ -93,7 +92,7 @@
             </call>
         </service>
 
-        <service id="fos_elastica.paginator.subscriber" class="%fos_elastica.paginator_subscriber.class%">
+        <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>
