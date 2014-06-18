@@ -133,6 +133,9 @@ class FOSElasticaExtension extends Extension
 
             $indexDef = new DefinitionDecorator('fos_elastica.index_prototype');
             $indexDef->replaceArgument(0, $indexName);
+            $indexDef->addTag('fos_elastica.index', array(
+                'name' => $name,
+            ));
 
             if (isset($index['client'])) {
                 $client = $this->getClient($index['client']);

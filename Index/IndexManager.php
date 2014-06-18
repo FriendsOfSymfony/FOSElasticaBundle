@@ -6,19 +6,19 @@ use FOS\ElasticaBundle\Elastica\Index;
 
 class IndexManager
 {
-    private $indexesByName;
-    private $defaultIndexName;
+    /**
+     * @var array
+     */
+    private $indexes;
 
     /**
-     * Constructor.
-     *
-     * @param array $indexesByName
+     * @param array $indexes
      * @param Index $defaultIndex
      */
-    public function __construct(array $indexesByName, Index $defaultIndex)
+    public function __construct(array $indexes, Index $defaultIndex)
     {
-        $this->indexesByName = $indexesByName;
-        $this->defaultIndexName = $defaultIndex->getName();
+        $this->defaultIndex = $defaultIndex;
+        $this->indexes = $indexes;
     }
 
     /**
@@ -28,7 +28,7 @@ class IndexManager
      */
     public function getAllIndexes()
     {
-        return $this->indexesByName;
+        return $this->indexes;
     }
 
     /**
@@ -41,14 +41,14 @@ class IndexManager
     public function getIndex($name = null)
     {
         if (null === $name) {
-            $name = $this->defaultIndexName;
+            return $this->defaultIndex;
         }
 
-        if (!isset($this->indexesByName[$name])) {
+        if (!isset($this->indexes[$name])) {
             throw new \InvalidArgumentException(sprintf('The index "%s" does not exist', $name));
         }
 
-        return $this->indexesByName[$name];
+        return $this->indexes[$name];
     }
 
     /**
@@ -58,6 +58,6 @@ class IndexManager
      */
     public function getDefaultIndex()
     {
-        return $this->getIndex($this->defaultIndexName);
+        return $this->defaultIndex;
     }
 }
