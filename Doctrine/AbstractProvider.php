@@ -64,6 +64,11 @@ abstract class AbstractProvider extends BaseAbstractProvider
                 $stepNbObjects = count($objects);
             }
             $objects = array_filter($objects, array($this, 'isObjectIndexable'));
+            if (!$objects) {
+                $loggerClosure('<info>Entire batch was filtered away, skipping...</info>');
+
+                continue;
+            }
 
             if (!$ignoreErrors) {
                 $this->objectPersister->insertMany($objects);

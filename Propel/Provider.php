@@ -36,6 +36,11 @@ class Provider extends AbstractProvider
                 $stepNbObjects = count($objects);
             }
             $objects = array_filter($objects, array($this, 'isObjectIndexable'));
+            if (!$objects) {
+                $loggerClosure('<info>Entire batch was filtered away, skipping...</info>');
+
+                continue;
+            }
 
             $this->objectPersister->insertMany($objects);
 
