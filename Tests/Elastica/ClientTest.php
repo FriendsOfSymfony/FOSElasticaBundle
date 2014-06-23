@@ -1,11 +1,11 @@
 <?php
 
-namespace FOS\ElasticaBundle\Tests\Resetter;
+namespace FOS\ElasticaBundle\Tests\Client;
 
 use Elastica\Request;
 use Elastica\Transport\Null as NullTransport;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class LoggingClientTest extends \PHPUnit_Framework_TestCase
 {
     public function testRequestsAreLogged()
     {
@@ -28,7 +28,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 $this->isType('array')
             );
 
-        $client = $this->getMockBuilder('FOS\ElasticaBundle\Client')
+        $client = $this->getMockBuilder('FOS\ElasticaBundle\Elastica\Client')
             ->setMethods(array('getConnection'))
             ->getMock();
 

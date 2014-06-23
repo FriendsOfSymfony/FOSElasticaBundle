@@ -5,7 +5,6 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-
         <service id="fos_elastica.provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
@@ -14,15 +13,16 @@
             <argument type="service" id="doctrine_mongodb" />
         </service>
 
-        <service id="fos_elastica.listener.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\Listener" public="false">
-            <argument /> <!-- object persister -->
+        <service id="fos_elastica.listener.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\Listener" public="false" abstract="true">
+            <argument type="service" /> <!-- object persister -->
             <argument type="collection" /> <!-- events -->
             <argument type="service" id="fos_elastica.indexable" />
-            <argument/> <!-- identifier -->
-            <argument /> <!-- logger -->
+            <argument type="collection" /> <!-- configuration -->
+            <argument type="service" on-invalid="null" /> <!-- logger -->
+            <!-- <tag name="doctrine_mongodb.odm.event_subscriber" /> Bug in doctrine bridge forbids this: https://github.com/symfony/symfony/pull/11160 -->
         </service>
 
-        <service id="fos_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer" public="false">
+        <service id="fos_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer" public="false" abstract="true">
             <argument type="service" id="doctrine_mongodb" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
@@ -35,7 +35,5 @@
             <argument type="service" id="doctrine_mongodb"/>
             <argument type="service" id="annotation_reader"/>
         </service>
-
     </services>
-
 </container>

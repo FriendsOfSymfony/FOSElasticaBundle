@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <container xmlns="http://symfony.com/schema/dic/services"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-
         <service id="fos_elastica.provider.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
@@ -14,15 +13,16 @@
             <argument type="service" id="doctrine" />
         </service>
 
-        <service id="fos_elastica.listener.prototype.orm" class="FOS\ElasticaBundle\Doctrine\Listener" public="false">
-            <argument /> <!-- object persister -->
+        <service id="fos_elastica.listener.prototype.orm" class="FOS\ElasticaBundle\Doctrine\Listener" public="false" abstract="true">
+            <argument type="service" /> <!-- object persister -->
             <argument type="collection" /> <!-- events -->
             <argument type="service" id="fos_elastica.indexable" />
-            <argument /> <!-- identifier -->
-            <argument /> <!-- logger -->
+            <argument type="collection" /> <!-- configuration -->
+            <argument type="service" on-invalid="null" /> <!-- logger -->
+            <!-- <tag name="doctrine.event_subscriber" /> Bug in doctrine bridge forbids this: https://github.com/symfony/symfony/pull/11160 -->
         </service>
 
-        <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" public="false">
+        <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" public="false" abstract="true">
             <argument type="service" id="doctrine" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
@@ -32,10 +32,8 @@
         </service>
 
         <service id="fos_elastica.manager.orm" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
-            <argument type="service" id="doctrine"/>
-            <argument type="service" id="annotation_reader"/>
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="annotation_reader" />
         </service>
-
     </services>
-
 </container>

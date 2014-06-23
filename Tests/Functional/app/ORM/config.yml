@@ -13,7 +13,13 @@ fos_elastica:
     clients:
         default:
             url: http://localhost:9200
+    serializer: ~
     indexes:
+        fos_elastica_test:
+            types:
+                type:
+                    properties:
+                        field1: ~
         index:
             index_name: foselastica_test_%kernel.environment%
             types:
@@ -25,6 +31,9 @@ fos_elastica:
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener:
                             is_indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
+                    serializer:
+                        groups: ['search']
+                        version: 1.1
                 type2:
                     properties:
                         field1: ~
