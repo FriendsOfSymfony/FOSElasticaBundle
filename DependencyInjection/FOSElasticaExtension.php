@@ -130,7 +130,7 @@ class FOSElasticaExtension extends Extension
     {
         foreach ($indexes as $name => $index) {
             $indexId = sprintf('fos_elastica.index.%s', $name);
-            $indexName = $index['index_name'] ?: $name;
+            $indexName = isset($index['index_name']) ? $index['index_name']: $name;
 
             $indexDef = new DefinitionDecorator('fos_elastica.index_prototype');
             $indexDef->replaceArgument(0, $indexName);

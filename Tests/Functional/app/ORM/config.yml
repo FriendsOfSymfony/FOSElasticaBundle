@@ -15,6 +15,11 @@ fos_elastica:
             url: http://localhost:9200
     serializer: ~
     indexes:
+        fos_elastica_test:
+            types:
+                type:
+                    properties:
+                        field1: ~
         index:
             index_name: foselastica_test_%kernel.environment%
             types:
