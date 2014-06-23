@@ -5,7 +5,6 @@ namespace FOS\ElasticaBundle\DependencyInjection;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Config\FileLocator;
@@ -35,8 +34,6 @@ class FOSElasticaExtension extends Extension
      */
     private $loadedDrivers = array();
 
-    protected $serializerConfig = array();
-
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = $this->getConfiguration($configs, $container);
@@ -63,7 +60,11 @@ class FOSElasticaExtension extends Extension
             $config['default_index'] = reset($keys);
         }
 
-        $this->serializerConfig = isset($config['serializer']) ? $config['serializer'] : null;
+        if (isset($config['serializer'])) {
+            $loader->load('serializer.xml');
+
+            $this->loadSerializer($config['serializer'], $container);
+        }
 
         $this->loadClients($config['clients'], $container);
         $container->setAlias('fos_elastica.client', sprintf('fos_elastica.client.%s', $config['default_client']));
@@ -253,27 +254,20 @@ class FOSElasticaExtension extends Extension
                 $indexableCallbacks[sprintf('%s/%s', $indexName, $name)] = $type['indexable_callback'];
             }
 
-            /*if ($this->serializerConfig) {
-                $callbackDef = new Definition($this->serializerConfig['callback_class']);
-                $callbackId = sprintf('%s.%s.serializer.callback', $indexId, $name);
+            if ($container->hasDefinition('fos_elastica.serializer_callback_prototype')) {
+                $typeSerializerId = sprintf('%s.serializer.callback', $typeId);
+                $typeSerializerDef = new DefinitionDecorator('fos_elastica.serializer_callback_prototype');
 
-                $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));
-                $callbackDef->addMethodCall('setSerializer', array(new Reference($this->serializerConfig['serializer'])));
                 if (isset($type['serializer']['groups'])) {
-                    $callbackDef->addMethodCall('setGroups', array($type['serializer']['groups']));
+                    $typeSerializerDef->addMethodCall('setGroups', array($type['serializer']['groups']));
                 }
                 if (isset($type['serializer']['version'])) {
-                    $callbackDef->addMethodCall('setVersion', array($type['serializer']['version']));
-                }
-                $callbackClassImplementedInterfaces = class_implements($this->serializerConfig['callback_class']); // PHP < 5.4 friendly
-                if (isset($callbackClassImplementedInterfaces['Symfony\Component\DependencyInjection\ContainerAwareInterface'])) {
-                    $callbackDef->addMethodCall('setContainer', array(new Reference('service_container')));
+                    $typeSerializerDef->addMethodCall('setVersion', array($type['serializer']['version']));
                 }
 
-                $container->setDefinition($callbackId, $callbackDef);
-
-                $typeDef->addMethodCall('setSerializer', array(array(new Reference($callbackId), 'serialize')));
-            }*/
+                $typeDef->addMethodCall('setSerializer', array(array(new Reference($typeSerializerId), 'serialize')));
+                $container->setDefinition($typeSerializerId, $typeSerializerDef);
+            }
         }
 
         $indexable = $container->getDefinition('fos_elastica.indexable');
@@ -358,7 +352,7 @@ class FOSElasticaExtension extends Extension
             return $typeConfig['model_to_elastica_transformer']['service'];
         }
 
-        $abstractId = $this->serializerConfig ?
+        $abstractId = $container->hasDefinition('fos_elastica.serializer_callback_prototype') ?
             'fos_elastica.model_to_elastica_identifier_transformer' :
             'fos_elastica.model_to_elastica_transformer';
 
@@ -391,7 +385,7 @@ class FOSElasticaExtension extends Extension
             $typeConfig['model'],
         );
 
-        if ($this->serializerConfig) {
+        if ($container->hasDefinition('fos_elastica.serializer_callback_prototype')) {
             $abstractId = 'fos_elastica.object_serializer_persister';
             $callbackId = sprintf('%s.%s.serializer.callback', $this->indexConfigs[$indexName]['reference'], $typeName);
             $arguments[] = array(new Reference($callbackId), 'serialize');
@@ -586,6 +580,25 @@ class FOSElasticaExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load($driver.'.xml');
         $this->loadedDrivers[] = $driver;
+    }
+
+    /**
+     * Loads and configures the serializer prototype.
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
+    private function loadSerializer($config, ContainerBuilder $container)
+    {
+        $container->setAlias('fos_elastica.serializer', $config['serializer']);
+
+        $serializer = $container->getDefinition('fos_elastica.serializer_callback_prototype');
+        $serializer->setClass($config['callback_class']);
+
+        $callbackClassImplementedInterfaces = class_implements($config['callback_class']);
+        if (isset($callbackClassImplementedInterfaces['Symfony\Component\DependencyInjection\ContainerAwareInterface'])) {
+            $serializer->addMethodCall('setContainer', array(new Reference('service_container')));
+        }
     }
 
     /**
