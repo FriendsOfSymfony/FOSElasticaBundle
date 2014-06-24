@@ -14,12 +14,11 @@
         </service>
 
         <service id="fos_elastica.listener.prototype.orm" class="FOS\ElasticaBundle\Doctrine\Listener" public="false" abstract="true">
-            <argument type="service" /> <!-- object persister -->
+            <argument /> <!-- object persister -->
             <argument type="collection" /> <!-- events -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument type="collection" /> <!-- configuration -->
-            <argument type="service" on-invalid="null" /> <!-- logger -->
-            <!-- <tag name="doctrine.event_subscriber" /> Bug in doctrine bridge forbids this: https://github.com/symfony/symfony/pull/11160 -->
+            <argument on-invalid="ignore" /> <!-- logger -->
         </service>
 
         <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" public="false" abstract="true">
