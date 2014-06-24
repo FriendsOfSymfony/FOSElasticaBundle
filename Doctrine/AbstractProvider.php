@@ -65,7 +65,9 @@ abstract class AbstractProvider extends BaseAbstractProvider
             }
             $objects = array_filter($objects, array($this, 'isObjectIndexable'));
             if (!$objects) {
-                $loggerClosure('<info>Entire batch was filtered away, skipping...</info>');
+                if ($loggerClosure) {
+                    $loggerClosure('<info>Entire batch was filtered away, skipping...</info>');
+                }
 
                 continue;
             }
