@@ -27,6 +27,13 @@
             <argument type="service" id="fos_elastica.logger" />
         </service>
 
+        <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
+            <call method="setRequest">
+                <argument type="service" id="request" on-invalid="null" strict="false" />
+            </call>
+            <tag name="knp_paginator.subscriber" />
+        </service>
+
         <service id="fos_elastica.logger" class="%fos_elastica.logger.class%">
             <argument type="service" id="logger" on-invalid="null" />
             <argument>%kernel.debug%</argument>
