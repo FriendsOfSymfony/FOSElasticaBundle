@@ -47,12 +47,18 @@
         <ul class="alt">
             {% for key, query in collector.queries %}
                 <li class="{{ cycle(['odd', 'even'], loop.index) }}">
+                    <div onclick="return expandQuery(this);" title="Expand query" data-target-id="code-{{ key }}-{{ loop.index }}" style="cursor: pointer;">
+                        <img alt="+" src="{{ asset('bundles/framework/images/blue_picto_more.gif') }}" style="display: inline;" />
+                        <img alt="-" src="{{ asset('bundles/framework/images/blue_picto_less.gif') }}" style="display: none;" />
+                        <span style="display: none">Shrink query</span>
+                                <span id="smallcode-{{ key }}-{{ loop.index }}">
+                                    <pre style="display: inline"><code style="display: inline">{{ query.data|json_encode }}</code></pre>
+                                </span>
+                    </div>
+                    <pre style="display: none" id="code-{{ key }}-{{ loop.index }}"><code>{{ query.data|json_encode(constant('JSON_PRETTY_PRINT')) }}</code></pre>
                     <strong>Path</strong>: {{ query.path }}<br />
                     <strong>Query</strong>: {{ query.queryString|url_encode }}<br />
                     <strong>Method</strong>: {{ query.method }} <small>({{ query.connection.transport }} on {{ query.connection.host }}:{{ query.connection.port }})</small>
-                    <div>
-                        <code>{{ query.data|json_encode }}</code>
-                    </div>
                     <small>
                         <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS * 1000) }} ms
                     </small>
@@ -65,13 +71,34 @@
                         </a>
 
                         <div style="display: none;" id="elastica_curl_query_{{ key }}">
-                            <code>curl -X{{ query.method }} '{{ query.connection.transport|lower }}://{{ query.connection.host }}:{{ query.connection.port }}/{{ query.path }}{% if query.queryString|length %}?{{ query.queryString|url_encode }}{% endif %}' -d '{{ query.data|json_encode }}'</code>
+                            <pre><code>curl -X{{ query.method }} '{{ query.connection.transport|lower }}://{{ query.connection.host }}:{{ query.connection.port }}/{{ query.path }}{% if query.queryString|length %}?{{ query.queryString|url_encode }}{% endif %}' -d '{{ query.data|json_encode }}'</code></pre>
                         </div>
                     {% endif %}
                 </li>
             {% endfor %}
         </ul>
 
+        <style>
+            .hljs{display:block;color:#333;padding:.5em}
+            .hljs-comment,.hljs-template_comment,.diff .hljs-header,.hljs-javadoc{color:#998;font-style:italic}
+            .hljs-keyword,.css .rule .hljs-keyword,.hljs-winutils,.javascript .hljs-title,.nginx .hljs-title,.hljs-subst,.hljs-request,.hljs-status{color:#333;font-weight:700}
+            .hljs-number,.hljs-hexcolor,.ruby .hljs-constant{color:#099}
+            .hljs-string,.hljs-tag .hljs-value,.hljs-phpdoc,.tex .hljs-formula{color:#d14}
+            .hljs-title,.hljs-id,.coffeescript .hljs-params,.scss .hljs-preprocessor{color:#900;font-weight:700}
+            .javascript .hljs-title,.lisp .hljs-title,.clojure .hljs-title,.hljs-subst{font-weight:400}
+            .hljs-class .hljs-title,.haskell .hljs-type,.vhdl .hljs-literal,.tex .hljs-command{color:#458;font-weight:700}
+            .hljs-tag,.hljs-tag .hljs-title,.hljs-rules .hljs-property,.django .hljs-tag .hljs-keyword{color:navy;font-weight:400}
+            .hljs-attribute,.hljs-variable,.lisp .hljs-body{color:teal}
+            .hljs-regexp{color:#009926}
+            .hljs-symbol,.ruby .hljs-symbol .hljs-string,.lisp .hljs-keyword,.tex .hljs-special,.hljs-prompt{color:#990073}
+            .hljs-built_in,.lisp .hljs-title,.clojure .hljs-built_in{color:#0086b3}
+            .hljs-preprocessor,.hljs-pragma,.hljs-pi,.hljs-doctype,.hljs-shebang,.hljs-cdata{color:#999;font-weight:700}
+            .hljs-deletion{background:#fdd}
+            .hljs-addition{background:#dfd}
+            .diff .hljs-change{background:#0086b3}
+            .hljs-chunk{color:#aaa}
+        </style>
+        <script type="text/javascript" src="{{ asset('bundles/foselastica/javascripts/highlight.js') }}"></script>
         <script type="text/javascript">//<![CDATA[
             function curl_version(link) {
                 "use strict";
@@ -88,6 +115,32 @@
                     sections[1].style.display = 'none';
 
                     document.getElementById(link.hash.replace("#", "")).style.display = 'none';
+                }
+
+                return false;
+            }
+
+            hljs.initHighlightingOnLoad();
+
+            function expandQuery(link) {
+                var sections = link.children,
+                        target = link.getAttribute('data-target-id'),
+                        targetId = target.replace('code', '');
+
+                if (document.getElementById('small' + target).style.display != 'none') {
+                    document.getElementById('small' + target).style.display = 'none';
+                    document.getElementById(target).style.display = 'inline';
+
+                    sections[0].style.display = 'none';
+                    sections[1].style.display = 'inline';
+                    sections[2].style.display = 'inline';
+                } else {
+                    document.getElementById('small' + target).style.display = 'inline';
+                    document.getElementById(target).style.display = 'none';
+
+                    sections[0].style.display = 'inline';
+                    sections[1].style.display = 'none';
+                    sections[2].style.display = 'none';
                 }
 
                 return false;
