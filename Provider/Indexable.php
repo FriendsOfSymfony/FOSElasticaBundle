@@ -112,14 +112,15 @@ class Indexable implements IndexableInterface
 
         if (is_array($callback)) {
             list($class, $method) = $callback + array(null, null);
+
+            if (is_object($class)) {
+                $class = get_class($class);
+            }
+
             if (strpos($class, '@') === 0) {
                 $service = $this->container->get(substr($class, 1));
 
                 return array($service, $method);
-            }
-
-            if (is_object($class)) {
-                $class = get_class($class);
             }
 
             if ($class && $method) {

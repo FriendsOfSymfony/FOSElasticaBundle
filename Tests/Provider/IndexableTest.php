@@ -12,12 +12,15 @@
 namespace FOS\ElasticaBundle\Tests\Provider;
 
 use FOS\ElasticaBundle\Provider\Indexable;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class IndexableTest extends \PHPUnit_Framework_TestCase
 {
+    public $container;
+
     public function testIndexableUnknown()
     {
-        $indexable = new Indexable(array());
+        $indexable = new Indexable(array(), $this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity);
 
         $this->assertTrue($index);
@@ -30,7 +33,7 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     {
         $indexable = new Indexable(array(
             'index/type' => $callback
-        ));
+        ), $this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity);
 
         $this->assertEquals($return, $index);
@@ -44,7 +47,7 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     {
         $indexable = new Indexable(array(
             'index/type' => $callback
-        ));
+        ), $this->container);
         $indexable->isObjectIndexable('index', 'type', new Entity);
     }
 
@@ -63,11 +66,23 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
         return array(
             array('isIndexable', false),
             array(array(new IndexableDecider(), 'isIndexable'), true),
+            array(array('@indexableService', 'isIndexable'), true),
             array(function(Entity $entity) { return $entity->maybeIndex(); }, true),
             array('entity.maybeIndex()', true),
             array('!object.isIndexable() && entity.property == "abc"', true),
             array('entity.property != "abc"', false),
         );
+    }
+
+    protected function setUp()
+    {
+        $this->container = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\ContainerInterface')
+            ->getMock();
+
+        $this->container->expects($this->any())
+            ->method('get')
+            ->with('indexableService')
+            ->will($this->returnValue(new IndexableDecider()));
     }
 }
 
