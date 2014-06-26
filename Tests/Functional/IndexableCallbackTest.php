@@ -31,8 +31,9 @@ class IndexableCallbackTest extends WebTestCase
         $in = $client->getContainer()->get('fos_elastica.indexable');
 
         $this->assertTrue($in->isObjectIndexable('index', 'type', new TypeObj()));
-        $this->assertFalse($in->isObjectIndexable('index', 'type2', new TypeObj()));
+        $this->assertTrue($in->isObjectIndexable('index', 'type2', new TypeObj()));
         $this->assertFalse($in->isObjectIndexable('index', 'type3', new TypeObj()));
+        $this->assertFalse($in->isObjectIndexable('index', 'type4', new TypeObj()));
     }
 
     protected function setUp()

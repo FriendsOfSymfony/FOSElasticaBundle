@@ -177,6 +177,9 @@ The callback option supports multiple approaches:
 * An array of a service id and a method which will be called with the object as the first
   and only argument. `[ @my_custom_service, 'userIndexable' ]` will call the userIndexable
   method on a service defined as my_custom_service.
+* An array of a class and a static method to call on that class which will be called with
+  the object as the only argument. `[ 'Acme\DemoBundle\IndexableChecker', 'isIndexable' ]`
+  will call Acme\DemoBundle\IndexableChecker::isIndexable($object)
 * If you have the ExpressionLanguage component installed, A valid ExpressionLanguage
   expression provided as a string. The object being indexed will be supplied as `object`
   in the expression. `object.isEnabled() or object.shouldBeIndexedAnyway()`. For more

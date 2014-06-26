@@ -205,7 +205,7 @@ class Configuration implements ConfigurationInterface
                 ->children()
                     ->scalarNode('index_analyzer')->end()
                     ->scalarNode('search_analyzer')->end()
-                    ->scalarNode('indexable_callback')->end()
+                    ->variableNode('indexable_callback')->end()
                     ->append($this->getPersistenceNode())
                     ->append($this->getSerializerNode())
                 ->end()
