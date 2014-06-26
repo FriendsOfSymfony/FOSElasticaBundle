@@ -31,9 +31,13 @@ class MappingBuilder
 
         $mapping = array(
             'mappings' => $typeMappings,
-            'settings' => $indexConfig->getSettings(),
             // 'warmers' => $indexConfig->getWarmers(),
         );
+
+        $settings = $indexConfig->getSettings();
+        if ($settings) {
+            $mapping['settings'] = $settings;
+        }
 
         return $mapping;
     }
