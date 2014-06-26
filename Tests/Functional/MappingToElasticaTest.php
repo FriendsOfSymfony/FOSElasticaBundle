@@ -42,6 +42,30 @@ class MappingToElasticaTest extends WebTestCase
         $this->assertNotEmpty($mapping, 'Mapping was populated');
     }
 
+    public function testORMResetIndexAddsMappings()
+    {
+        $client = $this->createClient(array('test_case' => 'ORM'));
+        $resetter = $this->getResetter($client);
+        $resetter->resetIndex('index');
+
+        $type = $this->getType($client);
+        $mapping = $type->getMapping();
+
+        $this->assertNotEmpty($mapping, 'Mapping was populated');
+    }
+
+    public function testORMResetType()
+    {
+        $client = $this->createClient(array('test_case' => 'ORM'));
+        $resetter = $this->getResetter($client);
+        $resetter->resetIndexType('index', 'type');
+
+        $type = $this->getType($client);
+        $mapping = $type->getMapping();
+
+        $this->assertNotEmpty($mapping, 'Mapping was populated');
+    }
+
     /**
      * @param Client $client
      * @return \FOS\ElasticaBundle\Resetter $resetter
