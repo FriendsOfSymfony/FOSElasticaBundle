@@ -38,6 +38,7 @@ fos_elastica:
                         field1: ~
                         field2:
                             type: integer
+                            store: false
                         date: { boost: 5 }
                         title: { boost: 8, analyzer: my_analyzer }
                         content: ~

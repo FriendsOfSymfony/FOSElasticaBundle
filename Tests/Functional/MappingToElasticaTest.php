@@ -28,6 +28,9 @@ class MappingToElasticaTest extends WebTestCase
         $mapping = $type->getMapping();
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
+        $this->assertArrayHasKey('store', $mapping['type']['properties']['field1']);
+        $this->assertTrue($mapping['type']['properties']['field1']['store']);
+        $this->assertArrayNotHasKey('store', $mapping['type']['properties']['field2']);
     }
 
     public function testResetType()
@@ -40,6 +43,9 @@ class MappingToElasticaTest extends WebTestCase
         $mapping = $type->getMapping();
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
+        $this->assertArrayHasKey('store', $mapping['type']['properties']['field1']);
+        $this->assertTrue($mapping['type']['properties']['field1']['store']);
+        $this->assertArrayNotHasKey('store', $mapping['type']['properties']['field2']);
     }
 
     public function testORMResetIndexAddsMappings()

@@ -69,7 +69,6 @@ class MappingBuilder
         return $mapping;
     }
 
-
     /**
      * create type mapping object
      *
