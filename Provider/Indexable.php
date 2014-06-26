@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\Provider;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
@@ -25,6 +26,11 @@ class Indexable implements IndexableInterface
      * @var array
      */
     private $callbacks = array();
+
+    /**
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    private $container;
 
     /**
      * An instance of ExpressionLanguage
@@ -50,9 +56,10 @@ class Indexable implements IndexableInterface
     /**
      * @param array $callbacks
      */
-    public function __construct(array $callbacks)
+    public function __construct(array $callbacks, ContainerInterface $container)
     {
         $this->callbacks = $callbacks;
+        $this->container = $container;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
     }
 
@@ -105,6 +112,12 @@ class Indexable implements IndexableInterface
 
         if (is_array($callback)) {
             list($class, $method) = $callback + array(null, null);
+            if (strpos($class, '@') === 0) {
+                $service = $this->container->get(substr($class, 1));
+
+                return array($service, $method);
+            }
+
             if (is_object($class)) {
                 $class = get_class($class);
             }

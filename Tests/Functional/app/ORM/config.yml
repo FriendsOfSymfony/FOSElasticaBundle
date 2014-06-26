@@ -9,6 +9,10 @@ doctrine:
         auto_generate_proxy_classes: false
         auto_mapping: false
 
+services:
+    indexableService:
+        class: FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService
+
 fos_elastica:
     clients:
         default:
@@ -41,7 +45,7 @@ fos_elastica:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener:
-                            is_indexable_callback: 'object.isntIndexable()'
+                            is_indexable_callback: [ @indexableService, 'isIndexable' ]
                 type3:
                     mappings:
                         field1: ~
@@ -52,3 +56,13 @@ fos_elastica:
                         provider: ~
                         listener:
                             is_indexable_callback: 'isntIndexable'
+                type4:
+                    mappings:
+                        field1: ~
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                        finder: ~
+                        provider: ~
+                        listener:
+                            is_indexable_callback: [ 'FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService', 'isntIndexable' ]
