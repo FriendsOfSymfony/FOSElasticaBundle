@@ -45,10 +45,10 @@ class Resetter
     /**
      * Deletes and recreates all indexes
      */
-    public function resetAllIndexes()
+    public function resetAllIndexes($populating = false)
     {
         foreach ($this->configManager->getIndexNames() as $name) {
-            $this->resetIndex($name);
+            $this->resetIndex($name, $populating);
         }
     }
 

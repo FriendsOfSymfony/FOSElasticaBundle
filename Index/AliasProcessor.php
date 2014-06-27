@@ -39,11 +39,13 @@ class AliasProcessor
      */
     public function switchIndexAlias(IndexConfig $indexConfig, Index $index)
     {
+        $client = $index->getClient();
+
         $aliasName = $indexConfig->getElasticSearchName();
         $oldIndexName = false;
         $newIndexName = $index->getName();
 
-        $aliasedIndexes = $this->getAliasedIndexes($aliasName);
+        $aliasedIndexes = $this->getAliasedIndexes($client, $aliasName);
 
         if (count($aliasedIndexes) > 1) {
             throw new \RuntimeException(
@@ -71,7 +73,7 @@ class AliasProcessor
         );
 
         try {
-            $this->client->request('_aliases', 'POST', $aliasUpdateRequest);
+            $client->request('_aliases', 'POST', $aliasUpdateRequest);
         } catch (ExceptionInterface $renameAliasException) {
             $additionalError = '';
             // if we failed to move the alias, delete the newly built index
@@ -96,7 +98,7 @@ class AliasProcessor
 
         // Delete the old index after the alias has been switched
         if ($oldIndexName) {
-            $oldIndex = new Index($this->client, $oldIndexName);
+            $oldIndex = new Index($client, $oldIndexName);
             try {
                 $oldIndex->delete();
             } catch (ExceptionInterface $deleteOldIndexException) {
@@ -117,9 +119,9 @@ class AliasProcessor
      * @param string $aliasName Alias name
      * @return array
      */
-    private function getAliasedIndexes($aliasName)
+    private function getAliasedIndexes(Client $client, $aliasName)
     {
-        $aliasesInfo = $this->client->request('_aliases', 'GET')->getData();
+        $aliasesInfo = $client->request('_aliases', 'GET')->getData();
         $aliasedIndexes = array();
 
         foreach ($aliasesInfo as $indexName => $indexInfo) {

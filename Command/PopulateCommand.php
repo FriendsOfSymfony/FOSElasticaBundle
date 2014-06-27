@@ -111,7 +111,7 @@ class PopulateCommand extends ContainerAwareCommand
     {
         if ($reset) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
-            $this->resetter->resetIndex($index);
+            $this->resetter->resetIndex($index, true);
         }
 
         /** @var $providers ProviderInterface[] */
