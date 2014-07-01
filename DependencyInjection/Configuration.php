@@ -210,8 +210,8 @@ class Configuration implements ConfigurationInterface
                 ->then(function ($v) {
                     $dt = array();
                     foreach ($v['dynamic_templates'] as $key => $type) {
-                        if (is_numeric($key)) {
-                            $dt[$key] = $type;
+                        if (is_int($key)) {
+                            $dt[] = $type;
                         } else { 
                             $dt[][$key] = $type;
                         }
