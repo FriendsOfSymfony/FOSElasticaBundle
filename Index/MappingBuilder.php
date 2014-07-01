@@ -60,35 +60,14 @@ class MappingBuilder
             // 'search_analyzer' => $typeConfig->getSearchAnalyzer(),
         ));
 
+        if (isset($mapping['dynamic_templates']) and empty($mapping['dynamic_templates'])) {
+            unset($mapping['dynamic_templates']);
+        }
+
         $this->fixProperties($mapping['properties']);
 
         if ($typeConfig->getModel()) {
             $mapping['_meta']['model'] = $typeConfig->getModel();
-        }
-
-        return $mapping;
-    }
-
-    /**
-     * create type mapping object
-     *
-     * @param array $indexConfig
-     * @return Mapping
-     */
-    protected function createMapping($indexConfig)
-    {
-        /*$mapping = $this->createMapping($indexConfig['config']['properties'][$typeName]);*/
-        $mapping = Mapping::create($indexConfig['properties']);
-
-        $mappingSpecialFields = array('_uid', '_id', '_source', '_all', '_analyzer', '_boost', '_routing', '_index', '_size', '_timestamp', '_ttl', 'dynamic_templates');
-        foreach ($mappingSpecialFields as $specialField) {
-            if (isset($indexConfig[$specialField])) {
-                $mapping->setParam($specialField, $indexConfig[$specialField]);
-            }
-        }
-
-        if (isset($indexConfig['_parent'])) {
-            $mapping->setParam('_parent', array('type' => $indexConfig['_parent']['type']));
         }
 
         return $mapping;

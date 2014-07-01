@@ -29,11 +29,26 @@ fos_elastica:
                             max_gram: 5
             types:
                 parent:
+                    dynamic_templates:
+                        dates:
+                            match: "date_*"
+                            mapping:
+                                type: date
                     mappings:
                         field1: ~
                         field2: ~
                 type:
                     search_analyzer: my_analyzer
+                    dynamic_templates:
+                        - dates:
+                            match: "date_*"
+                            mapping:
+                                type: date
+                        - strings:
+                            match: "*"
+                            mapping:
+                                analyzer: english
+                                type: string
                     mappings:
                         field1: ~
                         field2:

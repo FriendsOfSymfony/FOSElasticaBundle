@@ -189,6 +189,7 @@ class Configuration implements ConfigurationInterface
                     return $v;
                 })
                 ->end()
+                // BC - Support the old is_indexable_callback property
                 ->beforeNormalization()
                 ->ifTrue(function ($v) {
                     return isset($v['persistence']) &&
@@ -198,6 +199,25 @@ class Configuration implements ConfigurationInterface
                 ->then(function ($v) {
                     $v['indexable_callback'] = $v['persistence']['listener']['is_indexable_callback'];
                     unset($v['persistence']['listener']['is_indexable_callback']);
+
+                    return $v;
+                })
+                ->end()
+                // Support multiple dynamic_template formats to match the old bundle style
+                // and the way ElasticSearch expects them
+                ->beforeNormalization()
+                ->ifTrue(function ($v) { return isset($v['dynamic_templates']); })
+                ->then(function ($v) {
+                    $dt = array();
+                    foreach ($v['dynamic_templates'] as $key => $type) {
+                        if (is_numeric($key)) {
+                            $dt[$key] = $type;
+                        } else { 
+                            $dt[][$key] = $type;
+                        }
+                    }
+
+                    $v['dynamic_templates'] = $dt;
 
                     return $v;
                 })
