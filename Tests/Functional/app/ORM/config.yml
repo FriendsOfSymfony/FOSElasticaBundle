@@ -13,6 +13,14 @@ services:
     indexableService:
         class: FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService
 
+jms_serializer:
+    metadata:
+        auto_detection: true
+        directories:
+            type_obj:
+                namespace_prefix: "FOS\\ElasticaBundle\\Tests\\Functional"
+                path: "%kernel.root_dir%/ORM"
+
 fos_elastica:
     clients:
         default:
@@ -24,6 +32,7 @@ fos_elastica:
                 type:
                     properties:
                         field1: ~
+                        coll: ~
         index:
             index_name: foselastica_test_%kernel.environment%
             types:
@@ -59,6 +68,16 @@ fos_elastica:
                 type4:
                     mappings:
                         field1: ~
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                        finder: ~
+                        provider: ~
+                        listener:
+                            is_indexable_callback: [ 'FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService', 'isntIndexable' ]
+                type5:
+                    mappings:
+                        coll: ~
                     persistence:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj

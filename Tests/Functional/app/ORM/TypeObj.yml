@@ -1,0 +1,4 @@
+FOS\ElasticaBundle\Tests\Functional\TypeObj:
+    properties:
+        coll:
+            type: array

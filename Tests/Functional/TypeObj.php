@@ -13,6 +13,8 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 class TypeObj
 {
+    public $coll;
+
     public function isIndexable()
     {
         return true;
