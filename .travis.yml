@@ -6,6 +6,8 @@ php:
   - 5.5
 
 before_script:
+  - sudo /usr/share/elasticsearch/bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/2.0.0
+  - sudo service elasticsearch restart
   - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer install --dev --prefer-source
 

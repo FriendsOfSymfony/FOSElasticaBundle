@@ -49,7 +49,7 @@ fos_elastica:
                             mapping:
                                 analyzer: english
                                 type: string
-                    mappings:
+                    properties:
                         field1: ~
                         field2:
                             type: integer
@@ -68,6 +68,8 @@ fos_elastica:
                             type: "object"
                             properties:
                                 date: { boost: 5 }
+                        agreement:
+                            type: "attachment"
                         lastlogin: { type: date, format: basic_date_time }
                         birthday: { type: date, format: "yyyy-MM-dd" }
                     _parent:
