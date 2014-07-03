@@ -5,6 +5,7 @@ namespace FOS\ElasticaBundle\Elastica;
 use Elastica\Client as BaseClient;
 use Elastica\Request;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
  * Extends the default Elastica client to provide logging for errors that occur
@@ -22,10 +23,21 @@ class Client extends BaseClient
     private $indexCache = array();
 
     /**
+     * Symfony's debugging Stopwatch
+     *
+     * @var Stopwatch|null
+     */
+    private $stopwatch;
+
+    /**
      * {@inheritdoc}
      */
     public function request($path, $method = Request::GET, $data = array(), array $query = array())
     {
+        if ($this->stopwatch) {
+            $this->stopwatch->start('es_request', 'fos_elastica');
+        }
+
         $start = microtime(true);
         $response = parent::request($path, $method, $data, $query);
 
@@ -44,6 +56,10 @@ class Client extends BaseClient
             $this->_logger->logQuery($path, $method, $data, $time, $connection_array, $query);
         }
 
+        if ($this->stopwatch) {
+            $this->stopwatch->stop('es_request');
+        }
+
         return $response;
     }
 
@@ -54,5 +70,15 @@ class Client extends BaseClient
         }
 
         return $this->indexCache[$name] = new Index($this, $name);
+    }
+
+    /**
+     * Sets a stopwatch instance for debugging purposes.
+     *
+     * @param Stopwatch $stopwatch
+     */
+    public function setStopwatch(Stopwatch $stopwatch = null)
+    {
+        $this->stopwatch = $stopwatch;
     }
 }
