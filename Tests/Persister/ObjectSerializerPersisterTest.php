@@ -42,10 +42,7 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $typeMock->expects($this->once())
-            ->method('deleteById')
-            ->with($this->equalTo(123));
-        $typeMock->expects($this->once())
-            ->method('addDocument');
+            ->method('updateDocuments');
 
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->once())->method('serialize');
@@ -65,7 +62,7 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('deleteById');
         $typeMock->expects($this->once())
-            ->method('addDocument');
+            ->method('addDocuments');
 
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->once())->method('serialize');
@@ -83,7 +80,7 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $typeMock->expects($this->once())
-            ->method('deleteById');
+            ->method('deleteDocuments');
         $typeMock->expects($this->never())
             ->method('addDocument');
 
