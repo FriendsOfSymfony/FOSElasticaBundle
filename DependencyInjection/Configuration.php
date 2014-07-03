@@ -73,27 +73,28 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('clients')
                     ->useAttributeAsKey('id')
                     ->prototype('array')
-                        ->performNoDeepMerging()
+                        // BC - Renaming 'servers' node to 'connections'
                         ->beforeNormalization()
-                            ->ifTrue(function($v) { return (isset($v['host']) && isset($v['port'])) || isset($v['url']); })
-                            ->then(function($v) {
-                                return array(
-                                    'servers' => array(
-                                        array(
-                                            'host' => isset($v['host']) ? $v['host'] : null,
-                                            'port' => isset($v['port']) ? $v['port'] : null,
-                                            'url' => isset($v['url']) ? $v['url'] : null,
-                                            'logger' => isset($v['logger']) ? $v['logger'] : null,
-                                            'headers' => isset($v['headers']) ? $v['headers'] : null,
-                                            'timeout' => isset($v['timeout']) ? $v['timeout'] : null,
-                                            'transport' => isset($v['transport']) ? $v['transport'] : null,
-                                        )
-                                    )
-                                );
-                            })
+                        ->ifTrue(function($v) { return isset($v['servers']); })
+                        ->then(function($v) {
+                            $v['connections'] = $v['servers'];
+                            unset($v['servers']);
+
+                            return $v;
+                        })
+                        ->end()
+                        // If there is no connections array key defined, assume a single connection.
+                        ->beforeNormalization()
+                        ->ifTrue(function ($v) { return is_array($v) && !array_key_exists('connections', $v); })
+                        ->then(function ($v) {
+                            return array(
+                                'connections' => array($v)
+                            );
+                        })
                         ->end()
                         ->children()
-                            ->arrayNode('servers')
+                            ->arrayNode('connections')
+                                ->requiresAtLeastOneElement()
                                 ->prototype('array')
                                     ->fixXmlConfig('header')
                                     ->children()
