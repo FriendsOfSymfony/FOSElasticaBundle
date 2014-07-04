@@ -11,6 +11,11 @@ twig:
 fos_elastica:
     clients:
         default:
+            connections:
+                - url: http://localhost:9200
+                - host: localhost
+                  port: 9200
+        second_server:
             url: http://localhost:9200
     indexes:
         index:

@@ -46,7 +46,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                     'url' => 'http://localhost:9200',
                 ),
                 'clustered' => array(
-                    'servers' => array(
+                    'connections' => array(
                         array(
                             'url' => 'http://es1:9200',
                             'headers' => array(
@@ -65,13 +65,13 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertCount(2, $configuration['clients']);
-        $this->assertCount(1, $configuration['clients']['default']['servers']);
-        $this->assertCount(0, $configuration['clients']['default']['servers'][0]['headers']);
+        $this->assertCount(1, $configuration['clients']['default']['connections']);
+        $this->assertCount(0, $configuration['clients']['default']['connections'][0]['headers']);
 
-        $this->assertCount(2, $configuration['clients']['clustered']['servers']);
-        $this->assertEquals('http://es2:9200/', $configuration['clients']['clustered']['servers'][1]['url']);
-        $this->assertCount(1, $configuration['clients']['clustered']['servers'][1]['headers']);
-        $this->assertEquals('Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==', $configuration['clients']['clustered']['servers'][0]['headers'][0]);
+        $this->assertCount(2, $configuration['clients']['clustered']['connections']);
+        $this->assertEquals('http://es2:9200/', $configuration['clients']['clustered']['connections'][1]['url']);
+        $this->assertCount(1, $configuration['clients']['clustered']['connections'][1]['headers']);
+        $this->assertEquals('Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==', $configuration['clients']['clustered']['connections'][0]['headers'][0]);
     }
 
     public function testLogging()
@@ -98,10 +98,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(4, $configuration['clients']);
 
-        $this->assertEquals('fos_elastica.logger', $configuration['clients']['logging_enabled']['servers'][0]['logger']);
-        $this->assertFalse($configuration['clients']['logging_disabled']['servers'][0]['logger']);
-        $this->assertEquals('fos_elastica.logger', $configuration['clients']['logging_not_mentioned']['servers'][0]['logger']);
-        $this->assertEquals('custom.service', $configuration['clients']['logging_custom']['servers'][0]['logger']);
+        $this->assertEquals('fos_elastica.logger', $configuration['clients']['logging_enabled']['connections'][0]['logger']);
+        $this->assertFalse($configuration['clients']['logging_disabled']['connections'][0]['logger']);
+        $this->assertEquals('fos_elastica.logger', $configuration['clients']['logging_not_mentioned']['connections'][0]['logger']);
+        $this->assertEquals('custom.service', $configuration['clients']['logging_custom']['connections'][0]['logger']);
     }
 
     public function testSlashIsAddedAtTheEndOfServerUrl()
@@ -113,7 +113,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         );
         $configuration = $this->getConfigs($config);
 
-        $this->assertEquals('http://www.github.com/', $configuration['clients']['default']['servers'][0]['url']);
+        $this->assertEquals('http://www.github.com/', $configuration['clients']['default']['connections'][0]['url']);
     }
 
     public function testTypeConfig()
@@ -172,7 +172,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             )
         ));
 
-        $this->assertTrue(empty($configuration['clients']['default']['servers'][0]['url']));
+        $this->assertTrue(empty($configuration['clients']['default']['connections'][0]['url']));
     }
 
     public function testMappingsRenamedToProperties()
