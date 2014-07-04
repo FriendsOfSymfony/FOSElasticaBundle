@@ -72,6 +72,22 @@ class MappingToElasticaTest extends WebTestCase
         $this->assertNotEmpty($mapping, 'Mapping was populated');
     }
 
+    public function testMappingIteratorToArrayField()
+    {
+        $client = $this->createClient(array('test_case' => 'ORM'));
+        $persister = $client->getContainer()->get('fos_elastica.object_persister.index.type5');
+
+        $object = new TypeObj();
+        $object->id = 1;
+        $object->coll = new \ArrayIterator(array('foo', 'bar'));
+        $persister->insertOne($object);
+
+        $object->coll = new \ArrayIterator(array('foo', 'bar', 'bazz'));
+        $object->coll->offsetUnset(1);
+
+        $persister->replaceOne($object);
+    }
+
     /**
      * @param Client $client
      * @return \FOS\ElasticaBundle\Resetter $resetter
@@ -95,6 +111,7 @@ class MappingToElasticaTest extends WebTestCase
         parent::setUp();
 
         $this->deleteTmpDir('Basic');
+        $this->deleteTmpDir('ORM');
     }
 
     protected function tearDown()
@@ -102,5 +119,6 @@ class MappingToElasticaTest extends WebTestCase
         parent::tearDown();
 
         $this->deleteTmpDir('Basic');
+        $this->deleteTmpDir('ORM');
     }
 }
