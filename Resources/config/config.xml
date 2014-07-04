@@ -18,7 +18,7 @@
             <argument /> <!-- callback -->
 
             <call method="setStopwatch">
-                <argument type="service" id="debug.stopwatch" />
+                <argument type="service" id="debug.stopwatch" on-invalid="ignore" />
             </call>
         </service>
 
