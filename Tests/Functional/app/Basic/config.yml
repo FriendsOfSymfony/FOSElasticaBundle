@@ -19,7 +19,7 @@ fos_elastica:
             url: http://localhost:9200
     indexes:
         index:
-            index_name: foselastica_test_%kernel.environment%
+            index_name: foselastica_basic_test_%kernel.environment%
             settings:
                 analysis:
                     analyzer:

@@ -13,6 +13,9 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 class TypeObj
 {
+    public $coll;
+    public $field1;
+
     public function isIndexable()
     {
         return true;
@@ -21,5 +24,10 @@ class TypeObj
     public function isntIndexable()
     {
         return false;
+    }
+
+    public function getSerializableColl()
+    {
+        return iterator_to_array($this->coll, false);
     }
 }
