@@ -45,7 +45,7 @@ $companies = $finder->findPaginated($query);
 $companies->setMaxPerPage($params['limit']);
 $companies->setCurrentPage($params['page']);
 
-$facets = $companies->getAdapter()->getFacets());
+$facets = $companies->getAdapter()->getFacets();
 ```
 
 Searching the entire index
