@@ -504,13 +504,17 @@ class FOSElasticaExtension extends Extension
             'insert' => array(constant($eventsClass.'::postPersist')),
             'update' => array(constant($eventsClass.'::postUpdate')),
             'delete' => array(constant($eventsClass.'::preRemove')),
-            'flush' => array($typeConfig['listener']['immediate'] ? constant($eventsClass.'::preFlush') : constant($eventsClass.'::postFlush'))
         );
 
         foreach ($eventMapping as $event => $doctrineEvents) {
             if (isset($typeConfig['listener'][$event]) && $typeConfig['listener'][$event]) {
                 $events = array_merge($events, $doctrineEvents);
             }
+        }
+        
+        if (count($events)) {
+            $flushEvent = array($typeConfig['listener']['immediate'] ? constant($eventsClass.'::preFlush') : constant($eventsClass.'::postFlush'));
+            $events = array_merge($events, $flushEvent);
         }
 
         return $events;
