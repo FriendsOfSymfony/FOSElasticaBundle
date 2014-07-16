@@ -70,6 +70,10 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             }
 
             $value = $this->propertyAccessor->getValue($object, $key);
+            
+            if (empty($value)) {
+                continue;
+            }
 
             if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object')) && isset($mapping['properties']) && !empty($mapping['properties'])) {
                 /* $value is a nested document or object. Transform $value into
