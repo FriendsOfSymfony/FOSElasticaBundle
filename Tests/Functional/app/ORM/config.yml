@@ -63,3 +63,15 @@ fos_elastica:
                         provider: ~
                         listener:
                             is_indexable_callback: [ 'FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService', 'isntIndexable' ]
+        second_index:
+            index_name: foselastica_orm_test_second_%kernel.environment%
+            types:
+                type:
+                    properties:
+                        field1: ~
+                        coll: ~
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                        listener:
+                            is_indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
