@@ -60,6 +60,8 @@ fos_elastica:
                             type: integer
                             store: false
                         date: { boost: 5 }
+                        completion:
+                            type: completion
                         title: { boost: 8, analyzer: my_analyzer }
                         content: ~
                         comments:
