@@ -128,6 +128,8 @@ class FOSElasticaExtension extends Extension
      */
     private function loadIndexes(array $indexes, ContainerBuilder $container)
     {
+        $indexableCallbacks = array();
+
         foreach ($indexes as $name => $index) {
             $indexId = sprintf('fos_elastica.index.%s', $name);
             $indexName = isset($index['index_name']) ? $index['index_name']: $name;
@@ -159,8 +161,11 @@ class FOSElasticaExtension extends Extension
                 $this->loadIndexFinder($container, $name, $reference);
             }
 
-            $this->loadTypes((array) $index['types'], $container, $this->indexConfigs[$name]);
+            $this->loadTypes((array) $index['types'], $container, $this->indexConfigs[$name], $indexableCallbacks);
         }
+
+        $indexable = $container->getDefinition('fos_elastica.indexable');
+        $indexable->replaceArgument(0, $indexableCallbacks);
     }
 
     /**
@@ -194,11 +199,10 @@ class FOSElasticaExtension extends Extension
      * @param array $types
      * @param ContainerBuilder $container
      * @param array $indexConfig
+     * @param array $indexableCallbacks
      */
-    private function loadTypes(array $types, ContainerBuilder $container, array $indexConfig)
+    private function loadTypes(array $types, ContainerBuilder $container, array $indexConfig, array &$indexableCallbacks)
     {
-        $indexableCallbacks = array();
-
         foreach ($types as $name => $type) {
             $indexName = $indexConfig['name'];
 
@@ -269,9 +273,6 @@ class FOSElasticaExtension extends Extension
                 $container->setDefinition($typeSerializerId, $typeSerializerDef);
             }
         }
-
-        $indexable = $container->getDefinition('fos_elastica.indexable');
-        $indexable->replaceArgument(0, $indexableCallbacks);
     }
 
     /**
