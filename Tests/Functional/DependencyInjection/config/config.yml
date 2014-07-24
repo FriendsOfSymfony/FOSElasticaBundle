@@ -1,0 +1,21 @@
+fos_elastica:
+    clients:
+        default:
+            url: http://localhost:9200
+    indexes:
+        test_index:
+            client: default
+            types:
+                parent_field:
+                    mappings:
+                        text: ~
+                    persistence:
+                        driver: orm
+                        model: foo_model
+                child_field:
+                    mappings:
+                        text: ~
+                    persistence:
+                        driver: orm
+                        model: foo_model
+                    _parent: { type: "parent_field", property: "parent" }
