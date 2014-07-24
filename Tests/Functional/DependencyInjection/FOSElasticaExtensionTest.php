@@ -30,7 +30,10 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
 
         $persisterCallDefinition = $containerBuilder->getDefinition('fos_elastica.object_persister.test_index.child_field');
 
-        $this->assertArrayHasKey('_parent', $persisterCallDefinition->getArguments()['index_3']);
+        $arguments = $persisterCallDefinition->getArguments()['index_3'];
+
+        $this->assertArrayHasKey('_parent', $arguments);
+        $this->assertEquals('parent_field', $arguments['_parent']['type']);
     }
 
 } 
