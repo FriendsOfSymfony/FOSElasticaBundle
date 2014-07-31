@@ -120,11 +120,17 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
 
     public function hybridTransform(array $elasticaObjects)
     {
+        $indexedElasticaResults = array();
+        foreach ($elasticaObjects as $elasticaObject) {
+            $indexedElasticaResults[$elasticaObject->getId()] = $elasticaObject;
+        }
+
         $objects = $this->transform($elasticaObjects);
 
         $result = array();
-        for ($i = 0; $i < count($elasticaObjects); $i++) {
-            $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
+        foreach ($objects as $object) {
+            $id = $this->propertyAccessor->getValue($object, $this->options['identifier']);
+            $result[] = new HybridResult($indexedElasticaResults[$id], $object);
         }
 
         return $result;
