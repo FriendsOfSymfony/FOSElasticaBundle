@@ -23,6 +23,11 @@ class ListenerTest extends BaseListenerTest
         return 'Doctrine\ORM\Event\LifecycleEventArgs';
     }
 
+    protected function getPostFlushEventArgsClass()
+    {
+        return 'Doctrine\ORM\Event\PostFlushEventArgs';
+    }
+
     protected function getListenerClass()
     {
         return 'FOS\ElasticaBundle\Doctrine\Listener';
@@ -31,5 +36,10 @@ class ListenerTest extends BaseListenerTest
     protected function getObjectManagerClass()
     {
         return 'Doctrine\ORM\EntityManager';
+    }
+
+    protected function getUnitOfWorkClass()
+    {
+        return 'Doctrine\ORM\UnitOfWork';
     }
 }

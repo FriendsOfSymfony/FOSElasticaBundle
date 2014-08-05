@@ -25,7 +25,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->method('insertMany')
             ->with($listener->scheduledForInsertion);
 
-        $listener->postFlush($eventArgs);
+        $postFlushEventArgs = $this->createPostFlushEventArgs($this->getMockObjectManager());
+        $listener->postFlush($postFlushEventArgs);
     }
 
     public function testNonIndexableObjectNotInsertedOnPersist()
@@ -45,7 +46,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $persister->expects($this->never())
             ->method('insertMany');
 
-        $listener->postFlush($eventArgs);
+        $postFlushEventArgs = $this->createPostFlushEventArgs($this->getMockObjectManager());
+        $listener->postFlush($postFlushEventArgs);
     }
 
     public function testObjectReplacedOnUpdate()
@@ -66,7 +68,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $persister->expects($this->never())
             ->method('deleteById');
 
-        $listener->postFlush($eventArgs);
+        $postFlushEventArgs = $this->createPostFlushEventArgs($this->getMockObjectManager());
+        $listener->postFlush($postFlushEventArgs);
     }
 
     public function testNonIndexableObjectRemovedOnUpdate()
@@ -101,7 +104,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->method('deleteManyByIdentifiers')
             ->with(array($entity->getId()));
 
-        $listener->postFlush($eventArgs);
+        $postFlushEventArgs = $this->createPostFlushEventArgs($this->getMockObjectManager());
+        $listener->postFlush($postFlushEventArgs);
     }
 
     public function testObjectDeletedOnRemove()
@@ -133,7 +137,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->method('deleteManyByIdentifiers')
             ->with(array($entity->getId()));
 
-        $listener->postFlush($eventArgs);
+        $postFlushEventArgs = $this->createPostFlushEventArgs($this->getMockObjectManager());
+        $listener->postFlush($postFlushEventArgs);
     }
 
     public function testObjectWithNonStandardIdentifierDeletedOnRemove()
@@ -166,7 +171,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->method('deleteManyByIdentifiers')
             ->with(array($entity->identifier));
 
-        $listener->postFlush($eventArgs);
+        $postFlushEventArgs = $this->createPostFlushEventArgs($this->getMockObjectManager());
+        $listener->postFlush($postFlushEventArgs);
     }
 
     abstract protected function getLifecycleEventArgsClass();
@@ -176,6 +182,13 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
     abstract protected function getObjectManagerClass();
 
     abstract protected function getClassMetadataClass();
+
+    private function createPostFlushEventArgs()
+    {
+        $refl = new \ReflectionClass($this->getPostFlushEventArgsClass());
+
+        return $refl->newInstanceArgs(func_get_args());
+    }
 
     private function createLifecycleEventArgs()
     {
@@ -198,11 +211,36 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    private function getMockObjectManager()
+    private function getMockUnitOfWork()
     {
-        return $this->getMockBuilder($this->getObjectManagerClass())
+        $mock = $this->getMockBuilder($this->getUnitOfWorkClass())
             ->disableOriginalConstructor()
             ->getMock();
+
+        $mock->expects($this->any())
+            ->method('getScheduledCollectionUpdates')
+            ->will($this->returnValue(array()));
+
+        $mock->expects($this->any())
+            ->method('getScheduledCollectionDeletions')
+            ->will($this->returnValue(array()));
+
+        return $mock;
+    }
+
+    private function getMockObjectManager()
+    {
+        $uow = $this->getMockUnitOfWork();
+
+        $mock = $this->getMockBuilder($this->getObjectManagerClass())
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('getUnitOfWork')
+            ->will($this->returnValue($uow));
+
+        return $mock;
     }
 
     private function getMockPersister($object, $indexName, $typeName)
