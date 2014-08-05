@@ -117,27 +117,70 @@ class Listener implements EventSubscriber
         throw new \RuntimeException('Unable to retrieve object from EventArgs.');
     }
 
+    /**
+     * Provides unified method for retrieving a doctrine object manager from an EventArgs instance
+     *
+     * @param   EventArgs           $eventArgs
+     * @return  ObjectManager       An instance implementing ObjectManager
+     * @throws  \RuntimeException   if no valid getter is found.
+     */
+    private function getObjectManager(EventArgs $eventArgs)
+    {
+        if (method_exists($eventArgs, 'getObjectManager')) {
+            return $eventArgs->getObjectManager();
+        } elseif (method_exists($eventArgs, 'getEntityManager')) {
+            return $eventArgs->getEntityManager();
+        } elseif (method_exists($eventArgs, 'getDocumentManager')) {
+            return $eventArgs->getDocumentManager();
+        }
+
+        throw new \RuntimeException('Unable to retrieve object manager from EventArgs.');
+    }
+
+    /**
+     * Provides a unified method for retrieving a doctrine UnitOfWork from an EventArgs instance
+     *
+     * Note: The ObjectManager implementation of the Doctrine ORM (EntityManager) and the MongoDB ODM (DocumentManager)
+     * contain the 'getUnitOfWork' method. Be that as it may, the Doctrine\Common\Persistence\ObjectManager interface
+     * does not strictly require/define the method. As such, the method_exists() check is used
+     *
+     * @param   EventArgs           $eventArgs
+     * @return  UnitOfWork          An instance implementing ObjectManager
+     * @throws  \RuntimeException   if no valid getter is found.
+     */
+    private function getUnitOfWork(EventArgs $eventArgs)
+    {
+        $objectManager = $this->getObjectManager($eventArgs);
+        if (method_exists($objectManager, 'getUnitOfWork')) {
+            return $objectManager->getUnitOfWork();
+        }
+
+        throw new \RuntimeException('Unable to retrieve the UnitOfWork from EventArgs.');
+    }
+
+    /**
+     * Handles newly created entities that have been persisted to the database
+     * The postPersist event must be used so newly persisted entities have their identifier value
+     *
+     * @param   EventArgs           $eventArgs
+     * @return  void
+     */
     public function postPersist(EventArgs $eventArgs)
     {
         $entity = $this->getDoctrineObject($eventArgs);
-
-        if ($this->objectPersister->handlesObject($entity) && $this->isObjectIndexable($entity)) {
-            $this->scheduledForInsertion[] = $entity;
-        }
+        $this->scheduleForInsertion($entity);
     }
 
+    /**
+     * Handles updated entities
+     *
+     * @param   EventArgs           $eventArgs
+     * @return  void
+     */
     public function postUpdate(EventArgs $eventArgs)
     {
         $entity = $this->getDoctrineObject($eventArgs);
-
-        if ($this->objectPersister->handlesObject($entity)) {
-            if ($this->isObjectIndexable($entity)) {
-                $this->scheduledForUpdate[] = $entity;
-            } else {
-                // Delete if no longer indexable
-                $this->scheduleForDeletion($entity);
-            }
-        }
+        $this->scheduleForUpdate($entity);
     }
 
     /**
@@ -147,10 +190,7 @@ class Listener implements EventSubscriber
     public function preRemove(EventArgs $eventArgs)
     {
         $entity = $this->getDoctrineObject($eventArgs);
-
-        if ($this->objectPersister->handlesObject($entity)) {
-            $this->scheduleForDeletion($entity);
-        }
+        $this->scheduleForDeletion($entity);
     }
 
     /**
@@ -188,7 +228,89 @@ class Listener implements EventSubscriber
      */
     public function postFlush(EventArgs $eventArgs)
     {
+        // Also schedule Doctrine objects with ReferenceMany changes
+        // This must happen on postFlush, as preFlush will not yet have change-sets calculated
+        $this->scheduleObjectsWithCollectionChanges($eventArgs);
         $this->persistScheduled();
+    }
+
+    /**
+     * Provides a unified method for scheduling Doctrine objects with collection changes (e.g. ReferenceMany) to be
+     * updated in Elasticsearch
+     *
+     * Note: The PersistentCollection class for both the Doctrine ORM and the MongoDB ODM contain the 'getOwner'
+     * method. Be that as it may, the Doctrine\Common\Collections\Collection interface does not strictly
+     * require/define this method. As such, the method_exists() check is used
+     *
+     * @param   EventArgs           $eventArgs
+     * @return  UnitOfWork          An instance implementing ObjectManager
+     */
+    protected function scheduleObjectsWithCollectionChanges(EventArgs $eventArgs)
+    {
+        $collectionChanges = $this->getCollectionChanges($eventArgs);
+        foreach ($collectionChanges as $collection) {
+            if (method_exists($collection, 'getOwner')) {
+                // The owning document method exists, schedule for update
+                $this->scheduleForUpdate($collection->getOwner());
+            }
+            // Should this throw an Exception, or just silently fail?
+        }
+    }
+
+    /**
+     * Provides a unified method for retrieving a set of collection changes from the Doctrine UnitOfWork
+     *
+     * Note: The UnitOfWork class for both the Doctrine ORM and the MongoDB ODM contain these methods.
+     * Be that as it may, no Doctrine\Common interface exists for the UnitOfWork, so these methods are not strictly
+     * required/defined. As such, the method_exists() check is used
+     *
+     * @param   EventArgs           $eventArgs
+     * @return  UnitOfWork          An instance implementing ObjectManager
+     * @throws  \RuntimeException   if no valid getter is found.
+     */
+    protected function getCollectionChanges(EventArgs $eventArgs)
+    {
+        $uow = $this->getUnitOfWork($eventArgs);
+        if (method_exists($uow, 'getScheduledCollectionUpdates') &&
+            method_exists($uow, 'getScheduledCollectionDeletions')) {
+            // Merge updates (adds, removes) and deletes (entire collection removals) and return
+            return array_merge($uow->getScheduledCollectionUpdates(), $uow->getScheduledCollectionDeletions());
+        }
+
+        throw new \RuntimeException('Unable to retrieve collection changes (updates and deletes) from EventArgs.');
+    }
+
+    /**
+     * Schedules a Doctrine object (entity/document) to be updated in Elasticsearch
+     *
+     * @param  mixed  $object
+     * @return void
+     */
+    protected function scheduleForUpdate($object)
+    {
+        if ($this->objectPersister->handlesObject($object)) {
+            if ($this->isObjectIndexable($object)) {
+                $oid = spl_object_hash($object);
+                $this->scheduledForUpdate[$oid] = $object;
+            } else {
+                // Delete if no longer indexable
+                $this->scheduleForDeletion($object);
+            }
+        }
+    }
+
+    /**
+     * Schedules a Doctrine object (entity/document) for insertion into Elasticsearch
+     *
+     * @param  mixed  $object
+     * @return void
+     */
+    protected function scheduleForInsertion($object)
+    {
+        if ($this->objectPersister->handlesObject($object) && $this->isObjectIndexable($object)) {
+            $oid = spl_object_hash($object);
+            $this->scheduledForInsertion[$oid] = $object;
+        }
     }
 
     /**
@@ -198,8 +320,11 @@ class Listener implements EventSubscriber
      */
     protected function scheduleForDeletion($object)
     {
-        if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
-            $this->scheduledForDeletion[] = $identifierValue;
+        if ($this->objectPersister->handlesObject($object)) {
+            if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
+                $oid = spl_object_hash($object);
+                $this->scheduledForDeletion[$oid] = $identifierValue;
+            }
         }
     }
 
