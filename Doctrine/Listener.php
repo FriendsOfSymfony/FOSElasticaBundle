@@ -138,27 +138,6 @@ class Listener implements EventSubscriber
     }
 
     /**
-     * Provides a unified method for retrieving a doctrine UnitOfWork from an EventArgs instance
-     *
-     * Note: The ObjectManager implementation of the Doctrine ORM (EntityManager) and the MongoDB ODM (DocumentManager)
-     * contain the 'getUnitOfWork' method. Be that as it may, the Doctrine\Common\Persistence\ObjectManager interface
-     * does not strictly require/define the method. As such, the method_exists() check is used
-     *
-     * @param   EventArgs           $eventArgs
-     * @return  UnitOfWork          An instance implementing ObjectManager
-     * @throws  \RuntimeException   if no valid getter is found.
-     */
-    private function getUnitOfWork(EventArgs $eventArgs)
-    {
-        $objectManager = $this->getObjectManager($eventArgs);
-        if (method_exists($objectManager, 'getUnitOfWork')) {
-            return $objectManager->getUnitOfWork();
-        }
-
-        throw new \RuntimeException('Unable to retrieve the UnitOfWork from EventArgs.');
-    }
-
-    /**
      * Handles newly created entities that have been persisted to the database
      * The postPersist event must be used so newly persisted entities have their identifier value
      *
@@ -228,8 +207,6 @@ class Listener implements EventSubscriber
      */
     public function postFlush(EventArgs $eventArgs)
     {
-        // Also schedule Doctrine objects with ReferenceMany changes
-        // This must happen on postFlush, as preFlush will not yet have change-sets calculated
         $this->scheduleObjectsWithCollectionChanges($eventArgs);
         $this->persistScheduled();
     }
@@ -245,15 +222,11 @@ class Listener implements EventSubscriber
      * @param   EventArgs           $eventArgs
      * @return  UnitOfWork          An instance implementing ObjectManager
      */
-    protected function scheduleObjectsWithCollectionChanges(EventArgs $eventArgs)
+    private function scheduleObjectsWithCollectionChanges(EventArgs $eventArgs)
     {
         $collectionChanges = $this->getCollectionChanges($eventArgs);
         foreach ($collectionChanges as $collection) {
-            if (method_exists($collection, 'getOwner')) {
-                // The owning document method exists, schedule for update
-                $this->scheduleForUpdate($collection->getOwner());
-            }
-            // Should this throw an Exception, or just silently fail?
+            $this->scheduleForUpdate($collection->getOwner());
         }
     }
 
@@ -268,16 +241,22 @@ class Listener implements EventSubscriber
      * @return  UnitOfWork          An instance implementing ObjectManager
      * @throws  \RuntimeException   if no valid getter is found.
      */
-    protected function getCollectionChanges(EventArgs $eventArgs)
+    private function getCollectionChanges(EventArgs $eventArgs)
     {
-        $uow = $this->getUnitOfWork($eventArgs);
-        if (method_exists($uow, 'getScheduledCollectionUpdates') &&
-            method_exists($uow, 'getScheduledCollectionDeletions')) {
-            // Merge updates (adds, removes) and deletes (entire collection removals) and return
-            return array_merge($uow->getScheduledCollectionUpdates(), $uow->getScheduledCollectionDeletions());
-        }
+        $objectManager = $this->getObjectManager($eventArgs);
+        $uow = $objectManager->getUnitOfWork();
 
-        throw new \RuntimeException('Unable to retrieve collection changes (updates and deletes) from EventArgs.');
+        // Merge updates (adds, removes) and deletes (entire collection removals) and return
+        $changes = array_merge($uow->getScheduledCollectionUpdates(), $uow->getScheduledCollectionDeletions());
+        return array_filter($changes, function($collection) {
+            if ($collection instanceof \Doctrine\ORM\PersistentCollection) {
+                return true;
+            }
+            if ($collection instanceof \Doctrine\ODM\MongoDB\PersistentCollection) {
+                return true;
+            }
+            return false;
+        });
     }
 
     /**
@@ -286,7 +265,7 @@ class Listener implements EventSubscriber
      * @param  mixed  $object
      * @return void
      */
-    protected function scheduleForUpdate($object)
+    private function scheduleForUpdate($object)
     {
         if ($this->objectPersister->handlesObject($object)) {
             if ($this->isObjectIndexable($object)) {
@@ -305,7 +284,7 @@ class Listener implements EventSubscriber
      * @param  mixed  $object
      * @return void
      */
-    protected function scheduleForInsertion($object)
+    private function scheduleForInsertion($object)
     {
         if ($this->objectPersister->handlesObject($object) && $this->isObjectIndexable($object)) {
             $oid = spl_object_hash($object);
@@ -318,7 +297,7 @@ class Listener implements EventSubscriber
      * @param  mixed  $object
      * @return mixed
      */
-    protected function scheduleForDeletion($object)
+    private function scheduleForDeletion($object)
     {
         if ($this->objectPersister->handlesObject($object)) {
             if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
