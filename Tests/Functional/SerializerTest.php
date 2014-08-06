@@ -32,6 +32,13 @@ class SerializerTest extends WebTestCase
         $persister->replaceOne($object);
     }
 
+    public function testUnmappedType()
+    {
+        $client = $this->createClient(array('test_case' => 'Serializer'));
+        $resetter = $client->getContainer()->get('fos_elastica.resetter');
+        $resetter->resetIndex('index');
+    }
+
     protected function setUp()
     {
         parent::setUp();

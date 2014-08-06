@@ -40,3 +40,11 @@ fos_elastica:
                     serializer:
                         groups: ['search', 'Default']
                         version: 1.1
+                unmapped:
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                    serializer:
+                        groups: ['search', 'Default']
+                        version: 1.1
+
