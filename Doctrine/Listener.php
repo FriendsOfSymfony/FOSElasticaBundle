@@ -215,12 +215,8 @@ class Listener implements EventSubscriber
      * Provides a unified method for scheduling Doctrine objects with collection changes (e.g. ReferenceMany) to be
      * updated in Elasticsearch
      *
-     * Note: The PersistentCollection class for both the Doctrine ORM and the MongoDB ODM contain the 'getOwner'
-     * method. Be that as it may, the Doctrine\Common\Collections\Collection interface does not strictly
-     * require/define this method. As such, the method_exists() check is used
-     *
      * @param   EventArgs           $eventArgs
-     * @return  UnitOfWork          An instance implementing ObjectManager
+     * @return  void
      */
     private function scheduleObjectsWithCollectionChanges(EventArgs $eventArgs)
     {
@@ -233,13 +229,9 @@ class Listener implements EventSubscriber
     /**
      * Provides a unified method for retrieving a set of collection changes from the Doctrine UnitOfWork
      *
-     * Note: The UnitOfWork class for both the Doctrine ORM and the MongoDB ODM contain these methods.
-     * Be that as it may, no Doctrine\Common interface exists for the UnitOfWork, so these methods are not strictly
-     * required/defined. As such, the method_exists() check is used
      *
-     * @param   EventArgs           $eventArgs
-     * @return  UnitOfWork          An instance implementing ObjectManager
-     * @throws  \RuntimeException   if no valid getter is found.
+     * @param   EventArgs  $eventArgs
+     * @return  array      An array of PersistentCollection objects
      */
     private function getCollectionChanges(EventArgs $eventArgs)
     {
