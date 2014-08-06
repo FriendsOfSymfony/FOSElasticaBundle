@@ -18,7 +18,7 @@ class MappingBuilder
 {
     /**
      * Skip adding default information to certain fields.
-     * 
+     *
      * @var array
      */
     private $skipTypes = array('completion');
@@ -36,10 +36,11 @@ class MappingBuilder
             $typeMappings[$typeConfig->getName()] = $this->buildTypeMapping($typeConfig);
         }
 
-        $mapping = array(
-            'mappings' => $typeMappings,
-            // 'warmers' => $indexConfig->getWarmers(),
-        );
+        $mapping = array();
+        if ($typeMappings) {
+            $mapping['mappings'] = $typeMappings;
+        }
+        // 'warmers' => $indexConfig->getWarmers(),
 
         $settings = $indexConfig->getSettings();
         if ($settings) {
@@ -61,20 +62,34 @@ class MappingBuilder
             // 'date_detection' => true,
             // 'dynamic_date_formats' => array()
             // 'dynamic_templates' => $typeConfig->getDynamicTemplates(),
-            // 'index_analyzer' => $typeConfig->getIndexAnalyzer(),
             // 'numeric_detection' => false,
             // 'properties' => array(),
-            // 'search_analyzer' => $typeConfig->getSearchAnalyzer(),
         ));
+
+        if ($typeConfig->getIndexAnalyzer()) {
+            $mapping['index_analyzer'] = $typeConfig->getIndexAnalyzer();
+        }
+
+        if ($typeConfig->getSearchAnalyzer()) {
+            $mapping['search_analyzer'] = $typeConfig->getSearchAnalyzer();
+        }
 
         if (isset($mapping['dynamic_templates']) and empty($mapping['dynamic_templates'])) {
             unset($mapping['dynamic_templates']);
         }
 
         $this->fixProperties($mapping['properties']);
+        if (!$mapping['properties']) {
+            unset($mapping['properties']);
+        }
 
         if ($typeConfig->getModel()) {
             $mapping['_meta']['model'] = $typeConfig->getModel();
+        }
+
+        if (!$mapping) {
+            // Empty mapping, we want it encoded as a {} instead of a []
+            $mapping = new \stdClass;
         }
 
         return $mapping;

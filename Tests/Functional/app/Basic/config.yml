@@ -42,6 +42,8 @@ fos_elastica:
                     mappings:
                         field1: ~
                         field2: ~
+                    search_analyzer: whitespace
+                    index_analyzer: my_analyzer
                 type:
                     search_analyzer: my_analyzer
                     dynamic_templates:
