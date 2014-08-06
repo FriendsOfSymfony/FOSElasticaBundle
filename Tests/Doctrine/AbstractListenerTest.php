@@ -64,7 +64,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
 
         $persister->expects($this->once())
             ->method('replaceMany')
-            ->with(array($entity));
+            ->with(array(spl_object_hash($entity) => $entity));
         $persister->expects($this->never())
             ->method('deleteById');
 
@@ -102,7 +102,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->method('replaceOne');
         $persister->expects($this->once())
             ->method('deleteManyByIdentifiers')
-            ->with(array($entity->getId()));
+            ->with(array(spl_object_hash($entity) => $entity->getId()));
 
         $postFlushEventArgs = $this->createPostFlushEventArgs($this->getMockObjectManager());
         $listener->postFlush($postFlushEventArgs);
@@ -135,7 +135,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
 
         $persister->expects($this->once())
             ->method('deleteManyByIdentifiers')
-            ->with(array($entity->getId()));
+            ->with(array(spl_object_hash($entity) => $entity->getId()));
 
         $postFlushEventArgs = $this->createPostFlushEventArgs($this->getMockObjectManager());
         $listener->postFlush($postFlushEventArgs);
@@ -169,7 +169,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
 
         $persister->expects($this->once())
             ->method('deleteManyByIdentifiers')
-            ->with(array($entity->identifier));
+            ->with(array(spl_object_hash($entity) => $entity->identifier));
 
         $postFlushEventArgs = $this->createPostFlushEventArgs($this->getMockObjectManager());
         $listener->postFlush($postFlushEventArgs);
