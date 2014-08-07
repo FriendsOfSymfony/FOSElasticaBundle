@@ -73,6 +73,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('clients')
                     ->useAttributeAsKey('id')
                     ->prototype('array')
+                        ->performNoDeepMerging()
                         // BC - Renaming 'servers' node to 'connections'
                         ->beforeNormalization()
                         ->ifTrue(function($v) { return isset($v['servers']); })
