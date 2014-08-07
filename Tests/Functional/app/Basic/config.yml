@@ -83,3 +83,5 @@ fos_elastica:
                         type: "parent"
                         property: "parent"
                         identifier: "id"
+                null_mappings:
+                    mappings: ~
