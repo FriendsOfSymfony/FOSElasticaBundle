@@ -36,6 +36,14 @@ class TypeConfig
     }
 
     /**
+     * @return string|null
+     */
+    public function getIndexAnalyzer()
+    {
+        return $this->getConfig('index_analyzer');
+    }
+
+    /**
      * @return array
      */
     public function getMapping()
@@ -43,6 +51,9 @@ class TypeConfig
         return $this->mapping;
     }
 
+    /**
+     * @return string|null
+     */
     public function getModel()
     {
         return isset($this->config['persistence']['model']) ?
@@ -56,5 +67,20 @@ class TypeConfig
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSearchAnalyzer()
+    {
+        return $this->getConfig('search_analyzer');
+    }
+
+    private function getConfig($key)
+    {
+        return isset($this->config[$key]) ?
+            $this->config[$key] :
+            null;
     }
 }
