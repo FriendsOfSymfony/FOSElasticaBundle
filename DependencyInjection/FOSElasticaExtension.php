@@ -220,9 +220,7 @@ class FOSElasticaExtension extends Extension
 
             foreach (array(
                 'dynamic_templates',
-                'index_analyzer',
                 'properties',
-                'search_analyzer',
                 '_all',
                 '_boost',
                 '_id',
@@ -239,7 +237,9 @@ class FOSElasticaExtension extends Extension
 
             foreach (array(
                 'persistence',
-                'serializer'
+                'serializer',
+                'index_analyzer',
+                'search_analyzer',
             ) as $field) {
                 $typeConfig['config'][$field] = array_key_exists($field, $type) ?
                     $type[$field] :
