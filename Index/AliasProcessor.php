@@ -26,7 +26,12 @@ class AliasProcessor
      */
     public function setRootName(IndexConfig $indexConfig, Index $index)
     {
-        $index->overrideName(sprintf('%s_%s', $indexConfig->getElasticSearchName(), uniqid()));
+        $index->overrideName(
+            sprintf('%s_%s',
+                $indexConfig->getElasticSearchName(),
+                date('Y-m-d-Gis')
+            )
+        );
     }
 
     /**
@@ -116,7 +121,9 @@ class AliasProcessor
     /**
      * Returns array of indexes which are mapped to given alias
      *
+     * @param Client $client
      * @param string $aliasName Alias name
+     *
      * @return array
      */
     private function getAliasedIndexes(Client $client, $aliasName)
