@@ -7,7 +7,7 @@ A) Install FOSElasticaBundle
 FOSElasticaBundle is installed using [Composer](https://getcomposer.org).
 
 ```bash
-$ php composer.phar require friendsofsymfony/elastica-bundle "~3.0.2"
+$ php composer.phar require friendsofsymfony/elastica-bundle "~3.0"
 ```
 
 ### Elasticsearch

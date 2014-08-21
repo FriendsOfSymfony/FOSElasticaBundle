@@ -59,7 +59,7 @@ class RepositoryManager implements RepositoryManagerInterface
         }
 
         $refClass   = new \ReflectionClass($entityName);
-        $annotation = $this->reader->getClassAnnotation($refClass, 'FOS\\ElasticaBundle\\Configuration\\Search');
+        $annotation = $this->reader->getClassAnnotation($refClass, 'FOS\\ElasticaBundle\\Annotation\\Search');
         if ($annotation) {
             $this->entities[$entityName]['repositoryName']
                 = $annotation->repositoryClass;
