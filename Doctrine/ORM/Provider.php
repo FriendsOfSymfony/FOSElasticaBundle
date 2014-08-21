@@ -3,7 +3,6 @@
 namespace FOS\ElasticaBundle\Doctrine\ORM;
 
 use Doctrine\ORM\QueryBuilder;
-use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
 use FOS\ElasticaBundle\Doctrine\AbstractProvider;
 use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 

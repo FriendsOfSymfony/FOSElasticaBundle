@@ -27,7 +27,7 @@ interface ManagerInterface
     /**
      * Returns an array of known index names.
      *
-     * @return array
+     * @return integer[]
      */
     public function getIndexNames();
 

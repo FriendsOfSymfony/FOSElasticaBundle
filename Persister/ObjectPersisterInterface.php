@@ -15,6 +15,7 @@ interface ObjectPersisterInterface
      * The object will be transformed to an elastica document
      *
      * @param object $object
+     * @return void
      */
     function insertOne($object);
 
@@ -45,6 +46,7 @@ interface ObjectPersisterInterface
      * Bulk inserts an array of objects in the type
      *
      * @param array $objects array of domain model objects
+     * @return void
      */
     function insertMany(array $objects);
 
@@ -52,6 +54,7 @@ interface ObjectPersisterInterface
      * Bulk updates an array of objects in the type
      *
      * @param array $objects array of domain model objects
+     * @return void
      */
     function replaceMany(array $objects);
 
@@ -59,6 +62,7 @@ interface ObjectPersisterInterface
      * Bulk deletes an array of objects in the type
      *
      * @param array $objects array of domain model objects
+     * @return void
      */
     function deleteMany(array $objects);
 
@@ -66,6 +70,7 @@ interface ObjectPersisterInterface
      * Bulk deletes records from an array of identifiers
      *
      * @param array $identifiers array of domain model object identifiers
+     * @return void
      */
     public function deleteManyByIdentifiers(array $identifiers);
 }

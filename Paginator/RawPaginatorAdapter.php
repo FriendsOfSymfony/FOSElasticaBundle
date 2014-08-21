@@ -54,8 +54,8 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * Returns the paginated results.
      *
-     * @param $offset
-     * @param $itemCountPerPage
+     * @param integer $offset
+     * @param integer $itemCountPerPage
      * @throws \InvalidArgumentException
      * @return ResultSet
      */

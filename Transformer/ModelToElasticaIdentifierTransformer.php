@@ -13,7 +13,7 @@ class ModelToElasticaIdentifierTransformer extends ModelToElasticaAutoTransforme
     /**
      * Creates an elastica document with the id of the doctrine object as id
      *
-     * @param object $object the object to convert
+     * @param \FOS\ElasticaBundle\Tests\Transformer\ModelToElasticaIdentifierTransformer\POPO $object the object to convert
      * @param array  $fields the keys we want to have in the returned array
      *
      * @return Document

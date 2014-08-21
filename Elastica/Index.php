@@ -3,7 +3,6 @@
 namespace FOS\ElasticaBundle\Elastica;
 
 use Elastica\Index as BaseIndex;
-use Elastica\Type;
 
 /**
  * Overridden Elastica Index class that provides dynamic index name changes.
@@ -32,6 +31,9 @@ class Index extends BaseIndex
         return $this->originalName ?: $this->_name;
     }
 
+    /**
+     * @param string $type
+     */
     public function getType($type)
     {
         if (isset($this->typeCache[$type])) {

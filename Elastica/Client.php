@@ -31,6 +31,8 @@ class Client extends BaseClient
 
     /**
      * {@inheritdoc}
+     * @param string $path
+     * @param string $method
      */
     public function request($path, $method = Request::GET, $data = array(), array $query = array())
     {

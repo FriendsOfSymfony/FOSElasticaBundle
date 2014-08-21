@@ -82,7 +82,7 @@ class FOSElasticaExtension extends Extension
     /**
      * @param array $config
      * @param ContainerBuilder $container
-     * @return Configuration|null|\Symfony\Component\Config\Definition\ConfigurationInterface
+     * @return Configuration
      */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
@@ -523,7 +523,7 @@ class FOSElasticaExtension extends Extension
      *
      * @param array $typeConfig
      * @param ContainerBuilder $container
-     * @param $elasticaToModelId
+     * @param string $elasticaToModelId
      * @param Reference $typeRef
      * @param string $indexName
      * @param string $typeName
