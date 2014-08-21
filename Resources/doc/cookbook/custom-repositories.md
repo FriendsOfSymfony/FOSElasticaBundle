@@ -58,7 +58,7 @@ Alternatively you can specify the custom repository using an annotation in the e
 
 namespace Application\UserBundle\Entity;
 
-use FOS\ElasticaBundle\Configuration\Search;
+use FOS\ElasticaBundle\Annotation\Search;
 
 /**
  * @Search(repositoryClass="Acme\ElasticaBundle\SearchRepository\UserRepository")
