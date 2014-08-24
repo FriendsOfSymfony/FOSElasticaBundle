@@ -170,6 +170,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 
     /**
      * @see https://github.com/doctrine/common/blob/master/lib/Doctrine/Common/Util/Inflector.php
+     * @param string $str
      */
     private function camelize($str)
     {

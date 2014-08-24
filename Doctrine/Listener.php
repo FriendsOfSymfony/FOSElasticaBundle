@@ -174,27 +174,30 @@ class Listener implements EventSubscriber
     }
 
     /**
-     * Iterate through scheduled actions before flushing to emulate 2.x behavior.  Note that the ElasticSearch index
-     * will fall out of sync with the source data in the event of a crash during flush.
+     * Iterate through scheduled actions before flushing to emulate 2.x behavior.
+     * Note that the ElasticSearch index will fall out of sync with the source
+     * data in the event of a crash during flush.
+     *
+     * This method is only called in legacy configurations of the listener.
      */
-    public function preFlush(EventArgs $eventArgs)
+    public function preFlush()
     {
         $this->persistScheduled();
     }
 
     /**
-     * Iterating through scheduled actions *after* flushing ensures that the ElasticSearch index will be affected
-     * only if the query is successful
+     * Iterating through scheduled actions *after* flushing ensures that the
+     * ElasticSearch index will be affected only if the query is successful.
      */
-    public function postFlush(EventArgs $eventArgs)
+    public function postFlush()
     {
         $this->persistScheduled();
     }
 
     /**
      * Record the specified identifier to delete. Do not need to entire object.
-     * @param  mixed  $object
-     * @return mixed
+     *
+     * @param object $object
      */
     protected function scheduleForDeletion($object)
     {

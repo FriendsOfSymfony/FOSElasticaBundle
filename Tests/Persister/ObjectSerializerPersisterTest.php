@@ -2,9 +2,7 @@
 
 namespace FOS\ElasticaBundle\Tests\ObjectSerializerPersister;
 
-use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Persister\ObjectSerializerPersister;
-use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 

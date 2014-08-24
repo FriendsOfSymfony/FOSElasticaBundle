@@ -3,7 +3,6 @@
 namespace FOS\ElasticaBundle\Tests\Resetter;
 
 use FOS\ElasticaBundle\FOSElasticaBundle;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 class FOSElasticaBundleTest extends \PHPUnit_Framework_TestCase
 {
