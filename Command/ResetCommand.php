@@ -33,6 +33,7 @@ class ResetCommand extends ContainerAwareCommand
             ->setName('fos:elastica:reset')
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to reset')
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to reset')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force index deletion if same name as alias')
             ->setDescription('Reset search indexes')
         ;
     }
@@ -53,6 +54,7 @@ class ResetCommand extends ContainerAwareCommand
     {
         $index  = $input->getOption('index');
         $type   = $input->getOption('type');
+        $force  = (true == $input->getOption('force'));
 
         if (null === $index && null !== $type) {
             throw new \InvalidArgumentException('Cannot specify type option without an index.');
@@ -69,7 +71,7 @@ class ResetCommand extends ContainerAwareCommand
 
             foreach ($indexes as $index) {
                 $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
-                $this->resetter->resetIndex($index);
+                $this->resetter->resetIndex($index, false, $force);
             }
         }
     }

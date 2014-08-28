@@ -15,6 +15,7 @@ use Elastica\Exception\ExceptionInterface;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Exception\AliasIsIndexException;
 
 class AliasProcessor
 {
@@ -35,9 +36,10 @@ class AliasProcessor
      *
      * @param IndexConfig $indexConfig
      * @param Index $index
+     * @param boolean $force If index exists with same name as alias, remove it
      * @throws \RuntimeException
      */
-    public function switchIndexAlias(IndexConfig $indexConfig, Index $index)
+    public function switchIndexAlias(IndexConfig $indexConfig, Index $index, $force = false)
     {
         $client = $index->getClient();
 
@@ -45,7 +47,16 @@ class AliasProcessor
         $oldIndexName = false;
         $newIndexName = $index->getName();
 
-        $aliasedIndexes = $this->getAliasedIndexes($client, $aliasName);
+        $aliasedIndexes = array();
+        try {
+            $aliasedIndexes = $this->getAliasedIndexes($client, $aliasName);
+        } catch(AliasIsIndexException $e) {
+            if ($force) {
+                $this->deleteIndex($client, $aliasName);
+            } else {
+                throw new \RuntimeException($e->getMessage());
+            }
+        }
 
         if (count($aliasedIndexes) > 1) {
             throw new \RuntimeException(
@@ -125,6 +136,9 @@ class AliasProcessor
         $aliasedIndexes = array();
 
         foreach ($aliasesInfo as $indexName => $indexInfo) {
+            if ($indexName == $aliasName) {
+                throw new AliasIsIndexException($indexName);
+            }
             $aliases = array_keys($indexInfo['aliases']);
             if (in_array($aliasName, $aliases)) {
                 $aliasedIndexes[] = $indexName;
@@ -132,5 +146,16 @@ class AliasProcessor
         }
 
         return $aliasedIndexes;
+    }
+
+    /**
+     * Delete an index
+     *
+     * @param string $indexName Index name to delete
+     */
+    private function deleteIndex($client, $indexName)
+    {
+        $path = sprintf("%s", $indexName);
+        $client->request($path, \Elastica\Request::DELETE);
     }
 }
