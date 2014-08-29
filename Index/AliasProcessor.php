@@ -125,9 +125,11 @@ class AliasProcessor
         $aliasedIndexes = array();
 
         foreach ($aliasesInfo as $indexName => $indexInfo) {
-            $aliases = array_keys($indexInfo['aliases']);
-            if (in_array($aliasName, $aliases)) {
-                $aliasedIndexes[] = $indexName;
+            if (isset($indexInfo['aliases'])) {
+                $aliases = array_keys($indexInfo['aliases']);
+                if (in_array($aliasName, $aliases)) {
+                    $aliasedIndexes[] = $indexName;
+                }
             }
         }
 
