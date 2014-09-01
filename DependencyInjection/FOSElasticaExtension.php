@@ -534,8 +534,16 @@ class FOSElasticaExtension extends Extension
         if (isset($typeConfig['finder']['service'])) {
             $finderId = $typeConfig['finder']['service'];
         } else {
+            // TransformedFinder
             $finderId = sprintf('fos_elastica.finder.%s.%s', $indexName, $typeName);
             $finderDef = new DefinitionDecorator('fos_elastica.finder');
+            $finderDef->replaceArgument(0, $typeRef);
+            $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
+            $container->setDefinition($finderId, $finderDef);
+
+            // RawFinder
+            $finderId = sprintf('fos_elastica.finder.raw.%s.%s', $indexName, $typeName);
+            $finderDef = new DefinitionDecorator('fos_elastica.finder.raw');
             $finderDef->replaceArgument(0, $typeRef);
             $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
             $container->setDefinition($finderId, $finderDef);
