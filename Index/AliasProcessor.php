@@ -11,10 +11,10 @@
 
 namespace FOS\ElasticaBundle\Index;
 
+use Elastica\Client;
 use Elastica\Exception\ExceptionInterface;
 use Elastica\Request;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
-use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Exception\AliasIsIndexException;
 
@@ -54,13 +54,12 @@ class AliasProcessor
         try {
             $aliasedIndexes = $this->getAliasedIndexes($client, $aliasName);
         } catch(AliasIsIndexException $e) {
-            if ($force) {
-                $this->deleteIndex($client, $aliasName);
-
-                return;
+            if (!$force) {
+                throw $e;
             }
 
-            throw $e;
+            $this->deleteIndex($client, $aliasName);
+            $aliasedIndexes = array();
         }
 
         if (count($aliasedIndexes) > 1) {
@@ -75,7 +74,7 @@ class AliasProcessor
         }
 
         $aliasUpdateRequest = array('actions' => array());
-        if (count($aliasedIndexes) == 1) {
+        if (count($aliasedIndexes) === 1) {
             // if the alias is set - add an action to remove it
             $oldIndexName = $aliasedIndexes[0];
             $aliasUpdateRequest['actions'][] = array(
@@ -135,7 +134,7 @@ class AliasProcessor
      * @param Client $client
      * @param string $aliasName Alias name
      * @return array
-     * @throws \FOS\ElasticaBundle\Exception\AliasIsIndexException
+     * @throws AliasIsIndexException
      */
     private function getAliasedIndexes(Client $client, $aliasName)
     {
@@ -146,11 +145,13 @@ class AliasProcessor
             if ($indexName === $aliasName) {
                 throw new AliasIsIndexException($indexName);
             }
-            if (isset($indexInfo['aliases'])) {
-                $aliases = array_keys($indexInfo['aliases']);
-                if (in_array($aliasName, $aliases)) {
-                    $aliasedIndexes[] = $indexName;
-                }
+            if (!isset($indexInfo['aliases'])) {
+                continue;
+            }
+
+            $aliases = array_keys($indexInfo['aliases']);
+            if (in_array($aliasName, $aliases)) {
+                $aliasedIndexes[] = $indexName;
             }
         }
 
