@@ -77,6 +77,9 @@ class TypeConfig
         return $this->getConfig('search_analyzer');
     }
 
+    /**
+     * @param string $key
+     */
     private function getConfig($key)
     {
         return isset($this->config[$key]) ?

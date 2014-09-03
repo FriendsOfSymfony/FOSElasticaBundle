@@ -5,9 +5,7 @@ namespace FOS\ElasticaBundle\Index;
 use Elastica\Index;
 use Elastica\Exception\ResponseException;
 use Elastica\Type\Mapping;
-use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\ConfigManager;
-use FOS\ElasticaBundle\Elastica\Client;
 
 /**
  * Deletes and recreates indexes
@@ -110,7 +108,7 @@ class Resetter
     /**
      * A command run when a population has finished.
      *
-     * @param $indexName
+     * @param string $indexName
      */
     public function postPopulate($indexName)
     {

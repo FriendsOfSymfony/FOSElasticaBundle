@@ -66,7 +66,7 @@ class TransformedFinder implements PaginatedFinderInterface
      * @param $query
      * @param null|int $limit
      * @param array $options
-     * @return array
+     * @return \Elastica\Result[]
      */
     protected function search($query, $limit = null, $options = array())
     {

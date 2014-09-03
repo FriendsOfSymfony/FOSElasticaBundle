@@ -69,6 +69,9 @@ class RepositoryManager implements RepositoryManagerInterface
         return 'FOS\ElasticaBundle\Repository';
     }
 
+    /**
+     * @param string $entityName
+     */
     private function createRepository($entityName)
     {
         if (!class_exists($repositoryName = $this->getRepositoryName($entityName))) {

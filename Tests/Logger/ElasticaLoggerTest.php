@@ -22,7 +22,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
     /**
      * @param string $level
      * @param string $message
-     * @param array $context
+     * @param string[] $context
      * @return ElasticaLogger
      */
     private function getMockLoggerForLevelMessageAndContext($level, $message, $context)

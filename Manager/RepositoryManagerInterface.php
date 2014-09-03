@@ -20,6 +20,7 @@ interface RepositoryManagerInterface
      * @param string $entityName
      * @param        $finder
      * @param string $repositoryName
+     * @return void
      */
     public function addEntity($entityName, FinderInterface $finder, $repositoryName = null);
 
