@@ -12,9 +12,11 @@
 namespace FOS\ElasticaBundle\Index;
 
 use Elastica\Exception\ExceptionInterface;
+use Elastica\Request;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Exception\AliasIsIndexException;
 
 class AliasProcessor
 {
@@ -33,11 +35,15 @@ class AliasProcessor
      * Switches an index to become the new target for an alias. Only applies for
      * indexes that are set to use aliases.
      *
+     * $force will delete an index encountered where an alias is expected.
+     *
      * @param IndexConfig $indexConfig
      * @param Index $index
+     * @param bool $force
+     * @throws AliasIsIndexException
      * @throws \RuntimeException
      */
-    public function switchIndexAlias(IndexConfig $indexConfig, Index $index)
+    public function switchIndexAlias(IndexConfig $indexConfig, Index $index, $force = false)
     {
         $client = $index->getClient();
 
@@ -45,7 +51,17 @@ class AliasProcessor
         $oldIndexName = false;
         $newIndexName = $index->getName();
 
-        $aliasedIndexes = $this->getAliasedIndexes($client, $aliasName);
+        try {
+            $aliasedIndexes = $this->getAliasedIndexes($client, $aliasName);
+        } catch(AliasIsIndexException $e) {
+            if ($force) {
+                $this->deleteIndex($client, $aliasName);
+
+                return;
+            }
+
+            throw $e;
+        }
 
         if (count($aliasedIndexes) > 1) {
             throw new \RuntimeException(
@@ -116,8 +132,10 @@ class AliasProcessor
     /**
      * Returns array of indexes which are mapped to given alias
      *
+     * @param Client $client
      * @param string $aliasName Alias name
      * @return array
+     * @throws \FOS\ElasticaBundle\Exception\AliasIsIndexException
      */
     private function getAliasedIndexes(Client $client, $aliasName)
     {
@@ -125,6 +143,9 @@ class AliasProcessor
         $aliasedIndexes = array();
 
         foreach ($aliasesInfo as $indexName => $indexInfo) {
+            if ($indexName === $aliasName) {
+                throw new AliasIsIndexException($indexName);
+            }
             if (isset($indexInfo['aliases'])) {
                 $aliases = array_keys($indexInfo['aliases']);
                 if (in_array($aliasName, $aliases)) {
@@ -134,5 +155,17 @@ class AliasProcessor
         }
 
         return $aliasedIndexes;
+    }
+
+    /**
+     * Delete an index
+     *
+     * @param Client $client
+     * @param string $indexName Index name to delete
+     */
+    private function deleteIndex(Client $client, $indexName)
+    {
+        $path = sprintf("%s", $indexName);
+        $client->request($path, Request::DELETE);
     }
 }
