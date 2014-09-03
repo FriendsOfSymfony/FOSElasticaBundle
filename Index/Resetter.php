@@ -45,10 +45,10 @@ class Resetter
     /**
      * Deletes and recreates all indexes
      */
-    public function resetAllIndexes($populating = false)
+    public function resetAllIndexes($populating = false, $force = false)
     {
         foreach ($this->configManager->getIndexNames() as $name) {
-            $this->resetIndex($name, $populating);
+            $this->resetIndex($name, $populating, $force);
         }
     }
 
@@ -58,9 +58,10 @@ class Resetter
      *
      * @param string $indexName
      * @param bool $populating
+     * @param bool $force If index exists with same name as alias, remove it
      * @throws \InvalidArgumentException if no index exists for the given name
      */
-    public function resetIndex($indexName, $populating = false)
+    public function resetIndex($indexName, $populating = false, $force = false)
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
         $index = $this->indexManager->getIndex($indexName);
@@ -73,7 +74,7 @@ class Resetter
         $index->create($mapping, true);
 
         if (!$populating and $indexConfig->isUseAlias()) {
-            $this->aliasProcessor->switchIndexAlias($indexConfig, $index);
+            $this->aliasProcessor->switchIndexAlias($indexConfig, $index, $force);
         }
     }
 
