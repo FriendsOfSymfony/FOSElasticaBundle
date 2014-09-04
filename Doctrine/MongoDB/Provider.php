@@ -78,6 +78,10 @@ class Provider extends AbstractProvider
      */
     protected function createQueryBuilder()
     {
+        if(isset($this->options['query_builder'])){
+            return $this->options['query_builder'];
+        }
+        
         return $this->managerRegistry
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass)
