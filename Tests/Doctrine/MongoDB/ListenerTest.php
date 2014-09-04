@@ -23,6 +23,11 @@ class ListenerTest extends BaseListenerTest
         return 'Doctrine\ODM\MongoDB\Event\LifecycleEventArgs';
     }
 
+    protected function getPostFlushEventArgsClass()
+    {
+        return 'Doctrine\ODM\MongoDB\Event\PostFlushEventArgs';
+    }
+
     protected function getListenerClass()
     {
         return 'FOS\ElasticaBundle\Doctrine\Listener';
@@ -31,5 +36,10 @@ class ListenerTest extends BaseListenerTest
     protected function getObjectManagerClass()
     {
         return 'Doctrine\ODM\MongoDB\DocumentManager';
+    }
+
+    protected function getUnitOfWorkClass()
+    {
+        return 'Doctrine\ODM\MongoDB\UnitOfWork';
     }
 }
