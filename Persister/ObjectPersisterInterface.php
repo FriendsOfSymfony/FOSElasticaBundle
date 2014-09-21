@@ -68,4 +68,12 @@ interface ObjectPersisterInterface
      * @param array $identifiers array of domain model object identifiers
      */
     public function deleteManyByIdentifiers(array $identifiers);
+
+    /**
+     * If the object persister handles the given object.
+     *
+     * @param object $object
+     * @return bool
+     */
+    public function handlesObject($object);
 }
