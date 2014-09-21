@@ -2,8 +2,8 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
@@ -38,13 +38,23 @@ class Listener implements EventSubscriber
     private $config;
 
     /**
-     * Objects scheduled for insertion and replacement
+     * Objects scheduled for insertion.
+     *
+     * @var array
      */
     public $scheduledForInsertion = array();
+
+    /**
+     * Objects scheduled to be updated or removed.
+     *
+     * @var array
+     */
     public $scheduledForUpdate = array();
 
     /**
      * IDs of objects scheduled for removal
+     *
+     * @var array
      */
     public $scheduledForDeletion = array();
 
@@ -56,7 +66,7 @@ class Listener implements EventSubscriber
     protected $propertyAccessor;
 
     /**
-     * @var \FOS\ElasticaBundle\Provider\IndexableInterface
+     * @var IndexableInterface
      */
     private $indexable;
 
@@ -98,37 +108,27 @@ class Listener implements EventSubscriber
     }
 
     /**
-     * Provides unified method for retrieving a doctrine object from an EventArgs instance
+     * Looks for new objects that should be indexed.
      *
-     * @param   EventArgs           $eventArgs
-     * @return  object              Entity | Document
-     * @throws  \RuntimeException   if no valid getter is found.
+     * @param LifecycleEventArgs $eventArgs
      */
-    private function getDoctrineObject(EventArgs $eventArgs)
+    public function postPersist(LifecycleEventArgs $eventArgs)
     {
-        if (method_exists($eventArgs, 'getObject')) {
-            return $eventArgs->getObject();
-        } elseif (method_exists($eventArgs, 'getEntity')) {
-            return $eventArgs->getEntity();
-        } elseif (method_exists($eventArgs, 'getDocument')) {
-            return $eventArgs->getDocument();
-        }
-
-        throw new \RuntimeException('Unable to retrieve object from EventArgs.');
-    }
-
-    public function postPersist(EventArgs $eventArgs)
-    {
-        $entity = $this->getDoctrineObject($eventArgs);
+        $entity = $eventArgs->getObject();
 
         if ($this->objectPersister->handlesObject($entity) && $this->isObjectIndexable($entity)) {
             $this->scheduledForInsertion[] = $entity;
         }
     }
 
-    public function postUpdate(EventArgs $eventArgs)
+    /**
+     * Looks for objects being updated that should be indexed or removed from the index.
+     *
+     * @param LifecycleEventArgs $eventArgs
+     */
+    public function postUpdate(LifecycleEventArgs $eventArgs)
     {
-        $entity = $this->getDoctrineObject($eventArgs);
+        $entity = $eventArgs->getObject();
 
         if ($this->objectPersister->handlesObject($entity)) {
             if ($this->isObjectIndexable($entity)) {
@@ -143,10 +143,12 @@ class Listener implements EventSubscriber
     /**
      * Delete objects preRemove instead of postRemove so that we have access to the id.  Because this is called
      * preRemove, first check that the entity is managed by Doctrine
+     *
+     * @param LifecycleEventArgs $eventArgs
      */
-    public function preRemove(EventArgs $eventArgs)
+    public function preRemove(LifecycleEventArgs $eventArgs)
     {
-        $entity = $this->getDoctrineObject($eventArgs);
+        $entity = $eventArgs->getObject();
 
         if ($this->objectPersister->handlesObject($entity)) {
             $this->scheduleForDeletion($entity);
@@ -179,6 +181,10 @@ class Listener implements EventSubscriber
      * data in the event of a crash during flush.
      *
      * This method is only called in legacy configurations of the listener.
+     *
+     * @deprecated This method should only be called in applications that depend
+     *             on the behaviour that entities are indexed regardless of if a
+     *             flush is successful.
      */
     public function preFlush()
     {
@@ -199,7 +205,7 @@ class Listener implements EventSubscriber
      *
      * @param object $object
      */
-    protected function scheduleForDeletion($object)
+    private function scheduleForDeletion($object)
     {
         if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
             $this->scheduledForDeletion[] = $identifierValue;
