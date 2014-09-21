@@ -12,3 +12,5 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
 * 3.1.0
 
 * BC BREAK: `DoctrineListener#scheduleForDeletion` access changed to private.
+* BC BREAK: `ObjectPersisterInterface` gains the method `handlesObject` that
+  returns a boolean value if it will handle a given object or not.
