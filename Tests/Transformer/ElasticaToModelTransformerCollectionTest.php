@@ -157,6 +157,9 @@ class POPO
     public $id;
     public $data;
 
+    /**
+     * @param integer $id
+     */
     public function __construct($id, $data)
     {
         $this->data = $data;

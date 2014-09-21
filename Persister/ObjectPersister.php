@@ -4,7 +4,6 @@ namespace FOS\ElasticaBundle\Persister;
 
 use Psr\Log\LoggerInterface;
 use Elastica\Exception\BulkException;
-use Elastica\Exception\NotFoundException;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Elastica\Type;
 use Elastica\Document;
