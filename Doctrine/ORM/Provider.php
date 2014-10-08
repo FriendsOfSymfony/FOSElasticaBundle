@@ -9,7 +9,41 @@ use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 class Provider extends AbstractProvider
 {
     const ENTITY_ALIAS = 'a';
-    
+
+    /**
+     * Disables logging and returns the logger that was previously set.
+     *
+     * @return mixed
+     */
+    protected function disableLogging()
+    {
+        $configuration = $this->managerRegistry
+            ->getManagerForClass($this->objectClass)
+            ->getConnection()
+            ->getConfiguration();
+
+        $logger = $configuration->getSQLLogger();
+        $configuration->setSQLLogger(null);
+
+        return $logger;
+    }
+
+    /**
+     * Reenables the logger with the previously returned logger from disableLogging();
+     *
+     * @param mixed $logger
+     * @return mixed
+     */
+    protected function enableLogging($logger)
+    {
+        $configuration = $this->managerRegistry
+            ->getManagerForClass($this->objectClass)
+            ->getConnection()
+            ->getConfiguration();
+
+        $configuration->setSQLLogger($logger);
+    }
+
     /**
      * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
      */
@@ -50,12 +84,13 @@ class Provider extends AbstractProvider
          */
         $orderBy = $queryBuilder->getDQLPart('orderBy');
         if (empty($orderBy)) {
+            $rootAliases = $queryBuilder->getRootAliases();
             $identifierFieldNames = $this->managerRegistry
                 ->getManagerForClass($this->objectClass)
                 ->getClassMetadata($this->objectClass)
                 ->getIdentifierFieldNames();
             foreach ($identifierFieldNames as $fieldName) {
-                $queryBuilder->addOrderBy(static::ENTITY_ALIAS.'.'.$fieldName);
+                $queryBuilder->addOrderBy($rootAliases[0].'.'.$fieldName);
             }
         }
 

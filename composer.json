@@ -6,7 +6,8 @@
     "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle",
     "license": "MIT",
     "authors": [
-        { "name": "Thibault Duplessis", "email": "thibault.duplessis@gmail.com" },
+        { "name": "FriendsOfSymfony Community", "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle/contributors" },
+        { "name": "Tim Nagel", "email": "tim@nagel.com.au" },
         { "name": "Richard Miller", "email": "richard.miller@limethinking.co.uk" },
         { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" }
     ],
@@ -16,32 +17,36 @@
         "symfony/console": "~2.1",
         "symfony/form": "~2.1",
         "symfony/property-access": "~2.2",
-        "ruflin/elastica": ">=0.20, <1.1-dev",
+        "ruflin/elastica": ">=0.90.10.0, <1.4-dev",
         "psr/log": "~1.0"
     },
     "require-dev":{
-        "doctrine/orm": ">=2.2,<2.5-dev",
-        "doctrine/mongodb-odm": "1.0.*@dev",
+        "doctrine/orm": "~2.4",
+        "doctrine/doctrine-bundle": "~1.2@beta",
+        "jms/serializer-bundle": "@stable",
+        "phpunit/phpunit": "~4.1",
         "propel/propel1": "1.6.*",
         "pagerfanta/pagerfanta": "1.0.*@dev",
-        "knplabs/knp-components": "1.2.*",
-        "symfony/expression-language" : "2.4.*@dev"
+        "knplabs/knp-components": "~1.2",
+        "knplabs/knp-paginator-bundle": "~2.4",
+        "symfony/browser-kit" : "~2.3",
+        "symfony/expression-language" : "~2.4",
+        "symfony/twig-bundle": "~2.3"
     },
     "suggest": {
-        "doctrine/orm": ">=2.2,<2.5-dev",
+        "doctrine/orm": "~2.4",
         "doctrine/mongodb-odm": "1.0.*@dev",
         "propel/propel1": "1.6.*",
         "pagerfanta/pagerfanta": "1.0.*@dev",
-        "knplabs/knp-components": "1.2.*",
-        "symfony/expression-language" : "2.4.*@dev"
+        "knplabs/knp-components": "~1.2",
+        "symfony/expression-language" : "~2.4"
     },
     "autoload": {
-        "psr-0": { "FOS\\ElasticaBundle": "" }
+        "psr-4": { "FOS\\ElasticaBundle\\": "" }
     },
-    "target-dir": "FOS/ElasticaBundle",
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0.x-dev"
+            "dev-master": "3.1.x-dev"
         }
     }
 }

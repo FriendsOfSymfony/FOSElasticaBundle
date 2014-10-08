@@ -59,8 +59,8 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * Returns the paginated results.
      *
-     * @param $offset
-     * @param $itemCountPerPage
+     * @param integer $offset
+     * @param integer $itemCountPerPage
      * @throws \InvalidArgumentException
      * @return ResultSet
      */
@@ -132,6 +132,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
 
         return $this->facets;
     }
+<<<<<<< HEAD
     
     /**
      * Returns Aggregations
@@ -146,6 +147,8 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         return $this->aggregations;
     }
     
+=======
+>>>>>>> upstream/master
 
     /**
      * Returns the Query

@@ -4,23 +4,32 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <services>
+    <parameters>
+        <parameter key="fos_elastica.provider.prototype.mongodb.class">FOS\ElasticaBundle\Doctrine\MongoDB\Provider</parameter>
+        <parameter key="fos_elastica.listener.prototype.mongodb.class">FOS\ElasticaBundle\Doctrine\Listener</parameter>
+        <parameter key="fos_elastica.elastica_to_model_transformer.prototype.mongodb.class">FOS\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer</parameter>
+        <parameter key="fos_elastica.manager.mongodb.class">FOS\ElasticaBundle\Doctrine\RepositoryManager</parameter>
+    </parameters>
 
-        <service id="fos_elastica.provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\Provider" public="true" abstract="true">
+
+    <services>
+        <service id="fos_elastica.provider.prototype.mongodb" class="%fos_elastica.provider.prototype.mongodb.class%" public="true" abstract="true">
             <argument /> <!-- object persister -->
+            <argument type="service" id="fos_elastica.indexable" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
             <argument type="service" id="doctrine_mongodb" />
         </service>
 
-        <service id="fos_elastica.listener.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\Listener" public="false">
+        <service id="fos_elastica.listener.prototype.mongodb" class="%fos_elastica.listener.prototype.mongodb.class%" public="false" abstract="true">
             <argument /> <!-- object persister -->
-            <argument /> <!-- model -->
             <argument type="collection" /> <!-- events -->
-            <argument/> <!-- identifier -->
+            <argument type="service" id="fos_elastica.indexable" />
+            <argument type="collection" /> <!-- configuration -->
+            <argument /> <!-- logger -->
         </service>
 
-        <service id="fos_elastica.elastica_to_model_transformer.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer" public="false">
+        <service id="fos_elastica.elastica_to_model_transformer.prototype.mongodb" class="%fos_elastica.elastica_to_model_transformer.prototype.mongodb.class%" public="false" abstract="true">
             <argument type="service" id="doctrine_mongodb" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
@@ -29,11 +38,9 @@
             </call>
         </service>
 
-        <service id="fos_elastica.manager.mongodb" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
+        <service id="fos_elastica.manager.mongodb" class="%fos_elastica.manager.mongodb.class%">
             <argument type="service" id="doctrine_mongodb"/>
             <argument type="service" id="annotation_reader"/>
         </service>
-
     </services>
-
 </container>

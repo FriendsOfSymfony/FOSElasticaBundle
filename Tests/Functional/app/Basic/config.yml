@@ -1,0 +1,89 @@
+imports:
+    - { resource: ./../config/config.yml }
+
+framework:
+    templating:
+        engines: ['twig']
+
+twig:
+    debug: %kernel.debug%
+
+fos_elastica:
+    clients:
+        default:
+            connections:
+                - url: http://localhost:9200
+                - host: localhost
+                  port: 9200
+        second_server:
+            url: http://localhost:9200
+    indexes:
+        index:
+            index_name: foselastica_basic_test_%kernel.environment%
+            settings:
+                analysis:
+                    analyzer:
+                        my_analyzer:
+                            type: custom
+                            tokenizer: lowercase
+                            filter: [my_ngram]
+                    filter:
+                        my_ngram:
+                            type: "nGram"
+                            min_gram: 3
+                            max_gram: 5
+            types:
+                parent:
+                    dynamic_templates:
+                        dates:
+                            match: "date_*"
+                            mapping:
+                                type: date
+                    mappings:
+                        field1: ~
+                        field2: ~
+                    search_analyzer: whitespace
+                    index_analyzer: my_analyzer
+                type:
+                    search_analyzer: my_analyzer
+                    dynamic_templates:
+                        - dates:
+                            match: "date_*"
+                            mapping:
+                                type: date
+                        - strings:
+                            match: "*"
+                            mapping:
+                                analyzer: english
+                                type: string
+                    properties:
+                        field1: ~
+                        field2:
+                            type: integer
+                            store: false
+                        date: { boost: 5 }
+                        completion:
+                            type: completion
+                        title: { boost: 8, analyzer: my_analyzer }
+                        content: ~
+                        comments:
+                            type: "nested"
+                            properties:
+                                date: { boost: 5 }
+                                content: ~
+                        user:
+                            type: "object"
+                        approver:
+                            type: "object"
+                            properties:
+                                date: { boost: 5 }
+                        agreement:
+                            type: "attachment"
+                        lastlogin: { type: date, format: basic_date_time }
+                        birthday: { type: date, format: "yyyy-MM-dd" }
+                    _parent:
+                        type: "parent"
+                        property: "parent"
+                        identifier: "id"
+                null_mappings:
+                    mappings: ~

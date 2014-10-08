@@ -2,6 +2,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
+use Elastica\Bulk\ResponseSet;
+use Elastica\Response;
+
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
     private $objectClass;
@@ -9,24 +12,26 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     private $objectPersister;
     private $options;
     private $managerRegistry;
+    private $indexable;
 
     public function setUp()
     {
-       if (!interface_exists('Doctrine\Common\Persistence\ManagerRegistry')) {
-           $this->markTestSkipped('Doctrine Common is not available.');
-       }
+        if (!interface_exists('Doctrine\Common\Persistence\ManagerRegistry')) {
+            $this->markTestSkipped('Doctrine Common is not available.');
+        }
 
-       $this->objectClass = 'objectClass';
-       $this->options = array();
+        $this->objectClass = 'objectClass';
+        $this->options = array('debug_logging' => true, 'indexName' => 'index', 'typeName' => 'type');
 
-       $this->objectPersister = $this->getMockObjectPersister();
-       $this->managerRegistry = $this->getMockManagerRegistry();
-       $this->objectManager = $this->getMockObjectManager();
+        $this->objectPersister = $this->getMockObjectPersister();
+        $this->managerRegistry = $this->getMockManagerRegistry();
+        $this->objectManager = $this->getMockObjectManager();
+        $this->indexable = $this->getMockIndexable();
 
-       $this->managerRegistry->expects($this->any())
-           ->method('getManagerForClass')
-           ->with($this->objectClass)
-           ->will($this->returnValue($this->objectManager));
+        $this->managerRegistry->expects($this->any())
+            ->method('getManagerForClass')
+            ->with($this->objectClass)
+            ->will($this->returnValue($this->objectManager));
     }
 
     /**
@@ -49,6 +54,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->with($queryBuilder)
             ->will($this->returnValue($nbObjects));
 
+        $this->indexable->expects($this->any())
+            ->method('isObjectIndexable')
+            ->with('index', 'type', $this->anything())
+            ->will($this->returnValue(true));
+
         $providerInvocationOffset = 2;
 
         foreach ($objectsByIteration as $i => $objects) {
@@ -59,13 +69,12 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                 ->with($queryBuilder, $batchSize, $offset)
                 ->will($this->returnValue($objects));
 
-            $this->objectPersister->expects($this->at($i))
-                ->method('insertMany')
-                ->with($objects);
-
             $this->objectManager->expects($this->at($i))
                 ->method('clear');
         }
+
+        $this->objectPersister->expects($this->exactly(count($objectsByIteration)))
+            ->method('insertMany');
 
         $provider->populate();
     }
@@ -102,6 +111,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->method('fetchSlice')
             ->will($this->returnValue($objects));
 
+        $this->indexable->expects($this->any())
+            ->method('isObjectIndexable')
+            ->with('index', 'type', $this->anything())
+            ->will($this->returnValue(true));
+
         $this->objectManager->expects($this->never())
             ->method('clear');
 
@@ -122,6 +136,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider->expects($this->any())
             ->method('fetchSlice')
             ->will($this->returnValue($objects));
+
+        $this->indexable->expects($this->any())
+            ->method('isObjectIndexable')
+            ->with('index', 'type', $this->anything())
+            ->will($this->returnValue(true));
 
         $loggerClosureInvoked = false;
         $loggerClosure = function () use (&$loggerClosureInvoked) {
@@ -150,6 +169,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->method('fetchSlice')
             ->will($this->returnValue($objects));
 
+        $this->indexable->expects($this->any())
+            ->method('isObjectIndexable')
+            ->with('index', 'type', $this->anything())
+            ->will($this->returnValue(true));
+
         $this->objectPersister->expects($this->any())
             ->method('insertMany')
             ->will($this->throwException($this->getMockBulkResponseException()));
@@ -159,6 +183,36 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider->populate(null, array('ignore-errors' => false));
     }
 
+    public function testPopulateRunsIndexCallable()
+    {
+        $nbObjects = 2;
+        $objects = array(1, 2);
+
+        $provider = $this->getMockAbstractProvider();
+        $provider->expects($this->any())
+            ->method('countObjects')
+            ->will($this->returnValue($nbObjects));
+        $provider->expects($this->any())
+            ->method('fetchSlice')
+            ->will($this->returnValue($objects));
+
+        $this->indexable->expects($this->at(0))
+            ->method('isObjectIndexable')
+            ->with('index', 'type', 1)
+            ->will($this->returnValue(false));
+        $this->indexable->expects($this->at(1))
+            ->method('isObjectIndexable')
+            ->with('index', 'type', 2)
+            ->will($this->returnValue(true));
+
+
+        $this->objectPersister->expects($this->once())
+            ->method('insertMany')
+            ->with(array(1 => 2));
+
+        $provider->populate();
+    }
+
     /**
      * @return \FOS\ElasticaBundle\Doctrine\AbstractProvider|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -166,6 +220,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMockForAbstractClass('FOS\ElasticaBundle\Doctrine\AbstractProvider', array(
             $this->objectPersister,
+            $this->indexable,
             $this->objectClass,
             $this->options,
             $this->managerRegistry,
@@ -177,9 +232,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockBulkResponseException()
     {
-        return $this->getMockBuilder('Elastica\Exception\Bulk\ResponseException')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->getMock('Elastica\Exception\Bulk\ResponseException', null, array(
+            new ResponseSet(new Response(array()), array())
+        ));
     }
 
     /**
@@ -204,6 +259,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     private function getMockObjectPersister()
     {
         return $this->getMock('FOS\ElasticaBundle\Persister\ObjectPersisterInterface');
+    }
+
+    /**
+     * @return \FOS\ElasticaBundle\Provider\IndexableInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getMockIndexable()
+    {
+        return $this->getMock('FOS\ElasticaBundle\Provider\IndexableInterface');
     }
 }
 

@@ -43,7 +43,7 @@ class Callback
 
     public function serialize($object)
     {
-        $context = $this->serializer instanceof SerializerInterface ? new SerializationContext() : array();
+        $context = $this->serializer instanceof SerializerInterface ? SerializationContext::create()->enableMaxDepthChecks() : array();
 
         if ($this->groups) {
             $context->setGroups($this->groups);

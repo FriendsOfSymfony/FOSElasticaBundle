@@ -2,14 +2,18 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
-use Symfony\Component\ExpressionLanguage\Expression;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-use Symfony\Component\ExpressionLanguage\SyntaxError;
+use FOS\ElasticaBundle\Provider\IndexableInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
+/**
+ * Automatically update ElasticSearch based on changes to the Doctrine source
+ * data. One listener is generated for each Doctrine entity / ElasticSearch type.
+ */
 class Listener implements EventSubscriber
 {
     /**
@@ -20,13 +24,6 @@ class Listener implements EventSubscriber
     protected $objectPersister;
 
     /**
-     * Class of the domain model
-     *
-     * @var string
-     */
-    protected $objectClass;
-
-    /**
      * List of subscribed events
      *
      * @var array
@@ -34,47 +31,72 @@ class Listener implements EventSubscriber
     protected $events;
 
     /**
-     * Name of domain model field used as the ES identifier
+     * Configuration for the listener
      *
      * @var string
      */
-    protected $esIdentifierField;
+    private $config;
 
     /**
-     * Callback for determining if an object should be indexed
+     * Objects scheduled for insertion.
      *
-     * @var mixed
-     */
-    protected $isIndexableCallback;
-
-    /**
-     * Objects scheduled for insertion, replacement, or removal
+     * @var array
      */
     public $scheduledForInsertion = array();
+
+    /**
+     * Objects scheduled to be updated or removed.
+     *
+     * @var array
+     */
     public $scheduledForUpdate = array();
+
+    /**
+     * IDs of objects scheduled for removal
+     *
+     * @var array
+     */
     public $scheduledForDeletion = array();
 
     /**
-     * An instance of ExpressionLanguage
+     * PropertyAccessor instance
      *
-     * @var ExpressionLanguage
+     * @var PropertyAccessorInterface
      */
-    protected $expressionLanguage;
+    protected $propertyAccessor;
+
+    /**
+     * @var IndexableInterface
+     */
+    private $indexable;
 
     /**
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
-     * @param string                   $objectClass
-     * @param array                    $events
-     * @param string                   $esIdentifierField
+     * @param array $events
+     * @param IndexableInterface $indexable
+     * @param array $config
+     * @param null $logger
      */
-    public function __construct(ObjectPersisterInterface $objectPersister, $objectClass, array $events, $esIdentifierField = 'id')
-    {
-        $this->objectPersister     = $objectPersister;
-        $this->objectClass         = $objectClass;
-        $this->events              = $events;
-        $this->esIdentifierField   = $esIdentifierField;
+    public function __construct(
+        ObjectPersisterInterface $objectPersister,
+        array $events,
+        IndexableInterface $indexable,
+        array $config = array(),
+        $logger = null
+    ) {
+        $this->config = array_merge(array(
+            'identifier' => 'id',
+        ), $config);
+        $this->events = $events;
+        $this->indexable = $indexable;
+        $this->objectPersister = $objectPersister;
+        $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+        if ($logger) {
+            $this->objectPersister->setLogger($logger);
+        }
     }
 
     /**
@@ -86,160 +108,122 @@ class Listener implements EventSubscriber
     }
 
     /**
-     * Set the callback for determining object index eligibility.
+     * Looks for new objects that should be indexed.
      *
-     * If callback is a string, it must be public method on the object class
-     * that expects no arguments and returns a boolean. Otherwise, the callback
-     * should expect the object for consideration as its only argument and
-     * return a boolean.
-     *
-     * @param  callback          $callback
-     * @throws \RuntimeException if the callback is not callable
+     * @param LifecycleEventArgs $eventArgs
      */
-    public function setIsIndexableCallback($callback)
+    public function postPersist(LifecycleEventArgs $eventArgs)
     {
-        if (is_string($callback)) {
-            if (!is_callable(array($this->objectClass, $callback))) {
-                if (false !== ($expression = $this->getExpressionLanguage())) {
-                    $callback = new Expression($callback);
-                    try {
-                        $expression->compile($callback, array($this->getExpressionVar()));
-                    } catch (SyntaxError $e) {
-                        throw new \RuntimeException(sprintf('Indexable callback %s::%s() is not callable or a valid expression.', $this->objectClass, $callback), 0, $e);
-                    }
-                } else {
-                    throw new \RuntimeException(sprintf('Indexable callback %s::%s() is not callable.', $this->objectClass, $callback));
-                }
-            }
-        } elseif (!is_callable($callback)) {
-            if (is_array($callback)) {
-                list($class, $method) = $callback + array(null, null);
-                if (is_object($class)) {
-                    $class = get_class($class);
-                }
+        $entity = $eventArgs->getObject();
 
-                if ($class && $method) {
-                    throw new \RuntimeException(sprintf('Indexable callback %s::%s() is not callable.', $class, $method));
-                }
-            }
-            throw new \RuntimeException('Indexable callback is not callable.');
-        }
-
-        $this->isIndexableCallback = $callback;
-    }
-
-    /**
-     * Return whether the object is indexable with respect to the callback.
-     *
-     * @param  object  $object
-     * @return boolean
-     */
-    protected function isObjectIndexable($object)
-    {
-        if (!$this->isIndexableCallback) {
-            return true;
-        }
-
-        if ($this->isIndexableCallback instanceof Expression) {
-            return $this->getExpressionLanguage()->evaluate($this->isIndexableCallback, array($this->getExpressionVar($object) => $object));
-        }
-
-        return is_string($this->isIndexableCallback)
-            ? call_user_func(array($object, $this->isIndexableCallback))
-            : call_user_func($this->isIndexableCallback, $object);
-    }
-
-    /**
-     * @param  mixed  $object
-     * @return string
-     */
-    private function getExpressionVar($object = null)
-    {
-        $class = $object ?: $this->objectClass;
-        $ref = new \ReflectionClass($class);
-
-        return strtolower($ref->getShortName());
-    }
-
-    /**
-     * @return bool|ExpressionLanguage
-     */
-    private function getExpressionLanguage()
-    {
-        if (null === $this->expressionLanguage) {
-            if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
-                return false;
-            }
-
-            $this->expressionLanguage = new ExpressionLanguage();
-        }
-
-        return $this->expressionLanguage;
-    }
-
-    public function postPersist(EventArgs $eventArgs)
-    {
-        $entity = $eventArgs->getEntity();
-
-        if ($entity instanceof $this->objectClass && $this->isObjectIndexable($entity)) {
+        if ($this->objectPersister->handlesObject($entity) && $this->isObjectIndexable($entity)) {
             $this->scheduledForInsertion[] = $entity;
         }
     }
 
-    public function postUpdate(EventArgs $eventArgs)
+    /**
+     * Looks for objects being updated that should be indexed or removed from the index.
+     *
+     * @param LifecycleEventArgs $eventArgs
+     */
+    public function postUpdate(LifecycleEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
+        $entity = $eventArgs->getObject();
 
-        if ($entity instanceof $this->objectClass) {
+        if ($this->objectPersister->handlesObject($entity)) {
             if ($this->isObjectIndexable($entity)) {
                 $this->scheduledForUpdate[] = $entity;
             } else {
                 // Delete if no longer indexable
-                $this->scheduledForDeletion[] = $entity;
+                $this->scheduleForDeletion($entity);
             }
         }
     }
 
-    public function preRemove(EventArgs $eventArgs)
+    /**
+     * Delete objects preRemove instead of postRemove so that we have access to the id.  Because this is called
+     * preRemove, first check that the entity is managed by Doctrine
+     *
+     * @param LifecycleEventArgs $eventArgs
+     */
+    public function preRemove(LifecycleEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
+        $entity = $eventArgs->getObject();
 
-        if ($entity instanceof $this->objectClass) {
-            $this->scheduledForDeletion[] = $entity;
+        if ($this->objectPersister->handlesObject($entity)) {
+            $this->scheduleForDeletion($entity);
         }
     }
 
     /**
      * Persist scheduled objects to ElasticSearch
+     * After persisting, clear the scheduled queue to prevent multiple data updates when using multiple flush calls
      */
     private function persistScheduled()
     {
         if (count($this->scheduledForInsertion)) {
             $this->objectPersister->insertMany($this->scheduledForInsertion);
+            $this->scheduledForInsertion = array();
         }
         if (count($this->scheduledForUpdate)) {
             $this->objectPersister->replaceMany($this->scheduledForUpdate);
+            $this->scheduledForUpdate = array();
         }
         if (count($this->scheduledForDeletion)) {
-            $this->objectPersister->deleteMany($this->scheduledForDeletion);
+            $this->objectPersister->deleteManyByIdentifiers($this->scheduledForDeletion);
+            $this->scheduledForDeletion = array();
         }
     }
 
     /**
-     * Iterate through scheduled actions before flushing to emulate 2.x behavior.  Note that the ElasticSearch index
-     * will fall out of sync with the source data in the event of a crash during flush.
+     * Iterate through scheduled actions before flushing to emulate 2.x behavior.
+     * Note that the ElasticSearch index will fall out of sync with the source
+     * data in the event of a crash during flush.
+     *
+     * This method is only called in legacy configurations of the listener.
+     *
+     * @deprecated This method should only be called in applications that depend
+     *             on the behaviour that entities are indexed regardless of if a
+     *             flush is successful.
      */
-    public function preFlush(EventArgs $eventArgs)
+    public function preFlush()
     {
         $this->persistScheduled();
     }
 
     /**
-     * Iterating through scheduled actions *after* flushing ensures that the ElasticSearch index will be affected
-     * only if the query is successful
+     * Iterating through scheduled actions *after* flushing ensures that the
+     * ElasticSearch index will be affected only if the query is successful.
      */
-    public function postFlush(EventArgs $eventArgs)
+    public function postFlush()
     {
         $this->persistScheduled();
+    }
+
+    /**
+     * Record the specified identifier to delete. Do not need to entire object.
+     *
+     * @param object $object
+     */
+    private function scheduleForDeletion($object)
+    {
+        if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
+            $this->scheduledForDeletion[] = $identifierValue;
+        }
+    }
+
+    /**
+     * Checks if the object is indexable or not.
+     *
+     * @param object $object
+     * @return bool
+     */
+    private function isObjectIndexable($object)
+    {
+        return $this->indexable->isObjectIndexable(
+            $this->config['indexName'],
+            $this->config['typeName'],
+            $object
+        );
     }
 }

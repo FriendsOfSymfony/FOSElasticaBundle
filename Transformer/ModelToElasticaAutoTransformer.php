@@ -71,7 +71,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
             $value = $this->propertyAccessor->getValue($object, $key);
 
-            if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object')) && isset($mapping['properties'])) {
+            if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object')) && isset($mapping['properties']) && !empty($mapping['properties'])) {
                 /* $value is a nested document or object. Transform $value into
                  * an array of documents, respective the mapped properties.
                  */
@@ -141,7 +141,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         };
 
         if (is_array($value) || $value instanceof \Traversable || $value instanceof \ArrayAccess) {
-            $value = is_array($value) ? $value : iterator_to_array($value);
+            $value = is_array($value) ? $value : iterator_to_array($value, false);
             array_walk_recursive($value, $normalizeValue);
         } else {
             $normalizeValue($value);
