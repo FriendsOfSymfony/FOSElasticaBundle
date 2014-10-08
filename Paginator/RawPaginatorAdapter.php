@@ -40,7 +40,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * @var array for the aggregations
      */
-    private $aggregations
+    private $aggregations;
 
     /**
      * @see PaginatorAdapterInterface::__construct
