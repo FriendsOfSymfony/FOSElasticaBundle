@@ -70,7 +70,7 @@ class Provider extends AbstractProvider
     /**
      * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
      */
-    protected function fetchSlice($queryBuilder, $limit, $offset)
+    protected function fetchSlice($queryBuilder, $limit, $offset, array $previousSlice)
     {
         if (!$queryBuilder instanceof QueryBuilder) {
             throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ORM\QueryBuilder');

@@ -54,12 +54,13 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
         $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
         $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
+        $objects = array();
 
         for (; $offset < $nbObjects; $offset += $batchSize) {
             if ($loggerClosure) {
                 $stepStartTime = microtime(true);
             }
-            $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
+            $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset, $objects);
             if ($loggerClosure) {
                 $stepNbObjects = count($objects);
             }
@@ -133,9 +134,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * @param object  $queryBuilder
      * @param integer $limit
      * @param integer $offset
+     * @param array   $previousSlice
      * @return array
      */
-    protected abstract function fetchSlice($queryBuilder, $limit, $offset);
+    protected abstract function fetchSlice($queryBuilder, $limit, $offset, array $previousSlice);
 
     /**
      * Creates the query builder, which will be used to fetch objects to index.
