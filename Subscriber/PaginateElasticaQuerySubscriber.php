@@ -21,6 +21,10 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             if (null != $facets) {
                 $event->setCustomPaginationParameter('facets', $facets);
             }
+            $aggregations = $results->getAggregations();
+            if (null != $aggregations) {
+                $event->setCustomPaginationParameter('aggregations', $aggregations);
+            }
 
             $event->stopPropagation();
         }
