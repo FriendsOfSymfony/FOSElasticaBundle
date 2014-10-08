@@ -132,7 +132,6 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
 
         return $this->facets;
     }
-<<<<<<< HEAD
     
     /**
      * Returns Aggregations
@@ -146,9 +145,6 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
 
         return $this->aggregations;
     }
-    
-=======
->>>>>>> upstream/master
 
     /**
      * Returns the Query
