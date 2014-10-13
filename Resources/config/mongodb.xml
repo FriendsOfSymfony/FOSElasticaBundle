@@ -5,20 +5,24 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="fos_elastica.slice_fetcher.mongodb.class">FOS\ElasticaBundle\Doctrine\MongoDB\SliceFetcher</parameter>
         <parameter key="fos_elastica.provider.prototype.mongodb.class">FOS\ElasticaBundle\Doctrine\MongoDB\Provider</parameter>
         <parameter key="fos_elastica.listener.prototype.mongodb.class">FOS\ElasticaBundle\Doctrine\Listener</parameter>
         <parameter key="fos_elastica.elastica_to_model_transformer.prototype.mongodb.class">FOS\ElasticaBundle\Doctrine\MongoDB\ElasticaToModelTransformer</parameter>
         <parameter key="fos_elastica.manager.mongodb.class">FOS\ElasticaBundle\Doctrine\RepositoryManager</parameter>
     </parameters>
 
-
     <services>
+        <service id="fos_elastica.slice_fetcher.mongodb" class="%fos_elastica.slice_fetcher.mongodb.class%">
+        </service>
+
         <service id="fos_elastica.provider.prototype.mongodb" class="%fos_elastica.provider.prototype.mongodb.class%" public="true" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
-            <argument type="service" id="doctrine_mongodb" />
+            <argument type="service" id="doctrine_mongodb" /> <!-- manager registry -->
+            <argument type="service" id="fos_elastica.slice_fetcher.mongodb" /> <!-- slice fetcher -->
         </service>
 
         <service id="fos_elastica.listener.prototype.mongodb" class="%fos_elastica.listener.prototype.mongodb.class%" public="false" abstract="true">
