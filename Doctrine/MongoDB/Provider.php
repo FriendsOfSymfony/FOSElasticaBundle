@@ -59,25 +59,15 @@ class Provider extends AbstractProvider
     /**
      * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
      */
-    protected function fetchSlice($queryBuilder, $limit, $offset, array $previousSlice)
+    protected function fetchSlice($queryBuilder, $limit, $offset)
     {
         if (!$queryBuilder instanceof Builder) {
             throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ODM\MongoDB\Query\Builder');
         }
 
-        $lastObject = array_pop($previousSlice);
-
-        if ($lastObject) {
-            $queryBuilder
-                ->field('_id')->gt($lastObject->getId())
-                ->skip(0);
-        } else {
-            $queryBuilder->skip($offset);
-        }
-
         return $queryBuilder
+            ->skip($offset)
             ->limit($limit)
-            ->sort(array('_id' => 'asc'))
             ->getQuery()
             ->execute()
             ->toArray();
