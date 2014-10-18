@@ -2,7 +2,6 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
@@ -14,7 +13,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  * Automatically update ElasticSearch based on changes to the Doctrine source
  * data. One listener is generated for each Doctrine entity / ElasticSearch type.
  */
-class Listener implements EventSubscriber
+class Listener
 {
     /**
      * Object persister
@@ -22,13 +21,6 @@ class Listener implements EventSubscriber
      * @var ObjectPersister
      */
     protected $objectPersister;
-
-    /**
-     * List of subscribed events
-     *
-     * @var array
-     */
-    protected $events;
 
     /**
      * Configuration for the listener
@@ -74,14 +66,12 @@ class Listener implements EventSubscriber
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
-     * @param array $events
      * @param IndexableInterface $indexable
      * @param array $config
      * @param null $logger
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
-        array $events,
         IndexableInterface $indexable,
         array $config = array(),
         $logger = null
@@ -89,7 +79,6 @@ class Listener implements EventSubscriber
         $this->config = array_merge(array(
             'identifier' => 'id',
         ), $config);
-        $this->events = $events;
         $this->indexable = $indexable;
         $this->objectPersister = $objectPersister;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
@@ -97,14 +86,6 @@ class Listener implements EventSubscriber
         if ($logger) {
             $this->objectPersister->setLogger($logger);
         }
-    }
-
-    /**
-     * @see Doctrine\Common\EventSubscriber::getSubscribedEvents()
-     */
-    public function getSubscribedEvents()
-    {
-        return $this->events;
     }
 
     /**
