@@ -66,8 +66,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             }
 
             if ($this->sliceFetcher) {
-                $identifierFieldNames = $this->managerRegistry
-                    ->getManagerForClass($this->objectClass)
+                $identifierFieldNames = $manager
                     ->getClassMetadata($this->objectClass)
                     ->getIdentifierFieldNames();
 
