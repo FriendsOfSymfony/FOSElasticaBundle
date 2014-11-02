@@ -13,6 +13,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     private $options;
     private $managerRegistry;
     private $indexable;
+    private $sliceFetcher;
 
     public function setUp()
     {
@@ -32,6 +33,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->method('getManagerForClass')
             ->with($this->objectClass)
             ->will($this->returnValue($this->objectManager));
+
+        $this->sliceFetcher = $this->getMockSliceFetcher();
     }
 
     /**
@@ -42,6 +45,54 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->options['batch_size'] = $batchSize;
 
         $provider = $this->getMockAbstractProvider();
+
+        $queryBuilder = new \stdClass();
+
+        $provider->expects($this->once())
+            ->method('createQueryBuilder')
+            ->will($this->returnValue($queryBuilder));
+
+        $provider->expects($this->once())
+            ->method('countObjects')
+            ->with($queryBuilder)
+            ->will($this->returnValue($nbObjects));
+
+        $this->indexable->expects($this->any())
+            ->method('isObjectIndexable')
+            ->with('index', 'type', $this->anything())
+            ->will($this->returnValue(true));
+
+        $providerInvocationOffset = 2;
+        $previousSlice = array();
+
+        foreach ($objectsByIteration as $i => $objects) {
+            $offset = $objects[0] - 1;
+
+            $this->sliceFetcher->expects($this->at($i))
+                ->method('fetch')
+                ->with($queryBuilder, $batchSize, $offset, $previousSlice, array('id'))
+                ->will($this->returnValue($objects));
+
+            $this->objectManager->expects($this->at($i))
+                ->method('clear');
+
+            $previousSlice = $objects;
+        }
+
+        $this->objectPersister->expects($this->exactly(count($objectsByIteration)))
+            ->method('insertMany');
+
+        $provider->populate();
+    }
+
+    /**
+     * @dataProvider providePopulateIterations
+     */
+    public function testPopulateIterationsWithoutSliceFetcher($nbObjects, $objectsByIteration, $batchSize)
+    {
+        $this->options['batch_size'] = $batchSize;
+
+        $provider = $this->getMockAbstractProvider(false);
 
         $queryBuilder = new \stdClass();
 
@@ -107,8 +158,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->method('countObjects')
             ->will($this->returnValue($nbObjects));
 
-        $provider->expects($this->any())
-            ->method('fetchSlice')
+        $this->sliceFetcher->expects($this->any())
+            ->method('fetch')
             ->will($this->returnValue($objects));
 
         $this->indexable->expects($this->any())
@@ -133,8 +184,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->method('countObjects')
             ->will($this->returnValue($nbObjects));
 
-        $provider->expects($this->any())
-            ->method('fetchSlice')
+        $this->sliceFetcher->expects($this->any())
+            ->method('fetch')
             ->will($this->returnValue($objects));
 
         $this->indexable->expects($this->any())
@@ -165,8 +216,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->method('countObjects')
             ->will($this->returnValue($nbObjects));
 
-        $provider->expects($this->any())
-            ->method('fetchSlice')
+        $this->sliceFetcher->expects($this->any())
+            ->method('fetch')
             ->will($this->returnValue($objects));
 
         $this->indexable->expects($this->any())
@@ -192,8 +243,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider->expects($this->any())
             ->method('countObjects')
             ->will($this->returnValue($nbObjects));
-        $provider->expects($this->any())
-            ->method('fetchSlice')
+
+        $this->sliceFetcher->expects($this->any())
+            ->method('fetch')
             ->will($this->returnValue($objects));
 
         $this->indexable->expects($this->at(0))
@@ -214,9 +266,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param boolean $setSliceFetcher Whether or not to set the slice fetcher.
+     *
      * @return \FOS\ElasticaBundle\Doctrine\AbstractProvider|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function getMockAbstractProvider()
+    private function getMockAbstractProvider($setSliceFetcher = true)
     {
         return $this->getMockForAbstractClass('FOS\ElasticaBundle\Doctrine\AbstractProvider', array(
             $this->objectPersister,
@@ -224,6 +278,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             $this->objectClass,
             $this->options,
             $this->managerRegistry,
+            $setSliceFetcher ? $this->sliceFetcher : null
         ));
     }
 
@@ -250,7 +305,17 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockObjectManager()
     {
-        return $this->getMock(__NAMESPACE__ . '\ObjectManager');
+        $mock = $this->getMock(__NAMESPACE__ . '\ObjectManager');
+
+        $mock->expects($this->any())
+            ->method('getClassMetadata')
+            ->will($this->returnSelf());
+
+        $mock->expects($this->any())
+            ->method('getIdentifierFieldNames')
+            ->will($this->returnValue(array('id')));
+
+        return $mock;
     }
 
     /**
@@ -268,6 +333,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMock('FOS\ElasticaBundle\Provider\IndexableInterface');
     }
+
+    /**
+     * @return \FOS\ElasticaBundle\Doctrine\SliceFetcherInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getMockSliceFetcher()
+    {
+        return $this->getMock('FOS\ElasticaBundle\Doctrine\SliceFetcherInterface');
+    }
 }
 
 /**
@@ -277,4 +350,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 interface ObjectManager
 {
     function clear();
+    function getClassMetadata();
+    function getIdentifierFieldNames();
 }
