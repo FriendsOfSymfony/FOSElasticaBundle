@@ -1,4 +1,4 @@
-CHANGELOG for 3.0.x
+CHANGELOG for 3.1.x
 ===================
 
 This changelog references the relevant changes (bug and security fixes) done
