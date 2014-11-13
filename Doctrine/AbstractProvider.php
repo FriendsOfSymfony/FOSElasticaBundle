@@ -69,6 +69,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
                     $loggerClosure('<info>Entire batch was filtered away, skipping...</info>');
                 }
 
+                if ($this->options['clear_object_manager']) {
+                    $manager->clear();
+                }
+
                 continue;
             }
 
