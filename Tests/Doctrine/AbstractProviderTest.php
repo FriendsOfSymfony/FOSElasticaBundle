@@ -122,6 +122,32 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider->populate();
     }
 
+    public function testPopulateShouldClearObjectManagerForFilteredBatch()
+    {
+        $nbObjects = 1;
+        $objects = array(1);
+
+        $provider = $this->getMockAbstractProvider();
+
+        $provider->expects($this->any())
+            ->method('countObjects')
+            ->will($this->returnValue($nbObjects));
+
+        $provider->expects($this->any())
+            ->method('fetchSlice')
+            ->will($this->returnValue($objects));
+
+        $this->indexable->expects($this->any())
+            ->method('isObjectIndexable')
+            ->with('index', 'type', $this->anything())
+            ->will($this->returnValue(false));
+
+        $this->objectManager->expects($this->once())
+            ->method('clear');
+
+        $provider->populate();
+    }
+
     public function testPopulateInvokesLoggerClosure()
     {
         $nbObjects = 1;
