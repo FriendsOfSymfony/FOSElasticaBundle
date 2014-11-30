@@ -35,6 +35,8 @@ fos_elastica:
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener:
                             is_indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
+                        provider:
+                            debug_logging: true
                 type2:
                     properties:
                         field1: ~
