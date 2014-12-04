@@ -100,15 +100,18 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * Returns the number of results.
      *
+     * @param boolean $genuineTotal make the function return the `hits.total`
+     * value of the search result in all cases, instead of limiting it to the
+     * `size` request parameter.
      * @return integer The number of results.
      */
-    public function getTotalHits()
+    public function getTotalHits($genuineTotal = false)
     {
         if ( ! isset($this->totalHits)) {
             $this->totalHits = $this->searchable->search($this->query)->getTotalHits();
         }
 
-        return $this->query->hasParam('size')
+        return $this->query->hasParam('size') && !$genuineTotal
             ? min($this->totalHits, (integer) $this->query->getParam('size'))
             : $this->totalHits;
     }
