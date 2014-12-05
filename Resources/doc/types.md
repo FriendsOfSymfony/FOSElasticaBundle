@@ -157,7 +157,7 @@ different kinds of objects if your persistence backend supports these methods,
 but in some cases you might want to run an external service or call a property
 on the object to see if it should be indexed.
 
-A property, `indexable_callback` is provided under the type configuration that
+A property, `is_indexable_callback` is provided under the type configuration that
 lets you configure this behaviour which will apply for any automated watching
 for changes and for a repopulation of an index.
 
@@ -167,7 +167,7 @@ index enabled users.
 ```yaml
     types:
         users:
-            indexable_callback: 'enabled'
+            is_indexable_callback: 'enabled'
 ```
 
 The callback option supports multiple approaches:
