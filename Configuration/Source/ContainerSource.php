@@ -41,13 +41,16 @@ class ContainerSource implements SourceInterface
         $indexes = array();
         foreach ($this->configArray as $config) {
             $types = array();
-            foreach ($config['types'] as $typeConfig) {
-                $types[$typeConfig['name']] = new TypeConfig(
-                    $typeConfig['name'],
-                    $typeConfig['mapping'],
-                    $typeConfig['config']
-                );
-                // TODO: handle prototypes..
+
+            if (isset($config['types'])) {
+                foreach ($config['types'] as $typeConfig) {
+                    $types[$typeConfig['name']] = new TypeConfig(
+                        $typeConfig['name'],
+                        $typeConfig['mapping'],
+                        $typeConfig['config']
+                    );
+                    // TODO: handle prototypes..
+                }
             }
 
             $index = new IndexConfig($config['name'], $types, array(
