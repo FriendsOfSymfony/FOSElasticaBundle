@@ -11,11 +11,7 @@ matrix:
     - php: 5.5
       env: SYMFONY_VERSION='2.3.*'
     - php: 5.5
-      env: SYMFONY_VERSION='2.4.*'
-    - php: 5.5
       env: SYMFONY_VERSION='2.5.*'
-    - php: 5.5
-      env: SYMFONY_VERSION='2.6.*'
 
 before_script:
   - /usr/share/elasticsearch/bin/elasticsearch -v
