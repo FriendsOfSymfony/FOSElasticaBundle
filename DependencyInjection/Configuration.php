@@ -199,7 +199,17 @@ class Configuration implements ConfigurationInterface
                         isset($v['persistence']['listener']['is_indexable_callback']);
                 })
                 ->then(function ($v) {
-                    $v['indexable_callback'] = $v['persistence']['listener']['is_indexable_callback'];
+                    $callback = $v['persistence']['listener']['is_indexable_callback'];
+
+                    if (is_array($callback)) {
+                        list($class) = $callback + array(null);
+
+                        if (is_string($class) && !class_exists($class)) {
+                            $callback[0] = '@'.$class;
+                        }
+                    }
+
+                    $v['indexable_callback'] = $callback;
                     unset($v['persistence']['listener']['is_indexable_callback']);
 
                     return $v;
