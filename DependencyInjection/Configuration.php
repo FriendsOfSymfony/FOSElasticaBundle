@@ -204,7 +204,7 @@ class Configuration implements ConfigurationInterface
                     if (is_array($callback)) {
                         list($class) = $callback + array(null);
 
-                        if (is_string($class) && !class_exists($class)) {
+                        if ($class[0] !== '@' && is_string($class) && !class_exists($class)) {
                             $callback[0] = '@'.$class;
                         }
                     }
