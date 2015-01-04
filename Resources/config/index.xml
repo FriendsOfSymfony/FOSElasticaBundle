@@ -41,6 +41,7 @@
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.alias_processor" />
             <argument type="service" id="fos_elastica.mapping_builder" />
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <!-- Abstract definition for all finders. -->

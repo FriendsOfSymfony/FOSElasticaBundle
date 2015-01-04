@@ -36,8 +36,11 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $this->mappingBuilder = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\MappingBuilder')
             ->disableOriginalConstructor()
             ->getMock();
+        $this->resetter = $this->getMockBuilder('FOS\ElasticaBundle\Index\Resetter')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->resetter = new Resetter($this->configManager, $this->indexManager, $this->aliasProcessor, $this->mappingBuilder);
+        $this->resetter = new Resetter($this->configManager, $this->indexManager, $this->aliasProcessor, $this->mappingBuilder, $this->resetter);
 
         /*$this->indexConfigsByName = array(
             'foo' => array(
