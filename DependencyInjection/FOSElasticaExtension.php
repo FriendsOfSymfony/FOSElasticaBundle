@@ -241,6 +241,9 @@ class FOSElasticaExtension extends Extension
                 'serializer',
                 'index_analyzer',
                 'search_analyzer',
+                'date_detection',
+                'dynamic_date_formats',
+                'numeric_detection',
             ) as $field) {
                 $typeConfig['config'][$field] = array_key_exists($field, $type) ?
                     $type[$field] :
