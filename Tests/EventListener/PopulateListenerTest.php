@@ -33,22 +33,47 @@ class PopulateListenerTest extends \PHPUnit_Framework_TestCase
         $this->listener->postIndexPopulate(new PopulateEvent('indexName', null, true, array()));
     }
 
-    public function testPreIndexPopulateWhenNoResetRequired()
+    public function preIndexPopulateDataProvider()
     {
-        $this->resetter->expects($this->never())->method('resetIndex');
-        $this->resetter->expects($this->never())->method('resetIndexType');
-        $this->listener->preIndexPopulate(new PopulateEvent('indexName', null, false, array()));
+        return array(
+            array(
+                array(
+                    array('resetIndex', $this->never()),
+                    array('resetIndexType', $this->never())
+                ),
+                array('indexName', true),
+                new PopulateEvent('indexName', null, false, array())
+            ),
+            array(
+                array(
+                    array('resetIndex', $this->once())
+                ),
+                array('indexName', true),
+                new PopulateEvent('indexName', null, true, array())
+            ),
+            array(
+                array(
+                    array('resetIndexType', $this->once())
+                ),
+                array('indexName', 'indexType'),
+                new PopulateEvent('indexName', 'indexType', true, array())
+            )
+        );
     }
 
-    public function testPreIndexPopulateWhenResetIsRequiredAndNoTypeIsSpecified()
+    /**
+     * @param array         $asserts
+     * @param array         $withArgs
+     * @param PopulateEvent $event
+     *
+     * @dataProvider preIndexPopulateDataProvider
+     */
+    public function testPreIndexPopulate(array $asserts, array $withArgs, PopulateEvent $event)
     {
-        $this->resetter->expects($this->once())->method('resetIndex')->with('indexName');
-        $this->listener->preIndexPopulate(new PopulateEvent('indexName', null, true, array()));
-    }
+        foreach ($asserts as $assert) {
+            $this->resetter->expects($assert[1])->method($assert[0])->with($withArgs[0], $withArgs[1]);
+        }
 
-    public function testPreIndexPopulateWhenResetIsRequiredAndTypeIsSpecified()
-    {
-        $this->resetter->expects($this->once())->method('resetIndexType')->with('indexName', 'indexType');
-        $this->listener->preIndexPopulate(new PopulateEvent('indexName', 'indexType', true, array()));
+        $this->listener->preIndexPopulate($event);
     }
 }
