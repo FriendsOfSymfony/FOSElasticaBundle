@@ -12,6 +12,13 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.0...v3.0.1
 To generate a changelog summary since the last version, run
 `git log --no-merges --oneline v3.0.0...3.0.x`
 
+* 3.0.6 (2015-01-04)
+
+ * Removed unused public image asset for the web development toolbar #742
+ * Fixed is_indexable_callback BC code to support array notation #761
+ * Fixed debug_logger for type providers #724
+ * Clean the OM if we filter away the entire batch #737
+
 * 3.0.0-ALPHA6
 
  * Moved `is_indexable_callback` from the listener properties to a type property called
