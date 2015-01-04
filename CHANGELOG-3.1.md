@@ -16,6 +16,6 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
    returns a boolean value if it will handle a given object or not.
  * BC BREAK: Removed `Doctrine\Listener#getSubscribedEvents`. The container
    configuration now configures tags with the methods to call to avoid loading
-   this class on every request where doctrine is active.
+   this class on every request where doctrine is active. #729
  * Added ability to configure `date_detection`, `numeric_detection` and
-   `dynamic_date_formats` for types.
+   `dynamic_date_formats` for types. #753
