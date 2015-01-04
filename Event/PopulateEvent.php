@@ -46,10 +46,10 @@ class PopulateEvent extends Event
     private $options;
 
     /**
-     * @param string  $index
-     * @param string  $type
-     * @param boolean $reset
-     * @param array   $options
+     * @param string      $index
+     * @param string|null $type
+     * @param boolean     $reset
+     * @param array       $options
      */
     public function __construct($index, $type, $reset, $options)
     {
