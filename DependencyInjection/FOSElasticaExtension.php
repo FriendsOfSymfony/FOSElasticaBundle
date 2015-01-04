@@ -473,14 +473,20 @@ class FOSElasticaExtension extends Extension
             $listenerDef->replaceArgument(3, new Reference($typeConfig['listener']['logger']));
         }
 
+        $tagName = null;
         switch ($typeConfig['driver']) {
             case 'orm':
-                foreach ($this->getDoctrineEvents($typeConfig) as $event) {
-                    $listenerDef->addTag('doctrine.event_listener', array('event' => $event));
-                }
-
+                $tagName = 'doctrine.event_listener';
                 break;
-            case 'mongodb': $listenerDef->addTag('doctrine_mongodb.odm.event_subscriber'); break;
+            case 'mongodb':
+                $tagName = 'doctrine_mongodb.odm.event_listener';
+                break;
+        }
+
+        if ($tagName) {
+            foreach ($this->getDoctrineEvents($typeConfig) as $event) {
+                $listenerDef->addTag($tagName, array('event' => $event));
+            }
         }
 
         $container->setDefinition($listenerId, $listenerDef);
