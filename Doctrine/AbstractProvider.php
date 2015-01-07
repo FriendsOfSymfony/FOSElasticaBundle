@@ -7,6 +7,7 @@ use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 abstract class AbstractProvider extends BaseAbstractProvider
 {
@@ -53,6 +54,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
         $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
+        $progressBar = isset($options['progress-bar']) ? boolval($options['progress-bar']) : false;
         $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
 
         for (; $offset < $nbObjects; $offset += $batchSize) {
@@ -94,18 +96,28 @@ abstract class AbstractProvider extends BaseAbstractProvider
 
             usleep($sleep);
 
-            if ($loggerClosure) {
+            if ($loggerClosure && !$progressBar) {
                 $stepCount = $stepNbObjects + $offset;
                 $percentComplete = 100 * $stepCount / $nbObjects;
                 $timeDifference = microtime(true) - $stepStartTime;
                 $objectsPerSecond = $timeDifference ? ($stepNbObjects / $timeDifference) : $stepNbObjects;
                 $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s %s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond, $this->getMemoryUsage()));
+            } else if ($loggerClosure && $progressBar) {
+                $loggerClosure($stepNbObjects);
             }
         }
 
         if (!$this->options['debug_logging']) {
             $this->enableLogging($logger);
         }
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getTotalObjects()
+    {
+        return $this->countObjects($this->createQueryBuilder());
     }
 
     /**

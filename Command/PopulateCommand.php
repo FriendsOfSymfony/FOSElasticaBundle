@@ -11,6 +11,7 @@ use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
 use FOS\ElasticaBundle\Resetter;
 use FOS\ElasticaBundle\Provider\ProviderInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Populate the search index
@@ -109,20 +110,34 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndex(OutputInterface $output, $index, $reset, $options)
     {
+
+        /** @var $providers ProviderInterface[] */
+        $providers = $this->providerRegistry->getIndexProviders($index);
+
         if ($reset) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
             $this->resetter->resetIndex($index, true);
         }
 
-        /** @var $providers ProviderInterface[] */
-        $providers = $this->providerRegistry->getIndexProviders($index);
-
         foreach ($providers as $type => $provider) {
-            $loggerClosure = function($message) use ($output, $index, $type) {
-                $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
-            };
+            if (class_exists('Symfony\Component\Console\Helper\ProgressBar')) {
+                $output->writeln(sprintf('<info>Populating</info> %s/%s', $index, $type));
+                $progressBar = new ProgressBar($output, $provider->getTotalObjects());
+                $progressBar->setFormat('debug');
+                $progressBar->start();
+                $loggerClosure = function($number) use ($progressBar) {
+                    $progressBar->advance($number);
+                };
+            } else {
+                $loggerClosure = function($message) use ($output, $index, $type) {
+                    $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
+                };
+            }
 
+            $options['progress-bar'] = true;
             $provider->populate($loggerClosure, $options);
+
+            if (isset($progressBar)) $progressBar->finish();
         }
 
         $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
