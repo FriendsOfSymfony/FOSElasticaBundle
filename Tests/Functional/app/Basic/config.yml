@@ -71,6 +71,11 @@ fos_elastica:
                             properties:
                                 date: { boost: 5 }
                                 content: ~
+                        multiple:
+                            type: "multi_field"
+                            properties:
+                                name: ~
+                                position: ~
                         user:
                             type: "object"
                         approver:
