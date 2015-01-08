@@ -12,6 +12,10 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.0...v3.0.1
 To generate a changelog summary since the last version, run
 `git log --no-merges --oneline v3.0.0...3.0.x`
 
+* 3.0.7 (Unreleased)
+
+ * Fixed multi_field properties not being normalised #769
+
 * 3.0.6 (2015-01-04)
 
  * Removed unused public image asset for the web development toolbar #742
