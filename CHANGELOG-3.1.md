@@ -19,3 +19,5 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
    this class on every request where doctrine is active. #729
  * Added ability to configure `date_detection`, `numeric_detection` and
    `dynamic_date_formats` for types. #753
+ * New event `POST_TRANSFORM` which allows developers to add custom properties to
+   Elastica Documents for indexing.

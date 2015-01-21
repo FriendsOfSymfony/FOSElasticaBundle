@@ -2,6 +2,8 @@
 
 namespace FOS\ElasticaBundle\Transformer;
 
+use FOS\ElasticaBundle\Event\TransformEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Elastica\Document;
 
@@ -12,6 +14,11 @@ use Elastica\Document;
  */
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $dispatcher;
+
     /**
      * Optional parameters
      *
@@ -32,10 +39,12 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * Instanciates a new Mapper
      *
      * @param array $options
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = array(), EventDispatcherInterface $dispatcher = null)
     {
         $this->options = array_merge($this->options, $options);
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -90,6 +99,13 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             }
 
             $document->set($key, $this->normalizeValue($value));
+        }
+
+        if ($this->dispatcher) {
+            $event = new TransformEvent($document, $fields, $object);
+            $this->dispatcher->dispatch(TransformEvent::POST_TRANSFORM, $event);
+
+            $document = $event->getDocument();
         }
 
         return $document;
