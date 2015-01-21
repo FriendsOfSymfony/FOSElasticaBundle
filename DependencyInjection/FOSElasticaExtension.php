@@ -393,7 +393,14 @@ class FOSElasticaExtension extends Extension
             $arguments[] = array(new Reference($callbackId), 'serialize');
         } else {
             $abstractId = 'fos_elastica.object_persister';
-            $arguments[] = $this->indexConfigs[$indexName]['types'][$typeName]['mapping']['properties'];
+            $fields = $this->indexConfigs[$indexName]['types'][$typeName]['mapping']['properties'];
+
+            // Add the _parent configuration as a field as the transformer needs to know about it and expects it this way.
+            if (isset($this->indexConfigs[$indexName]['types'][$typeName]['mapping']['_parent'])) {
+                $fields['_parent'] = $this->indexConfigs[$indexName]['types'][$typeName]['mapping']['_parent'];
+            }
+
+            $arguments[] = $fields;
         }
 
         $serviceId = sprintf('fos_elastica.object_persister.%s.%s', $indexName, $typeName);
