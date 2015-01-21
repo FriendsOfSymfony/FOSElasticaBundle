@@ -71,7 +71,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         $document = new Document($identifier);
 
         foreach ($fields as $key => $mapping) {
-            if ($key == '_parent') {
+            if ($key === '_parent') {
                 $property = (null !== $mapping['property'])?$mapping['property']:$mapping['type'];
                 $value = $this->propertyAccessor->getValue($object, $property);
                 $document->setParent($this->propertyAccessor->getValue($value, $mapping['identifier']));
