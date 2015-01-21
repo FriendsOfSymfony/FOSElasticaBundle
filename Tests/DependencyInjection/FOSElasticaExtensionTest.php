@@ -1,8 +1,6 @@
 <?php
 
-
-namespace FOS\ElasticaBundle\Tests\Functional\DependencyInjection;
-
+namespace FOS\ElasticaBundle\Tests\DependencyInjection;
 
 use FOS\ElasticaBundle\DependencyInjection\FOSElasticaExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -10,14 +8,9 @@ use Symfony\Component\Yaml\Yaml;
 
 class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
 {
-
-    /**
-     * @test
-     */
-    public function shouldAddParentParamToObjectPersisterCall()
+    public function testShouldAddParentParamToObjectPersisterCall()
     {
-
-        $config = Yaml::parse(file_get_contents(__DIR__.'/config/config.yml'));
+        $config = Yaml::parse(file_get_contents(__DIR__.'/fixtures/config.yml'));
 
         $containerBuilder = new ContainerBuilder;
         $containerBuilder->setParameter('kernel.debug', true);
@@ -36,5 +29,4 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('_parent', $arguments);
         $this->assertEquals('parent_field', $arguments['_parent']['type']);
     }
-
-} 
+}
