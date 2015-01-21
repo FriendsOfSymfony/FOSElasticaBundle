@@ -71,8 +71,8 @@ application, for example, renaming the search index based on different environme
 #app/config/config.yml
 fos_elastica:
     indexes:
-        search:
-            index_name: search_dev
+        search:                    # index alias in symfony, do not forget to rename it too!
+            index_name: search_dev # real index name
 ```
 
 In this case, the service `fos_elastica.index.search` will be using an Elasticsearch
