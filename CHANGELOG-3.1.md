@@ -21,3 +21,7 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
    `dynamic_date_formats` for types. #753
  * New event `POST_TRANSFORM` which allows developers to add custom properties to
    Elastica Documents for indexing.
+ * When available, the `fos:elastica:populate` command will now use the 
+   ProgressBar helper instead of outputting strings. You can use verbosity
+   controls on the command to output additional information like memory 
+   usage, runtime and estimated time.
