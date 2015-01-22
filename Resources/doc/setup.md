@@ -58,25 +58,28 @@ fos_elastica:
     clients:
         default: { host: localhost, port: 9200 }
     indexes:
-        search: ~
+        app: ~
 ```
 
 In this example, an Elastica index (an instance of `Elastica\Index`) is available as a
-service with the key `fos_elastica.index.search`.
+service with the key `fos_elastica.index.app`.
 
-If the Elasticsearch index name needs to be different to the service name in your
-application, for example, renaming the search index based on different environments.
+You may want the index `app` to be named something else on ElasticSearch depending on
+if your application is running in a different env or other conditions that suit your
+application. To set your customer index to a name that depends on the environment of your
+Symfony application, use the example below:
 
 ```yaml
 #app/config/config.yml
 fos_elastica:
     indexes:
-        search:
-            index_name: search_dev
+        app:
+            index_name: app_%kernel.env%
 ```
 
-In this case, the service `fos_elastica.index.search` will be using an Elasticsearch
-index of search_dev.
+In this case, the service `fos_elastica.index.app` will relate to an ElasticSearch index
+that varies depending on your kernel's environment. For example, in dev it will relate to
+`app_dev`.
 
 D: Defining index types
 -----------------------
@@ -91,7 +94,7 @@ will end up being indexed.
 ```yaml
 fos_elastica:
     indexes:
-        search:
+        app:
             types:
                 user:
                     mappings:
@@ -102,7 +105,7 @@ fos_elastica:
 ```
 
 Each defined type is made available as a service, and in this case the service key is
-`fos_elastica.index.search.user` and is an instance of `Elastica\Type`.
+`fos_elastica.index.app.user` and is an instance of `Elastica\Type`.
 
 FOSElasticaBundle requires a provider for each type that will notify when an object
 that maps to a type has been modified. The bundle ships with support for Doctrine and

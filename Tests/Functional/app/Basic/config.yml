@@ -95,3 +95,4 @@ fos_elastica:
                         identifier: "id"
                 null_mappings:
                     mappings: ~
+        empty_index: ~

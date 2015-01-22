@@ -32,11 +32,15 @@ class MappingToElasticaTest extends WebTestCase
         $this->assertTrue($mapping['type']['properties']['field1']['store']);
         $this->assertArrayNotHasKey('store', $mapping['type']['properties']['field2']);
 
+        $type = $this->getType($client, 'type');
+        $mapping = $type->getMapping();
+        $this->assertEquals('parent', $mapping['type']['_parent']['type']);
+
         $parent = $this->getType($client, 'parent');
         $mapping = $parent->getMapping();
 
-        $this->assertEquals('my_analyzer', $mapping['parent']['index_analyzer']);
-        $this->assertEquals('whitespace', $mapping['parent']['search_analyzer']);
+        $this->assertEquals('my_analyzer', $mapping['type']['index_analyzer']);
+        $this->assertEquals('whitespace', $mapping['type']['search_analyzer']);
     }
 
     public function testResetType()
