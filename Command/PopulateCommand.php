@@ -2,15 +2,16 @@
 
 namespace FOS\ElasticaBundle\Command;
 
+use FOS\ElasticaBundle\Event\PopulateEvent;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use FOS\ElasticaBundle\IndexManager;
+use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
-use FOS\ElasticaBundle\Resetter;
 use FOS\ElasticaBundle\Provider\ProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Populate the search index
@@ -28,9 +29,9 @@ class PopulateCommand extends ContainerAwareCommand
     private $providerRegistry;
 
     /**
-     * @var Resetter
+     * @var EventDispatcherInterface
      */
-    private $resetter;
+    private $eventDispatcher;
 
     /**
      * @see Symfony\Component\Console\Command\Command::configure()
@@ -57,7 +58,7 @@ class PopulateCommand extends ContainerAwareCommand
     {
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
-        $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
+        $this->eventDispatcher = $this->getContainer()->get('event_dispatcher');
     }
 
     /**
@@ -109,24 +110,12 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndex(OutputInterface $output, $index, $reset, $options)
     {
-        if ($reset) {
-            $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
-            $this->resetter->resetIndex($index, true);
-        }
-
         /** @var $providers ProviderInterface[] */
         $providers = $this->providerRegistry->getIndexProviders($index);
 
-        foreach ($providers as $type => $provider) {
-            $loggerClosure = function($message) use ($output, $index, $type) {
-                $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
-            };
-
-            $provider->populate($loggerClosure, $options);
-        }
+        $this->populate($output, $providers, $index, null, $reset, $options);
 
         $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
-        $this->resetter->postPopulate($index);
         $this->indexManager->getIndex($index)->refresh();
     }
 
@@ -141,19 +130,48 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndexType(OutputInterface $output, $index, $type, $reset, $options)
     {
-        if ($reset) {
-            $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
-            $this->resetter->resetIndexType($index, $type);
-        }
-
-        $loggerClosure = function($message) use ($output, $index, $type) {
-            $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
-        };
-
         $provider = $this->providerRegistry->getProvider($index, $type);
-        $provider->populate($loggerClosure, $options);
+
+        $this->populate($output, array($type => $provider), $index, $type, $reset, $options);
 
         $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
         $this->indexManager->getIndex($index)->refresh();
+    }
+
+    /**
+     * @param OutputInterface     $output
+     * @param ProviderInterface[] $providers
+     * @param string              $index
+     * @param string              $type
+     * @param boolean             $reset
+     * @param array               $options
+     */
+    private function populate(OutputInterface $output, array $providers, $index, $type, $reset, $options)
+    {
+        if ($reset) {
+            if ($type) {
+                $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
+            } else {
+                $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
+            }
+        }
+
+        $this->eventDispatcher->dispatch(PopulateEvent::PRE_INDEX_POPULATE, new PopulateEvent($index, $type, $reset, $options));
+
+        foreach ($providers as $providerType => $provider) {
+            $event = new PopulateEvent($index, $providerType, $reset, $options);
+
+            $this->eventDispatcher->dispatch(PopulateEvent::PRE_TYPE_POPULATE, $event);
+
+            $loggerClosure = function($message) use ($output, $index, $providerType) {
+                $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $providerType, $message));
+            };
+
+            $provider->populate($loggerClosure, $options);
+
+            $this->eventDispatcher->dispatch(PopulateEvent::POST_TYPE_POPULATE, $event);
+        }
+
+        $this->eventDispatcher->dispatch(PopulateEvent::POST_INDEX_POPULATE, new PopulateEvent($index, $type, $reset, $options));
     }
 }
