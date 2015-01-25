@@ -15,6 +15,7 @@ To generate a changelog summary since the last version, run
 * 3.0.8 (Unreleased)
 
  * Fixed handling of empty indexes #760
+ * Added support for `connectionStrategy` Elastica configuration #732
 
 * 3.0.7 (2015-01-21)
 
