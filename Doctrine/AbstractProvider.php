@@ -39,7 +39,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
     }
 
     /**
-     * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
+     * {@inheritDoc}
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
@@ -56,34 +56,19 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
 
         for (; $offset < $nbObjects; $offset += $batchSize) {
-            if ($loggerClosure) {
-                $stepStartTime = microtime(true);
-            }
             $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
-            if ($loggerClosure) {
-                $stepNbObjects = count($objects);
-            }
             $objects = array_filter($objects, array($this, 'isObjectIndexable'));
-            if (!$objects) {
-                if ($loggerClosure) {
-                    $loggerClosure('<info>Entire batch was filtered away, skipping...</info>');
-                }
 
-                if ($this->options['clear_object_manager']) {
-                    $manager->clear();
-                }
-
-                continue;
-            }
-
-            if (!$ignoreErrors) {
-                $this->objectPersister->insertMany($objects);
-            } else {
-                try {
+            if ($objects) {
+                if (!$ignoreErrors) {
                     $this->objectPersister->insertMany($objects);
-                } catch(BulkResponseException $e) {
-                    if ($loggerClosure) {
-                        $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
+                } else {
+                    try {
+                        $this->objectPersister->insertMany($objects);
+                    } catch(BulkResponseException $e) {
+                        if ($loggerClosure) {
+                            $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
+                        }
                     }
                 }
             }
@@ -95,11 +80,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             usleep($sleep);
 
             if ($loggerClosure) {
-                $stepCount = $stepNbObjects + $offset;
-                $percentComplete = 100 * $stepCount / $nbObjects;
-                $timeDifference = microtime(true) - $stepStartTime;
-                $objectsPerSecond = $timeDifference ? ($stepNbObjects / $timeDifference) : $stepNbObjects;
-                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s %s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond, $this->getMemoryUsage()));
+                $loggerClosure($batchSize, $nbObjects);
             }
         }
 
