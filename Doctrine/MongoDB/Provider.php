@@ -66,8 +66,8 @@ class Provider extends AbstractProvider
         }
 
         return $queryBuilder
-            ->limit($limit)
             ->skip($offset)
+            ->limit($limit)
             ->getQuery()
             ->execute()
             ->toArray();

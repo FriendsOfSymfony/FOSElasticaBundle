@@ -11,6 +11,7 @@ use FOS\ElasticaBundle\Provider\IndexableInterface;
 abstract class AbstractProvider extends BaseAbstractProvider
 {
     protected $managerRegistry;
+    protected $sliceFetcher;
 
     /**
      * Constructor.
@@ -20,13 +21,15 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * @param string $objectClass
      * @param array $options
      * @param ManagerRegistry $managerRegistry
+     * @param SliceFetcherInterface $sliceFetcher
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
         IndexableInterface $indexable,
         $objectClass,
         array $options,
-        ManagerRegistry $managerRegistry
+        ManagerRegistry $managerRegistry,
+        SliceFetcherInterface $sliceFetcher = null
     ) {
         parent::__construct($objectPersister, $indexable, $objectClass, array_merge(array(
             'clear_object_manager' => true,
@@ -36,6 +39,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
         ), $options));
 
         $this->managerRegistry = $managerRegistry;
+        $this->sliceFetcher = $sliceFetcher;
     }
 
     /**
@@ -54,12 +58,29 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
         $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
         $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
+        $objects = array();
 
         for (; $offset < $nbObjects; $offset += $batchSize) {
             if ($loggerClosure) {
                 $stepStartTime = microtime(true);
             }
-            $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
+
+            if ($this->sliceFetcher) {
+                $identifierFieldNames = $manager
+                    ->getClassMetadata($this->objectClass)
+                    ->getIdentifierFieldNames();
+
+                $objects = $this->sliceFetcher->fetch(
+                    $queryBuilder,
+                    $batchSize,
+                    $offset,
+                    $objects,
+                    $identifierFieldNames
+                );
+            } else {
+                $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
+            }
+
             if ($loggerClosure) {
                 $stepNbObjects = count($objects);
             }
