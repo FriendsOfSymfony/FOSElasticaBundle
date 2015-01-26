@@ -130,8 +130,8 @@ class PopulateCommand extends ContainerAwareCommand
             $current = 0;
 
             return function ($increment, $totalObjects) use ($output, $index, $type, &$lastStep, &$current) {
-                if ($increment > $totalObjects) {
-                    $increment = $totalObjects;
+                if ($current + $increment > $totalObjects) {
+                    $increment = $totalObjects - $current;
                 }
 
                 $currentTime = microtime(true);
