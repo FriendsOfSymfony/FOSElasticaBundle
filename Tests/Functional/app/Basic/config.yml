@@ -15,7 +15,12 @@ fos_elastica:
                 - url: http://localhost:9200
                 - host: localhost
                   port: 9200
+            connectionStrategy: RoundRobin
         second_server:
+            connections:
+                - url: http://localhost:9200
+            connection_strategy: RoundRobin
+        third:
             url: http://localhost:9200
     indexes:
         index:

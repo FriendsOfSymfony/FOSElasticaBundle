@@ -402,7 +402,6 @@ class FOSElasticaExtension extends Extension
                 $argument['_parent'] = $mapping['_parent'];
             }
             $arguments[] = $argument;
-
         }
 
         $serviceId = sprintf('fos_elastica.object_persister.%s.%s', $indexName, $typeName);

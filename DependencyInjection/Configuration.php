@@ -84,6 +84,16 @@ class Configuration implements ConfigurationInterface
                             return $v;
                         })
                         ->end()
+                        // Elastica names its properties with camel case, support both
+                        ->beforeNormalization()
+                        ->ifTrue(function ($v) { return isset($v['connection_strategy']); })
+                        ->then(function ($v) {
+                            $v['connectionStrategy'] = $v['connection_strategy'];
+                            unset($v['connection_strategy']);
+
+                            return $v;
+                        })
+                        ->end()
                         // If there is no connections array key defined, assume a single connection.
                         ->beforeNormalization()
                         ->ifTrue(function ($v) { return is_array($v) && !array_key_exists('connections', $v); })
@@ -124,6 +134,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->scalarNode('timeout')->end()
                             ->scalarNode('headers')->end()
+                            ->scalarNode('connectionStrategy')->defaultValue('Simple')->end()
                         ->end()
                     ->end()
                 ->end()
