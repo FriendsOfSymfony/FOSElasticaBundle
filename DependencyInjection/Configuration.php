@@ -192,6 +192,10 @@ class Configuration implements ConfigurationInterface
             ->useAttributeAsKey('name')
             ->prototype('array')
                 ->treatNullLike(array())
+                ->beforeNormalization()
+                ->ifNull()
+                ->thenEmptyArray()
+                ->end()
                 // BC - Renaming 'mappings' node to 'properties'
                 ->beforeNormalization()
                 ->ifTrue(function($v) { return array_key_exists('mappings', $v); })
