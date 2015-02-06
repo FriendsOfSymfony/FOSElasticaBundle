@@ -170,7 +170,7 @@ class PopulateCommand extends ContainerAwareCommand
             $progress->setMessage(sprintf('<info>Populating</info> <comment>%s/%s</comment>', $index, $type));
             $progress->advance($increment);
 
-            if ($progress->getProgress() >= $progress->getMaxSteps()) {
+            if ($progress->getProgressPercent() >= 1.0) {
                 $progress->finish();
             }
         };
