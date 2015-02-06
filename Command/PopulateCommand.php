@@ -164,6 +164,7 @@ class PopulateCommand extends ContainerAwareCommand
         return function ($increment, $totalObjects) use (&$progress, $output, $index, $type) {
             if (null === $progress) {
                 $progress = new ProgressBar($output, $totalObjects);
+                $progress->start();
             }
 
             $progress->setMessage(sprintf('<info>Populating</info> <comment>%s/%s</comment>', $index, $type));
