@@ -161,12 +161,16 @@ class PopulateCommand extends ContainerAwareCommand
         ProgressBar::setFormatDefinition('debug', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%\n%message%");
         $progress = null;
 
-        return function ($increment, $totalObjects) use (&$progress, $output, $index, $type) {
+        return function ($increment, $totalObjects) use (&$progress, $output, $index, $type, &$current) {
             if (null === $progress) {
                 $progress = new ProgressBar($output, $totalObjects);
                 $progress->start();
             }
 
+            if ($current + $increment > $totalObjects) {
+                $increment = $totalObjects - $current;
+            }
+            $current += $increment;
             $progress->setMessage(sprintf('<info>Populating</info> <comment>%s/%s</comment>', $index, $type));
             $progress->advance($increment);
 
