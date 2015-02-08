@@ -25,3 +25,9 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
    ProgressBar helper instead of outputting strings. You can use verbosity
    controls on the command to output additional information like memory 
    usage, runtime and estimated time.
+ * Added new option `property_path` to a type property definition to allow 
+   customisation of the property path used to retrieve data from objects. 
+   Setting `property_path` to `false` will configure the Transformer to ignore
+   that property while transforming. Combined with the above POST_TRANSFORM event
+   developers can now create calculated dynamic properties on Elastica documents
+   for indexing. #794

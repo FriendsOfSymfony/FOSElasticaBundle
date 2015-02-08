@@ -1,4 +1,4 @@
-##### Custom Repositories
+##### Custom Properties
 
 Since FOSElasticaBundle 3.1.0, we now dispatch an event for each transformation of an 
 object into an Elastica document which allows you to set custom properties on the Elastica

@@ -148,6 +148,20 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $transformer->transform(new POPO(), array());
     }
 
+    public function testPropertyPath()
+    {
+        $transformer = $this->getTransformer();
+
+        $document = $transformer->transform(new POPO(), array('name' => array('property_path' => false)));
+        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertFalse($document->has('name'));
+
+        $document = $transformer->transform(new POPO(), array('realName' => array('property_path' => 'name')));
+        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertTrue($document->has('realName'));
+        $this->assertEquals('someName', $document->get('realName'));
+    }
+
     public function testThatCanTransformObject()
     {
         $transformer = $this->getTransformer();
