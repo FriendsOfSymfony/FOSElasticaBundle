@@ -12,10 +12,11 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.0...v3.0.1
 To generate a changelog summary since the last version, run
 `git log --no-merges --oneline v3.0.0...3.0.x`
 
-* 3.0.8 (Unreleased)
+* 3.0.8 (2014-01-31)
 
  * Fixed handling of empty indexes #760
  * Added support for `connectionStrategy` Elastica configuration #732
+ * Allow Elastica 1.4
 
 * 3.0.7 (2015-01-21)
 
