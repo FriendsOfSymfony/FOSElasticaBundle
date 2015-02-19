@@ -26,7 +26,13 @@ $userPaginator = $finder->findPaginated('bob');
 $countOfResults = $userPaginator->getNbResults();
 
 // Option 3b. KnpPaginator resultset
-
+$finder = $this->container->get('fos_elastica.finder.search.user');
+$paginator  = $this->get('knp_paginator');
+$pagination = $paginator->paginate(
+  $finder->createPaginatorAdapter('bob'),
+  $this->get('request')->query->get('page', 1)/*page number*/,
+  10/*limit per page*/
+);
 ```
 
 Faceted Searching
