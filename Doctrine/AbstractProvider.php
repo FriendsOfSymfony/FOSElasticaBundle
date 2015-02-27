@@ -80,7 +80,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             usleep($sleep);
 
             if ($loggerClosure) {
-                $loggerClosure($batchSize, $nbObjects);
+                $loggerClosure(count($objects), $nbObjects);
             }
         }
 
