@@ -2,20 +2,14 @@
 
 namespace FOS\ElasticaBundle\Doctrine\PHPCR;
 
-use Doctrine\ODM\PHPCR\DocumentManager;
-use Doctrine\ODM\PHPCR\Query\Builder\QueryBuilder;
-use Elastica\Result;
 use FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
-use Doctrine\ORM\Query;
-
-use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 
 /**
  * Maps Elastica documents with Doctrine objects
  * This mapper assumes an exact match between
  * elastica documents ids and doctrine object ids
  */
-class ElasticaToDocumentTransformer extends AbstractElasticaToModelTransformer
+class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
 {
     /**
      * Fetch objects for theses identifier values
@@ -26,9 +20,19 @@ class ElasticaToDocumentTransformer extends AbstractElasticaToModelTransformer
      */
     protected function findByIdentifiers(array $identifierValues, $hydrate)
     {
-        return iterator_to_array($this->registry
-            ->getManagerForClass($this->objectClass)
+        // Special case where model is interface
+        if (interface_exists($this->objectClass, false)) {
+            return $this->registry
+                ->getManager()
+                ->findMany(null, $identifierValues)
+                ->toArray();
+        }
+
+        // General case
+        return $this->registry
+            ->getManager()
             ->getRepository($this->objectClass)
-            ->findMany($identifierValues));
+            ->findMany($identifierValues)
+            ->toArray();
     }
 }
