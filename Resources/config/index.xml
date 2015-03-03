@@ -11,6 +11,7 @@
         <parameter key="fos_elastica.indexable.class">FOS\ElasticaBundle\Provider\Indexable</parameter>
         <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\Index\IndexManager</parameter>
         <parameter key="fos_elastica.resetter.class">FOS\ElasticaBundle\Index\Resetter</parameter>
+        <parameter key="fos_elastica.reindexer.class">FOS\ElasticaBundle\Index\Reindexer</parameter>
         <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
     </parameters>
 
@@ -42,6 +43,8 @@
             <argument type="service" id="fos_elastica.alias_processor" />
             <argument type="service" id="fos_elastica.mapping_builder" />
         </service>
+
+        <service id="fos_elastica.reindexer" class="%fos_elastica.reindexer.class%" />
 
         <!-- Abstract definition for all finders. -->
         <service id="fos_elastica.finder" class="%fos_elastica.finder.class%" public="true" abstract="true">

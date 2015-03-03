@@ -113,13 +113,13 @@ class Resetter
      *
      * @param string $indexName
      */
-    public function postPopulate($indexName)
+    public function postPopulate($indexName, $deleteOldIndex = true)
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
 
         if ($indexConfig->isUseAlias()) {
             $index = $this->indexManager->getIndex($indexName);
-            $this->aliasProcessor->switchIndexAlias($indexConfig, $index);
+            $this->aliasProcessor->switchIndexAlias($indexConfig, $index, /* $force */ true, $deleteOldIndex);
         }
     }
 }

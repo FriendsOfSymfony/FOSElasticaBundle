@@ -1,0 +1,66 @@
+{
+  "_scroll_id": "zzz",
+  "took": 2,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "failed": 0
+  },
+  "hits": {
+    "total": 5,
+    "max_score": 0,
+    "hits": [
+      {
+        "_index": "old_model",
+        "_type": "test",
+        "_id": "1",
+        "_version": 1,
+        "_score": 0,
+        "_source": {
+          "test": "test"
+        }
+      },
+      {
+        "_index": "old_model",
+        "_type": "test",
+        "_id": "2",
+        "_version": 1,
+        "_score": 0,
+        "_source": {
+          "test": "test"
+        }
+      },
+      {
+        "_index": "old_model",
+        "_type": "test",
+        "_id": "3",
+        "_version": 1,
+        "_score": 0,
+        "_source": {
+          "test": "test"
+        }
+      },
+      {
+        "_index": "old_model",
+        "_type": "test",
+        "_id": "4",
+        "_version": 1,
+        "_score": 0,
+        "_source": {
+          "test": "test"
+        }
+      },
+      {
+        "_index": "old_model",
+        "_type": "test",
+        "_id": "5",
+        "_version": 1,
+        "_score": 0,
+        "_source": {
+          "test": "test"
+        }
+      }
+    ]
+  }
+}
