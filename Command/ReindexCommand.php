@@ -100,38 +100,38 @@ class ReindexCommand extends ContainerAwareCommand
         }
     }
 
-    private function reindex(OutputInterface $output, $indexAlias, $options)
+    private function reindex(OutputInterface $output, $indexName, $options)
     {
-        if (! $this->configManager->hasIndexConfiguration($indexAlias)) {
+        if (! $this->configManager->hasIndexConfiguration($indexName)) {
             throw new \InvalidArgumentException();
         }
 
-        $indexConfig = $this->configManager->getIndexConfiguration($indexAlias);
+        $indexConfig = $this->configManager->getIndexConfiguration($indexName);
         if (! $indexConfig->isUseAlias()) {
-            $output->writeln(sprintf("<error>Index %s not using alias, cannot reindex</error>", $indexAlias));
+            $output->writeln(sprintf("<error>Index %s not using alias, cannot reindex</error>", $indexName));
             return;
         }
 
-        $newIndex = $this->indexManager->getIndex($indexAlias);
+        $newIndex = $this->indexManager->getIndex($indexName);
         $client = $newIndex->getClient();
 
         if (! $newIndex) {
-            $output->writeln(sprintf("<error>Index %s not found</error>", $indexAlias));
+            $output->writeln(sprintf("<error>Index %s not found</error>", $indexName));
             return;
         }
 
-        $aliasedIndices = $this->aliasProcessor->getAliasedIndexes($client, $indexAlias);
+        $aliasedIndices = $this->aliasProcessor->getAliasedIndexes($client, $indexConfig->getElasticSearchName());
         if (1 !== count($aliasedIndices)) {
-            $output->writeln(sprintf("<error>Alias %s points to an incorrect number of indices:</error> <comment>%d</comment>", $indexAlias, count($aliasedIndices)));
+            $output->writeln(sprintf("<error>Alias %s points to an incorrect number of indices:</error> <comment>%d</comment>", $indexName, count($aliasedIndices)));
             return;
         }
         $oldIndex = new Index($client, reset($aliasedIndices));
 
-        $output->writeln(sprintf('<info>Reindexing</info> <comment>%s</comment>', $indexAlias));
+        $output->writeln(sprintf('<info>Reindexing</info> <comment>%s</comment>', $indexName));
 
-        $this->resetter->resetIndex($indexAlias, /* $populating */ true);
+        $this->resetter->resetIndex($indexName, /* $populating */ true);
         foreach ($indexConfig->getTypes() as $typeConfig) {
-            $this->resetter->resetIndexType($indexAlias, $typeConfig->getName());
+            $this->resetter->resetIndexType($indexName, $typeConfig->getName());
         }
 
         $startTime = $this->militime();
@@ -139,12 +139,12 @@ class ReindexCommand extends ContainerAwareCommand
         $this->reindexer->copyDocuments(
             $oldIndex,
             $newIndex,
-            $this->loggerClosureHelper->getLoggerClosure($output, '<info>Reindexing</info> <comment>%s</comment>', array($indexAlias)),
+            $this->loggerClosureHelper->getLoggerClosure($output, '<info>Reindexing</info> <comment>%s</comment>', array($indexName)),
             $options
         );
 
         $output->writeln(sprintf('<info>Switching alias</info>'));
-        $this->resetter->postPopulate($indexAlias, /* $deleteOldIndex */ false);
+        $this->resetter->postPopulate($indexName, /* $deleteOldIndex */ false);
 
         $output->writeln(sprintf('<info>Updating changes made during reindex</info>'));
 
