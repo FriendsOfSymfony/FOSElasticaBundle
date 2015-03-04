@@ -46,11 +46,12 @@ class ReindexerTest extends \PHPUnit_Framework_TestCase
                         if ($method != 'PUT') {
                             throw new \Exception('Invalid method used');
                         }
-                        $matched = preg_match_all('/{"index":{"_type":"test","_id":"\d+","_version":1,"_version_type":"external"}}/', $data);
+                        $matches = array(); //  For compatibility with PHP 5.3, where $matches is not optional
+                        $matched = preg_match_all('/{"index":{"_type":"test","_id":"\d+","_version":1,"_version_type":"external"}}/', $data, $matches);
                         if ($matched != 5) {
                             throw new \Exception(sprintf('Wrong number of index operations. Expected 5, got %d', $matched));
                         }
-                        $matched = preg_match_all('/{"test":"test"}/', $data);
+                        $matched = preg_match_all('/{"test":"test"}/', $data, $matches);
                         if ($matched != 5) {
                             throw new \Exception(sprintf('Wrong number of indexed documents. Expected 5, got %d', $matched));
                         }
