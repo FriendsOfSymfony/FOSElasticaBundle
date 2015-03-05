@@ -32,6 +32,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      * @var array
      */
     protected $options = array(
+        'hints'        => array(),
         'hydrate'        => true,
         'identifier'     => 'id',
         'ignore_missing' => false,

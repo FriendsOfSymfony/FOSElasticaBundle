@@ -80,6 +80,47 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
         $method->invokeArgs($transformer, array());
     }
 
+
+    /**
+     * Checks that the 'hints' parameter is used on the created query
+     */
+    public function testUsesHintsConfigurationIfGiven()
+    {
+        $query = $this->getMockBuilder('Doctrine\ORM\AbstractQuery')
+            ->setMethods(array('setHint', 'execute', 'setHydrationMode'))
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+        $query->expects($this->any())->method('setHydrationMode')->willReturnSelf();
+        $query->expects($this->once())  //  check if the hint is set
+            ->method('setHint')
+            ->with('customHintName', 'Custom\Hint\Class')
+            ->willReturnSelf();
+
+        $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $qb->expects($this->any())->method('getQuery')->willReturn($query);
+        $qb->expects($this->any())->method('expr')->willReturn($this->getMock('Doctrine\ORM\Query\Expr'));
+        $qb->expects($this->any())->method('andWhere')->willReturnSelf();
+
+        $this->repository->expects($this->once())
+            ->method('createQueryBuilder')
+            ->with($this->equalTo(ElasticaToModelTransformer::ENTITY_ALIAS))
+            ->will($this->returnValue($qb));
+
+        $transformer = new ElasticaToModelTransformer($this->registry, $this->objectClass, array(
+            'hints' => array(
+                array('name' => 'customHintName', 'class' => 'Custom\Hint\Class')
+            )
+        ));
+
+        $class = new \ReflectionClass('FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer');
+        $method = $class->getMethod('findByIdentifiers');
+        $method->setAccessible(true);
+
+        $method->invokeArgs($transformer, array(array(1, 2, 3), /* $hydrate */true));
+    }
+
     protected function setUp()
     {
         if (!interface_exists('Doctrine\Common\Persistence\ManagerRegistry')) {
