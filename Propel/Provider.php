@@ -37,7 +37,7 @@ class Provider extends AbstractProvider
             usleep($sleep);
 
             if ($loggerClosure) {
-                $loggerClosure(count($objects), $nbObjects);
+                $loggerClosure($batchSize, $nbObjects);
             }
         }
     }
