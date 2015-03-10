@@ -1,6 +1,34 @@
 Type configuration
 ==================
 
+Custom Property Paths
+---------------------
+
+Since FOSElasticaBundle 3.1.0, it is now possible to define custom property paths
+to be used for data retrieval from the underlying model.
+
+```yaml
+                user:
+                    mappings:
+                        username:
+                            property_path: indexableUsername
+                        firstName: 
+                            property_path: names[first]
+```
+
+This feature uses the Symfony PropertyAccessor component and supports all features
+that the component supports.
+
+The above example would retrieve an indexed field `username` from the property
+`User->indexableUsername`, and the indexed field `firstName` would be populated from a
+key `first` from an array on `User->names`.
+
+Setting the property path to `false` will disable transformation of that value. In this
+case the mapping will be created but no value will be populated while indexing. You can
+populate this value by listening to the `POST_TRANSFORM` event emitted by this bundle.
+See [cookbook/custom-properties.md](cookbook/custom-properties.md) for more information
+about this event.
+
 Handling missing results with FOSElasticaBundle
 -----------------------------------------------
 

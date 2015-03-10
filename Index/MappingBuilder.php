@@ -110,6 +110,8 @@ class MappingBuilder
     private function fixProperties(&$properties)
     {
         foreach ($properties as $name => &$property) {
+            unset($property['property_path']);
+
             if (!isset($property['type'])) {
                 $property['type'] = 'string';
             }
