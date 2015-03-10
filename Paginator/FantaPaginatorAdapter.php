@@ -41,6 +41,18 @@ class FantaPaginatorAdapter implements AdapterInterface
     }
 
     /**
+     * Returns Aggregations
+     *
+     * @return mixed
+     *
+     * @api
+     */
+    public function getAggregations()
+    {
+        return $this->adapter->getAggregations();
+    }
+
+    /**
      * Returns a slice of the results.
      *
      * @param integer $offset The offset.
