@@ -2,6 +2,9 @@
 
 namespace FOS\ElasticaBundle\Command;
 
+use FOS\ElasticaBundle\Event\IndexPopulateEvent;
+use FOS\ElasticaBundle\Event\PopulateEvent;
+use FOS\ElasticaBundle\Event\TypePopulateEvent;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputOption;
@@ -10,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
 use FOS\ElasticaBundle\Resetter;
-use FOS\ElasticaBundle\Provider\ProviderInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
@@ -18,6 +20,11 @@ use Symfony\Component\Console\Helper\ProgressBar;
  */
 class PopulateCommand extends ContainerAwareCommand
 {
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    private $dispatcher;
+
     /**
      * @var IndexManager
      */
@@ -62,6 +69,7 @@ class PopulateCommand extends ContainerAwareCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
+        $this->dispatcher = $this->getContainer()->get('event_dispatcher');
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
         $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
@@ -114,20 +122,6 @@ class PopulateCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param ProviderInterface $provider
-     * @param OutputInterface $output
-     * @param string $input
-     * @param string $type
-     * @param array $options
-     */
-    private function doPopulateType(ProviderInterface $provider, OutputInterface $output, $input, $type, $options)
-    {
-        $loggerClosure = $this->progressClosureBuilder->build($output, 'Populating', $input, $type);
-
-        $provider->populate($loggerClosure, $options);
-    }
-
-    /**
      * Recreates an index, populates its types, and refreshes the index.
      *
      * @param OutputInterface $output
@@ -137,17 +131,20 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndex(OutputInterface $output, $index, $reset, $options)
     {
-        if ($reset) {
+        $event = new IndexPopulateEvent($index, $reset, $options);
+        $this->dispatcher->dispatch(IndexPopulateEvent::PRE_INDEX_POPULATE, $event);
+
+        if ($event->isReset()) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
             $this->resetter->resetIndex($index, true);
         }
 
-        /** @var $providers ProviderInterface[] */
-        $providers = $this->providerRegistry->getIndexProviders($index);
-
-        foreach ($providers as $type => $provider) {
-            $this->doPopulateType($provider, $output, $index, $type, $options);
+        $types = array_keys($this->providerRegistry->getIndexProviders($index));
+        foreach ($types as $type) {
+            $this->populateIndexType($output, $index, $type, false, $event->getOptions());
         }
+
+        $this->dispatcher->dispatch(IndexPopulateEvent::POST_INDEX_POPULATE, $event);
 
         $this->refreshIndex($output, $index);
     }
@@ -163,13 +160,19 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndexType(OutputInterface $output, $index, $type, $reset, $options)
     {
-        if ($reset) {
+        $event = new TypePopulateEvent($index, $type, $reset, $options);
+        $this->dispatcher->dispatch(TypePopulateEvent::PRE_TYPE_POPULATE, $event);
+
+        if ($event->isReset()) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
             $this->resetter->resetIndexType($index, $type);
         }
 
         $provider = $this->providerRegistry->getProvider($index, $type);
-        $this->doPopulateType($provider, $output, $index, $type, $options);
+        $loggerClosure = $this->getLoggerClosure($output, $index, $type);
+        $provider->populate($loggerClosure, $event->getOptions());
+
+        $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
 
         $this->refreshIndex($output, $index, false);
     }

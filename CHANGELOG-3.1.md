@@ -38,3 +38,9 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
  * Added a `SliceFetcher` abstraction for Doctrine providers that get more
    information about the previous slice allowing for optimising queries during
    population. #725
+ * New events `PRE_INDEX_POPULATE`, `POST_INDEX_POPULATE`, `PRE_TYPE_POPULATE` and
+   `POST_TYPE_POPULATE` allow for monitoring when an index is about to be or has
+   just been populated. #744
+ * New events `PRE_INDEX_RESET`, `POST_INDEX_RESET`, `PRE_TYPE_RESET` and
+   `POST_TYPE_RESET` are run before and after operations that will reset an
+   index. #744
