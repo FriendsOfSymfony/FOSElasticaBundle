@@ -199,6 +199,24 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(3, $configuration['indexes']['test']['types']['test']['properties']);
     }
 
+    public function testUnconfiguredType()
+    {
+        $configuration = $this->getConfigs(array(
+                'clients' => array(
+                    'default' => array('url' => 'http://localhost:9200'),
+                ),
+                'indexes' => array(
+                    'test' => array(
+                        'types' => array(
+                            'test' => null
+                        )
+                    )
+                )
+            ));
+
+        $this->assertArrayHasKey('properties', $configuration['indexes']['test']['types']['test']);
+    }
+
     public function testNestedProperties()
     {
         $this->getConfigs(array(
