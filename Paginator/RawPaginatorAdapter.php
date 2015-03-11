@@ -36,6 +36,11 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * @var array for the facets
      */
     private $facets;
+    
+    /**
+     * @var array for the aggregations
+     */
+    private $aggregations;
 
     /**
      * @see PaginatorAdapterInterface::__construct
@@ -82,6 +87,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         $resultSet = $this->searchable->search($query, $this->options);
         $this->totalHits = $resultSet->getTotalHits();
         $this->facets = $resultSet->getFacets();
+        $this->aggregations = $resultSet->getAggregations();
         return $resultSet;
     }
 
@@ -128,6 +134,19 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         }
 
         return $this->facets;
+    }
+    
+    /**
+     * Returns Aggregations
+     *
+     * @return mixed
+     */
+    public function getAggregations() {
+        if (!isset($this->aggregations)) {
+            $this->aggregations = $this->searchable->search($this->query)->getAggregations();
+        }
+
+        return $this->aggregations;
     }
 
     /**
