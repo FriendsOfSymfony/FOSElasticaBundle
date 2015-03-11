@@ -84,6 +84,16 @@ class Configuration implements ConfigurationInterface
                             return $v;
                         })
                         ->end()
+                        // Elastica names its properties with camel case, support both
+                        ->beforeNormalization()
+                        ->ifTrue(function ($v) { return isset($v['connection_strategy']); })
+                        ->then(function ($v) {
+                            $v['connectionStrategy'] = $v['connection_strategy'];
+                            unset($v['connection_strategy']);
+
+                            return $v;
+                        })
+                        ->end()
                         // If there is no connections array key defined, assume a single connection.
                         ->beforeNormalization()
                         ->ifTrue(function ($v) { return is_array($v) && !array_key_exists('connections', $v); })
@@ -124,6 +134,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->scalarNode('timeout')->end()
                             ->scalarNode('headers')->end()
+                            ->scalarNode('connectionStrategy')->defaultValue('Simple')->end()
                         ->end()
                     ->end()
                 ->end()
@@ -181,6 +192,10 @@ class Configuration implements ConfigurationInterface
             ->useAttributeAsKey('name')
             ->prototype('array')
                 ->treatNullLike(array())
+                ->beforeNormalization()
+                ->ifNull()
+                ->thenEmptyArray()
+                ->end()
                 // BC - Renaming 'mappings' node to 'properties'
                 ->beforeNormalization()
                 ->ifTrue(function($v) { return array_key_exists('mappings', $v); })
@@ -199,7 +214,17 @@ class Configuration implements ConfigurationInterface
                         isset($v['persistence']['listener']['is_indexable_callback']);
                 })
                 ->then(function ($v) {
-                    $v['indexable_callback'] = $v['persistence']['listener']['is_indexable_callback'];
+                    $callback = $v['persistence']['listener']['is_indexable_callback'];
+
+                    if (is_array($callback)) {
+                        list($class) = $callback + array(null);
+
+                        if ($class[0] !== '@' && is_string($class) && !class_exists($class)) {
+                            $callback[0] = '@'.$class;
+                        }
+                    }
+
+                    $v['indexable_callback'] = $callback;
                     unset($v['persistence']['listener']['is_indexable_callback']);
 
                     return $v;
@@ -225,7 +250,10 @@ class Configuration implements ConfigurationInterface
                 })
                 ->end()
                 ->children()
+                    ->booleanNode('date_detection')->end()
+                    ->arrayNode('dynamic_date_formats')->prototype('scalar')->end()->end()
                     ->scalarNode('index_analyzer')->end()
+                    ->booleanNode('numeric_detection')->end()
                     ->scalarNode('search_analyzer')->end()
                     ->variableNode('indexable_callback')->end()
                     ->append($this->getPersistenceNode())
@@ -480,9 +508,13 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('identifier')->defaultValue('id')->end()
                 ->arrayNode('provider')
                     ->children()
-                        ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
                         ->scalarNode('batch_size')->defaultValue(100)->end()
                         ->scalarNode('clear_object_manager')->defaultTrue()->end()
+                        ->scalarNode('debug_logging')
+                            ->defaultValue($this->debug)
+                            ->treatNullLike(true)
+                        ->end()
+                        ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
                         ->scalarNode('service')->end()
                     ->end()
                 ->end()

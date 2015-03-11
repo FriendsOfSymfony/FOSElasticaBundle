@@ -58,13 +58,19 @@ class MappingBuilder
      */
     public function buildTypeMapping(TypeConfig $typeConfig)
     {
-        $mapping = array_merge($typeConfig->getMapping(), array(
-            // 'date_detection' => true,
-            // 'dynamic_date_formats' => array()
-            // 'dynamic_templates' => $typeConfig->getDynamicTemplates(),
-            // 'numeric_detection' => false,
-            // 'properties' => array(),
-        ));
+        $mapping = $typeConfig->getMapping();
+
+        if (null !== $typeConfig->getDynamicDateFormats()) {
+            $mapping['dynamic_date_formats'] = $typeConfig->getDynamicDateFormats();
+        }
+
+        if (null !== $typeConfig->getDateDetection()) {
+            $mapping['date_detection'] = $typeConfig->getDateDetection();
+        }
+
+        if (null !== $typeConfig->getNumericDetection()) {
+            $mapping['numeric_detection'] = $typeConfig->getNumericDetection();
+        }
 
         if ($typeConfig->getIndexAnalyzer()) {
             $mapping['index_analyzer'] = $typeConfig->getIndexAnalyzer();
@@ -104,8 +110,13 @@ class MappingBuilder
     private function fixProperties(&$properties)
     {
         foreach ($properties as $name => &$property) {
+            unset($property['property_path']);
+
             if (!isset($property['type'])) {
                 $property['type'] = 'string';
+            }
+            if ($property['type'] == 'multi_field' && isset($property['fields'])) {
+                $this->fixProperties($property['fields']);
             }
             if (isset($property['properties'])) {
                 $this->fixProperties($property['properties']);

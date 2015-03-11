@@ -8,7 +8,7 @@ index and type for which the service will provide.
 # app/config/config.yml
 services:
     acme.search_provider.user:
-        class: Acme\UserBundle\Search\UserProvider
+        class: Acme\UserBundle\Provider\UserProvider
         arguments:
             - @fos_elastica.index.website.user
         tags:

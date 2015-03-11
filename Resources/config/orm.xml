@@ -27,7 +27,6 @@
 
         <service id="fos_elastica.listener.prototype.orm" class="%fos_elastica.listener.prototype.orm.class%" public="false" abstract="true">
             <argument /> <!-- object persister -->
-            <argument type="collection" /> <!-- events -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument type="collection" /> <!-- configuration -->
             <argument on-invalid="ignore" /> <!-- logger -->

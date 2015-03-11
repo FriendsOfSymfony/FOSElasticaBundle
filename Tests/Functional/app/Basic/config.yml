@@ -15,7 +15,12 @@ fos_elastica:
                 - url: http://localhost:9200
                 - host: localhost
                   port: 9200
+            connectionStrategy: RoundRobin
         second_server:
+            connections:
+                - url: http://localhost:9200
+            connection_strategy: RoundRobin
+        third:
             url: http://localhost:9200
     indexes:
         index:
@@ -46,6 +51,8 @@ fos_elastica:
                     index_analyzer: my_analyzer
                 type:
                     search_analyzer: my_analyzer
+                    date_detection: false
+                    dynamic_date_formats: [ 'yyyy-MM-dd' ]
                     dynamic_templates:
                         - dates:
                             match: "date_*"
@@ -56,6 +63,7 @@ fos_elastica:
                             mapping:
                                 analyzer: english
                                 type: string
+                    numeric_detection: true
                     properties:
                         field1: ~
                         field2:
@@ -71,6 +79,11 @@ fos_elastica:
                             properties:
                                 date: { boost: 5 }
                                 content: ~
+                        multiple:
+                            type: "multi_field"
+                            properties:
+                                name: ~
+                                position: ~
                         user:
                             type: "object"
                         approver:
@@ -87,3 +100,4 @@ fos_elastica:
                         identifier: "id"
                 null_mappings:
                     mappings: ~
+        empty_index: ~

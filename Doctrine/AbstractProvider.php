@@ -43,7 +43,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
     }
 
     /**
-     * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
+     * {@inheritDoc}
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
@@ -58,49 +58,22 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
         $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
         $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
+
         $objects = array();
-
         for (; $offset < $nbObjects; $offset += $batchSize) {
-            if ($loggerClosure) {
-                $stepStartTime = microtime(true);
-            }
-
-            if ($this->sliceFetcher) {
-                $identifierFieldNames = $manager
-                    ->getClassMetadata($this->objectClass)
-                    ->getIdentifierFieldNames();
-
-                $objects = $this->sliceFetcher->fetch(
-                    $queryBuilder,
-                    $batchSize,
-                    $offset,
-                    $objects,
-                    $identifierFieldNames
-                );
-            } else {
-                $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
-            }
-
-            if ($loggerClosure) {
-                $stepNbObjects = count($objects);
-            }
+            $objects = $this->getSlice($queryBuilder, $batchSize, $offset, $objects);
             $objects = array_filter($objects, array($this, 'isObjectIndexable'));
-            if (!$objects) {
-                if ($loggerClosure) {
-                    $loggerClosure('<info>Entire batch was filtered away, skipping...</info>');
-                }
 
-                continue;
-            }
-
-            if (!$ignoreErrors) {
-                $this->objectPersister->insertMany($objects);
-            } else {
-                try {
+            if ($objects) {
+                if (!$ignoreErrors) {
                     $this->objectPersister->insertMany($objects);
-                } catch(BulkResponseException $e) {
-                    if ($loggerClosure) {
-                        $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
+                } else {
+                    try {
+                        $this->objectPersister->insertMany($objects);
+                    } catch(BulkResponseException $e) {
+                        if ($loggerClosure) {
+                            $loggerClosure($batchSize, $nbObjects, sprintf('<error>%s</error>',$e->getMessage()));
+                        }
                     }
                 }
             }
@@ -112,17 +85,43 @@ abstract class AbstractProvider extends BaseAbstractProvider
             usleep($sleep);
 
             if ($loggerClosure) {
-                $stepCount = $stepNbObjects + $offset;
-                $percentComplete = 100 * $stepCount / $nbObjects;
-                $timeDifference = microtime(true) - $stepStartTime;
-                $objectsPerSecond = $timeDifference ? ($stepNbObjects / $timeDifference) : $stepNbObjects;
-                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s %s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond, $this->getMemoryUsage()));
+                $loggerClosure($batchSize, $nbObjects);
             }
         }
 
         if (!$this->options['debug_logging']) {
             $this->enableLogging($logger);
         }
+    }
+
+    /**
+     * If this Provider has a SliceFetcher defined, we use it instead of falling back to
+     * the fetchSlice methods defined in the ORM/MongoDB subclasses.
+     *
+     * @param $queryBuilder
+     * @param int $limit
+     * @param int $offset
+     * @param array $lastSlice
+     * @return array
+     */
+    protected function getSlice($queryBuilder, $limit, $offset, $lastSlice)
+    {
+        if (!$this->sliceFetcher) {
+            return $this->fetchSlice($queryBuilder, $limit, $offset);
+        }
+
+        $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
+        $identifierFieldNames = $manager
+            ->getClassMetadata($this->objectClass)
+            ->getIdentifierFieldNames();
+
+        return $this->sliceFetcher->fetch(
+            $queryBuilder,
+            $limit,
+            $offset,
+            $lastSlice,
+            $identifierFieldNames
+        );
     }
 
     /**
