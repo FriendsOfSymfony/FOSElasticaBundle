@@ -17,23 +17,15 @@ use Symfony\Component\EventDispatcher\Event;
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
-class PopulateEvent extends Event
+class IndexPopulateEvent extends Event
 {
     const PRE_INDEX_POPULATE = 'elastica.index.index_pre_populate';
     const POST_INDEX_POPULATE = 'elastica.index.index_post_populate';
-
-    const PRE_TYPE_POPULATE = 'elastica.index.type_pre_populate';
-    const POST_TYPE_POPULATE = 'elastica.index.type_post_populate';
 
     /**
      * @var string
      */
     private $index;
-
-    /**
-     * @var string
-     */
-    private $type;
 
     /**
      * @var bool
@@ -47,14 +39,12 @@ class PopulateEvent extends Event
 
     /**
      * @param string      $index
-     * @param string|null $type
      * @param boolean     $reset
      * @param array       $options
      */
-    public function __construct($index, $type, $reset, $options)
+    public function __construct($index, $reset, $options)
     {
         $this->index   = $index;
-        $this->type    = $type;
         $this->reset   = $reset;
         $this->options = $options;
     }
@@ -65,14 +55,6 @@ class PopulateEvent extends Event
     public function getIndex()
     {
         return $this->index;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 
     /**

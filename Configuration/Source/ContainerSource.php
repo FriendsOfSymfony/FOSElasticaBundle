@@ -40,16 +40,7 @@ class ContainerSource implements SourceInterface
     {
         $indexes = array();
         foreach ($this->configArray as $config) {
-            $types = array();
-            foreach ($config['types'] as $typeConfig) {
-                $types[$typeConfig['name']] = new TypeConfig(
-                    $typeConfig['name'],
-                    $typeConfig['mapping'],
-                    $typeConfig['config']
-                );
-                // TODO: handle prototypes..
-            }
-
+            $types = $this->getTypes($config);
             $index = new IndexConfig($config['name'], $types, array(
                 'elasticSearchName' => $config['elasticsearch_name'],
                 'settings' => $config['settings'],
@@ -60,5 +51,29 @@ class ContainerSource implements SourceInterface
         }
 
         return $indexes;
+    }
+
+    /**
+     * Builds TypeConfig objects for each type.
+     *
+     * @param array $config
+     * @return array
+     */
+    protected function getTypes($config)
+    {
+        $types = array();
+
+        if (isset($config['types'])) {
+            foreach ($config['types'] as $typeConfig) {
+                $types[$typeConfig['name']] = new TypeConfig(
+                    $typeConfig['name'],
+                    $typeConfig['mapping'],
+                    $typeConfig['config']
+                );
+                // TODO: handle prototypes..
+            }
+        }
+
+        return $types;
     }
 }

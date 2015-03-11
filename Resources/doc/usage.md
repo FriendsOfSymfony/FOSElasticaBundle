@@ -160,7 +160,7 @@ fos_elastica:
         site:
             settings:
                 index:
-                  analysis:
+                    analysis:
                         analyzer:
                             my_analyzer:
                                 type: snowball

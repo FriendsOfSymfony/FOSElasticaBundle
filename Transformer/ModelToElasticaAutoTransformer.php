@@ -2,6 +2,8 @@
 
 namespace FOS\ElasticaBundle\Transformer;
 
+use FOS\ElasticaBundle\Event\TransformEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Elastica\Document;
 
@@ -12,6 +14,11 @@ use Elastica\Document;
  */
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $dispatcher;
+
     /**
      * Optional parameters
      *
@@ -32,10 +39,12 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * Instanciates a new Mapper
      *
      * @param array $options
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = array(), EventDispatcherInterface $dispatcher = null)
     {
         $this->options = array_merge($this->options, $options);
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -66,16 +75,24 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
                 $property = (null !== $mapping['property'])?$mapping['property']:$mapping['type'];
                 $value = $this->propertyAccessor->getValue($object, $property);
                 $document->setParent($this->propertyAccessor->getValue($value, $mapping['identifier']));
+
                 continue;
             }
 
-            $value = $this->propertyAccessor->getValue($object, $key);
+            $path = isset($mapping['property_path']) ?
+                $mapping['property_path'] :
+                $key;
+            if (false === $path) {
+                continue;
+            }
+            $value = $this->propertyAccessor->getValue($object, $path);
 
             if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object')) && isset($mapping['properties']) && !empty($mapping['properties'])) {
                 /* $value is a nested document or object. Transform $value into
                  * an array of documents, respective the mapped properties.
                  */
                 $document->set($key, $this->transformNested($value, $mapping['properties']));
+
                 continue;
             }
 
@@ -86,10 +103,18 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
                 } else {
                     $document->addFileContent($key, $value);
                 }
+
                 continue;
             }
 
             $document->set($key, $this->normalizeValue($value));
+        }
+
+        if ($this->dispatcher) {
+            $event = new TransformEvent($document, $fields, $object);
+            $this->dispatcher->dispatch(TransformEvent::POST_TRANSFORM, $event);
+
+            $document = $event->getDocument();
         }
 
         return $document;

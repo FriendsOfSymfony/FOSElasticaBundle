@@ -23,7 +23,7 @@ namespace Acme\ElasticaBundle;
 use Elastica\Exception\ExceptionInterface;
 use Elastica\Request;
 use Elastica\Response;
-use FOS\ElasticaBundle\Client as BaseClient;
+use FOS\ElasticaBundle\Elastica\Client as BaseClient;
 
 class Client extends BaseClient
 {

@@ -241,6 +241,9 @@ class FOSElasticaExtension extends Extension
                 'serializer',
                 'index_analyzer',
                 'search_analyzer',
+                'date_detection',
+                'dynamic_date_formats',
+                'numeric_detection',
             ) as $field) {
                 $typeConfig['config'][$field] = array_key_exists($field, $type) ?
                     $type[$field] :
@@ -393,7 +396,12 @@ class FOSElasticaExtension extends Extension
             $arguments[] = array(new Reference($callbackId), 'serialize');
         } else {
             $abstractId = 'fos_elastica.object_persister';
-            $arguments[] = $this->indexConfigs[$indexName]['types'][$typeName]['mapping']['properties'];
+            $mapping = $this->indexConfigs[$indexName]['types'][$typeName]['mapping'];
+            $argument = $mapping['properties'];
+            if(isset($mapping['_parent'])){
+                $argument['_parent'] = $mapping['_parent'];
+            }
+            $arguments[] = $argument;
         }
 
         $serviceId = sprintf('fos_elastica.object_persister.%s.%s', $indexName, $typeName);

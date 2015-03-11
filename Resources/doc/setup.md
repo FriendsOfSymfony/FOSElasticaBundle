@@ -1,40 +1,50 @@
 Step 1: Setting up the bundle
 =============================
 
-A) Install FOSElasticaBundle
-----------------------------
+A: Download the Bundle
+----------------------
 
-FOSElasticaBundle is installed using [Composer](https://getcomposer.org).
+Open a command console, enter your project directory and execute the
+following command to download the latest stable version of this bundle:
 
 ```bash
-$ php composer.phar require friendsofsymfony/elastica-bundle
+$ composer require friendsofsymfony/elastica-bundle "~3.0"
 ```
+
+This command requires you to have Composer installed globally, as explained
+in the [installation chapter](https://getcomposer.org/doc/00-intro.md)
+of the Composer documentation.
 
 ### Elasticsearch
 
-Instructions for installing and deploying Elasticsearch may be found
-[here](http://www.elasticsearch.org/guide/reference/setup/installation/).
+Instructions for installing and deploying Elasticsearch may be found [here](http://www.elasticsearch.org/guide/reference/setup/installation/).
 
+Step 2: Enable the Bundle
+-------------------------
 
-B) Enable FOSElasticaBundle
----------------------------
-
-Enable FOSElasticaBundle in your AppKernel:
+Then, enable the bundle by adding the following line in the `app/AppKernel.php`
+file of your project:
 
 ```php
 <?php
 // app/AppKernel.php
 
-public function registerBundles()
+// ...
+class AppKernel extends Kernel
 {
-    $bundles = array(
+    public function registerBundles()
+    {
+        $bundles = array(
+            // ...
+            new FOS\ElasticaBundle\FOSElasticaBundle(),
+        );
+        
         // ...
-        new FOS\ElasticaBundle\FOSElasticaBundle(),
-    );
+    }
 }
 ```
 
-C) Basic Bundle Configuration
+C: Basic Bundle Configuration
 -----------------------------
 
 The basic minimal configuration for FOSElasticaBundle is one client with one Elasticsearch
@@ -48,27 +58,30 @@ fos_elastica:
     clients:
         default: { host: localhost, port: 9200 }
     indexes:
-        search: ~
+        app: ~
 ```
 
 In this example, an Elastica index (an instance of `Elastica\Index`) is available as a
-service with the key `fos_elastica.index.search`.
+service with the key `fos_elastica.index.app`.
 
-If the Elasticsearch index name needs to be different to the service name in your
-application, for example, renaming the search index based on different environments.
+You may want the index `app` to be named something else on ElasticSearch depending on
+if your application is running in a different env or other conditions that suit your
+application. To set your customer index to a name that depends on the environment of your
+Symfony application, use the example below:
 
 ```yaml
 #app/config/config.yml
 fos_elastica:
     indexes:
-        search:
-            index_name: search_dev
+        app:
+            index_name: app_%kernel.env%
 ```
 
-In this case, the service `fos_elastica.index.search` will be using an Elasticsearch
-index of search_dev.
+In this case, the service `fos_elastica.index.app` will relate to an ElasticSearch index
+that varies depending on your kernel's environment. For example, in dev it will relate to
+`app_dev`.
 
-D) Defining index types
+D: Defining index types
 -----------------------
 
 By default, FOSElasticaBundle requires each type that is to be indexed to be mapped.
@@ -81,7 +94,7 @@ will end up being indexed.
 ```yaml
 fos_elastica:
     indexes:
-        search:
+        app:
             types:
                 user:
                     mappings:
@@ -92,7 +105,7 @@ fos_elastica:
 ```
 
 Each defined type is made available as a service, and in this case the service key is
-`fos_elastica.index.search.user` and is an instance of `Elastica\Type`.
+`fos_elastica.index.app.user` and is an instance of `Elastica\Type`.
 
 FOSElasticaBundle requires a provider for each type that will notify when an object
 that maps to a type has been modified. The bundle ships with support for Doctrine and
@@ -122,7 +135,7 @@ Below is an example for the Doctrine ORM.
 There are a significant number of options available for types, that can be
 [found here](types.md)
 
-E) Populating the Elasticsearch index
+E: Populating the Elasticsearch index
 -------------------------------------
 
 When using the providers and listeners that come with the bundle, any new or modified
@@ -137,7 +150,7 @@ $ php app/console fos:elastica:populate
 The command will also create all indexes and types defined if they do not already exist
 on the Elasticsearch server.
 
-F) Usage
+F: Usage
 --------
 
 Usage documentation for the bundle is available [here](usage.md)

@@ -13,8 +13,10 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 class TypeObj
 {
+    public $id = 5;
     public $coll;
     public $field1;
+    public $field2;
 
     public function isIndexable()
     {

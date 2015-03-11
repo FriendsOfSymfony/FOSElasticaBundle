@@ -2,22 +2,30 @@
 
 namespace FOS\ElasticaBundle\Command;
 
+use FOS\ElasticaBundle\Event\IndexPopulateEvent;
 use FOS\ElasticaBundle\Event\PopulateEvent;
+use FOS\ElasticaBundle\Event\TypePopulateEvent;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use FOS\ElasticaBundle\Index\IndexManager;
+use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
+use FOS\ElasticaBundle\Resetter;
 use FOS\ElasticaBundle\Provider\ProviderInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Populate the search index
  */
 class PopulateCommand extends ContainerAwareCommand
 {
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    private $dispatcher;
+
     /**
      * @var IndexManager
      */
@@ -29,9 +37,9 @@ class PopulateCommand extends ContainerAwareCommand
     private $providerRegistry;
 
     /**
-     * @var EventDispatcherInterface
+     * @var Resetter
      */
-    private $eventDispatcher;
+    private $resetter;
 
     /**
      * @see Symfony\Component\Console\Command\Command::configure()
@@ -56,9 +64,10 @@ class PopulateCommand extends ContainerAwareCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
+        $this->dispatcher = $this->getContainer()->get('event_dispatcher');
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
-        $this->eventDispatcher = $this->getContainer()->get('event_dispatcher');
+        $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
     }
 
     /**
@@ -101,6 +110,86 @@ class PopulateCommand extends ContainerAwareCommand
     }
 
     /**
+     * @param ProviderInterface $provider
+     * @param OutputInterface $output
+     * @param string $index
+     * @param string $type
+     * @param array $options
+     */
+    private function doPopulateType(ProviderInterface $provider, OutputInterface $output, $index, $type, $options)
+    {
+        $event = new TypePopulateEvent($index, $type, $options);
+        $this->dispatcher->dispatch(TypePopulateEvent::PRE_TYPE_POPULATE, $event);
+
+        $loggerClosure = $this->getLoggerClosure($output, $index, $type);
+        $provider->populate($loggerClosure, $event->getOptions());
+
+        $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
+    }
+
+    /**
+     * Builds a loggerClosure to be called from inside the Provider to update the command
+     * line.
+     *
+     * @param OutputInterface $output
+     * @param string $index
+     * @param string $type
+     * @return callable
+     */
+    private function getLoggerClosure(OutputInterface $output, $index, $type)
+    {
+        if (!class_exists('Symfony\Component\Console\Helper\ProgressBar')) {
+            $lastStep = null;
+            $current = 0;
+
+            return function ($increment, $totalObjects) use ($output, $index, $type, &$lastStep, &$current) {
+                if ($current + $increment > $totalObjects) {
+                    $increment = $totalObjects - $current;
+                }
+
+                $currentTime = microtime(true);
+                $timeDifference = $currentTime - $lastStep;
+                $objectsPerSecond = $lastStep ? ($increment / $timeDifference) : $increment;
+                $lastStep = $currentTime;
+                $current += $increment;
+                $percent = 100 * $current / $totalObjects;
+
+                $output->writeln(sprintf(
+                    '<info>Populating</info> <comment>%s/%s</comment> %0.1f%% (%d/%d), %d objects/s (RAM: current=%uMo peak=%uMo)',
+                    $index,
+                    $type,
+                    $percent,
+                    $current,
+                    $totalObjects,
+                    $objectsPerSecond,
+                    round(memory_get_usage() / (1024 * 1024)),
+                    round(memory_get_peak_usage() / (1024 * 1024))
+                ));
+            };
+        }
+
+        ProgressBar::setFormatDefinition('normal', " %current%/%max% [%bar%] %percent:3s%%\n%message%");
+        ProgressBar::setFormatDefinition('verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%\n%message%");
+        ProgressBar::setFormatDefinition('very_verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n%message%");
+        ProgressBar::setFormatDefinition('debug', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%\n%message%");
+        $progress = null;
+
+        return function ($increment, $totalObjects) use (&$progress, $output, $index, $type) {
+            if (null === $progress) {
+                $progress = new ProgressBar($output, $totalObjects);
+                $progress->start();
+            }
+
+            $progress->setMessage(sprintf('<info>Populating</info> <comment>%s/%s</comment>', $index, $type));
+            $progress->advance($increment);
+
+            if ($progress->getProgressPercent() >= 1.0) {
+                $progress->finish();
+            }
+        };
+    }
+
+    /**
      * Recreates an index, populates its types, and refreshes the index.
      *
      * @param OutputInterface $output
@@ -110,13 +199,23 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndex(OutputInterface $output, $index, $reset, $options)
     {
-        /** @var $providers ProviderInterface[] */
+        $event = new IndexPopulateEvent($index, $reset, $options);
+        $this->dispatcher->dispatch(IndexPopulateEvent::PRE_INDEX_POPULATE, $event);
+
+        if ($event->isReset()) {
+            $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
+            $this->resetter->resetIndex($index, true);
+        }
+
         $providers = $this->providerRegistry->getIndexProviders($index);
 
-        $this->populate($output, $providers, $index, null, $reset, $options);
+        foreach ($providers as $type => $provider) {
+            $this->doPopulateType($provider, $output, $index, $type, $event->getOptions());
+        }
 
-        $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
-        $this->indexManager->getIndex($index)->refresh();
+        $this->dispatcher->dispatch(IndexPopulateEvent::POST_INDEX_POPULATE, $event);
+
+        $this->refreshIndex($output, $index);
     }
 
     /**
@@ -130,48 +229,31 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndexType(OutputInterface $output, $index, $type, $reset, $options)
     {
+        if ($reset) {
+            $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
+            $this->resetter->resetIndexType($index, $type);
+        }
+
         $provider = $this->providerRegistry->getProvider($index, $type);
+        $this->doPopulateType($provider, $output, $index, $type, $options);
 
-        $this->populate($output, array($type => $provider), $index, $type, $reset, $options);
-
-        $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
-        $this->indexManager->getIndex($index)->refresh();
+        $this->refreshIndex($output, $index, false);
     }
 
     /**
-     * @param OutputInterface     $output
-     * @param ProviderInterface[] $providers
-     * @param string              $index
-     * @param string              $type
-     * @param boolean             $reset
-     * @param array               $options
+     * Refreshes an index.
+     *
+     * @param OutputInterface $output
+     * @param string $index
+     * @param bool $postPopulate
      */
-    private function populate(OutputInterface $output, array $providers, $index, $type, $reset, $options)
+    private function refreshIndex(OutputInterface $output, $index, $postPopulate = true)
     {
-        if ($reset) {
-            if ($type) {
-                $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
-            } else {
-                $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
-            }
+        if ($postPopulate) {
+            $this->resetter->postPopulate($index);
         }
 
-        $this->eventDispatcher->dispatch(PopulateEvent::PRE_INDEX_POPULATE, new PopulateEvent($index, $type, $reset, $options));
-
-        foreach ($providers as $providerType => $provider) {
-            $event = new PopulateEvent($index, $providerType, $reset, $options);
-
-            $this->eventDispatcher->dispatch(PopulateEvent::PRE_TYPE_POPULATE, $event);
-
-            $loggerClosure = function($message) use ($output, $index, $providerType) {
-                $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $providerType, $message));
-            };
-
-            $provider->populate($loggerClosure, $options);
-
-            $this->eventDispatcher->dispatch(PopulateEvent::POST_TYPE_POPULATE, $event);
-        }
-
-        $this->eventDispatcher->dispatch(PopulateEvent::POST_INDEX_POPULATE, new PopulateEvent($index, $type, $reset, $options));
+        $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
+        $this->indexManager->getIndex($index)->refresh();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Transformer\ModelToElasticaAutoTransformer;
 
+use FOS\ElasticaBundle\Event\TransformEvent;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -132,6 +133,35 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testTransformerDispatches()
+    {
+        $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')
+            ->getMock();
+        $dispatcher->expects($this->once())
+            ->method('dispatch')
+            ->with(
+                TransformEvent::POST_TRANSFORM,
+                $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent')
+            );
+
+        $transformer = $this->getTransformer($dispatcher);
+        $transformer->transform(new POPO(), array());
+    }
+
+    public function testPropertyPath()
+    {
+        $transformer = $this->getTransformer();
+
+        $document = $transformer->transform(new POPO(), array('name' => array('property_path' => false)));
+        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertFalse($document->has('name'));
+
+        $document = $transformer->transform(new POPO(), array('realName' => array('property_path' => 'name')));
+        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertTrue($document->has('realName'));
+        $this->assertEquals('someName', $document->get('realName'));
+    }
+
     public function testThatCanTransformObject()
     {
         $transformer = $this->getTransformer();
@@ -250,7 +280,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $document    = $transformer->transform(new POPO(), array(
                 'sub' => array(
                     'type' => 'nested',
-                    'properties' => array('foo' => '~')
+                    'properties' => array('foo' => array())
                     )
                 ));
         $data        = $document->getData();
@@ -295,8 +325,8 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('obj', $data));
         $this->assertInternalType('array', $data['obj']);
         $this->assertEquals(array(
-             'foo' => 'foo', 
-             'bar' => 'foo', 
+             'foo' => 'foo',
+             'bar' => 'foo',
              'id' => 1
            ), $data['obj']);
     }
@@ -387,11 +417,12 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param null|\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
      * @return ModelToElasticaAutoTransformer
      */
-    private function getTransformer()
+    private function getTransformer($dispatcher = null)
     {
-        $transformer = new ModelToElasticaAutoTransformer();
+        $transformer = new ModelToElasticaAutoTransformer(array(), $dispatcher);
         $transformer->setPropertyAccessor(PropertyAccess::getPropertyAccessor());
 
         return $transformer;

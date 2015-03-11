@@ -62,6 +62,9 @@ class Resetter
 
     /**
      * Deletes and recreates all indexes
+     *
+     * @param bool $populating
+     * @param bool $force
      */
     public function resetAllIndexes($populating = false, $force = false)
     {

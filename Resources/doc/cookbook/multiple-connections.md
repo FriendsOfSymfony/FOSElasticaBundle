@@ -11,6 +11,11 @@ fos_elastica:
             connections:
                 - url: http://es1.example.net:9200
                 - url: http://es2.example.net:9200
+            connection_strategy: RoundRobin
 ```
+
+Elastica allows for definition of different connection strategies and by default
+supports `RoundRobin` and `Simple`. You can see definitions for these strategies
+in the `Elastica\Connection\Strategy` namespace.
 
 For more information on Elastica clustering see http://elastica.io/getting-started/installation.html#section-connect-cluster
