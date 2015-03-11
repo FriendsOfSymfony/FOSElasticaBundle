@@ -24,6 +24,11 @@ class PopulateCommand extends ContainerAwareCommand
     private $indexManager;
 
     /**
+     * @var ProgressClosureBuilder
+     */
+    private $progressClosureBuilder;
+
+    /**
      * @var ProviderRegistry
      */
     private $providerRegistry;
@@ -47,31 +52,39 @@ class PopulateCommand extends ContainerAwareCommand
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
+            ->addOption('no-overwrite-format', null, InputOption::VALUE_NONE, 'Prevent this command from overwriting ProgressBar\'s formats')
             ->setDescription('Populates search indexes from providers')
         ;
     }
 
     /**
-     * @see Symfony\Component\Console\Command\Command::initialize()
+     * {@inheritDoc}
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
         $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
+        $this->progressClosureBuilder = new ProgressClosureBuilder();
+
+        if (!$input->getOption('no-overwrite-format')) {
+            ProgressBar::setFormatDefinition('normal', " %current%/%max% [%bar%] %percent:3s%%\n%message%");
+            ProgressBar::setFormatDefinition('verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%\n%message%");
+            ProgressBar::setFormatDefinition('very_verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n%message%");
+            ProgressBar::setFormatDefinition('debug', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%\n%message%");
+        }
     }
 
     /**
-     * @see Symfony\Component\Console\Command\Command::execute()
+     * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $index         = $input->getOption('index');
-        $type          = $input->getOption('type');
-        $reset         = !$input->getOption('no-reset');
-        $options       = $input->getOptions();
-
-        $options['ignore-errors'] = $input->hasOption('ignore-errors');
+        $index = $input->getOption('index');
+        $type = $input->getOption('type');
+        $reset = !$input->getOption('no-reset');
+        $options = $input->getOptions();
+        $options['ignore-errors'] = $input->getOption('ignore-errors');
 
         if ($input->isInteractive() && $reset && $input->getOption('offset')) {
             /** @var DialogHelper $dialog */
@@ -109,71 +122,9 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function doPopulateType(ProviderInterface $provider, OutputInterface $output, $input, $type, $options)
     {
-        $loggerClosure = $this->getLoggerClosure($output, $input, $type);
+        $loggerClosure = $this->progressClosureBuilder->build($output, 'Populating', $input, $type);
 
         $provider->populate($loggerClosure, $options);
-    }
-
-    /**
-     * Builds a loggerClosure to be called from inside the Provider to update the command
-     * line.
-     *
-     * @param OutputInterface $output
-     * @param string $index
-     * @param string $type
-     * @return callable
-     */
-    private function getLoggerClosure(OutputInterface $output, $index, $type)
-    {
-        if (!class_exists('Symfony\Component\Console\Helper\ProgressBar')) {
-            $lastStep = null;
-            $current = 0;
-
-            return function ($increment, $totalObjects) use ($output, $index, $type, &$lastStep, &$current) {
-                if ($current + $increment > $totalObjects) {
-                    $increment = $totalObjects - $current;
-                }
-
-                $currentTime = microtime(true);
-                $timeDifference = $currentTime - $lastStep;
-                $objectsPerSecond = $lastStep ? ($increment / $timeDifference) : $increment;
-                $lastStep = $currentTime;
-                $current += $increment;
-                $percent = 100 * $current / $totalObjects;
-
-                $output->writeln(sprintf(
-                    '<info>Populating</info> <comment>%s/%s</comment> %0.1f%% (%d/%d), %d objects/s (RAM: current=%uMo peak=%uMo)',
-                    $index,
-                    $type,
-                    $percent,
-                    $current,
-                    $totalObjects,
-                    $objectsPerSecond,
-                    round(memory_get_usage() / (1024 * 1024)),
-                    round(memory_get_peak_usage() / (1024 * 1024))
-                ));
-            };
-        }
-
-        ProgressBar::setFormatDefinition('normal', " %current%/%max% [%bar%] %percent:3s%%\n%message%");
-        ProgressBar::setFormatDefinition('verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%\n%message%");
-        ProgressBar::setFormatDefinition('very_verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n%message%");
-        ProgressBar::setFormatDefinition('debug', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%\n%message%");
-        $progress = null;
-
-        return function ($increment, $totalObjects) use (&$progress, $output, $index, $type) {
-            if (null === $progress) {
-                $progress = new ProgressBar($output, $totalObjects);
-                $progress->start();
-            }
-
-            $progress->setMessage(sprintf('<info>Populating</info> <comment>%s/%s</comment>', $index, $type));
-            $progress->advance($increment);
-
-            if ($progress->getProgressPercent() >= 1.0) {
-                $progress->finish();
-            }
-        };
     }
 
     /**

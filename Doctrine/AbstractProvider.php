@@ -67,7 +67,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
                         $this->objectPersister->insertMany($objects);
                     } catch(BulkResponseException $e) {
                         if ($loggerClosure) {
-                            $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
+                            $loggerClosure($batchSize, $nbObjects, sprintf('<error>%s</error>', $e->getMessage()));
                         }
                     }
                 }
