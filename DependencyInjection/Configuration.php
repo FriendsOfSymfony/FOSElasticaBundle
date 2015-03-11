@@ -13,7 +13,7 @@ class Configuration implements ConfigurationInterface
      *
      * @var array
      */
-    private $supportedDrivers = array('orm', 'mongodb', 'propel');
+    private $supportedDrivers = array('orm', 'mongodb', 'propel', 'phpcr');
 
     /**
      * If the kernel is running in debug mode.
