@@ -70,16 +70,15 @@ class PopulateCommand extends ContainerAwareCommand
     }
 
     /**
-     * @see Symfony\Component\Console\Command\Command::execute()
+     * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $index         = $input->getOption('index');
-        $type          = $input->getOption('type');
-        $reset         = !$input->getOption('no-reset');
-        $options       = $input->getOptions();
-
-        $options['ignore-errors'] = $input->hasOption('ignore-errors');
+        $index = $input->getOption('index');
+        $type = $input->getOption('type');
+        $reset = !$input->getOption('no-reset');
+        $options = $input->getOptions();
+        $options['ignore-errors'] = $input->getOption('ignore-errors');
 
         if ($input->isInteractive() && $reset && $input->getOption('offset')) {
             /** @var DialogHelper $dialog */

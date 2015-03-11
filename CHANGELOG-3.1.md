@@ -31,3 +31,5 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
    that property while transforming. Combined with the above POST_TRANSFORM event
    developers can now create calculated dynamic properties on Elastica documents
    for indexing. #794
+ * Fixed a case where ProgressCommand would always ignore errors regardless of
+   --ignore-errors being passed or not.
