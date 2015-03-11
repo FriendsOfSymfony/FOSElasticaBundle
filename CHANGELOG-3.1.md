@@ -35,3 +35,6 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
    for indexing. #794
  * Fixed a case where ProgressCommand would always ignore errors regardless of
    --ignore-errors being passed or not.
+ * Added a `SliceFetcher` abstraction for Doctrine providers that get more
+   information about the previous slice allowing for optimising queries during
+   population. #725

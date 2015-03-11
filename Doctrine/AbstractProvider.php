@@ -10,6 +10,14 @@ use FOS\ElasticaBundle\Provider\IndexableInterface;
 
 abstract class AbstractProvider extends BaseAbstractProvider
 {
+    /**
+     * @var SliceFetcherInterface
+     */
+    private $sliceFetcher;
+
+    /**
+     * @var ManagerRegistry
+     */
     protected $managerRegistry;
 
     /**
@@ -20,13 +28,15 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * @param string $objectClass
      * @param array $options
      * @param ManagerRegistry $managerRegistry
+     * @param SliceFetcherInterface $sliceFetcher
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
         IndexableInterface $indexable,
         $objectClass,
         array $options,
-        ManagerRegistry $managerRegistry
+        ManagerRegistry $managerRegistry,
+        SliceFetcherInterface $sliceFetcher = null
     ) {
         parent::__construct($objectPersister, $indexable, $objectClass, array_merge(array(
             'clear_object_manager' => true,
@@ -36,6 +46,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
         ), $options));
 
         $this->managerRegistry = $managerRegistry;
+        $this->sliceFetcher = $sliceFetcher;
     }
 
     /**
@@ -55,8 +66,9 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
         $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
 
+        $objects = array();
         for (; $offset < $nbObjects; $offset += $batchSize) {
-            $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
+            $objects = $this->getSlice($queryBuilder, $batchSize, $offset, $objects);
             $objects = array_filter($objects, array($this, 'isObjectIndexable'));
 
             if ($objects) {
@@ -87,6 +99,36 @@ abstract class AbstractProvider extends BaseAbstractProvider
         if (!$this->options['debug_logging']) {
             $this->enableLogging($logger);
         }
+    }
+
+    /**
+     * If this Provider has a SliceFetcher defined, we use it instead of falling back to
+     * the fetchSlice methods defined in the ORM/MongoDB subclasses.
+     *
+     * @param $queryBuilder
+     * @param int $limit
+     * @param int $offset
+     * @param array $lastSlice
+     * @return array
+     */
+    protected function getSlice($queryBuilder, $limit, $offset, $lastSlice)
+    {
+        if (!$this->sliceFetcher) {
+            return $this->fetchSlice($queryBuilder, $limit, $offset);
+        }
+
+        $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
+        $identifierFieldNames = $manager
+            ->getClassMetadata($this->objectClass)
+            ->getIdentifierFieldNames();
+
+        return $this->sliceFetcher->fetch(
+            $queryBuilder,
+            $limit,
+            $offset,
+            $lastSlice,
+            $identifierFieldNames
+        );
     }
 
     /**
