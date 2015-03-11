@@ -26,6 +26,8 @@ $userPaginator = $finder->findPaginated('bob');
 $countOfResults = $userPaginator->getNbResults();
 
 // Option 3b. KnpPaginator resultset
+$paginator = $this->get('knp_paginator');
+$userPaginator = $paginator->paginate($finder->createPaginatorAdapter('bob'));
 
 ```
 
