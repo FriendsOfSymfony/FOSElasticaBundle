@@ -28,7 +28,8 @@ class ProgressClosureBuilder
      */
     public function build(OutputInterface $output, $action, $index, $type)
     {
-        if (!class_exists('Symfony\Component\Console\Helper\ProgressBar')) {
+        if (!class_exists('Symfony\Component\Console\Helper\ProgressBar') ||
+            !is_callable(array('Symfony\Component\Console\Helper\ProgressBar', 'getProgress'))) {
             return $this->buildLegacy($output, $action, $index, $type);
         }
 
@@ -42,10 +43,6 @@ class ProgressClosureBuilder
 
             $progress->setMessage(sprintf('<info>%s</info> <comment>%s/%s</comment>', $action, $index, $type));
             $progress->advance($increment);
-
-            if ($progress->getProgressPercent() >= 1.0) {
-                $progress->finish();
-            }
         };
     }
 
