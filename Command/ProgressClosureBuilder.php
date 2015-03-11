@@ -35,10 +35,16 @@ class ProgressClosureBuilder
 
         $progress = null;
 
-        return function ($increment, $totalObjects) use (&$progress, $output, $action, $index, $type) {
+        return function ($increment, $totalObjects, $message = null) use (&$progress, $output, $action, $index, $type) {
             if (null === $progress) {
                 $progress = new ProgressBar($output, $totalObjects);
                 $progress->start();
+            }
+
+            if (null !== $message) {
+                $progress->clear();
+                $output->writeln(sprintf('<info>%s</info> <error>%s</error>', $action, $message));
+                $progress->display();
             }
 
             $progress->setMessage(sprintf('<info>%s</info> <comment>%s/%s</comment>', $action, $index, $type));
@@ -62,9 +68,13 @@ class ProgressClosureBuilder
         $lastStep = null;
         $current = 0;
 
-        return function ($increment, $totalObjects) use ($output, $action, $index, $type, &$lastStep, &$current) {
+        return function ($increment, $totalObjects, $message = null) use ($output, $action, $index, $type, &$lastStep, &$current) {
             if ($current + $increment > $totalObjects) {
                 $increment = $totalObjects - $current;
+            }
+
+            if (null !== $message) {
+                $output->writeln(sprintf('<info>%s</info> <error>%s</error>', $action, $message));
             }
 
             $currentTime = microtime(true);
