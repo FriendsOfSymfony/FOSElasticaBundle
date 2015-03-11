@@ -26,7 +26,9 @@ $userPaginator = $finder->findPaginated('bob');
 $countOfResults = $userPaginator->getNbResults();
 
 // Option 3b. KnpPaginator resultset
-
+$paginator = $this->get('knp_paginator');
+$results = $finder->createPaginatorAdapter('bob');
+$pagination = $paginator->paginate($results, $page, 10);
 ```
 
 Faceted Searching
