@@ -178,14 +178,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $nbObjects = 1;
         $objects = array(1);
 
-        $provider = $this->getMockAbstractProvider();
+        $provider = $this->getMockAbstractProvider(true);
 
         $provider->expects($this->any())
             ->method('countObjects')
             ->will($this->returnValue($nbObjects));
 
-        $provider->expects($this->any())
-            ->method('fetchSlice')
+        $this->sliceFetcher->expects($this->any())
+            ->method('fetch')
             ->will($this->returnValue($objects));
 
         $this->indexable->expects($this->any())

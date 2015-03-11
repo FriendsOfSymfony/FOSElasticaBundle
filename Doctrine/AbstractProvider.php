@@ -10,8 +10,15 @@ use FOS\ElasticaBundle\Provider\IndexableInterface;
 
 abstract class AbstractProvider extends BaseAbstractProvider
 {
+    /**
+     * @var SliceFetcherInterface
+     */
+    private $sliceFetcher;
+
+    /**
+     * @var ManagerRegistry
+     */
     protected $managerRegistry;
-    protected $sliceFetcher;
 
     /**
      * Constructor.
