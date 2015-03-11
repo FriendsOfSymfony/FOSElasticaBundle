@@ -48,7 +48,7 @@ class AliasProcessor
      * @throws AliasIsIndexException
      * @throws \RuntimeException
      */
-    public function switchIndexAlias(IndexConfig $indexConfig, Index $index, $force = false)
+    public function switchIndexAlias(IndexConfig $indexConfig, Index $index, $force = false, $deleteOldIndex = true)
     {
         $client = $index->getClient();
 
@@ -117,7 +117,7 @@ class AliasProcessor
         }
 
         // Delete the old index after the alias has been switched
-        if ($oldIndexName) {
+        if ($oldIndexName && $deleteOldIndex) {
             $oldIndex = new Index($client, $oldIndexName);
             try {
                 $oldIndex->delete();
@@ -142,7 +142,7 @@ class AliasProcessor
      * @return array
      * @throws AliasIsIndexException
      */
-    private function getAliasedIndexes(Client $client, $aliasName)
+    public function getAliasedIndexes(Client $client, $aliasName)
     {
         $aliasesInfo = $client->request('_aliases', 'GET')->getData();
         $aliasedIndexes = array();

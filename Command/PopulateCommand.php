@@ -34,6 +34,11 @@ class PopulateCommand extends ContainerAwareCommand
     private $resetter;
 
     /**
+     * @var LoggerClosureHelper
+     */
+    private $loggerClosureHelper;
+
+    /**
      * @see Symfony\Component\Console\Command\Command::configure()
      */
     protected function configure()
@@ -59,6 +64,7 @@ class PopulateCommand extends ContainerAwareCommand
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
         $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
+        $this->loggerClosureHelper = new LoggerClosureHelper();
     }
 
     /**
@@ -103,77 +109,15 @@ class PopulateCommand extends ContainerAwareCommand
     /**
      * @param ProviderInterface $provider
      * @param OutputInterface $output
-     * @param string $input
+     * @param string $index
      * @param string $type
      * @param array $options
      */
-    private function doPopulateType(ProviderInterface $provider, OutputInterface $output, $input, $type, $options)
+    private function doPopulateType(ProviderInterface $provider, OutputInterface $output, $index, $type, $options)
     {
-        $loggerClosure = $this->getLoggerClosure($output, $input, $type);
+        $loggerClosure = $this->loggerClosureHelper->getLoggerClosure($output, '<info>Populating</info> <comment>%s/%s</comment>', array($index, $type));
 
         $provider->populate($loggerClosure, $options);
-    }
-
-    /**
-     * Builds a loggerClosure to be called from inside the Provider to update the command
-     * line.
-     *
-     * @param OutputInterface $output
-     * @param string $index
-     * @param string $type
-     * @return callable
-     */
-    private function getLoggerClosure(OutputInterface $output, $index, $type)
-    {
-        if (!class_exists('Symfony\Component\Console\Helper\ProgressBar')) {
-            $lastStep = null;
-            $current = 0;
-
-            return function ($increment, $totalObjects) use ($output, $index, $type, &$lastStep, &$current) {
-                if ($current + $increment > $totalObjects) {
-                    $increment = $totalObjects - $current;
-                }
-
-                $currentTime = microtime(true);
-                $timeDifference = $currentTime - $lastStep;
-                $objectsPerSecond = $lastStep ? ($increment / $timeDifference) : $increment;
-                $lastStep = $currentTime;
-                $current += $increment;
-                $percent = 100 * $current / $totalObjects;
-
-                $output->writeln(sprintf(
-                    '<info>Populating</info> <comment>%s/%s</comment> %0.1f%% (%d/%d), %d objects/s (RAM: current=%uMo peak=%uMo)',
-                    $index,
-                    $type,
-                    $percent,
-                    $current,
-                    $totalObjects,
-                    $objectsPerSecond,
-                    round(memory_get_usage() / (1024 * 1024)),
-                    round(memory_get_peak_usage() / (1024 * 1024))
-                ));
-            };
-        }
-
-        ProgressBar::setFormatDefinition('normal', " %current%/%max% [%bar%] %percent:3s%%\n%message%");
-        ProgressBar::setFormatDefinition('verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%\n%message%");
-        ProgressBar::setFormatDefinition('very_verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n%message%");
-        ProgressBar::setFormatDefinition('debug', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%\n%message%");
-        $progress = null;
-
-        return function ($increment, $totalObjects) use (&$progress, $output, $index, $type) {
-            if (null === $progress) {
-                $progress = new ProgressBar($output, $totalObjects);
-                $progress->start();
-            }
-
-            $progress->setMessage(sprintf('<info>Populating</info> <comment>%s/%s</comment>', $index, $type));
-            $progress->advance($increment);
-
-            if ($progress->getProgressPercent() >= 1.0) {
-                $progress->finish();
-            }
-        };
     }
 
     /**
