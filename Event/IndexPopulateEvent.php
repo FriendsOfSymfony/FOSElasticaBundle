@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -13,7 +14,7 @@ namespace FOS\ElasticaBundle\Event;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Populate Event
+ * Index Populate Event
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
@@ -71,5 +72,13 @@ class IndexPopulateEvent extends Event
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * @param boolean $reset
+     */
+    public function setReset($reset)
+    {
+        $this->reset = $reset;
     }
 }

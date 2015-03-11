@@ -110,24 +110,6 @@ class PopulateCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param ProviderInterface $provider
-     * @param OutputInterface $output
-     * @param string $index
-     * @param string $type
-     * @param array $options
-     */
-    private function doPopulateType(ProviderInterface $provider, OutputInterface $output, $index, $type, $options)
-    {
-        $event = new TypePopulateEvent($index, $type, $options);
-        $this->dispatcher->dispatch(TypePopulateEvent::PRE_TYPE_POPULATE, $event);
-
-        $loggerClosure = $this->getLoggerClosure($output, $index, $type);
-        $provider->populate($loggerClosure, $event->getOptions());
-
-        $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
-    }
-
-    /**
      * Builds a loggerClosure to be called from inside the Provider to update the command
      * line.
      *
@@ -210,7 +192,7 @@ class PopulateCommand extends ContainerAwareCommand
         $providers = $this->providerRegistry->getIndexProviders($index);
 
         foreach ($providers as $type => $provider) {
-            $this->doPopulateType($provider, $output, $index, $type, $event->getOptions());
+            $this->populateIndexType($output, $index, $type, false, $event->getOptions());
         }
 
         $this->dispatcher->dispatch(IndexPopulateEvent::POST_INDEX_POPULATE, $event);
@@ -229,13 +211,19 @@ class PopulateCommand extends ContainerAwareCommand
      */
     private function populateIndexType(OutputInterface $output, $index, $type, $reset, $options)
     {
-        if ($reset) {
+        $event = new TypePopulateEvent($index, $type, $reset, $options);
+        $this->dispatcher->dispatch(TypePopulateEvent::PRE_TYPE_POPULATE, $event);
+
+        if ($event->isReset()) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
             $this->resetter->resetIndexType($index, $type);
         }
 
         $provider = $this->providerRegistry->getProvider($index, $type);
-        $this->doPopulateType($provider, $output, $index, $type, $options);
+        $loggerClosure = $this->getLoggerClosure($output, $index, $type);
+        $provider->populate($loggerClosure, $event->getOptions());
+
+        $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
 
         $this->refreshIndex($output, $index, false);
     }
