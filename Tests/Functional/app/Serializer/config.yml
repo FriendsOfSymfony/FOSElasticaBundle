@@ -47,4 +47,3 @@ fos_elastica:
                     serializer:
                         groups: ['search', 'Default']
                         version: 1.1
-

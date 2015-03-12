@@ -6,7 +6,7 @@ use Elastica\ResultSet;
 use Elastica\Result;
 
 /**
- * Raw partial results transforms to a simple array
+ * Raw partial results transforms to a simple array.
  */
 class RawPartialResults implements PartialResultsInterface
 {
@@ -25,7 +25,7 @@ class RawPartialResults implements PartialResultsInterface
      */
     public function toArray()
     {
-        return array_map(function(Result $result) {
+        return array_map(function (Result $result) {
             return $result->getSource();
         }, $this->resultSet->getResults());
     }
@@ -47,9 +47,9 @@ class RawPartialResults implements PartialResultsInterface
             return $this->resultSet->getFacets();
         }
 
-        return null;
+        return;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -59,6 +59,6 @@ class RawPartialResults implements PartialResultsInterface
             return $this->resultSet->getAggregations();
         }
 
-        return null;
+        return;
     }
 }

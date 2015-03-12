@@ -27,6 +27,7 @@ class MappingBuilder
      * Builds mappings for an entire index.
      *
      * @param IndexConfig $indexConfig
+     *
      * @return array
      */
     public function buildIndexMapping(IndexConfig $indexConfig)
@@ -54,6 +55,7 @@ class MappingBuilder
      * Builds mappings for a single type.
      *
      * @param TypeConfig $typeConfig
+     *
      * @return array
      */
     public function buildTypeMapping(TypeConfig $typeConfig)
@@ -95,7 +97,7 @@ class MappingBuilder
 
         if (!$mapping) {
             // Empty mapping, we want it encoded as a {} instead of a []
-            $mapping = new \stdClass;
+            $mapping = new \stdClass();
         }
 
         return $mapping;

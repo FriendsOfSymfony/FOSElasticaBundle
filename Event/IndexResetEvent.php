@@ -14,7 +14,7 @@ namespace FOS\ElasticaBundle\Event;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Index ResetEvent
+ * Index ResetEvent.
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */

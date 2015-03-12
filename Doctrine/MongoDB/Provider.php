@@ -27,9 +27,10 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * Reenables the logger with the previously returned logger from disableLogging();
+     * Reenables the logger with the previously returned logger from disableLogging();.
      *
      * @param mixed $logger
+     *
      * @return mixed
      */
     protected function enableLogging($logger)

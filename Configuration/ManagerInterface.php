@@ -20,6 +20,7 @@ interface ManagerInterface
      * Returns configuration for an index.
      *
      * @param $index
+     *
      * @return IndexConfig
      */
     public function getIndexConfiguration($index);
@@ -36,6 +37,7 @@ interface ManagerInterface
      *
      * @param string $index
      * @param string $type
+     *
      * @return TypeConfig
      */
     public function getTypeConfiguration($index, $type);

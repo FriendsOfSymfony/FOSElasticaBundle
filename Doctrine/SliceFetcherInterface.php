@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Doctrine;
 
 /**
- * Fetches a slice of objects
+ * Fetches a slice of objects.
  *
  * @author Thomas Prelot <tprelot@gmail.com>
  */
@@ -17,7 +17,8 @@ interface SliceFetcherInterface
      * @param integer $offset
      * @param array   $previousSlice
      * @param array   $identifierFieldNames
+     *
      * @return array
      */
-    function fetch($queryBuilder, $limit, $offset, array $previousSlice, array $identifierFieldNames);
+    public function fetch($queryBuilder, $limit, $offset, array $previousSlice, array $identifierFieldNames);
 }

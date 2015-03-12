@@ -14,7 +14,7 @@ namespace FOS\ElasticaBundle\Event;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Index Populate Event
+ * Index Populate Event.
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
@@ -39,9 +39,9 @@ class IndexPopulateEvent extends Event
     private $options;
 
     /**
-     * @param string      $index
-     * @param boolean     $reset
-     * @param array       $options
+     * @param string  $index
+     * @param boolean $reset
+     * @param array   $options
      */
     public function __construct($index, $reset, $options)
     {

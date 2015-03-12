@@ -9,7 +9,7 @@ use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 /**
  * Inserts, replaces and deletes single objects in an elastica type, making use
  * of elastica's serializer support to convert objects in to elastica documents.
- * Accepts domain model objects and passes them directly to elastica
+ * Accepts domain model objects and passes them directly to elastica.
  *
  * @author Lea Haensenberber <lea.haensenberger@gmail.com>
  */
@@ -28,9 +28,10 @@ class ObjectSerializerPersister extends ObjectPersister
 
     /**
      * Transforms an object to an elastica document
-     * with just the identifier set
+     * with just the identifier set.
      *
      * @param object $object
+     *
      * @return Document the elastica document
      */
     public function transformToElasticaDocument($object)

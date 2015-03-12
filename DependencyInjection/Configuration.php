@@ -63,7 +63,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Adds the configuration for the "clients" key
+     * Adds the configuration for the "clients" key.
      */
     private function addClientsSection(ArrayNodeDefinition $rootNode)
     {
@@ -76,8 +76,8 @@ class Configuration implements ConfigurationInterface
                         ->performNoDeepMerging()
                         // BC - Renaming 'servers' node to 'connections'
                         ->beforeNormalization()
-                        ->ifTrue(function($v) { return isset($v['servers']); })
-                        ->then(function($v) {
+                        ->ifTrue(function ($v) { return isset($v['servers']); })
+                        ->then(function ($v) {
                             $v['connections'] = $v['servers'];
                             unset($v['servers']);
 
@@ -99,7 +99,7 @@ class Configuration implements ConfigurationInterface
                         ->ifTrue(function ($v) { return is_array($v) && !array_key_exists('connections', $v); })
                         ->then(function ($v) {
                             return array(
-                                'connections' => array($v)
+                                'connections' => array($v),
                             );
                         })
                         ->end()
@@ -111,8 +111,8 @@ class Configuration implements ConfigurationInterface
                                     ->children()
                                         ->scalarNode('url')
                                             ->validate()
-                                                ->ifTrue(function($url) { return $url && substr($url, -1) !== '/'; })
-                                                ->then(function($url) { return $url.'/'; })
+                                                ->ifTrue(function ($url) { return $url && substr($url, -1) !== '/'; })
+                                                ->then(function ($url) { return $url.'/'; })
                                             ->end()
                                         ->end()
                                         ->scalarNode('host')->end()
@@ -143,7 +143,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Adds the configuration for the "indexes" key
+     * Adds the configuration for the "indexes" key.
      */
     private function addIndexesSection(ArrayNodeDefinition $rootNode)
     {
@@ -198,8 +198,8 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 // BC - Renaming 'mappings' node to 'properties'
                 ->beforeNormalization()
-                ->ifTrue(function($v) { return array_key_exists('mappings', $v); })
-                ->then(function($v) {
+                ->ifTrue(function ($v) { return array_key_exists('mappings', $v); })
+                ->then(function ($v) {
                     $v['properties'] = $v['mappings'];
                     unset($v['mappings']);
 
@@ -422,7 +422,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Returns the array node used for "_all"
+     * Returns the array node used for "_all".
      */
     protected function getAllNode()
     {
@@ -441,7 +441,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Returns the array node used for "_timestamp"
+     * Returns the array node used for "_timestamp".
      */
     protected function getTimestampNode()
     {
@@ -462,7 +462,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Returns the array node used for "_ttl"
+     * Returns the array node used for "_ttl".
      */
     protected function getTtlNode()
     {
@@ -491,9 +491,9 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->validate()
-                ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
+                ->ifTrue(function ($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
                     ->thenInvalid('Propel doesn\'t support listeners')
-                ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
+                ->ifTrue(function ($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
                     ->thenInvalid('Propel doesn\'t support the "repository" parameter')
             ->end()
             ->children()

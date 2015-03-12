@@ -11,7 +11,7 @@ use Elastica\SearchableInterface;
 use Elastica\Query;
 
 /**
- * Finds elastica documents and map them to persisted objects
+ * Finds elastica documents and map them to persisted objects.
  */
 class TransformedFinder implements PaginatedFinderInterface
 {
@@ -25,11 +25,12 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * Search for a query string
+     * Search for a query string.
      *
-     * @param string $query
+     * @param string  $query
      * @param integer $limit
-     * @param array $options
+     * @param array   $options
+     *
      * @return array of model objects
      **/
     public function find($query, $limit = null, $options = array())
@@ -50,8 +51,9 @@ class TransformedFinder implements PaginatedFinderInterface
      * Find documents similar to one with passed id.
      *
      * @param integer $id
-     * @param array $params
-     * @param array $query
+     * @param array   $params
+     * @param array   $query
+     *
      * @return array of model objects
      **/
     public function moreLikeThis($id, $params = array(), $query = array())
@@ -65,7 +67,8 @@ class TransformedFinder implements PaginatedFinderInterface
     /**
      * @param $query
      * @param null|int $limit
-     * @param array $options
+     * @param array    $options
+     *
      * @return array
      */
     protected function search($query, $limit = null, $options = array())
@@ -80,10 +83,11 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * Gets a paginator wrapping the result of a search
+     * Gets a paginator wrapping the result of a search.
      *
      * @param string $query
-     * @param array $options
+     * @param array  $options
+     *
      * @return Pagerfanta
      */
     public function findPaginated($query, $options = array())

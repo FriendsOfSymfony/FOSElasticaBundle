@@ -31,7 +31,7 @@ class TransformerPass implements CompilerPassInterface
                     throw new InvalidArgumentException('The Transformer must have both a type and an index defined.');
                 }
 
-                $transformers[$tag['index']][$tag['type']]= new Reference($id);
+                $transformers[$tag['index']][$tag['type']] = new Reference($id);
             }
         }
 
