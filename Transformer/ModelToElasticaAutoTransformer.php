@@ -38,7 +38,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     /**
      * Instanciates a new Mapper.
      *
-     * @param array $options
+     * @param array                    $options
      * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(array $options = array(), EventDispatcherInterface $dispatcher = null)

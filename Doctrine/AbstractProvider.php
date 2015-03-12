@@ -77,7 +77,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
                 } else {
                     try {
                         $this->objectPersister->insertMany($objects);
-                    } catch(BulkResponseException $e) {
+                    } catch (BulkResponseException $e) {
                         if ($loggerClosure) {
                             $loggerClosure($batchSize, $nbObjects, sprintf('<error>%s</error>', $e->getMessage()));
                         }
@@ -106,9 +106,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * the fetchSlice methods defined in the ORM/MongoDB subclasses.
      *
      * @param $queryBuilder
-     * @param int $limit
-     * @param int $offset
+     * @param int   $limit
+     * @param int   $offset
      * @param array $lastSlice
+     *
      * @return array
      */
     protected function getSlice($queryBuilder, $limit, $offset, $lastSlice)

@@ -72,6 +72,7 @@ abstract class AbstractProvider implements ProviderInterface
      * Get string with RAM usage information (current and peak).
      *
      * @deprecated To be removed in 4.0
+     *
      * @return string
      */
     protected function getMemoryUsage()

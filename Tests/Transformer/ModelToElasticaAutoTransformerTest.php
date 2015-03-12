@@ -411,6 +411,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param null|\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+     *
      * @return ModelToElasticaAutoTransformer
      */
     private function getTransformer($dispatcher = null)

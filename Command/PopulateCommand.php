@@ -3,7 +3,6 @@
 namespace FOS\ElasticaBundle\Command;
 
 use FOS\ElasticaBundle\Event\IndexPopulateEvent;
-use FOS\ElasticaBundle\Event\PopulateEvent;
 use FOS\ElasticaBundle\Event\TypePopulateEvent;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -181,8 +180,8 @@ class PopulateCommand extends ContainerAwareCommand
      * Refreshes an index.
      *
      * @param OutputInterface $output
-     * @param string $index
-     * @param bool $postPopulate
+     * @param string          $index
+     * @param bool            $postPopulate
      */
     private function refreshIndex(OutputInterface $output, $index, $postPopulate = true)
     {

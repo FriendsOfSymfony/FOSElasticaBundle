@@ -71,6 +71,7 @@ interface ObjectPersisterInterface
      * If the object persister handles the given object.
      *
      * @param object $object
+     *
      * @return bool
      */
     public function handlesObject($object);

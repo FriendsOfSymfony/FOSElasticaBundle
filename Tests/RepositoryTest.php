@@ -57,8 +57,9 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param string $testQuery
-     * @param int $testLimit
+     * @param int    $testLimit
      * @param string $method
+     *
      * @return \FOS\ElasticaBundle\Finder\TransformedFinder|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getFinderMock($testQuery, $testLimit = null, $method = 'find')

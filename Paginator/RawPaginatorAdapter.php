@@ -36,7 +36,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * @var array for the facets
      */
     private $facets;
-    
+
     /**
      * @var array for the aggregations
      */
@@ -110,9 +110,12 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * Returns the number of results.
      *
-     * @param boolean $genuineTotal make the function return the `hits.total`
-     * value of the search result in all cases, instead of limiting it to the
-     * `size` request parameter.
+     * If genuineTotal is provided as true, total hits is returned from the
+     * hits.total value from the search results instead of just returning
+     * the requested size.
+     *
+     * @param boolean $genuineTotal
+     *
      * @return integer The number of results.
      */
     public function getTotalHits($genuineTotal = false)
@@ -139,13 +142,14 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
 
         return $this->facets;
     }
-    
+
     /**
-     * Returns Aggregations
+     * Returns Aggregations.
      *
      * @return mixed
      */
-    public function getAggregations() {
+    public function getAggregations()
+    {
         if (!isset($this->aggregations)) {
             $this->aggregations = $this->searchable->search($this->query)->getAggregations();
         }

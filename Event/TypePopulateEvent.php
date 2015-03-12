@@ -14,7 +14,7 @@ namespace FOS\ElasticaBundle\Event;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Type Populate Event
+ * Type Populate Event.
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
@@ -31,8 +31,8 @@ class TypePopulateEvent extends IndexPopulateEvent
     /**
      * @param string $index
      * @param string $type
-     * @param bool $reset
-     * @param array $options
+     * @param bool   $reset
+     * @param array  $options
      */
     public function __construct($index, $type, $reset, $options)
     {

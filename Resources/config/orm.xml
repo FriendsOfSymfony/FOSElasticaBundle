@@ -11,7 +11,7 @@
         <parameter key="fos_elastica.elastica_to_model_transformer.prototype.orm.class">FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer</parameter>
         <parameter key="fos_elastica.manager.orm.class">FOS\ElasticaBundle\Doctrine\RepositoryManager</parameter>
     </parameters>
-    
+
     <services>
         <service id="fos_elastica.slice_fetcher.orm" class="%fos_elastica.slice_fetcher.orm.class%">
         </service>

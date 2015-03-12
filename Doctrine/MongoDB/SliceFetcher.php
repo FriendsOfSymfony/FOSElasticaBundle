@@ -7,7 +7,7 @@ use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 use FOS\ElasticaBundle\Doctrine\SliceFetcherInterface;
 
 /**
- * Fetches a slice of objects
+ * Fetches a slice of objects.
  *
  * @author Thomas Prelot <tprelot@gmail.com>
  */
