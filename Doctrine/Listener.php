@@ -17,39 +17,39 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class Listener implements EventSubscriber
 {
     /**
-     * Object persister
+     * Object persister.
      *
      * @var ObjectPersister
      */
     protected $objectPersister;
 
     /**
-     * List of subscribed events
+     * List of subscribed events.
      *
      * @var array
      */
     protected $events;
 
     /**
-     * Configuration for the listener
+     * Configuration for the listener.
      *
      * @var string
      */
     private $config;
 
     /**
-     * Objects scheduled for insertion and replacement
+     * Objects scheduled for insertion and replacement.
      */
     public $scheduledForInsertion = array();
     public $scheduledForUpdate = array();
 
     /**
-     * IDs of objects scheduled for removal
+     * IDs of objects scheduled for removal.
      */
     public $scheduledForDeletion = array();
 
     /**
-     * PropertyAccessor instance
+     * PropertyAccessor instance.
      *
      * @var PropertyAccessorInterface
      */
@@ -64,10 +64,10 @@ class Listener implements EventSubscriber
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
-     * @param array $events
-     * @param IndexableInterface $indexable
-     * @param array $config
-     * @param null $logger
+     * @param array                    $events
+     * @param IndexableInterface       $indexable
+     * @param array                    $config
+     * @param null                     $logger
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
@@ -98,11 +98,13 @@ class Listener implements EventSubscriber
     }
 
     /**
-     * Provides unified method for retrieving a doctrine object from an EventArgs instance
+     * Provides unified method for retrieving a doctrine object from an EventArgs instance.
      *
-     * @param   EventArgs           $eventArgs
-     * @return  object              Entity | Document
-     * @throws  \RuntimeException   if no valid getter is found.
+     * @param EventArgs $eventArgs
+     *
+     * @return object Entity | Document
+     *
+     * @throws \RuntimeException if no valid getter is found.
      */
     private function getDoctrineObject(EventArgs $eventArgs)
     {
@@ -142,7 +144,7 @@ class Listener implements EventSubscriber
 
     /**
      * Delete objects preRemove instead of postRemove so that we have access to the id.  Because this is called
-     * preRemove, first check that the entity is managed by Doctrine
+     * preRemove, first check that the entity is managed by Doctrine.
      */
     public function preRemove(EventArgs $eventArgs)
     {
@@ -155,7 +157,7 @@ class Listener implements EventSubscriber
 
     /**
      * Persist scheduled objects to ElasticSearch
-     * After persisting, clear the scheduled queue to prevent multiple data updates when using multiple flush calls
+     * After persisting, clear the scheduled queue to prevent multiple data updates when using multiple flush calls.
      */
     private function persistScheduled()
     {
@@ -210,6 +212,7 @@ class Listener implements EventSubscriber
      * Checks if the object is indexable or not.
      *
      * @param object $object
+     *
      * @return bool
      */
     private function isObjectIndexable($object)

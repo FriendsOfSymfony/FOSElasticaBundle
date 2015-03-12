@@ -57,6 +57,7 @@ class ContainerSource implements SourceInterface
      * Builds TypeConfig objects for each type.
      *
      * @param array $config
+     *
      * @return array
      */
     protected function getTypes($config)

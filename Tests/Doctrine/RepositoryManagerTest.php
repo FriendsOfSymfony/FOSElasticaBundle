@@ -4,9 +4,13 @@ namespace FOS\ElasticaBundle\Tests\Doctrine;
 
 use FOS\ElasticaBundle\Doctrine\RepositoryManager;
 
-class CustomRepository{}
+class CustomRepository
+{
+}
 
-class Entity{}
+class Entity
+{
+}
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>

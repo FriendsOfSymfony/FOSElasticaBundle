@@ -10,7 +10,7 @@ use Elastica\Document;
 
 /**
  * Inserts, replaces and deletes single documents in an elastica type
- * Accepts domain model objects and converts them to elastica documents
+ * Accepts domain model objects and converts them to elastica documents.
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  */
@@ -34,6 +34,7 @@ class ObjectPersister implements ObjectPersisterInterface
      * If the ObjectPersister handles a given object.
      *
      * @param object $object
+     *
      * @return bool
      */
     public function handlesObject($object)
@@ -47,11 +48,11 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw
+     * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw.
      *
      * @param BulkException $e
+     *
      * @throws BulkException
-     * @return null
      */
     private function log(BulkException $e)
     {
@@ -64,7 +65,7 @@ class ObjectPersister implements ObjectPersisterInterface
 
     /**
      * Insert one object into the type
-     * The object will be transformed to an elastica document
+     * The object will be transformed to an elastica document.
      *
      * @param object $object
      */
@@ -74,10 +75,9 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Replaces one object in the type
+     * Replaces one object in the type.
      *
      * @param object $object
-     * @return null
      **/
     public function replaceOne($object)
     {
@@ -85,10 +85,9 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Deletes one object in the type
+     * Deletes one object in the type.
      *
      * @param object $object
-     * @return null
      **/
     public function deleteOne($object)
     {
@@ -96,11 +95,9 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Deletes one object in the type by id
+     * Deletes one object in the type by id.
      *
      * @param mixed $id
-     *
-     * @return null
      **/
     public function deleteById($id)
     {
@@ -108,7 +105,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk insert an array of objects in the type for the given method
+     * Bulk insert an array of objects in the type for the given method.
      *
      * @param array $objects array of domain model objects
      * @param string Method to call
@@ -148,7 +145,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk deletes an array of objects in the type
+     * Bulk deletes an array of objects in the type.
      *
      * @param array $objects array of domain model objects
      */
@@ -166,7 +163,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk deletes records from an array of identifiers
+     * Bulk deletes records from an array of identifiers.
      *
      * @param array $identifiers array of domain model object identifiers
      */
@@ -180,9 +177,10 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Transforms an object to an elastica document
+     * Transforms an object to an elastica document.
      *
      * @param object $object
+     *
      * @return Document the elastica document
      */
     public function transformToElasticaDocument($object)

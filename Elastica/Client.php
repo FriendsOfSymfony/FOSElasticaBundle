@@ -23,7 +23,7 @@ class Client extends BaseClient
     private $indexCache = array();
 
     /**
-     * Symfony's debugging Stopwatch
+     * Symfony's debugging Stopwatch.
      *
      * @var Stopwatch|null
      */
@@ -32,8 +32,9 @@ class Client extends BaseClient
     /**
      * @param string $path
      * @param string $method
-     * @param array $data
-     * @param array $query
+     * @param array  $data
+     * @param array  $query
+     *
      * @return \Elastica\Response
      */
     public function request($path, $method = Request::GET, $data = array(), array $query = array())
@@ -78,9 +79,9 @@ class Client extends BaseClient
      *
      * @param string $path
      * @param string $method
-     * @param array $data
-     * @param array $query
-     * @param int $start
+     * @param array  $data
+     * @param array  $query
+     * @param int    $start
      */
     private function logQuery($path, $method, $data, array $query, $start)
     {

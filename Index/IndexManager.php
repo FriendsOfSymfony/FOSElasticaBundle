@@ -22,7 +22,7 @@ class IndexManager
     }
 
     /**
-     * Gets all registered indexes
+     * Gets all registered indexes.
      *
      * @return array
      */
@@ -32,10 +32,12 @@ class IndexManager
     }
 
     /**
-     * Gets an index by its name
+     * Gets an index by its name.
      *
      * @param string $name Index to return, or the default index if null
+     *
      * @return Index
+     *
      * @throws \InvalidArgumentException if no index exists for the given name
      */
     public function getIndex($name = null)
@@ -52,7 +54,7 @@ class IndexManager
     }
 
     /**
-     * Gets the default index
+     * Gets the default index.
      *
      * @return Index
      */

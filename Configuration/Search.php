@@ -17,9 +17,10 @@ use FOS\ElasticaBundle\Annotation\Search as BaseSearch;
  * Annotation class for setting search repository.
  *
  * @Annotation
+ *
  * @deprecated Use FOS\ElasticaBundle\Annotation\Search instead
  * @Target("CLASS")
  */
 class Search extends BaseSearch
 {
-} 
+}

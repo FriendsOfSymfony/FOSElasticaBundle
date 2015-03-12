@@ -33,9 +33,9 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-       if (!class_exists('Elastica\Type')) {
-           $this->markTestSkipped('The Elastica library classes are not available');
-       }
+        if (!class_exists('Elastica\Type')) {
+            $this->markTestSkipped('The Elastica library classes are not available');
+        }
     }
 
     public function testThatCanReplaceObject()

@@ -29,7 +29,7 @@ class FantaPaginatorAdapter implements AdapterInterface
     }
 
     /**
-     * Returns Facets
+     * Returns Facets.
      *
      * @return mixed
      *

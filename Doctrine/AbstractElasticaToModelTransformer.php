@@ -10,24 +10,24 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 /**
  * Maps Elastica documents with Doctrine objects
  * This mapper assumes an exact match between
- * elastica documents ids and doctrine object ids
+ * elastica documents ids and doctrine object ids.
  */
 abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 {
     /**
-     * Manager registry
+     * Manager registry.
      */
     protected $registry = null;
 
     /**
-     * Class of the model to map to the elastica documents
+     * Class of the model to map to the elastica documents.
      *
      * @var string
      */
     protected $objectClass = null;
 
     /**
-     * Optional parameters
+     * Optional parameters.
      *
      * @var array
      */
@@ -39,18 +39,18 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     );
 
     /**
-     * PropertyAccessor instance
+     * PropertyAccessor instance.
      *
      * @var PropertyAccessorInterface
      */
     protected $propertyAccessor;
 
     /**
-     * Instantiates a new Mapper
+     * Instantiates a new Mapper.
      *
      * @param object $registry
      * @param string $objectClass
-     * @param array $options
+     * @param array  $options
      */
     public function __construct($registry, $objectClass, array $options = array())
     {
@@ -70,7 +70,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     }
 
     /**
-     * Set the PropertyAccessor
+     * Set the PropertyAccessor.
      *
      * @param PropertyAccessorInterface $propertyAccessor
      */
@@ -81,10 +81,12 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
 
     /**
      * Transforms an array of elastica objects into an array of
-     * model objects fetched from the doctrine repository
+     * model objects fetched from the doctrine repository.
      *
      * @param array $elasticaObjects of elastica objects
+     *
      * @throws \RuntimeException
+     *
      * @return array
      **/
     public function transform(array $elasticaObjects)
@@ -110,8 +112,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         $idPos = array_flip($ids);
         $identifier = $this->options['identifier'];
         $propertyAccessor = $this->propertyAccessor;
-        usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor)
-        {
+        usort($objects, function ($a, $b) use ($idPos, $identifier, $propertyAccessor) {
             return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
         });
 
@@ -145,11 +146,12 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     }
 
     /**
-     * Fetches objects by theses identifier values
+     * Fetches objects by theses identifier values.
      *
-     * @param array $identifierValues ids values
-     * @param Boolean $hydrate whether or not to hydrate the objects, false returns arrays
+     * @param array   $identifierValues ids values
+     * @param Boolean $hydrate          whether or not to hydrate the objects, false returns arrays
+     *
      * @return array of objects or arrays
      */
-    protected abstract function findByIdentifiers(array $identifierValues, $hydrate);
+    abstract protected function findByIdentifiers(array $identifierValues, $hydrate);
 }

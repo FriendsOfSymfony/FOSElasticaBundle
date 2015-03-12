@@ -11,7 +11,7 @@ interface PaginatorAdapterInterface
      *
      * @api
      */
-    function getTotalHits();
+    public function getTotalHits();
 
     /**
      * Returns an slice of the results.
@@ -23,12 +23,12 @@ interface PaginatorAdapterInterface
      *
      * @api
      */
-    function getResults($offset, $length);
+    public function getResults($offset, $length);
 
     /**
-     * Returns Facets
+     * Returns Facets.
      *
      * @return mixed
      */
-    function getFacets();
+    public function getFacets();
 }

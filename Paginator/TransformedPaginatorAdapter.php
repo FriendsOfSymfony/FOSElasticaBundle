@@ -7,15 +7,15 @@ use Elastica\SearchableInterface;
 use Elastica\Query;
 
 /**
- * Allows pagination of \Elastica\Query
+ * Allows pagination of \Elastica\Query.
  */
 class TransformedPaginatorAdapter extends RawPaginatorAdapter
 {
     private $transformer;
 
     /**
-     * @param SearchableInterface                 $searchable the object to search in
-     * @param Query                               $query the query to search
+     * @param SearchableInterface                 $searchable  the object to search in
+     * @param Query                               $query       the query to search
      * @param array                               $options
      * @param ElasticaToModelTransformerInterface $transformer the transformer for fetching the results
      */

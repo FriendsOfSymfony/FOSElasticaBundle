@@ -19,7 +19,7 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
     protected $objectClass = 'stdClass';
 
     /**
-     * Tests if ignore_missing option is properly handled in transformHybrid() method
+     * Tests if ignore_missing option is properly handled in transformHybrid() method.
      */
     public function testIgnoreMissingOptionDuringTransformHybrid()
     {

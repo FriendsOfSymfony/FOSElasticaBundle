@@ -13,14 +13,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $testQuery = 'Test Query';
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $finderMock->expects($this->once())
-            ->method('find')
-            ->with($this->equalTo($testQuery));
-
+        $finderMock = $this->getFinderMock($testQuery);
         $repository = new Repository($finderMock);
         $repository->find($testQuery);
     }
@@ -30,14 +23,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $testQuery = 'Test Query';
         $testLimit = 20;
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $finderMock->expects($this->once())
-            ->method('find')
-            ->with($this->equalTo($testQuery), $this->equalTo($testLimit));
-
+        $finderMock = $this->getFinderMock($testQuery, $testLimit);
         $repository = new Repository($finderMock);
         $repository->find($testQuery, $testLimit);
     }
@@ -46,14 +32,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $testQuery = 'Test Query';
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $finderMock->expects($this->once())
-            ->method('findPaginated')
-            ->with($this->equalTo($testQuery));
-
+        $finderMock = $this->getFinderMock($testQuery, array(), 'findPaginated');
         $repository = new Repository($finderMock);
         $repository->findPaginated($testQuery);
     }
@@ -62,14 +41,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $testQuery = 'Test Query';
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $finderMock->expects($this->once())
-            ->method('createPaginatorAdapter')
-            ->with($this->equalTo($testQuery));
-
+        $finderMock = $this->getFinderMock($testQuery, array(), 'createPaginatorAdapter');
         $repository = new Repository($finderMock);
         $repository->createPaginatorAdapter($testQuery);
     }
@@ -77,17 +49,27 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     public function testThatFindHybridCallsFindHybridOnFinder()
     {
         $testQuery = 'Test Query';
-        $testLimit = 20;
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
+        $finderMock = $this->getFinderMock($testQuery, null, 'findHybrid');
+        $repository = new Repository($finderMock);
+        $repository->findHybrid($testQuery);
+    }
+
+    /**
+     * @param string $testQuery
+     * @param int $testLimit
+     * @param string $method
+     * @return \FOS\ElasticaBundle\Finder\TransformedFinder|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getFinderMock($testQuery, $testLimit = null, $method = 'find')
+    {
         $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
         $finderMock->expects($this->once())
-            ->method('findHybrid')
+            ->method($method)
             ->with($this->equalTo($testQuery), $this->equalTo($testLimit));
 
-        $repository = new Repository($finderMock);
-        $repository->findHybrid($testQuery, $testLimit);
+        return $finderMock;
     }
 }

@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Provider;
 
 /**
- * Insert application domain objects into elastica types
+ * Insert application domain objects into elastica types.
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  */
@@ -14,7 +14,8 @@ interface ProviderInterface
      *
      * @param \Closure $loggerClosure
      * @param array    $options
+     *
      * @return
      */
-    function populate(\Closure $loggerClosure = null, array $options = array());
+    public function populate(\Closure $loggerClosure = null, array $options = array());
 }

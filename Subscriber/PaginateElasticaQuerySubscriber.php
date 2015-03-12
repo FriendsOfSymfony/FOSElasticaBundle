@@ -38,7 +38,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Adds knp paging sort to query
+     * Adds knp paging sort to query.
      *
      * @param ItemsEvent $event
      */
@@ -70,7 +70,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'knp_pager.items' => array('items', 1)
+            'knp_pager.items' => array('items', 1),
         );
     }
 }

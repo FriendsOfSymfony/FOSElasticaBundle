@@ -29,9 +29,10 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * Reenables the logger with the previously returned logger from disableLogging();
+     * Reenables the logger with the previously returned logger from disableLogging();.
      *
      * @param mixed $logger
+     *
      * @return mixed
      */
     protected function enableLogging($logger)
@@ -76,7 +77,7 @@ class Provider extends AbstractProvider
             throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ORM\QueryBuilder');
         }
 
-        /**
+        /*
          * An orderBy DQL  part is required to avoid feching the same row twice.
          * @see http://stackoverflow.com/questions/6314879/does-limit-offset-length-require-order-by-for-pagination
          * @see http://www.postgresql.org/docs/current/static/queries-limit.html

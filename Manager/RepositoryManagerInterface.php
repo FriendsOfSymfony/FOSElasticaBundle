@@ -12,7 +12,6 @@ use FOS\ElasticaBundle\Finder\FinderInterface;
  */
 interface RepositoryManagerInterface
 {
-
     /**
      * Adds entity name and its finder.
      * Custom repository class name can also be added.
@@ -24,7 +23,7 @@ interface RepositoryManagerInterface
     public function addEntity($entityName, FinderInterface $finder, $repositoryName = null);
 
     /**
-     * Return repository for entity
+     * Return repository for entity.
      *
      * Returns custom repository if one specified otherwise
      * returns a basic repository.

@@ -5,11 +5,11 @@ namespace FOS\ElasticaBundle\Tests\Client;
 use Elastica\Request;
 use Elastica\Transport\Null as NullTransport;
 
-class LoggingClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends \PHPUnit_Framework_TestCase
 {
     public function testRequestsAreLogged()
     {
-        $transport = new NullTransport;
+        $transport = new NullTransport();
 
         $connection = $this->getMock('Elastica\Connection');
         $connection->expects($this->any())->method('getTransportObject')->will($this->returnValue($transport));

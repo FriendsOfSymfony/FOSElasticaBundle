@@ -109,7 +109,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             'findAll',
             'findBy',
             'findOneBy',
-            'getClassName'
+            'getClassName',
         ));
 
         $this->manager->expects($this->any())

@@ -8,7 +8,7 @@ use Elastica\Type\Mapping;
 use FOS\ElasticaBundle\Configuration\ConfigManager;
 
 /**
- * Deletes and recreates indexes
+ * Deletes and recreates indexes.
  */
 class Resetter
 {
@@ -41,7 +41,7 @@ class Resetter
     }
 
     /**
-     * Deletes and recreates all indexes
+     * Deletes and recreates all indexes.
      */
     public function resetAllIndexes($populating = false, $force = false)
     {
@@ -55,8 +55,9 @@ class Resetter
      * with a randomised name for an alias to be set after population.
      *
      * @param string $indexName
-     * @param bool $populating
-     * @param bool $force If index exists with same name as alias, remove it
+     * @param bool   $populating
+     * @param bool   $force      If index exists with same name as alias, remove it
+     *
      * @throws \InvalidArgumentException if no index exists for the given name
      */
     public function resetIndex($indexName, $populating = false, $force = false)
@@ -77,10 +78,11 @@ class Resetter
     }
 
     /**
-     * Deletes and recreates a mapping type for the named index
+     * Deletes and recreates a mapping type for the named index.
      *
      * @param string $indexName
      * @param string $typeName
+     *
      * @throws \InvalidArgumentException if no index or type mapping exists for the given names
      * @throws ResponseException
      */
@@ -97,7 +99,7 @@ class Resetter
             }
         }
 
-        $mapping = new Mapping;
+        $mapping = new Mapping();
         foreach ($this->mappingBuilder->buildTypeMapping($typeConfig) as $name => $field) {
             $mapping->setParam($name, $field);
         }

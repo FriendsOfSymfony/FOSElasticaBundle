@@ -5,7 +5,7 @@ namespace FOS\ElasticaBundle\Propel;
 use FOS\ElasticaBundle\Provider\AbstractProvider;
 
 /**
- * Propel provider
+ * Propel provider.
  *
  * @author William Durand <william.durand1@gmail.com>
  */
@@ -16,7 +16,7 @@ class Provider extends AbstractProvider
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
-        $queryClass = $this->objectClass . 'Query';
+        $queryClass = $this->objectClass.'Query';
         $nbObjects = $queryClass::create()->count();
         $offset = isset($options['offset']) ? intval($options['offset']) : 0;
         $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;

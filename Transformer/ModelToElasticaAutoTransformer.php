@@ -8,28 +8,28 @@ use Elastica\Document;
 /**
  * Maps Elastica documents with Doctrine objects
  * This mapper assumes an exact match between
- * elastica documents ids and doctrine object ids
+ * elastica documents ids and doctrine object ids.
  */
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Optional parameters
+     * Optional parameters.
      *
      * @var array
      */
     protected $options = array(
-        'identifier' => 'id'
+        'identifier' => 'id',
     );
 
     /**
-     * PropertyAccessor instance
+     * PropertyAccessor instance.
      *
      * @var PropertyAccessorInterface
      */
     protected $propertyAccessor;
 
     /**
-     * Instanciates a new Mapper
+     * Instanciates a new Mapper.
      *
      * @param array $options
      */
@@ -39,7 +39,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     }
 
     /**
-     * Set the PropertyAccessor
+     * Set the PropertyAccessor.
      *
      * @param PropertyAccessorInterface $propertyAccessor
      */
@@ -49,7 +49,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     }
 
     /**
-     * Transforms an object into an elastica object having the required keys
+     * Transforms an object into an elastica object having the required keys.
      *
      * @param object $object the object to convert
      * @param array  $fields the keys we want to have in the returned array
@@ -63,7 +63,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         foreach ($fields as $key => $mapping) {
             if ($key == '_parent') {
-                $property = (null !== $mapping['property'])?$mapping['property']:$mapping['type'];
+                $property = (null !== $mapping['property']) ? $mapping['property'] : $mapping['type'];
                 $value = $this->propertyAccessor->getValue($object, $property);
                 $document->setParent($this->propertyAccessor->getValue($value, $mapping['identifier']));
                 continue;
@@ -96,10 +96,10 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     }
 
     /**
-     * transform a nested document or an object property into an array of ElasticaDocument
+     * transform a nested document or an object property into an array of ElasticaDocument.
      *
      * @param array|\Traversable|\ArrayAccess $objects the object to convert
-     * @param array $fields the keys we want to have in the returned array
+     * @param array                           $fields  the keys we want to have in the returned array
      *
      * @return array
      */
@@ -123,7 +123,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     }
 
     /**
-     * Attempts to convert any type to a string or an array of strings
+     * Attempts to convert any type to a string or an array of strings.
      *
      * @param mixed $value
      *
@@ -131,12 +131,11 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected function normalizeValue($value)
     {
-        $normalizeValue = function(&$v)
-        {
+        $normalizeValue = function (&$v) {
             if ($v instanceof \DateTime) {
                 $v = $v->format('c');
             } elseif (!is_scalar($v) && !is_null($v)) {
-                $v = (string)$v;
+                $v = (string) $v;
             }
         };
 

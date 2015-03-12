@@ -13,7 +13,7 @@ use FOS\ElasticaBundle\Resetter;
 use FOS\ElasticaBundle\Provider\ProviderInterface;
 
 /**
- * Populate the search index
+ * Populate the search index.
  */
 class PopulateCommand extends ContainerAwareCommand
 {
@@ -118,7 +118,7 @@ class PopulateCommand extends ContainerAwareCommand
         $providers = $this->providerRegistry->getIndexProviders($index);
 
         foreach ($providers as $type => $provider) {
-            $loggerClosure = function($message) use ($output, $index, $type) {
+            $loggerClosure = function ($message) use ($output, $index, $type) {
                 $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
             };
 
@@ -146,7 +146,7 @@ class PopulateCommand extends ContainerAwareCommand
             $this->resetter->resetIndexType($index, $type);
         }
 
-        $loggerClosure = function($message) use ($output, $index, $type) {
+        $loggerClosure = function ($message) use ($output, $index, $type) {
             $output->writeln(sprintf('<info>Populating</info> %s/%s, %s', $index, $type, $message));
         };
 
