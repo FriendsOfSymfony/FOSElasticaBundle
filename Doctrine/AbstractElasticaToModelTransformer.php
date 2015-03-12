@@ -2,10 +2,10 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\AbstractElasticaToModelTransformer as BaseTransformer;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -16,6 +16,8 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 {
     /**
      * Manager registry.
+     *
+     * @var ManagerRegistry
      */
     protected $registry = null;
 
@@ -41,11 +43,11 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
     /**
      * Instantiates a new Mapper.
      *
-     * @param object $registry
+     * @param ManagerRegistry $registry
      * @param string $objectClass
      * @param array  $options
      */
-    public function __construct($registry, $objectClass, array $options = array())
+    public function __construct(ManagerRegistry $registry, $objectClass, array $options = array())
     {
         $this->registry    = $registry;
         $this->objectClass = $objectClass;
@@ -118,7 +120,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getIdentifierField()
     {

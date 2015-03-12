@@ -85,7 +85,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
         $objects = $this->transform($elasticaObjects);
 
         $result = array();
-        for ($i = 0; $i < count($elasticaObjects); $i++) {
+        for ($i = 0, $j = count($elasticaObjects); $i < $j; $i++) {
             $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
         }
 

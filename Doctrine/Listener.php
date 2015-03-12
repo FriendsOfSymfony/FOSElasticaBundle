@@ -3,8 +3,8 @@
 namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
-use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
+use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -19,14 +19,14 @@ class Listener
     /**
      * Object persister.
      *
-     * @var ObjectPersister
+     * @var ObjectPersisterInterface
      */
     protected $objectPersister;
 
     /**
      * Configuration for the listener.
      *
-     * @var string
+     * @var array
      */
     private $config;
 
@@ -84,7 +84,7 @@ class Listener
         $this->objectPersister = $objectPersister;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
 
-        if ($logger) {
+        if ($logger && $this->objectPersister instanceof ObjectPersister) {
             $this->objectPersister->setLogger($logger);
         }
     }

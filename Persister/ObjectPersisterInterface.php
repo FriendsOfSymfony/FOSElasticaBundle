@@ -11,6 +11,15 @@ namespace FOS\ElasticaBundle\Persister;
 interface ObjectPersisterInterface
 {
     /**
+     * Checks if this persister can handle the given object or not.
+     *
+     * @param mixed $object
+     *
+     * @return boolean
+     */
+    public function handlesObject($object);
+
+    /**
      * Insert one object into the type
      * The object will be transformed to an elastica document.
      *
@@ -66,13 +75,4 @@ interface ObjectPersisterInterface
      * @param array $identifiers array of domain model object identifiers
      */
     public function deleteManyByIdentifiers(array $identifiers);
-
-    /**
-     * If the object persister handles the given object.
-     *
-     * @param object $object
-     *
-     * @return bool
-     */
-    public function handlesObject($object);
 }

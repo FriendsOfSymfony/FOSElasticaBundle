@@ -71,7 +71,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             $objects = $this->getSlice($queryBuilder, $batchSize, $offset, $objects);
             $objects = array_filter($objects, array($this, 'isObjectIndexable'));
 
-            if ($objects) {
+            if (!empty($objects)) {
                 if (!$ignoreErrors) {
                     $this->objectPersister->insertMany($objects);
                 } else {
