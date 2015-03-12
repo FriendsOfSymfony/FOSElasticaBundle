@@ -22,7 +22,8 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
     /**
      * @param string $level
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return ElasticaLogger
      */
     private function getMockLoggerForLevelMessageAndContext($level, $message, $context)
@@ -45,7 +46,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetZeroIfNoQueriesAdded()
     {
-        $elasticaLogger = new ElasticaLogger;
+        $elasticaLogger = new ElasticaLogger();
         $this->assertEquals(0, $elasticaLogger->getNbQueries());
     }
 

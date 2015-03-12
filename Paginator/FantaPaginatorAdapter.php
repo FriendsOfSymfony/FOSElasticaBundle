@@ -20,8 +20,6 @@ class FantaPaginatorAdapter implements AdapterInterface
      * Returns the number of results.
      *
      * @return integer The number of results.
-     *
-     * @api
      */
     public function getNbResults()
     {
@@ -29,15 +27,25 @@ class FantaPaginatorAdapter implements AdapterInterface
     }
 
     /**
-     * Returns Facets
+     * Returns Facets.
+     *
+     * @return mixed
+     */
+    public function getFacets()
+    {
+        return $this->adapter->getFacets();
+    }
+
+    /**
+     * Returns Aggregations.
      *
      * @return mixed
      *
      * @api
      */
-    public function getFacets()
+    public function getAggregations()
     {
-        return $this->adapter->getFacets();
+        return $this->adapter->getAggregations();
     }
 
     /**
@@ -47,8 +55,6 @@ class FantaPaginatorAdapter implements AdapterInterface
      * @param integer $length The length.
      *
      * @return array|\Traversable The slice.
-     *
-     * @api
      */
     public function getSlice($offset, $length)
     {

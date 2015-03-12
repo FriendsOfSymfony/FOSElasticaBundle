@@ -6,13 +6,6 @@ use FOS\ElasticaBundle\Tests\Doctrine\ListenerTest as BaseListenerTest;
 
 class ListenerTest extends BaseListenerTest
 {
-    public function setUp()
-    {
-        if (!class_exists('Doctrine\ORM\EntityManager')) {
-            $this->markTestSkipped('Doctrine ORM is not available.');
-        }
-    }
-
     protected function getClassMetadataClass()
     {
         return 'Doctrine\ORM\Mapping\ClassMetadata';

@@ -33,7 +33,7 @@ class Indexable implements IndexableInterface
     private $container;
 
     /**
-     * An instance of ExpressionLanguage
+     * An instance of ExpressionLanguage.
      *
      * @var ExpressionLanguage
      */
@@ -47,7 +47,7 @@ class Indexable implements IndexableInterface
     private $initialisedCallbacks = array();
 
     /**
-     * PropertyAccessor instance
+     * PropertyAccessor instance.
      *
      * @var PropertyAccessorInterface
      */
@@ -68,7 +68,8 @@ class Indexable implements IndexableInterface
      *
      * @param string $indexName
      * @param string $typeName
-     * @param mixed $object
+     * @param mixed  $object
+     *
      * @return bool
      */
     public function isObjectIndexable($indexName, $typeName, $object)
@@ -82,7 +83,7 @@ class Indexable implements IndexableInterface
         if ($callback instanceof Expression) {
             return $this->getExpressionLanguage()->evaluate($callback, array(
                 'object' => $object,
-                $this->getExpressionVar($object) => $object
+                $this->getExpressionVar($object) => $object,
             ));
         }
 
@@ -96,12 +97,13 @@ class Indexable implements IndexableInterface
      *
      * @param string $type
      * @param object $object
+     *
      * @return mixed
      */
     private function buildCallback($type, $object)
     {
         if (!array_key_exists($type, $this->callbacks)) {
-            return null;
+            return;
         }
 
         $callback = $this->callbacks[$type];
@@ -148,6 +150,7 @@ class Indexable implements IndexableInterface
      *
      * @param string $type
      * @param object $object
+     *
      * @return mixed
      */
     private function getCallback($type, $object)
@@ -177,6 +180,7 @@ class Indexable implements IndexableInterface
 
     /**
      * @param mixed $object
+     *
      * @return string
      */
     private function getExpressionVar($object = null)

@@ -1,5 +1,9 @@
 language: php
 
+cache:
+    directories:
+        - $HOME/.composer/cache
+
 php:
   - 5.3
   - 5.4
@@ -21,7 +25,8 @@ before_script:
   - sh -c 'if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update symfony/symfony=$SYMFONY_VERSION; fi;'
   - composer install --dev --prefer-source
 
-script: vendor/bin/phpunit --coverage-clover=coverage.clover
+script:
+  - vendor/bin/phpunit --coverage-clover=coverage.clover
 
 services:
   - elasticsearch

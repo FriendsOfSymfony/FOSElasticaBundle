@@ -10,7 +10,7 @@ use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Resetter;
 
 /**
- * Reset search indexes
+ * Reset search indexes.
  */
 class ResetCommand extends ContainerAwareCommand
 {

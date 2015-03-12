@@ -8,7 +8,7 @@ use Elastica\ResultSet;
 use InvalidArgumentException;
 
 /**
- * Allows pagination of Elastica\Query. Does not map results
+ * Allows pagination of Elastica\Query. Does not map results.
  */
 class RawPaginatorAdapter implements PaginatorAdapterInterface
 {
@@ -38,10 +38,15 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     private $facets;
 
     /**
+     * @var array for the aggregations
+     */
+    private $aggregations;
+
+    /**
      * @see PaginatorAdapterInterface::__construct
      *
      * @param SearchableInterface $searchable the object to search in
-     * @param Query               $query the query to search
+     * @param Query               $query      the query to search
      * @param array               $options
      */
     public function __construct(SearchableInterface $searchable, Query $query, array $options = array())
@@ -56,7 +61,9 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      *
      * @param integer $offset
      * @param integer $itemCountPerPage
+     *
      * @throws \InvalidArgumentException
+     *
      * @return ResultSet
      */
     protected function getElasticaResults($offset, $itemCountPerPage)
@@ -82,6 +89,8 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         $resultSet = $this->searchable->search($query, $this->options);
         $this->totalHits = $resultSet->getTotalHits();
         $this->facets = $resultSet->getFacets();
+        $this->aggregations = $resultSet->getAggregations();
+
         return $resultSet;
     }
 
@@ -90,6 +99,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      *
      * @param int $offset
      * @param int $itemCountPerPage
+     *
      * @return PartialResultsInterface
      */
     public function getResults($offset, $itemCountPerPage)
@@ -100,14 +110,17 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * Returns the number of results.
      *
-     * @param boolean $genuineTotal make the function return the `hits.total`
-     * value of the search result in all cases, instead of limiting it to the
-     * `size` request parameter.
+     * If genuineTotal is provided as true, total hits is returned from the
+     * hits.total value from the search results instead of just returning
+     * the requested size.
+     *
+     * @param boolean $genuineTotal
+     *
      * @return integer The number of results.
      */
     public function getTotalHits($genuineTotal = false)
     {
-        if ( ! isset($this->totalHits)) {
+        if (! isset($this->totalHits)) {
             $this->totalHits = $this->searchable->search($this->query)->getTotalHits();
         }
 
@@ -117,13 +130,13 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     }
 
     /**
-     * Returns Facets
+     * Returns Facets.
      *
      * @return mixed
      */
     public function getFacets()
     {
-        if ( ! isset($this->facets)) {
+        if (! isset($this->facets)) {
             $this->facets = $this->searchable->search($this->query)->getFacets();
         }
 
@@ -131,7 +144,21 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     }
 
     /**
-     * Returns the Query
+     * Returns Aggregations.
+     *
+     * @return mixed
+     */
+    public function getAggregations()
+    {
+        if (!isset($this->aggregations)) {
+            $this->aggregations = $this->searchable->search($this->query)->getAggregations();
+        }
+
+        return $this->aggregations;
+    }
+
+    /**
+     * Returns the Query.
      *
      * @return Query the search query
      */

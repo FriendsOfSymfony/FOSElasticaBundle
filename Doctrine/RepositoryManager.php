@@ -25,7 +25,7 @@ class RepositoryManager extends BaseManager
     }
 
     /**
-     * Return repository for entity
+     * Return repository for entity.
      *
      * Returns custom repository if one specified otherwise
      * returns a basic repository.
@@ -35,7 +35,7 @@ class RepositoryManager extends BaseManager
         $realEntityName = $entityName;
         if (strpos($entityName, ':') !== false) {
             list($namespaceAlias, $simpleClassName) = explode(':', $entityName);
-            $realEntityName = $this->managerRegistry->getAliasNamespace($namespaceAlias) . '\\' . $simpleClassName;
+            $realEntityName = $this->managerRegistry->getAliasNamespace($namespaceAlias).'\\'.$simpleClassName;
         }
 
         return parent::getRepository($realEntityName);

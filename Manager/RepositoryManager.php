@@ -25,13 +25,13 @@ class RepositoryManager implements RepositoryManagerInterface
 
     public function addEntity($entityName, FinderInterface $finder, $repositoryName = null)
     {
-        $this->entities[$entityName]= array();
+        $this->entities[$entityName] = array();
         $this->entities[$entityName]['finder'] = $finder;
         $this->entities[$entityName]['repositoryName'] = $repositoryName;
     }
 
     /**
-     * Return repository for entity
+     * Return repository for entity.
      *
      * Returns custom repository if one specified otherwise
      * returns a basic repository.
@@ -63,6 +63,7 @@ class RepositoryManager implements RepositoryManagerInterface
         if ($annotation) {
             $this->entities[$entityName]['repositoryName']
                 = $annotation->repositoryClass;
+
             return $annotation->repositoryClass;
         }
 

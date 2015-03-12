@@ -32,13 +32,17 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             if (null != $facets) {
                 $event->setCustomPaginationParameter('facets', $facets);
             }
+            $aggregations = $results->getAggregations();
+            if (null != $aggregations) {
+                $event->setCustomPaginationParameter('aggregations', $aggregations);
+            }
 
             $event->stopPropagation();
         }
     }
 
     /**
-     * Adds knp paging sort to query
+     * Adds knp paging sort to query.
      *
      * @param ItemsEvent $event
      */
@@ -70,7 +74,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'knp_pager.items' => array('items', 1)
+            'knp_pager.items' => array('items', 1),
         );
     }
 }

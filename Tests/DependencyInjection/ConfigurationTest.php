@@ -6,7 +6,7 @@ use FOS\ElasticaBundle\DependencyInjection\Configuration;
 use Symfony\Component\Config\Definition\Processor;
 
 /**
- * ConfigurationTest
+ * ConfigurationTest.
  */
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +34,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(
             'clients' => array(),
             'indexes' => array(),
-            'default_manager' => 'orm'
+            'default_manager' => 'orm',
         ), $configuration);
     }
 
@@ -50,18 +50,18 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         array(
                             'url' => 'http://es1:9200',
                             'headers' => array(
-                                'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=='
-                            )
+                                'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==',
+                            ),
                         ),
                         array(
                             'url' => 'http://es2:9200',
                             'headers' => array(
-                                'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=='
-                            )
+                                'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==',
+                            ),
                         ),
-                    )
-                )
-            )
+                    ),
+                ),
+            ),
         ));
 
         $this->assertCount(2, $configuration['clients']);
@@ -91,9 +91,9 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 ),
                 'logging_custom' => array(
                     'url' => 'http://localhost:9200',
-                    'logger' => 'custom.service'
+                    'logger' => 'custom.service',
                 ),
-            )
+            ),
         ));
 
         $this->assertCount(4, $configuration['clients']);
@@ -131,8 +131,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         ),
                         'serializer' => array(
                             'groups' => array('Search'),
-                            'version' => 1
-                        )
+                            'version' => 1,
+                        ),
                     ),
                     'types' => array(
                         'test' => array(
@@ -144,20 +144,20 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                             'persistence' => array(
                                 'listener' => array(
                                     'logger' => true,
-                                )
-                            )
+                                ),
+                            ),
                         ),
                         'test2' => array(
                             'mappings' => array(
                                 'title' => null,
                                 'children' => array(
                                     'type' => 'nested',
-                                )
-                            )
-                        )
-                    )
-                )
-            )
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         ));
     }
 
@@ -169,7 +169,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                     'host' => 'localhost',
                     'port' => 9200,
                 ),
-            )
+            ),
         ));
 
         $this->assertTrue(empty($configuration['clients']['default']['connections'][0]['url']));
@@ -189,14 +189,32 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                                     'title' => array(),
                                     'published' => array('type' => 'datetime'),
                                     'body' => null,
-                                )
-                            )
-                        )
-                    )
-                )
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
             ));
 
         $this->assertCount(3, $configuration['indexes']['test']['types']['test']['properties']);
+    }
+
+    public function testUnconfiguredType()
+    {
+        $configuration = $this->getConfigs(array(
+                'clients' => array(
+                    'default' => array('url' => 'http://localhost:9200'),
+                ),
+                'indexes' => array(
+                    'test' => array(
+                        'types' => array(
+                            'test' => null,
+                        ),
+                    ),
+                ),
+            ));
+
+        $this->assertArrayHasKey('properties', $configuration['indexes']['test']['types']['test']);
     }
 
     public function testNestedProperties()
@@ -225,23 +243,23 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                                     'type' => 'nested',
                                     'properties' => array(
                                         'nested_field1' => array(
-                                            'type' => 'integer'
+                                            'type' => 'integer',
                                         ),
                                         'nested_field2' => array(
                                             'type' => 'object',
                                             'properties' => array(
                                                 'id' => array(
-                                                    'type' => 'integer'
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            )
+                                                    'type' => 'integer',
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         ));
     }
 }

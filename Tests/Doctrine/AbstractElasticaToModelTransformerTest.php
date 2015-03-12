@@ -19,7 +19,7 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
     protected $objectClass = 'stdClass';
 
     /**
-     * Tests if ignore_missing option is properly handled in transformHybrid() method
+     * Tests if ignore_missing option is properly handled in transformHybrid() method.
      */
     public function testIgnoreMissingOptionDuringTransformHybrid()
     {
@@ -55,10 +55,6 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        if (!interface_exists('Doctrine\Common\Persistence\ManagerRegistry')) {
-            $this->markTestSkipped('Doctrine Common is not present');
-        }
-
         $this->registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();

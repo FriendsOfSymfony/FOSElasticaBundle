@@ -47,6 +47,7 @@ class ConfigurationManagerTest extends WebTestCase
 
     /**
      * @param Client $client
+     *
      * @return \FOS\ElasticaBundle\Configuration\ConfigManager
      */
     private function getManager(Client $client)

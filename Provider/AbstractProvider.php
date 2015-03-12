@@ -5,7 +5,7 @@ namespace FOS\ElasticaBundle\Provider;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 
 /**
- * AbstractProvider
+ * AbstractProvider.
  */
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -33,9 +33,9 @@ abstract class AbstractProvider implements ProviderInterface
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
-     * @param IndexableInterface $indexable
-     * @param string $objectClass
-     * @param array $options
+     * @param IndexableInterface       $indexable
+     * @param string                   $objectClass
+     * @param array                    $options
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
@@ -56,6 +56,7 @@ abstract class AbstractProvider implements ProviderInterface
      * Checks if a given object should be indexed or not.
      *
      * @param object $object
+     *
      * @return bool
      */
     protected function isObjectIndexable($object)
@@ -68,9 +69,10 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * Get string with RAM usage information (current and peak)
+     * Get string with RAM usage information (current and peak).
      *
      * @deprecated To be removed in 4.0
+     *
      * @return string
      */
     protected function getMemoryUsage()
