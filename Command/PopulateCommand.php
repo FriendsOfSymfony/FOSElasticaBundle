@@ -16,7 +16,7 @@ use FOS\ElasticaBundle\Resetter;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
- * Populate the search index
+ * Populate the search index.
  */
 class PopulateCommand extends ContainerAwareCommand
 {

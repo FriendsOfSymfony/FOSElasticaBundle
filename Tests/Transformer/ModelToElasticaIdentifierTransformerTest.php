@@ -23,13 +23,6 @@ class POPO
 
 class ModelToElasticaIdentifierTransformerTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp()
-    {
-        if (!class_exists('Elastica\Document')) {
-            $this->markTestSkipped('The Elastica library classes are not available');
-        }
-    }
-
     public function testGetDocumentWithIdentifierOnly()
     {
         $transformer = $this->getTransformer();

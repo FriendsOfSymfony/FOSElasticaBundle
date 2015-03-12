@@ -47,7 +47,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $objectClasses = $this->collection->getObjectClass();
         $this->assertEquals(array(
             'type1' => 'FOS\ElasticaBundle\Tests\Transformer\POPO',
-            'type2' => 'FOS\ElasticaBundle\Tests\Transformer\POPO2'
+            'type2' => 'FOS\ElasticaBundle\Tests\Transformer\POPO2',
         ), $objectClasses);
     }
 
@@ -89,8 +89,8 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
 
         $this->transformers['type1']->expects($this->once())
          ->method('transform')
-         ->with(array($document1,$document2))
-         ->will($this->returnValue(array($result1,$result2)));
+         ->with(array($document1, $document2))
+         ->will($this->returnValue(array($result1, $result2)));
 
         $results = $this->collection->transform(array($document1, $document2));
 
@@ -120,8 +120,8 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
 
         return array(
             array(
-                $result, $transformedObject
-            )
+                $result, $transformedObject,
+            ),
         );
     }
 

@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Transformer;
 
 /**
- * Maps Elastica documents with model objects
+ * Maps Elastica documents with model objects.
  */
 interface HighlightableModelInterface
 {

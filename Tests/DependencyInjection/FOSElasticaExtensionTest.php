@@ -12,10 +12,10 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $config = Yaml::parse(file_get_contents(__DIR__.'/fixtures/config.yml'));
 
-        $containerBuilder = new ContainerBuilder;
+        $containerBuilder = new ContainerBuilder();
         $containerBuilder->setParameter('kernel.debug', true);
 
-        $extension = new FOSElasticaExtension;
+        $extension = new FOSElasticaExtension();
 
         $extension->load($config, $containerBuilder);
 

@@ -9,4 +9,3 @@ class AliasIsIndexException extends \Exception
         parent::__construct(sprintf('Expected alias %s instead of index', $indexName));
     }
 }
-

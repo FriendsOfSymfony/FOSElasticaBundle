@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -16,14 +17,14 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class Listener
 {
     /**
-     * Object persister
+     * Object persister.
      *
      * @var ObjectPersister
      */
     protected $objectPersister;
 
     /**
-     * Configuration for the listener
+     * Configuration for the listener.
      *
      * @var string
      */
@@ -44,14 +45,14 @@ class Listener
     public $scheduledForUpdate = array();
 
     /**
-     * IDs of objects scheduled for removal
+     * IDs of objects scheduled for removal.
      *
      * @var array
      */
     public $scheduledForDeletion = array();
 
     /**
-     * PropertyAccessor instance
+     * PropertyAccessor instance.
      *
      * @var PropertyAccessorInterface
      */
@@ -66,15 +67,15 @@ class Listener
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
-     * @param IndexableInterface $indexable
-     * @param array $config
-     * @param null $logger
+     * @param IndexableInterface       $indexable
+     * @param array                    $config
+     * @param LoggerInterface          $logger
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
         IndexableInterface $indexable,
         array $config = array(),
-        $logger = null
+        LoggerInterface $logger = null
     ) {
         $this->config = array_merge(array(
             'identifier' => 'id',
@@ -123,7 +124,7 @@ class Listener
 
     /**
      * Delete objects preRemove instead of postRemove so that we have access to the id.  Because this is called
-     * preRemove, first check that the entity is managed by Doctrine
+     * preRemove, first check that the entity is managed by Doctrine.
      *
      * @param LifecycleEventArgs $eventArgs
      */
@@ -138,7 +139,7 @@ class Listener
 
     /**
      * Persist scheduled objects to ElasticSearch
-     * After persisting, clear the scheduled queue to prevent multiple data updates when using multiple flush calls
+     * After persisting, clear the scheduled queue to prevent multiple data updates when using multiple flush calls.
      */
     private function persistScheduled()
     {
@@ -197,6 +198,7 @@ class Listener
      * Checks if the object is indexable or not.
      *
      * @param object $object
+     *
      * @return bool
      */
     private function isObjectIndexable($object)

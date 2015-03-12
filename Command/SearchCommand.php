@@ -11,7 +11,7 @@ use Elastica\Query;
 use Elastica\Result;
 
 /**
- * Searches a type
+ * Searches a type.
  */
 class SearchCommand extends ContainerAwareCommand
 {

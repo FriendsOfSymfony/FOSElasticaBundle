@@ -13,7 +13,6 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
      */
     private $indexManager;
 
-
     public function setUp()
     {
         foreach (array('index1', 'index2', 'index3') as $indexName) {

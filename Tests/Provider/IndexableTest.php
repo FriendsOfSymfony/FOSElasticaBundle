@@ -21,7 +21,7 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     public function testIndexableUnknown()
     {
         $indexable = new Indexable(array(), $this->container);
-        $index = $indexable->isObjectIndexable('index', 'type', new Entity);
+        $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
         $this->assertTrue($index);
     }
@@ -32,9 +32,9 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     public function testValidIndexableCallbacks($callback, $return)
     {
         $indexable = new Indexable(array(
-            'index/type' => $callback
+            'index/type' => $callback,
         ), $this->container);
-        $index = $indexable->isObjectIndexable('index', 'type', new Entity);
+        $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
         $this->assertEquals($return, $index);
     }
@@ -46,9 +46,9 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     public function testInvalidIsIndexableCallbacks($callback)
     {
         $indexable = new Indexable(array(
-            'index/type' => $callback
+            'index/type' => $callback,
         ), $this->container);
-        $indexable->isObjectIndexable('index', 'type', new Entity);
+        $indexable->isObjectIndexable('index', 'type', new Entity());
     }
 
     public function provideInvalidIsIndexableCallbacks()
@@ -67,7 +67,7 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
             array('isIndexable', false),
             array(array(new IndexableDecider(), 'isIndexable'), true),
             array(array('@indexableService', 'isIndexable'), true),
-            array(function(Entity $entity) { return $entity->maybeIndex(); }, true),
+            array(function (Entity $entity) { return $entity->maybeIndex(); }, true),
             array('entity.maybeIndex()', true),
             array('!object.isIndexable() && entity.property == "abc"', true),
             array('entity.property != "abc"', false),

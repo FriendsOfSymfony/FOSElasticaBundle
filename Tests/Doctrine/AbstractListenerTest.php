@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
 /**
- * See concrete MongoDB/ORM instances of this abstract test
+ * See concrete MongoDB/ORM instances of this abstract test.
  *
  * @author Richard Miller <info@limethinking.co.uk>
  */
@@ -213,8 +213,8 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param Listener\Entity $object
-     * @param string $indexName
-     * @param string $typeName
+     * @param string          $indexName
+     * @param string          $typeName
      */
     private function getMockPersister($object, $indexName, $typeName)
     {
@@ -247,10 +247,10 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string $indexName
-     * @param string $typeName
+     * @param string          $indexName
+     * @param string          $typeName
      * @param Listener\Entity $object
-     * @param boolean $return
+     * @param boolean         $return
      */
     private function getMockIndexable($indexName, $typeName, $object, $return = null)
     {
@@ -286,4 +286,3 @@ class Entity
         return $this->id;
     }
 }
-

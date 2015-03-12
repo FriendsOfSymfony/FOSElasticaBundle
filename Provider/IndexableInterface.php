@@ -18,7 +18,8 @@ interface IndexableInterface
      *
      * @param string $indexName
      * @param string $typeName
-     * @param mixed $object
+     * @param mixed  $object
+     *
      * @return bool
      */
     public function isObjectIndexable($indexName, $typeName, $object);
