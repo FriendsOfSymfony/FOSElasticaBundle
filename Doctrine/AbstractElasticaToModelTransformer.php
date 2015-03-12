@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Doctrine;
 
 use FOS\ElasticaBundle\HybridResult;
-use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOS\ElasticaBundle\Transformer\AbstractElasticaToModelTransformer as BaseTransformer;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -12,7 +12,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  * This mapper assumes an exact match between
  * elastica documents ids and doctrine object ids.
  */
-abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTransformerInterface
+abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 {
     /**
      * Manager registry.
@@ -39,13 +39,6 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     );
 
     /**
-     * PropertyAccessor instance.
-     *
-     * @var PropertyAccessorInterface
-     */
-    protected $propertyAccessor;
-
-    /**
      * Instantiates a new Mapper.
      *
      * @param object $registry
@@ -67,16 +60,6 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
     public function getObjectClass()
     {
         return $this->objectClass;
-    }
-
-    /**
-     * Set the PropertyAccessor.
-     *
-     * @param PropertyAccessorInterface $propertyAccessor
-     */
-    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
-    {
-        $this->propertyAccessor = $propertyAccessor;
     }
 
     /**
@@ -111,10 +94,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         // sort objects in the order of ids
         $idPos = array_flip($ids);
         $identifier = $this->options['identifier'];
-        $propertyAccessor = $this->propertyAccessor;
-        usort($objects, function ($a, $b) use ($idPos, $identifier, $propertyAccessor) {
-            return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
-        });
+        usort($objects, $this->getSortingClosure($idPos, $identifier));
 
         return $objects;
     }
