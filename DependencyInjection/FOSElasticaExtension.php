@@ -487,9 +487,10 @@ class FOSElasticaExtension extends Extension
             'indexName' => $indexName,
             'typeName' => $typeName,
         ));
-        if ($typeConfig['listener']['logger']) {
-            $listenerDef->replaceArgument(3, new Reference($typeConfig['listener']['logger']));
-        }
+        $listenerDef->replaceArgument(3, $typeConfig['listener']['logger'] ?
+            new Reference($typeConfig['listener']['logger']) :
+            null
+        );
 
         $tagName = null;
         switch ($typeConfig['driver']) {
