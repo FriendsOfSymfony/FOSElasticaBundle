@@ -29,7 +29,7 @@
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument type="collection" /> <!-- configuration -->
-            <argument on-invalid="ignore" /> <!-- logger -->
+            <argument type="service" on-invalid="ignore" /> <!-- logger -->
         </service>
 
         <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="%fos_elastica.elastica_to_model_transformer.prototype.orm.class%" public="false" abstract="true">
