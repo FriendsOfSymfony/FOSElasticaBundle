@@ -33,4 +33,4 @@ class ConfigSourcePass implements CompilerPassInterface
 
         $container->getDefinition('fos_elastica.config_manager')->replaceArgument(0, $sources);
     }
-} 
+}

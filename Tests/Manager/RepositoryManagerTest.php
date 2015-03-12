@@ -4,16 +4,19 @@ namespace FOS\ElasticaBundle\Tests\Manager;
 
 use FOS\ElasticaBundle\Manager\RepositoryManager;
 
-class CustomRepository{}
+class CustomRepository
+{
+}
 
-class Entity{}
+class Entity
+{
+}
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
 class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testThatGetRepositoryReturnsDefaultRepository()
     {
         /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */

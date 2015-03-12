@@ -16,10 +16,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
-     * @param IndexableInterface $indexable
-     * @param string $objectClass
-     * @param array $options
-     * @param ManagerRegistry $managerRegistry
+     * @param IndexableInterface       $indexable
+     * @param string                   $objectClass
+     * @param array                    $options
+     * @param ManagerRegistry          $managerRegistry
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
@@ -81,9 +81,9 @@ abstract class AbstractProvider extends BaseAbstractProvider
             } else {
                 try {
                     $this->objectPersister->insertMany($objects);
-                } catch(BulkResponseException $e) {
+                } catch (BulkResponseException $e) {
                     if ($loggerClosure) {
-                        $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
+                        $loggerClosure(sprintf('<error>%s</error>', $e->getMessage()));
                     }
                 }
             }
@@ -112,24 +112,26 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * Counts objects that would be indexed using the query builder.
      *
      * @param object $queryBuilder
+     *
      * @return integer
      */
-    protected abstract function countObjects($queryBuilder);
+    abstract protected function countObjects($queryBuilder);
 
     /**
      * Disables logging and returns the logger that was previously set.
      *
      * @return mixed
      */
-    protected abstract function disableLogging();
+    abstract protected function disableLogging();
 
     /**
-     * Reenables the logger with the previously returned logger from disableLogging();
+     * Reenables the logger with the previously returned logger from disableLogging();.
      *
      * @param mixed $logger
+     *
      * @return mixed
      */
-    protected abstract function enableLogging($logger);
+    abstract protected function enableLogging($logger);
 
     /**
      * Fetches a slice of objects using the query builder.
@@ -137,14 +139,15 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * @param object  $queryBuilder
      * @param integer $limit
      * @param integer $offset
+     *
      * @return array
      */
-    protected abstract function fetchSlice($queryBuilder, $limit, $offset);
+    abstract protected function fetchSlice($queryBuilder, $limit, $offset);
 
     /**
      * Creates the query builder, which will be used to fetch objects to index.
      *
      * @return object
      */
-    protected abstract function createQueryBuilder();
+    abstract protected function createQueryBuilder();
 }

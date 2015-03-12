@@ -6,14 +6,14 @@ use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Elastica\ResultSet;
 
 /**
- * Partial transformed result set
+ * Partial transformed result set.
  */
 class TransformedPartialResults extends RawPartialResults
 {
     protected $transformer;
 
     /**
-     * @param ResultSet $resultSet
+     * @param ResultSet                                                           $resultSet
      * @param \FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface $transformer
      */
     public function __construct(ResultSet $resultSet, ElasticaToModelTransformerInterface $transformer)

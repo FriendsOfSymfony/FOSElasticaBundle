@@ -16,10 +16,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if (!interface_exists('Doctrine\Common\Persistence\ManagerRegistry')) {
-            $this->markTestSkipped('Doctrine Common is not available.');
-        }
-
         $this->objectClass = 'objectClass';
         $this->options = array('debug_logging' => true, 'indexName' => 'index', 'typeName' => 'type');
 
@@ -84,7 +80,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         return array(
             array(
                 100,
-                array(range(1,100)),
+                array(range(1, 100)),
                 100,
             ),
             array(
@@ -231,7 +227,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->with('index', 'type', 2)
             ->will($this->returnValue(true));
 
-
         $this->objectPersister->expects($this->once())
             ->method('insertMany')
             ->with(array(1 => 2));
@@ -259,7 +254,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     private function getMockBulkResponseException()
     {
         return $this->getMock('Elastica\Exception\Bulk\ResponseException', null, array(
-            new ResponseSet(new Response(array()), array())
+            new ResponseSet(new Response(array()), array()),
         ));
     }
 
@@ -276,7 +271,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockObjectManager()
     {
-        return $this->getMock(__NAMESPACE__ . '\ObjectManager');
+        return $this->getMock(__NAMESPACE__.'\ObjectManager');
     }
 
     /**
@@ -302,5 +297,5 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
  */
 interface ObjectManager
 {
-    function clear();
+    public function clear();
 }

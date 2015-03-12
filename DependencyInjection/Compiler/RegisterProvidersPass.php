@@ -55,6 +55,7 @@ class RegisterProvidersPass implements CompilerPassInterface
      * Returns whether the class implements ProviderInterface.
      *
      * @param string $class
+     *
      * @return boolean
      */
     private function isProviderImplementation($class)

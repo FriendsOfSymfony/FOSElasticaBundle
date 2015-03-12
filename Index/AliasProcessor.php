@@ -24,7 +24,7 @@ class AliasProcessor
      * Sets the randomised root name for an index.
      *
      * @param IndexConfig $indexConfig
-     * @param Index $index
+     * @param Index       $index
      */
     public function setRootName(IndexConfig $indexConfig, Index $index)
     {
@@ -38,8 +38,9 @@ class AliasProcessor
      * $force will delete an index encountered where an alias is expected.
      *
      * @param IndexConfig $indexConfig
-     * @param Index $index
-     * @param bool $force
+     * @param Index       $index
+     * @param bool        $force
+     *
      * @throws AliasIsIndexException
      * @throws \RuntimeException
      */
@@ -53,7 +54,7 @@ class AliasProcessor
 
         try {
             $aliasedIndexes = $this->getAliasedIndexes($client, $aliasName);
-        } catch(AliasIsIndexException $e) {
+        } catch (AliasIsIndexException $e) {
             if (!$force) {
                 throw $e;
             }
@@ -68,7 +69,7 @@ class AliasProcessor
                     'Alias %s is used for multiple indexes: [%s].
                     Make sure it\'s either not used or is assigned to one index only',
                     $aliasName,
-                    join(', ', $aliasedIndexes)
+                    implode(', ', $aliasedIndexes)
                 )
             );
         }
@@ -78,13 +79,13 @@ class AliasProcessor
             // if the alias is set - add an action to remove it
             $oldIndexName = $aliasedIndexes[0];
             $aliasUpdateRequest['actions'][] = array(
-                'remove' => array('index' => $oldIndexName, 'alias' => $aliasName)
+                'remove' => array('index' => $oldIndexName, 'alias' => $aliasName),
             );
         }
 
         // add an action to point the alias to the new index
         $aliasUpdateRequest['actions'][] = array(
-            'add' => array('index' => $newIndexName, 'alias' => $aliasName)
+            'add' => array('index' => $newIndexName, 'alias' => $aliasName),
         );
 
         try {
@@ -129,11 +130,13 @@ class AliasProcessor
     }
 
     /**
-     * Returns array of indexes which are mapped to given alias
+     * Returns array of indexes which are mapped to given alias.
      *
      * @param Client $client
      * @param string $aliasName Alias name
+     *
      * @return array
+     *
      * @throws AliasIsIndexException
      */
     private function getAliasedIndexes(Client $client, $aliasName)
@@ -159,7 +162,7 @@ class AliasProcessor
     }
 
     /**
-     * Delete an index
+     * Delete an index.
      *
      * @param Client $client
      * @param string $indexName Index name to delete

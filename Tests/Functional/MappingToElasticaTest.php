@@ -100,6 +100,7 @@ class MappingToElasticaTest extends WebTestCase
 
     /**
      * @param Client $client
+     *
      * @return \FOS\ElasticaBundle\Resetter $resetter
      */
     private function getResetter(Client $client)
@@ -109,11 +110,12 @@ class MappingToElasticaTest extends WebTestCase
 
     /**
      * @param Client $client
+     *
      * @return \Elastica\Type
      */
     private function getType(Client $client, $type = 'type')
     {
-        return $client->getContainer()->get('fos_elastica.index.index.' . $type);
+        return $client->getContainer()->get('fos_elastica.index.index.'.$type);
     }
 
     protected function setUp()

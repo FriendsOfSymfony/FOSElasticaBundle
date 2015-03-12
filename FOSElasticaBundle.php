@@ -12,7 +12,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * Bundle.
- *
  */
 class FOSElasticaBundle extends Bundle
 {

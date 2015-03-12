@@ -11,7 +11,7 @@ interface PartialResultsInterface
      *
      * @api
      */
-    function toArray();
+    public function toArray();
 
     /**
      * Returns the number of results.
@@ -20,12 +20,12 @@ interface PartialResultsInterface
      *
      * @api
      */
-    function getTotalHits();
+    public function getTotalHits();
 
     /**
-     * Returns the facets
+     * Returns the facets.
      *
      * @return array
      */
-    function getFacets();
+    public function getFacets();
 }

@@ -8,10 +8,8 @@
  * with this source code in the file LICENSE.
  */
 
-
 namespace FOS\ElasticaBundle\Tests\Integration;
 
-
-class MappingTest {
-
-} 
+class MappingTest
+{
+}

@@ -20,9 +20,10 @@ class Repository
     }
 
     /**
-     * @param mixed $query
+     * @param mixed   $query
      * @param integer $limit
-     * @param array $options
+     * @param array   $options
+     *
      * @return array
      */
     public function find($query, $limit = null, $options = array())
@@ -31,9 +32,10 @@ class Repository
     }
 
     /**
-     * @param mixed $query
+     * @param mixed   $query
      * @param integer $limit
-     * @param array $options
+     * @param array   $options
+     *
      * @return mixed
      */
     public function findHybrid($query, $limit = null, $options = array())
@@ -44,6 +46,7 @@ class Repository
     /**
      * @param mixed $query
      * @param array $options
+     *
      * @return \Pagerfanta\Pagerfanta
      */
     public function findPaginated($query, $options = array())
@@ -53,7 +56,8 @@ class Repository
 
     /**
      * @param string $query
-     * @param array $options
+     * @param array  $options
+     *
      * @return Paginator\PaginatorAdapterInterface
      */
     public function createPaginatorAdapter($query, $options = array())

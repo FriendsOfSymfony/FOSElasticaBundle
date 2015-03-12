@@ -44,7 +44,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      * Constructor.
      *
      * @param string $objectClass
-     * @param array $options
+     * @param array  $options
      */
     public function __construct($objectClass, array $options = array())
     {
@@ -67,6 +67,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      * fetched from the database.
      *
      * @param array $elasticaObjects
+     *
      * @return array|\ArrayObject
      */
     public function transform(array $elasticaObjects)
@@ -83,7 +84,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
         $identifier = $this->options['identifier'];
         $propertyAccessor = $this->propertyAccessor;
 
-        $sortCallback = function($a, $b) use ($idPos, $identifier, $propertyAccessor) {
+        $sortCallback = function ($a, $b) use ($idPos, $identifier, $propertyAccessor) {
             return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
         };
 
@@ -135,6 +136,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      *
      * @param array   $identifierValues Identifier values
      * @param boolean $hydrate          Whether or not to hydrate the results
+     *
      * @return array
      */
     protected function findByIdentifiers(array $identifierValues, $hydrate)
@@ -145,7 +147,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 
         $query = $this->createQuery($this->objectClass, $this->options['identifier'], $identifierValues);
 
-        if ( ! $hydrate) {
+        if (! $hydrate) {
             return $query->toArray();
         }
 
@@ -158,6 +160,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
      * @param string $class            Propel model class
      * @param string $identifierField  Identifier field name (e.g. "id")
      * @param array  $identifierValues Identifier values
+     *
      * @return \ModelCriteria
      */
     protected function createQuery($class, $identifierField, array $identifierValues)
@@ -170,6 +173,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
 
     /**
      * @see https://github.com/doctrine/common/blob/master/lib/Doctrine/Common/Util/Inflector.php
+     *
      * @param string $str
      */
     private function camelize($str)
