@@ -492,7 +492,7 @@ class Configuration implements ConfigurationInterface
                 ->ifTrue(function($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
                     ->thenInvalid('Propel doesn\'t support the "repository" parameter')
                 ->ifTrue(function($v) { return isset($v['driver']) && 'orm' !== $v['driver'] && !empty($v['elastica_to_model_transformer']['hints']); })
-                    ->thenInvalid('Hints are only supported by "orm" driver')
+                    ->thenInvalid('Hints are only supported by the "orm" driver')
             ->end()
             ->children()
                 ->scalarNode('driver')
