@@ -322,6 +322,10 @@ class FOSElasticaExtension extends Extension
             return $typeConfig['elastica_to_model_transformer']['service'];
         }
 
+	    if (isset($typeConfig['elastica_to_model_transformer']['hints']) && $typeConfig['driver'] != 'orm') {
+		    throw new InvalidArgumentException(sprintf('Cannot define hints for driver "%s"', $typeConfig['driver']));
+	    }
+
         /* Note: transformer services may conflict with "prototype.driver", if
          * the index and type names were "prototype" and a driver, respectively.
          */
