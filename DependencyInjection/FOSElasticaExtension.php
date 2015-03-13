@@ -502,7 +502,7 @@ class FOSElasticaExtension extends Extension
                 break;
         }
 
-        if ($tagName) {
+        if (null !== $tagName) {
             foreach ($this->getDoctrineEvents($typeConfig) as $event) {
                 $listenerDef->addTag($tagName, array('event' => $event));
             }
@@ -527,7 +527,6 @@ class FOSElasticaExtension extends Extension
                 break;
             default:
                 throw new InvalidArgumentException(sprintf('Cannot determine events for driver "%s"', $typeConfig['driver']));
-                break;
         }
 
         $events = array();

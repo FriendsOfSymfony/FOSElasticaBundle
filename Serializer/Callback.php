@@ -23,10 +23,8 @@ class Callback
     {
         $this->groups = $groups;
 
-        if ($this->groups) {
-            if (!$this->serializer instanceof SerializerInterface) {
-                throw new \RuntimeException('Setting serialization groups requires using "JMS\Serializer\Serializer".');
-            }
+        if (!empty($this->groups) && !$this->serializer instanceof SerializerInterface) {
+            throw new \RuntimeException('Setting serialization groups requires using "JMS\Serializer\Serializer".');
         }
     }
 
@@ -34,10 +32,8 @@ class Callback
     {
         $this->version = $version;
 
-        if ($this->version) {
-            if (!$this->serializer instanceof SerializerInterface) {
-                throw new \RuntimeException('Setting serialization version requires using "JMS\Serializer\Serializer".');
-            }
+        if ($this->version && !$this->serializer instanceof SerializerInterface) {
+            throw new \RuntimeException('Setting serialization version requires using "JMS\Serializer\Serializer".');
         }
     }
 
