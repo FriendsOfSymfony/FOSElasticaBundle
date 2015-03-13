@@ -54,37 +54,47 @@ class AliasProcessor
         $client = $index->getClient();
 
         $aliasName = $indexConfig->getElasticSearchName();
-        $oldIndexName = false;
+        $oldIndexName = null;
         $newIndexName = $index->getName();
 
         try {
-            $aliasedIndexes = $this->getAliasedIndexes($client, $aliasName);
+            $oldIndexName = $this->getAliasedIndex($client, $aliasName);
         } catch (AliasIsIndexException $e) {
             if (!$force) {
                 throw $e;
             }
 
             $this->deleteIndex($client, $aliasName);
-            $aliasedIndexes = array();
         }
 
-        if (count($aliasedIndexes) > 1) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Alias %s is used for multiple indexes: [%s].
-                    Make sure it\'s either not used or is assigned to one index only',
-                    $aliasName,
-                    implode(', ', $aliasedIndexes)
-                )
-            );
+        try {
+            $aliasUpdateRequest = $this->buildAliasUpdateRequest($oldIndexName, $aliasName, $newIndexName);
+            $client->request('_aliases', 'POST', $aliasUpdateRequest);
+        } catch (ExceptionInterface $e) {
+            $this->cleanupRenameFailure($client, $newIndexName, $e);
         }
 
+        // Delete the old index after the alias has been switched
+        if (null !== $oldIndexName) {
+            $this->deleteIndex($client, $oldIndexName);
+        }
+    }
+
+    /**
+     * Builds an ElasticSearch request to rename or create an alias.
+     *
+     * @param string|null $aliasedIndex
+     * @param string $aliasName
+     * @param string $newIndexName
+     * @return array
+     */
+    private function buildAliasUpdateRequest($aliasedIndex, $aliasName, $newIndexName)
+    {
         $aliasUpdateRequest = array('actions' => array());
-        if (count($aliasedIndexes) === 1) {
+        if (null !== $aliasedIndex) {
             // if the alias is set - add an action to remove it
-            $oldIndexName = $aliasedIndexes[0];
             $aliasUpdateRequest['actions'][] = array(
-                'remove' => array('index' => $oldIndexName, 'alias' => $aliasName),
+                'remove' => array('index' => $aliasedIndex, 'alias' => $aliasName),
             );
         }
 
@@ -93,58 +103,68 @@ class AliasProcessor
             'add' => array('index' => $newIndexName, 'alias' => $aliasName),
         );
 
-        try {
-            $client->request('_aliases', 'POST', $aliasUpdateRequest);
-        } catch (ExceptionInterface $renameAliasException) {
-            $additionalError = '';
-            // if we failed to move the alias, delete the newly built index
-            try {
-                $index->delete();
-            } catch (ExceptionInterface $deleteNewIndexException) {
-                $additionalError = sprintf(
-                    'Tried to delete newly built index %s, but also failed: %s',
-                    $newIndexName,
-                    $deleteNewIndexException->getMessage()
-                );
-            }
+        return $aliasUpdateRequest;
+    }
 
-            throw new \RuntimeException(
-                sprintf(
-                    'Failed to updated index alias: %s. %s',
-                    $renameAliasException->getMessage(),
-                    $additionalError ?: sprintf('Newly built index %s was deleted', $newIndexName)
-                ), 0, $renameAliasException
+    /**
+     * Cleans up an index when we encounter a failure to rename the alias.
+     *
+     * @param Client $client
+     * @param $indexName
+     * @param \Exception $renameAliasException
+     */
+    private function cleanupRenameFailure(Client $client, $indexName, \Exception $renameAliasException)
+    {
+        $additionalError = '';
+        try {
+            $this->deleteIndex($client, $indexName);
+        } catch (ExceptionInterface $deleteNewIndexException) {
+            $additionalError = sprintf(
+                'Tried to delete newly built index %s, but also failed: %s',
+                $indexName,
+                $deleteNewIndexException->getMessage()
             );
         }
 
-        // Delete the old index after the alias has been switched
-        if ($oldIndexName) {
-            $oldIndex = new Index($client, $oldIndexName);
-            try {
-                $oldIndex->delete();
-            } catch (ExceptionInterface $deleteOldIndexException) {
-                throw new \RuntimeException(
-                    sprintf(
-                        'Failed to delete old index %s with message: %s',
-                        $oldIndexName,
-                        $deleteOldIndexException->getMessage()
-                    ), 0, $deleteOldIndexException
-                );
-            }
+        throw new \RuntimeException(sprintf(
+            'Failed to updated index alias: %s. %s',
+            $renameAliasException->getMessage(),
+            $additionalError ?: sprintf('Newly built index %s was deleted', $indexName)
+        ), 0, $renameAliasException);
+    }
+
+    /**
+     * Delete an index.
+     *
+     * @param Client $client
+     * @param string $indexName Index name to delete
+     */
+    private function deleteIndex(Client $client, $indexName)
+    {
+        try {
+            $path = sprintf("%s", $indexName);
+            $client->request($path, Request::DELETE);
+        } catch (ExceptionInterface $deleteOldIndexException) {
+            throw new \RuntimeException(sprintf(
+                'Failed to delete index %s with message: %s',
+                $indexName,
+                $deleteOldIndexException->getMessage()
+            ), 0, $deleteOldIndexException);
         }
     }
 
     /**
-     * Returns array of indexes which are mapped to given alias.
+     * Returns the name of a single index that an alias points to or throws
+     * an exception if there is more than one.
      *
      * @param Client $client
      * @param string $aliasName Alias name
      *
-     * @return array
+     * @return string|null
      *
      * @throws AliasIsIndexException
      */
-    private function getAliasedIndexes(Client $client, $aliasName)
+    private function getAliasedIndex(Client $client, $aliasName)
     {
         $aliasesInfo = $client->request('_aliases', 'GET')->getData();
         $aliasedIndexes = array();
@@ -163,18 +183,15 @@ class AliasProcessor
             }
         }
 
-        return $aliasedIndexes;
-    }
+        if (count($aliasedIndexes) > 1) {
+            throw new \RuntimeException(sprintf(
+                'Alias %s is used for multiple indexes: [%s]. Make sure it\'s'.
+                'either not used or is assigned to one index only',
+                $aliasName,
+                implode(', ', $aliasedIndexes)
+            ));
+        }
 
-    /**
-     * Delete an index.
-     *
-     * @param Client $client
-     * @param string $indexName Index name to delete
-     */
-    private function deleteIndex(Client $client, $indexName)
-    {
-        $path = sprintf("%s", $indexName);
-        $client->request($path, Request::DELETE);
+        return array_shift($aliasedIndexes);
     }
 }
