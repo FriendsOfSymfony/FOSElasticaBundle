@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Propel;
 
 use FOS\ElasticaBundle\HybridResult;
+use FOS\ElasticaBundle\Transformer\AbstractElasticaToModelTransformer;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -14,7 +15,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  *
  * @author William Durand <william.durand1@gmail.com>
  */
-class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
+class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
 {
     /**
      * Propel model class to map to Elastica documents.
@@ -34,13 +35,6 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     );
 
     /**
-     * PropertyAccessor instance.
-     *
-     * @var PropertyAccessorInterface
-     */
-    protected $propertyAccessor;
-
-    /**
      * Constructor.
      *
      * @param string $objectClass
@@ -50,16 +44,6 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     {
         $this->objectClass = $objectClass;
         $this->options = array_merge($this->options, $options);
-    }
-
-    /**
-     * Set the PropertyAccessor instance.
-     *
-     * @param PropertyAccessorInterface $propertyAccessor
-     */
-    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
-    {
-        $this->propertyAccessor = $propertyAccessor;
     }
 
     /**
@@ -82,11 +66,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
         // Sort objects in the order of their IDs
         $idPos = array_flip($ids);
         $identifier = $this->options['identifier'];
-        $propertyAccessor = $this->propertyAccessor;
-
-        $sortCallback = function ($a, $b) use ($idPos, $identifier, $propertyAccessor) {
-            return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
-        };
+        $sortCallback = $this->getSortingClosure($idPos, $identifier);
 
         if (is_object($objects)) {
             $objects->uasort($sortCallback);
@@ -105,7 +85,7 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
         $objects = $this->transform($elasticaObjects);
 
         $result = array();
-        for ($i = 0; $i < count($elasticaObjects); $i++) {
+        for ($i = 0, $j = count($elasticaObjects); $i < $j; $i++) {
             $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
         }
 

@@ -58,7 +58,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->with('index', 'type', $this->anything())
             ->will($this->returnValue(true));
 
-        $providerInvocationOffset = 2;
         $previousSlice = array();
 
         foreach ($objectsByIteration as $i => $objects) {
