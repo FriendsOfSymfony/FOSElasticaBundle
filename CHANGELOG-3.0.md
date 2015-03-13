@@ -12,6 +12,11 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.0...v3.0.1
 To generate a changelog summary since the last version, run
 `git log --no-merges --oneline v3.0.0...3.0.x`
 
+* 3.0.9 (2015-03-12)
+
+ * Fix a bug in the BC layer of the type configuration for empty configs
+ * Fix the service definition for the Doctrine listener when the logger is not enabled
+
 * 3.0.8 (2014-01-31)
 
  * Fixed handling of empty indexes #760

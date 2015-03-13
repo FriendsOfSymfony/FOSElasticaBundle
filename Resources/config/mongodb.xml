@@ -29,7 +29,7 @@
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument type="collection" /> <!-- configuration -->
-            <argument /> <!-- logger -->
+            <argument>null</argument> <!-- logger -->
         </service>
 
         <service id="fos_elastica.elastica_to_model_transformer.prototype.mongodb" class="%fos_elastica.elastica_to_model_transformer.prototype.mongodb.class%" public="false" abstract="true">
