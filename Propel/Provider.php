@@ -30,7 +30,7 @@ class Provider extends AbstractProvider
                 ->getArrayCopy();
 
             $objects = array_filter($objects, array($this, 'isObjectIndexable'));
-            if ($objects) {
+            if (!empty($objects)) {
                 $this->objectPersister->insertMany($objects);
             }
 

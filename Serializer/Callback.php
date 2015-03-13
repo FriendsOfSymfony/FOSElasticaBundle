@@ -8,7 +8,7 @@ use JMS\Serializer\SerializerInterface;
 class Callback
 {
     protected $serializer;
-    protected $groups;
+    protected $groups = array();
     protected $version;
 
     public function setSerializer($serializer)
@@ -41,7 +41,7 @@ class Callback
     {
         $context = $this->serializer instanceof SerializerInterface ? SerializationContext::create()->enableMaxDepthChecks() : array();
 
-        if ($this->groups) {
+        if (!empty($this->groups)) {
             $context->setGroups($this->groups);
         }
 

@@ -25,7 +25,7 @@ abstract class AbstractProvider implements ProviderInterface
     protected $options;
 
     /**
-     * @var Indexable
+     * @var IndexableInterface
      */
     private $indexable;
 

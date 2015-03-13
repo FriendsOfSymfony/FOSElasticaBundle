@@ -11,22 +11,15 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-
 /**
  * Index Populate Event.
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
-class IndexPopulateEvent extends Event
+class IndexPopulateEvent extends IndexEvent
 {
     const PRE_INDEX_POPULATE = 'elastica.index.index_pre_populate';
     const POST_INDEX_POPULATE = 'elastica.index.index_post_populate';
-
-    /**
-     * @var string
-     */
-    private $index;
 
     /**
      * @var bool
@@ -45,17 +38,10 @@ class IndexPopulateEvent extends Event
      */
     public function __construct($index, $reset, $options)
     {
-        $this->index   = $index;
+        parent::__construct($index);
+
         $this->reset   = $reset;
         $this->options = $options;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIndex()
-    {
-        return $this->index;
     }
 
     /**

@@ -417,7 +417,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     private function getTransformer($dispatcher = null)
     {
         $transformer = new ModelToElasticaAutoTransformer(array(), $dispatcher);
-        $transformer->setPropertyAccessor(PropertyAccess::getPropertyAccessor());
+        $transformer->setPropertyAccessor(PropertyAccess::createPropertyAccessor());
 
         return $transformer;
     }
