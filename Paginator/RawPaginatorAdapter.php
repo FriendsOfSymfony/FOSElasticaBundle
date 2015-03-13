@@ -74,7 +74,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
             ? (integer) $this->query->getParam('size')
             : null;
 
-        if ($size && $size < $offset + $itemCountPerPage) {
+        if (null !== $size && $size < $offset + $itemCountPerPage) {
             $itemCountPerPage = $size - $offset;
         }
 
