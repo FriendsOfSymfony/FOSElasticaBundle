@@ -73,6 +73,8 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
             array('entity.maybeIndex()', true),
             array('!object.isIndexable() && entity.property == "abc"', true),
             array('entity.property != "abc"', false),
+            array('["array", "values"]', true),
+            array('[]', false)
         );
     }
 

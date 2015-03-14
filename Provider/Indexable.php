@@ -82,7 +82,7 @@ class Indexable implements IndexableInterface
         }
 
         if ($callback instanceof Expression) {
-            return $this->getExpressionLanguage()->evaluate($callback, array(
+            return (bool) $this->getExpressionLanguage()->evaluate($callback, array(
                 'object' => $object,
                 $this->getExpressionVar($object) => $object,
             ));
