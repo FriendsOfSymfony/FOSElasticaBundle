@@ -148,7 +148,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
      *
      * @return array
      */
-    protected function getSlice($queryBuilder, $limit, $offset, $lastSlice)
+    private function getSlice($queryBuilder, $limit, $offset, $lastSlice)
     {
         if (!$this->sliceFetcher) {
             return $this->fetchSlice($queryBuilder, $limit, $offset);
