@@ -201,13 +201,18 @@ index enabled users.
 The callback option supports multiple approaches:
 
 * A method on the object itself provided as a string. `enabled` will call
-  `Object->enabled()`
+  `Object->enabled()`. Note that this does not support chaining methods with dot notation
+  like property paths. To achieve something similar use the ExpressionLanguage option
+  below.
 * An array of a service id and a method which will be called with the object as the first
   and only argument. `[ @my_custom_service, 'userIndexable' ]` will call the userIndexable
   method on a service defined as my_custom_service.
 * An array of a class and a static method to call on that class which will be called with
   the object as the only argument. `[ 'Acme\DemoBundle\IndexableChecker', 'isIndexable' ]`
   will call Acme\DemoBundle\IndexableChecker::isIndexable($object)
+* A single element array with a service id can be used if the service has an __invoke
+  method. Such an invoke method must accept a single parameter for the object to be indexed.
+  `[ @my_custom_invokable_service ]`
 * If you have the ExpressionLanguage component installed, A valid ExpressionLanguage
   expression provided as a string. The object being indexed will be supplied as `object`
   in the expression. `object.isEnabled() or object.shouldBeIndexedAnyway()`. For more

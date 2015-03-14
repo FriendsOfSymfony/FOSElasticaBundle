@@ -110,7 +110,7 @@ class AliasProcessor
      * Cleans up an index when we encounter a failure to rename the alias.
      *
      * @param Client $client
-     * @param $indexName
+     * @param string $indexName
      * @param \Exception $renameAliasException
      */
     private function cleanupRenameFailure(Client $client, $indexName, \Exception $renameAliasException)
