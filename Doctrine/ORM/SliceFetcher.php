@@ -14,6 +14,9 @@ use FOS\ElasticaBundle\Doctrine\SliceFetcherInterface;
 class SliceFetcher implements SliceFetcherInterface
 {
     /**
+     * This method should remain in sync with Provider::fetchSlice until that method is deprecated and
+     * removed.
+     *
      * {@inheritdoc}
      */
     public function fetch($queryBuilder, $limit, $offset, array $previousSlice, array $identifierFieldNames)

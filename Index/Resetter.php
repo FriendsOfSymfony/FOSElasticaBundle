@@ -86,11 +86,11 @@ class Resetter
      */
     public function resetIndex($indexName, $populating = false, $force = false)
     {
-        $event = new IndexResetEvent($indexName, $populating, $force);
-        $this->dispatcher->dispatch(IndexResetEvent::PRE_INDEX_RESET, $event);
-
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
         $index = $this->indexManager->getIndex($indexName);
+
+        $event = new IndexResetEvent($indexName, $populating, $force);
+        $this->dispatcher->dispatch(IndexResetEvent::PRE_INDEX_RESET, $event);
 
         if ($indexConfig->isUseAlias()) {
             $this->aliasProcessor->setRootName($indexConfig, $index);
@@ -117,11 +117,11 @@ class Resetter
      */
     public function resetIndexType($indexName, $typeName)
     {
-        $event = new TypeResetEvent($indexName, $typeName);
-        $this->dispatcher->dispatch(TypeResetEvent::PRE_TYPE_RESET, $event);
-
         $typeConfig = $this->configManager->getTypeConfiguration($indexName, $typeName);
         $type = $this->indexManager->getIndex($indexName)->getType($typeName);
+
+        $event = new TypeResetEvent($indexName, $typeName);
+        $this->dispatcher->dispatch(TypeResetEvent::PRE_TYPE_RESET, $event);
 
         try {
             $type->delete();

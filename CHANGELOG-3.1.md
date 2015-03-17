@@ -44,3 +44,4 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
  * New events `PRE_INDEX_RESET`, `POST_INDEX_RESET`, `PRE_TYPE_RESET` and
    `POST_TYPE_RESET` are run before and after operations that will reset an
    index. #744
+ * Added indexable callback support for the __invoke method of a service. #823

@@ -90,8 +90,12 @@ class PopulateCommand extends ContainerAwareCommand
         $index = $input->getOption('index');
         $type = $input->getOption('type');
         $reset = !$input->getOption('no-reset');
-        $options = $input->getOptions();
-        $options['ignore-errors'] = $input->getOption('ignore-errors');
+        $options = array(
+            'batch_size' => $input->getOption('batch-size'),
+            'ignore_errors' => $input->getOption('ignore-errors'),
+            'offset' => $input->getOption('offset'),
+            'sleep' => $input->getOption('sleep')
+        );
 
         if ($input->isInteractive() && $reset && $input->getOption('offset')) {
             /** @var DialogHelper $dialog */

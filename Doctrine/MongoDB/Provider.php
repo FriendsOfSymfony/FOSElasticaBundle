@@ -44,7 +44,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::countObjects()
+     * {@inheritDoc}
      */
     protected function countObjects($queryBuilder)
     {
@@ -58,7 +58,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::fetchSlice()
+     * {@inheritDoc}
      */
     protected function fetchSlice($queryBuilder, $limit, $offset)
     {
@@ -75,13 +75,13 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @see FOS\ElasticaBundle\Doctrine\AbstractProvider::createQueryBuilder()
+     * {@inheritDoc}
      */
-    protected function createQueryBuilder()
+    protected function createQueryBuilder($method)
     {
         return $this->managerRegistry
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass)
-            ->{$this->options['query_builder_method']}();
+            ->{$method}();
     }
 }

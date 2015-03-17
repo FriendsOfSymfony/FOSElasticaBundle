@@ -252,7 +252,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Elastica\Exception\Bulk\ResponseException');
 
-        $provider->populate(null, array('ignore-errors' => false));
+        $provider->populate(null, array('ignore_errors' => false));
     }
 
     public function testPopulateRunsIndexCallable()
@@ -280,7 +280,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->objectPersister->expects($this->once())
             ->method('insertMany')
-            ->with(array(1 => 2));
+            ->with(array(2));
 
         $provider->populate();
     }

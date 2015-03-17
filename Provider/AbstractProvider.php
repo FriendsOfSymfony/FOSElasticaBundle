@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Provider;
 
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * AbstractProvider.
@@ -10,9 +11,9 @@ use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
-     * @var ObjectPersisterInterface
+     * @var array
      */
-    protected $objectPersister;
+    protected $baseOptions;
 
     /**
      * @var string
@@ -20,9 +21,14 @@ abstract class AbstractProvider implements ProviderInterface
     protected $objectClass;
 
     /**
-     * @var array
+     * @var ObjectPersisterInterface
      */
-    protected $options;
+    protected $objectPersister;
+
+    /**
+     * @var OptionsResolver
+     */
+    protected $resolver;
 
     /**
      * @var IndexableInterface
@@ -35,25 +41,113 @@ abstract class AbstractProvider implements ProviderInterface
      * @param ObjectPersisterInterface $objectPersister
      * @param IndexableInterface       $indexable
      * @param string                   $objectClass
-     * @param array                    $options
+     * @param array                    $baseOptions
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
         IndexableInterface $indexable,
         $objectClass,
-        array $options = array()
+        array $baseOptions = array()
     ) {
+        $this->baseOptions = $baseOptions;
         $this->indexable = $indexable;
         $this->objectClass = $objectClass;
         $this->objectPersister = $objectPersister;
+        $this->resolver = new OptionsResolver();
+        $this->configureOptions();
+    }
 
-        $this->options = array_merge(array(
+    /**
+     * {@inheritDoc}
+     */
+    public function populate(\Closure $loggerClosure = null, array $options = array())
+    {
+        $options = $this->resolveOptions($options);
+
+        $logger = !$options['debug_logging'] ?
+            $this->disableLogging() :
+            null;
+
+        $this->doPopulate($options, $loggerClosure);
+
+        if (null !== $logger) {
+            $this->enableLogging($logger);
+        }
+    }
+
+    /**
+     * Disables logging and returns the logger that was previously set.
+     *
+     * @return mixed
+     */
+    abstract protected function disableLogging();
+
+    /**
+     * Perform actual population.
+     *
+     * @param array $options
+     * @param \Closure $loggerClosure
+     */
+    abstract protected function doPopulate($options, \Closure $loggerClosure = null);
+
+    /**
+     * Reenables the logger with the previously returned logger from disableLogging();.
+     *
+     * @param mixed $logger
+     *
+     * @return mixed
+     */
+    abstract protected function enableLogging($logger);
+
+    /**
+     * Configures the option resolver.
+     */
+    protected function configureOptions()
+    {
+        $this->resolver->setDefaults(array(
             'batch_size' => 100,
-        ), $options);
+            'skip_indexable_check' => false,
+        ));
+
+        $this->resolver->setRequired(array(
+            'indexName',
+            'typeName',
+        ));
+    }
+
+
+    /**
+     * Filters objects away if they are not indexable.
+     *
+     * @param array $options
+     * @param array $objects
+     * @return array
+     */
+    protected function filterObjects(array $options, array $objects)
+    {
+        if ($options['skip_indexable_check']) {
+            return $objects;
+        }
+
+        $index = $options['indexName'];
+        $type = $options['typeName'];
+
+        $return = array();
+        foreach ($objects as $object) {
+            if (!$this->indexable->isObjectIndexable($index, $type, $object)) {
+                continue;
+            }
+
+            $return[] = $object;
+        }
+
+        return $return;
     }
 
     /**
      * Checks if a given object should be indexed or not.
+     *
+     * @deprecated To be removed in 4.0
      *
      * @param object $object
      *
@@ -62,8 +156,8 @@ abstract class AbstractProvider implements ProviderInterface
     protected function isObjectIndexable($object)
     {
         return $this->indexable->isObjectIndexable(
-            $this->options['indexName'],
-            $this->options['typeName'],
+            $this->baseOptions['indexName'],
+            $this->baseOptions['typeName'],
             $object
         );
     }
@@ -81,5 +175,18 @@ abstract class AbstractProvider implements ProviderInterface
         $memoryMax = round(memory_get_peak_usage() / (1024 * 1024)); // to get max usage in Mo
 
         return sprintf('(RAM : current=%uMo peak=%uMo)', $memory, $memoryMax);
+    }
+
+    /**
+     * Merges the base options provided by the class with options passed to the populate
+     * method and runs them through the resolver.
+     *
+     * @param array $options
+     *
+     * @return array
+     */
+    protected function resolveOptions(array $options)
+    {
+        return $this->resolver->resolve(array_merge($this->baseOptions, $options));
     }
 }
