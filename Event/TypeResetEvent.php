@@ -18,15 +18,10 @@ use Symfony\Component\EventDispatcher\Event;
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
-class TypeResetEvent extends Event
+class TypeResetEvent extends IndexEvent
 {
     const PRE_TYPE_RESET = 'elastica.index.type_pre_reset';
     const POST_TYPE_RESET = 'elastica.index.type_post_reset';
-
-    /**
-     * @var string
-     */
-    private $index;
 
     /**
      * @var string
@@ -39,16 +34,9 @@ class TypeResetEvent extends Event
      */
     public function __construct($index, $type)
     {
-        $this->type = $type;
-        $this->index = $index;
-    }
+        parent::__construct($index);
 
-    /**
-     * @return string
-     */
-    public function getIndex()
-    {
-        return $this->index;
+        $this->type = $type;
     }
 
     /**

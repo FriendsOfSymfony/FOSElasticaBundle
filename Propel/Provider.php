@@ -14,31 +14,43 @@ class Provider extends AbstractProvider
     /**
      * {@inheritDoc}
      */
-    public function populate(\Closure $loggerClosure = null, array $options = array())
+    public function doPopulate($options, \Closure $loggerClosure = null)
     {
         $queryClass = $this->objectClass.'Query';
         $nbObjects = $queryClass::create()->count();
-        $offset = isset($options['offset']) ? intval($options['offset']) : 0;
-        $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;
-        $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
 
-        for (; $offset < $nbObjects; $offset += $batchSize) {
+        $offset = $options['offset'];
+
+        for (; $offset < $nbObjects; $offset += $options['batch_size']) {
             $objects = $queryClass::create()
-                ->limit($batchSize)
+                ->limit($options['batch_size'])
                 ->offset($offset)
                 ->find()
                 ->getArrayCopy();
-
-            $objects = array_filter($objects, array($this, 'isObjectIndexable'));
-            if ($objects) {
+            $objects = $this->filterObjects($options, $objects);
+            if (!empty($objects)) {
                 $this->objectPersister->insertMany($objects);
             }
 
-            usleep($sleep);
+            usleep($options['sleep']);
 
             if ($loggerClosure) {
-                $loggerClosure($batchSize, $nbObjects);
+                $loggerClosure($options['batch_size'], $nbObjects);
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function disableLogging()
+    {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function enableLogging($logger)
+    {
     }
 }
