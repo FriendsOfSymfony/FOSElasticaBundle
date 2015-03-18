@@ -20,3 +20,4 @@ Cookbook Entries
 * [Manual Providers](cookbook/manual-provider.md)
 * [Clustering - Multiple Connections](cookbook/multiple-connections.md)
 * [Suppressing server errors](cookbook/suppress-server-errors.md)
+* [Hints on result hydration](cookbook/hints-on-result-hydration.md)
