@@ -110,7 +110,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 
         $transformer = new ElasticaToModelTransformer($this->registry, $this->objectClass, array(
             'hints' => array(
-                array('name' => 'customHintName', 'class' => 'Custom\Hint\Class')
+                array('name' => 'customHintName', 'value' => 'Custom\Hint\Class')
             )
         ));
 

@@ -36,7 +36,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
         $query = $qb->getQuery();
 
         foreach ($this->options['hints'] as $hint) {
-            $query->setHint($hint['name'], $hint['class']);
+            $query->setHint($hint['name'], $hint['value']);
         }
 
         return $query->setHydrationMode($hydrationMode)->execute();

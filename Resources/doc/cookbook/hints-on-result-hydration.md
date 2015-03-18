@@ -6,7 +6,7 @@ When using Doctrine as your persistance driver, You may configure FOSElasticaBun
 
 To configure FOSElasticaBundle to use hints when hydrating objects, add an entry 
 to the `hints` array of `elastica_to_model_transformer` configuration section.  
-Each entry must contain a `name` of the hint and a `class` to use.
+Each entry must contain a `name` of the hint and a `value` to use.
 
 ```yaml
 fos_elastica:
@@ -17,7 +17,7 @@ fos_elastica:
                     persistence:
                         elastica_to_model_transformer:
                             hints:
-                                - {name: 'doctrine.customOutputWalker', class: 'Gedmo\Translatable\Query\TreeWalker\TranslationWalker'}
+                                - {name: 'doctrine.customOutputWalker', value: 'Gedmo\Translatable\Query\TreeWalker\TranslationWalker'}
 ```
 
 This is especially useful if You're using features that require additional information when hydrating an object
