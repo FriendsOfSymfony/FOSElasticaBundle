@@ -136,7 +136,6 @@ class Listener implements EventSubscriber
         if ($this->objectPersister->handlesObject($entity)
             && (!isset($entity->needUpdateIndex) || $entity->needUpdateIndex)
         ) {
-            var_dump($entity->needUpdateIndex);die();
             if ($this->isObjectIndexable($entity)) {
                 $this->scheduledForUpdate[] = $entity;
             } else {
