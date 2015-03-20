@@ -4,8 +4,8 @@ namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
-use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
+use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -64,10 +64,10 @@ class Listener implements EventSubscriber
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
-     * @param array                    $events
-     * @param IndexableInterface       $indexable
-     * @param array                    $config
-     * @param null                     $logger
+     * @param array $events
+     * @param IndexableInterface $indexable
+     * @param array $config
+     * @param null $logger
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
@@ -75,7 +75,8 @@ class Listener implements EventSubscriber
         IndexableInterface $indexable,
         array $config = array(),
         $logger = null
-    ) {
+    )
+    {
         $this->config = array_merge(array(
             'identifier' => 'id',
         ), $config);
@@ -132,7 +133,10 @@ class Listener implements EventSubscriber
     {
         $entity = $this->getDoctrineObject($eventArgs);
 
-        if ($this->objectPersister->handlesObject($entity)) {
+        if ($this->objectPersister->handlesObject($entity)
+            && (!isset($entity->needUpdateIndex) || $entity->needUpdateIndex)
+        ) {
+            var_dump($entity->needUpdateIndex);die();
             if ($this->isObjectIndexable($entity)) {
                 $this->scheduledForUpdate[] = $entity;
             } else {
