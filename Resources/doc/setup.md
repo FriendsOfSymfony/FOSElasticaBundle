@@ -17,7 +17,7 @@ of the Composer documentation.
 
 ### Elasticsearch
 
-Instructions for installing and deploying Elasticsearch may be found [here](http://www.elasticsearch.org/guide/reference/setup/installation/).
+Instructions for installing and deploying Elasticsearch may be found [here](https://www.elastic.co/downloads/elasticsearch).
 
 Step 2: Enable the Bundle
 -------------------------
