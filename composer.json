@@ -15,7 +15,7 @@
         "php": ">=5.3.2",
         "symfony/framework-bundle": "~2.3",
         "symfony/console": "~2.1",
-        "symfony/form": "~2.1",
+        "symfony/form": "~2.6",
         "symfony/property-access": "~2.2",
         "ruflin/elastica": ">=0.90.10.0, <1.5-dev",
         "psr/log": "~1.0"
