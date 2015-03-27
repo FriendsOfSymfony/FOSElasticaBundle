@@ -9,6 +9,10 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/commit/XXX where XXX is
 the commit hash. To get the diff between two versions, go to
 https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
 
+* 3.1.2 (2015-03-27)
+
+ * Fix the previous release
+
 * 3.1.1 (2015-03-27)
 
  * Fix PopulateCommand trying to set formats for ProgressBar in Symfony < 2.5
