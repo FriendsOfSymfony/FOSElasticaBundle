@@ -90,8 +90,10 @@ class PopulateCommand extends ContainerAwareCommand
         $index = $input->getOption('index');
         $type = $input->getOption('type');
         $reset = !$input->getOption('no-reset');
+        $batchSize = $input->getOption('batch-size');
+        
         $options = array(
-            'batch_size' => $input->getOption('batch-size'),
+            'batch_size' => !empty( $batchSize ) ? $batchSize : 1,
             'ignore_errors' => $input->getOption('ignore-errors'),
             'offset' => $input->getOption('offset'),
             'sleep' => $input->getOption('sleep')
