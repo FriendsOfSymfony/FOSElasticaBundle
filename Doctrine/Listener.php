@@ -134,7 +134,8 @@ class Listener implements EventSubscriber
         $entity = $this->getDoctrineObject($eventArgs);
 
         if ($this->objectPersister->handlesObject($entity)
-            && (!isset($entity->needUpdateIndex) || $entity->needUpdateIndex)
+            && (!isset($entity->needUpdateIndex) || $entity->needUpdateIndex)||
+            (isset($entity->__updateStatus) && $entity->$__updateStatus)
         ) {
             if ($this->isObjectIndexable($entity)) {
                 $this->scheduledForUpdate[] = $entity;
