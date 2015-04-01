@@ -9,6 +9,20 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/commit/XXX where XXX is
 the commit hash. To get the diff between two versions, go to
 https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
 
+* 3.1.3 (2015-04-02)
+
+ * Fix Symfony 2.3 compatibility
+
+* 3.1.2 (2015-03-27)
+
+ * Fix the previous release
+
+* 3.1.1 (2015-03-27)
+
+ * Fix PopulateCommand trying to set formats for ProgressBar in Symfony < 2.5
+ * Fix Provider implementations that depend on a batch size from going into 
+   infinite loops
+
 * 3.1.0 (2015-03-18)
 
  * BC BREAK: `Doctrine\Listener#scheduleForDeletion` access changed to private.
