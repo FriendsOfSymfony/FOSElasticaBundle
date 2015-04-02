@@ -119,20 +119,22 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * If $hydrate is false, the returned array elements will be arrays.
      * Otherwise, the results will be hydrated to instances of the model class.
      *
-     * @param array   $identifierValues Identifier values
-     * @param boolean $hydrate          Whether or not to hydrate the results
+     * @param array $identifierValues Identifier values
+     * @param array $options transform options
      *
      * @return array
      */
-    protected function findByIdentifiers(array $identifierValues, $hydrate)
+    protected function findByIdentifiers(array $identifierValues, array $options = array())
     {
+        $options = array_merge($this->options, $options);
+
         if (empty($identifierValues)) {
             return array();
         }
 
-        $query = $this->createQuery($this->objectClass, $this->options['identifier'], $identifierValues);
+        $query = $this->createQuery($this->objectClass, $options['identifier'], $identifierValues);
 
-        if (! $hydrate) {
+        if (!$options['hydrate']) {
             return $query->toArray();
         }
 
