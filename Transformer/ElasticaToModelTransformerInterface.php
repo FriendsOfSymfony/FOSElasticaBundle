@@ -12,12 +12,13 @@ interface ElasticaToModelTransformerInterface
      * model objects fetched from the doctrine repository.
      *
      * @param array $elasticaObjects array of elastica objects
+     * @param array $options         transform options
      *
      * @return array of model objects
      **/
-    public function transform(array $elasticaObjects);
+    public function transform(array $elasticaObjects, array $options = array());
 
-    public function hybridTransform(array $elasticaObjects);
+    public function hybridTransform(array $elasticaObjects, array $options = array());
 
     /**
      * Returns the object class used by the transformer.

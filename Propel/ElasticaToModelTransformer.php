@@ -51,21 +51,24 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * fetched from the database.
      *
      * @param array $elasticaObjects
+     * @param array $options
      *
      * @return array|\ArrayObject
      */
-    public function transform(array $elasticaObjects)
+    public function transform(array $elasticaObjects, array $options = array())
     {
+        $options = array_merge($this->options, $options);
+
         $ids = array();
         foreach ($elasticaObjects as $elasticaObject) {
             $ids[] = $elasticaObject->getId();
         }
 
-        $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
+        $objects = $this->findByIdentifiers($ids, $options['hydrate']);
 
         // Sort objects in the order of their IDs
         $idPos = array_flip($ids);
-        $identifier = $this->options['identifier'];
+        $identifier = $options['identifier'];
         $sortCallback = $this->getSortingClosure($idPos, $identifier);
 
         if (is_object($objects)) {
@@ -80,9 +83,11 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
     /**
      * {@inheritdoc}
      */
-    public function hybridTransform(array $elasticaObjects)
+    public function hybridTransform(array $elasticaObjects, array $options = array())
     {
-        $objects = $this->transform($elasticaObjects);
+        $options = array_merge($this->options, $options);
+
+        $objects = $this->transform($elasticaObjects, $options);
 
         $result = array();
         for ($i = 0, $j = count($elasticaObjects); $i < $j; $i++) {

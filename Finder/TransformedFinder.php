@@ -30,21 +30,22 @@ class TransformedFinder implements PaginatedFinderInterface
      * @param string  $query
      * @param integer $limit
      * @param array   $options
+     * @param array   $transformOptions
      *
      * @return array of model objects
      **/
-    public function find($query, $limit = null, $options = array())
+    public function find($query, $limit = null, $options = array(), $transformOptions = array())
     {
         $results = $this->search($query, $limit, $options);
 
-        return $this->transformer->transform($results);
+        return $this->transformer->transform($results, $transformOptions);
     }
 
-    public function findHybrid($query, $limit = null, $options = array())
+    public function findHybrid($query, $limit = null, $options = array(), $transformOptions = array())
     {
         $results = $this->search($query, $limit, $options);
 
-        return $this->transformer->hybridTransform($results);
+        return $this->transformer->hybridTransform($results, $transformOptions);
     }
 
     /**
@@ -53,15 +54,16 @@ class TransformedFinder implements PaginatedFinderInterface
      * @param integer $id
      * @param array   $params
      * @param array   $query
+     * @param array   $transformOptions
      *
      * @return array of model objects
      **/
-    public function moreLikeThis($id, $params = array(), $query = array())
+    public function moreLikeThis($id, $params = array(), $query = array(), $transformOptions = array())
     {
         $doc = new Document($id);
         $results = $this->searchable->moreLikeThis($doc, $params, $query)->getResults();
 
-        return $this->transformer->transform($results);
+        return $this->transformer->transform($results, $transformOptions);
     }
 
     /**
