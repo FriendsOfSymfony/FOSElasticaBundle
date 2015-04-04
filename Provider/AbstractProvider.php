@@ -106,12 +106,13 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $this->resolver->setDefaults(array(
             'batch_size' => 100,
+            'limit' => 0,
             'skip_indexable_check' => false,
         ));
         $this->resolver->setAllowedTypes(array(
-            'batch_size' => 'int'
+            'batch_size' => 'int',
+            'limit' => 'int',
         ));
-
         $this->resolver->setRequired(array(
             'indexName',
             'typeName',
