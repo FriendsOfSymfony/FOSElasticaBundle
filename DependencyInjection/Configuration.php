@@ -514,6 +514,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue($this->debug)
                             ->treatNullLike(true)
                         ->end()
+                        ->scalarNode('limit')->end()
                         ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
                         ->scalarNode('service')->end()
                     ->end()

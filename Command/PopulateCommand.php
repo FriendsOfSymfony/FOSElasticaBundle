@@ -55,6 +55,7 @@ class PopulateCommand extends ContainerAwareCommand
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
             ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
+            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Populate at most this many documents', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
@@ -97,6 +98,9 @@ class PopulateCommand extends ContainerAwareCommand
         );
         if ($input->getOption('batch-size')) {
             $options['batch_size'] = (int) $input->getOption('batch-size');
+        }
+        if ($input->getOption('limit')) {
+            $options['limit'] = (int) $input->getOption('limit');
         }
 
         if ($input->isInteractive() && $reset && $input->getOption('offset')) {
