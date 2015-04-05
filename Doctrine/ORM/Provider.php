@@ -80,7 +80,7 @@ class Provider extends AbstractProvider
         }
 
         /*
-         * An orderBy DQL  part is required to avoid feching the same row twice.
+         * An orderBy DQL  part is required to avoid fetching the same row twice.
          * @see http://stackoverflow.com/questions/6314879/does-limit-offset-length-require-order-by-for-pagination
          * @see http://www.postgresql.org/docs/current/static/queries-limit.html
          * @see http://www.sqlite.org/lang_select.html#orderby
