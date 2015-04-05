@@ -64,7 +64,7 @@ Symfony application, use the example below:
 fos_elastica:
     indexes:
         app:
-            index_name: app_%kernel.env%
+            index_name: app_%kernel.environment%
 ```
 
 In this case, the service `fos_elastica.index.app` will relate to an ElasticSearch index
