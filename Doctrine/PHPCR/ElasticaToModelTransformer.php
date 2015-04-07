@@ -20,15 +20,6 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      */
     protected function findByIdentifiers(array $identifierValues, $hydrate)
     {
-        // Special case where model is interface
-        if (interface_exists($this->objectClass, false)) {
-            return $this->registry
-                ->getManager()
-                ->findMany(null, $identifierValues)
-                ->toArray();
-        }
-
-        // General case
         return $this->registry
             ->getManager()
             ->getRepository($this->objectClass)
