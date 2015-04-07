@@ -43,7 +43,7 @@ class UserProvider implements ProviderInterface
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
         if ($loggerClosure) {
-            $loggerClosure('Indexing users');
+            $loggerClosure('Indexing users', 1);
         }
 
         $document = new Document();
