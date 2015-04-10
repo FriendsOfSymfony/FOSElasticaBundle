@@ -59,7 +59,7 @@ class ProviderRegistry implements ContainerAwareInterface
      *
      * @param string $index
      *
-     * @return array of ProviderInterface instances
+     * @return ProviderInterface[]
      *
      * @throws \InvalidArgumentException if no providers were registered for the index
      */

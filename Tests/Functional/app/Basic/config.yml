@@ -51,6 +51,8 @@ fos_elastica:
                     index_analyzer: my_analyzer
                 type:
                     search_analyzer: my_analyzer
+                    date_detection: false
+                    dynamic_date_formats: [ 'yyyy-MM-dd' ]
                     dynamic_templates:
                         - dates:
                             match: "date_*"
@@ -61,6 +63,7 @@ fos_elastica:
                             mapping:
                                 analyzer: english
                                 type: string
+                    numeric_detection: true
                     properties:
                         field1: ~
                         field2:

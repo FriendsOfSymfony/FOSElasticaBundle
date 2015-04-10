@@ -12,46 +12,45 @@ use FOS\ElasticaBundle\Provider\AbstractProvider;
 class Provider extends AbstractProvider
 {
     /**
-     * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
+     * {@inheritDoc}
      */
-    public function populate(\Closure $loggerClosure = null, array $options = array())
+    public function doPopulate($options, \Closure $loggerClosure = null)
     {
         $queryClass = $this->objectClass.'Query';
         $nbObjects = $queryClass::create()->count();
-        $offset = isset($options['offset']) ? intval($options['offset']) : 0;
-        $sleep = isset($options['sleep']) ? intval($options['sleep']) : 0;
-        $batchSize = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
 
-        for (; $offset < $nbObjects; $offset += $batchSize) {
-            if ($loggerClosure) {
-                $stepStartTime = microtime(true);
-            }
+        $offset = $options['offset'];
 
+        for (; $offset < $nbObjects; $offset += $options['batch_size']) {
             $objects = $queryClass::create()
-                ->limit($batchSize)
+                ->limit($options['batch_size'])
                 ->offset($offset)
                 ->find()
                 ->getArrayCopy();
-            if ($loggerClosure) {
-                $stepNbObjects = count($objects);
-            }
-            $objects = array_filter($objects, array($this, 'isObjectIndexable'));
-            if (!$objects) {
-                $loggerClosure('<info>Entire batch was filtered away, skipping...</info>');
-
-                continue;
+            $objects = $this->filterObjects($options, $objects);
+            if (!empty($objects)) {
+                $this->objectPersister->insertMany($objects);
             }
 
-            $this->objectPersister->insertMany($objects);
-
-            usleep($sleep);
+            usleep($options['sleep']);
 
             if ($loggerClosure) {
-                $stepCount = $stepNbObjects + $offset;
-                $percentComplete = 100 * $stepCount / $nbObjects;
-                $objectsPerSecond = $stepNbObjects / (microtime(true) - $stepStartTime);
-                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s %s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond, $this->getMemoryUsage()));
+                $loggerClosure($options['batch_size'], $nbObjects);
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function disableLogging()
+    {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function enableLogging($logger)
+    {
     }
 }

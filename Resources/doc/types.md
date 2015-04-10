@@ -1,6 +1,34 @@
 Type configuration
 ==================
 
+Custom Property Paths
+---------------------
+
+Since FOSElasticaBundle 3.1.0, it is now possible to define custom property paths
+to be used for data retrieval from the underlying model.
+
+```yaml
+                user:
+                    mappings:
+                        username:
+                            property_path: indexableUsername
+                        firstName: 
+                            property_path: names[first]
+```
+
+This feature uses the Symfony PropertyAccessor component and supports all features
+that the component supports.
+
+The above example would retrieve an indexed field `username` from the property
+`User->indexableUsername`, and the indexed field `firstName` would be populated from a
+key `first` from an array on `User->names`.
+
+Setting the property path to `false` will disable transformation of that value. In this
+case the mapping will be created but no value will be populated while indexing. You can
+populate this value by listening to the `POST_TRANSFORM` event emitted by this bundle.
+See [cookbook/custom-properties.md](cookbook/custom-properties.md) for more information
+about this event.
+
 Handling missing results with FOSElasticaBundle
 -----------------------------------------------
 
@@ -173,13 +201,18 @@ index enabled users.
 The callback option supports multiple approaches:
 
 * A method on the object itself provided as a string. `enabled` will call
-  `Object->enabled()`
+  `Object->enabled()`. Note that this does not support chaining methods with dot notation
+  like property paths. To achieve something similar use the ExpressionLanguage option
+  below.
 * An array of a service id and a method which will be called with the object as the first
   and only argument. `[ @my_custom_service, 'userIndexable' ]` will call the userIndexable
   method on a service defined as my_custom_service.
 * An array of a class and a static method to call on that class which will be called with
   the object as the only argument. `[ 'Acme\DemoBundle\IndexableChecker', 'isIndexable' ]`
   will call Acme\DemoBundle\IndexableChecker::isIndexable($object)
+* A single element array with a service id can be used if the service has an __invoke
+  method. Such an invoke method must accept a single parameter for the object to be indexed.
+  `[ @my_custom_invokable_service ]`
 * If you have the ExpressionLanguage component installed, A valid ExpressionLanguage
   expression provided as a string. The object being indexed will be supplied as `object`
   in the expression. `object.isEnabled() or object.shouldBeIndexedAnyway()`. For more
