@@ -73,7 +73,7 @@ class Repository
      */
     public function createPaginatorAdapter($query, $options = array())
     {
-        return $this->finder->createRawPaginatorAdapter($query, $options);
+        return $this->finder->createPaginatorAdapter($query, $options);
     }
         /**
      * @param mixed $query
