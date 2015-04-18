@@ -42,6 +42,17 @@ class Repository
     {
         return $this->finder->findHybrid($query, $limit, $options);
     }
+    /**
+     * @param mixed   $query
+     * @param integer $limit
+     * @param array   $options
+     *
+     * @return mixed
+     */
+    public function findRawResult($query, $limit = null, $options = array())
+    {
+        return $this->finder->findRawResult($query, $limit, $options);
+    }
 
     /**
      * @param mixed $query
@@ -62,6 +73,27 @@ class Repository
      */
     public function createPaginatorAdapter($query, $options = array())
     {
-        return $this->finder->createPaginatorAdapter($query, $options);
+        return $this->finder->createRawPaginatorAdapter($query, $options);
+    }
+        /**
+     * @param mixed $query
+     * @param array $options
+     *
+     * @return \Pagerfanta\Pagerfanta
+     */
+    public function findRawPaginated($query, $options = array())
+    {
+        return $this->finder->findRawPaginated($query, $options);
+    }
+
+    /**
+     * @param string $query
+     * @param array  $options
+     *
+     * @return Paginator\PaginatorAdapterInterface
+     */
+    public function createRawPaginatorAdapter($query, $options = array())
+    {
+        return $this->finder->createRawPaginatorAdapter($query, $options);
     }
 }
