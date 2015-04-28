@@ -121,23 +121,6 @@ abstract class AbstractProvider extends BaseAbstractProvider
     }
 
     /**
-     * {@inheritDoc}
-     */
-    protected function configureOptions()
-    {
-        parent::configureOptions();
-
-        $this->resolver->setDefaults(array(
-            'clear_object_manager' => true,
-            'debug_logging'        => false,
-            'ignore_errors'        => false,
-            'offset'               => 0,
-            'query_builder_method' => 'createQueryBuilder',
-            'sleep'                => 0
-        ));
-    }
-
-    /**
      * If this Provider has a SliceFetcher defined, we use it instead of falling back to
      * the fetchSlice methods defined in the ORM/MongoDB subclasses.
      *
