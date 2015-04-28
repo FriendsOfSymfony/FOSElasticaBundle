@@ -100,24 +100,38 @@ abstract class AbstractProvider implements ProviderInterface
     abstract protected function enableLogging($logger);
 
     /**
-     * Configures the option resolver.
+     * Configures the option resolver. Some of these options can be ignored if
+     * implementing this class if they do not have any behaviour for a specific provider.
      */
     protected function configureOptions()
     {
         $this->resolver->setDefaults(array(
             'batch_size' => 100,
+            'clear_object_manager' => true,
+            'debug_logging' => false,
+            'ignore_errors' => false,
+            'offset' => 0,
+            'query_builder_method' => 'createQueryBuilder',
             'skip_indexable_check' => false,
+            'sleep' => 0
         ));
-        $this->resolver->setAllowedTypes(array(
-            'batch_size' => 'int'
-        ));
-
         $this->resolver->setRequired(array(
             'indexName',
             'typeName',
         ));
+        $this->resolver->setAllowedTypes(array(
+            'batch_size' => 'int',
+            'clear_object_manager' => 'bool',
+            'debug_logging' => 'bool',
+            'ignore_errors' => 'bool',
+            'indexName' => 'string',
+            'typeName' => 'string',
+            'offset' => 'int',
+            'query_builder_method' => 'string',
+            'skip_indexable_check' => 'bool',
+            'sleep' => 'int'
+        ));
     }
-
 
     /**
      * Filters objects away if they are not indexable.
