@@ -28,7 +28,7 @@ fos_elastica:
     clients:
         default: { host: localhost, port: 9200 }
     indexes:
-        website:
+        app:
             client: default
             types:
                 user:

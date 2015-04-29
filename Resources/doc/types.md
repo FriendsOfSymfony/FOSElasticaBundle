@@ -61,7 +61,7 @@ applied when dynamic introduction of fields / objects happens.
 ```yaml
 fos_elastica:
     indexes:
-        site:
+        app:
             types:
                 user:
                     dynamic_templates:
@@ -87,7 +87,7 @@ Note that object can autodetect properties
 ```yaml
 fos_elastica:
     indexes:
-        website:
+        app:
             types:
                 post:
                     mappings:
@@ -113,7 +113,7 @@ Parent fields
 ```yaml
 fos_elastica:
     indexes:
-        website:
+        app:
             types:
                 comment:
                     mappings:
