@@ -11,6 +11,7 @@ configuration options for this kind of searching, please see the [types](types.m
 documentation.
 
 ```php
+/* @var $finder \FOS\ElasticaBundle\Finder\TransformedFinder */
 $finder = $this->container->get('fos_elastica.finder.search.user');
 
 // Option 1. Returns all users who have example.net in any of their mapped fields
