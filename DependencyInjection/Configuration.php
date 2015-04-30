@@ -525,6 +525,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('delete')->defaultTrue()->end()
                         ->scalarNode('flush')->defaultTrue()->end()
                         ->booleanNode('immediate')->defaultFalse()->end()
+                        ->booleanNode('async')->defaultFalse()->end()
                         ->scalarNode('logger')
                             ->defaultFalse()
                             ->treatNullLike('fos_elastica.logger')

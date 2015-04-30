@@ -79,6 +79,8 @@ class Listener
     ) {
         $this->config = array_merge(array(
             'identifier' => 'id',
+            'async' => false,
+            'defer' => false
         ), $config);
         $this->indexable = $indexable;
         $this->objectPersister = $objectPersister;
@@ -86,6 +88,18 @@ class Listener
 
         if ($logger && $this->objectPersister instanceof ObjectPersister) {
             $this->objectPersister->setLogger($logger);
+        }
+    }
+
+    /**
+     * Handler for the "kernel.terminate" Symfony event. This event is subscribed to if the listener is configured to
+     * persist asynchronously.
+     */
+    public function onKernelTerminate()
+    {
+        if($this->config['async'] && $this->config['defer']) {
+            $this->config['defer'] = false;
+            $this->persistScheduled();
         }
     }
 
@@ -138,22 +152,34 @@ class Listener
     }
 
     /**
+     * Determines whether or not it is okay to persist now.
+     *
+     * @return bool
+     */
+    private function shouldPersist()
+    {
+        return !$this->config['defer'];
+    }
+
+    /**
      * Persist scheduled objects to ElasticSearch
      * After persisting, clear the scheduled queue to prevent multiple data updates when using multiple flush calls.
      */
     private function persistScheduled()
     {
-        if (count($this->scheduledForInsertion)) {
-            $this->objectPersister->insertMany($this->scheduledForInsertion);
-            $this->scheduledForInsertion = array();
-        }
-        if (count($this->scheduledForUpdate)) {
-            $this->objectPersister->replaceMany($this->scheduledForUpdate);
-            $this->scheduledForUpdate = array();
-        }
-        if (count($this->scheduledForDeletion)) {
-            $this->objectPersister->deleteManyByIdentifiers($this->scheduledForDeletion);
-            $this->scheduledForDeletion = array();
+        if($this->shouldPersist()) {
+            if (count($this->scheduledForInsertion)) {
+                $this->objectPersister->insertMany($this->scheduledForInsertion);
+                $this->scheduledForInsertion = array();
+            }
+            if (count($this->scheduledForUpdate)) {
+                $this->objectPersister->replaceMany($this->scheduledForUpdate);
+                $this->scheduledForUpdate = array();
+            }
+            if (count($this->scheduledForDeletion)) {
+                $this->objectPersister->deleteManyByIdentifiers($this->scheduledForDeletion);
+                $this->scheduledForDeletion = array();
+            }
         }
     }
 
