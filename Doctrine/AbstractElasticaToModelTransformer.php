@@ -69,20 +69,22 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      * model objects fetched from the doctrine repository.
      *
      * @param array $elasticaObjects of elastica objects
+     * @param array $options of transform options
      *
      * @throws \RuntimeException
      *
      * @return array
      **/
-    public function transform(array $elasticaObjects)
+    public function transform(array $elasticaObjects, array $options = array())
     {
+        $options = array_merge($this->options, $options);
         $ids = $highlights = array();
         foreach ($elasticaObjects as $elasticaObject) {
             $ids[] = $elasticaObject->getId();
             $highlights[$elasticaObject->getId()] = $elasticaObject->getHighlights();
         }
 
-        $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
+        $objects = $this->findByIdentifiers($ids, $options);
         if (!$this->options['ignore_missing'] && count($objects) < count($elasticaObjects)) {
             throw new \RuntimeException('Cannot find corresponding Doctrine objects for all Elastica results.');
         };
@@ -95,24 +97,30 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 
         // sort objects in the order of ids
         $idPos = array_flip($ids);
-        $identifier = $this->options['identifier'];
+        $identifier = $options['identifier'];
+
+        if ($options['hydrate'] === false) {
+            $identifier = '[' . $identifier . ']';
+        }
+
         usort($objects, $this->getSortingClosure($idPos, $identifier));
 
         return $objects;
     }
 
-    public function hybridTransform(array $elasticaObjects)
+    public function hybridTransform(array $elasticaObjects, array $options = array())
     {
+        $options = array_merge($this->options, $options);
         $indexedElasticaResults = array();
         foreach ($elasticaObjects as $elasticaObject) {
             $indexedElasticaResults[$elasticaObject->getId()] = $elasticaObject;
         }
 
-        $objects = $this->transform($elasticaObjects);
+        $objects = $this->transform($elasticaObjects, $options);
 
         $result = array();
         foreach ($objects as $object) {
-            $id = $this->propertyAccessor->getValue($object, $this->options['identifier']);
+            $id = $this->propertyAccessor->getValue($object, $options['identifier']);
             $result[] = new HybridResult($indexedElasticaResults[$id], $object);
         }
 
@@ -130,10 +138,10 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
     /**
      * Fetches objects by theses identifier values.
      *
-     * @param array   $identifierValues ids values
-     * @param Boolean $hydrate          whether or not to hydrate the objects, false returns arrays
+     * @param array $identifierValues ids values
+     * @param array $options transform options
      *
      * @return array of objects or arrays
      */
-    abstract protected function findByIdentifiers(array $identifierValues, $hydrate);
+    abstract protected function findByIdentifiers(array $identifierValues, array $options = array());
 }

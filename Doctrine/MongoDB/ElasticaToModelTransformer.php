@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
 use FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
+use Doctrine\ORM\Query;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -15,18 +16,20 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * Fetch objects for theses identifier values.
      *
      * @param array   $identifierValues ids values
-     * @param Boolean $hydrate          whether or not to hydrate the objects, false returns arrays
+     * @param array   $options
      *
      * @return array of objects or arrays
      */
-    protected function findByIdentifiers(array $identifierValues, $hydrate)
+    protected function findByIdentifiers(array $identifierValues, array $options = array())
     {
+        $options = array_merge($this->options, $options);
+
         return $this->registry
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass)
             ->{$this->options['query_builder_method']}($this->objectClass)
             ->field($this->options['identifier'])->in($identifierValues)
-            ->hydrate($hydrate)
+            ->hydrate($options['hydrate'])
             ->getQuery()
             ->execute()
             ->toArray();

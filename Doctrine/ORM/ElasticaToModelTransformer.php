@@ -17,20 +17,20 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
     /**
      * Fetch objects for theses identifier values.
      *
-     * @param array   $identifierValues ids values
-     * @param Boolean $hydrate          whether or not to hydrate the objects, false returns arrays
+     * @param array $identifierValues ids values
+     * @param array $options transform options
      *
      * @return array of objects or arrays
      */
-    protected function findByIdentifiers(array $identifierValues, $hydrate)
+    protected function findByIdentifiers(array $identifierValues, array $options = array())
     {
         if (empty($identifierValues)) {
             return array();
         }
-        $hydrationMode = $hydrate ? Query::HYDRATE_OBJECT : Query::HYDRATE_ARRAY;
+        $hydrationMode = isset($options['hydrate']) && $options['hydrate'] ? Query::HYDRATE_OBJECT : Query::HYDRATE_ARRAY;
 
-        $qb = $this->getEntityQueryBuilder();
-        $qb->andWhere($qb->expr()->in(static::ENTITY_ALIAS.'.'.$this->options['identifier'], ':values'))
+        $qb = $this->getEntityQueryBuilder($options);
+        $qb->andWhere($qb->expr()->in(static::ENTITY_ALIAS.'.'.$options['identifier'], ':values'))
             ->setParameter('values', $identifierValues);
 
         return $qb->getQuery()->setHydrationMode($hydrationMode)->execute();
@@ -39,14 +39,18 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
     /**
      * Retrieves a query builder to be used for querying by identifiers.
      *
+     * @param array $options transform options
+     *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    protected function getEntityQueryBuilder()
+    protected function getEntityQueryBuilder(array $options = array())
     {
+        $options = array_merge($this->options, $options);
+
         $repository = $this->registry
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass);
 
-        return $repository->{$this->options['query_builder_method']}(static::ENTITY_ALIAS);
+        return $repository->{$options['query_builder_method']}(static::ENTITY_ALIAS);
     }
 }

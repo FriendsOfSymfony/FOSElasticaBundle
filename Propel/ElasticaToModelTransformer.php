@@ -51,21 +51,24 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * fetched from the database.
      *
      * @param array $elasticaObjects
+     * @param array $options
      *
      * @return array|\ArrayObject
      */
-    public function transform(array $elasticaObjects)
+    public function transform(array $elasticaObjects, array $options = array())
     {
+        $options = array_merge($this->options, $options);
+
         $ids = array();
         foreach ($elasticaObjects as $elasticaObject) {
             $ids[] = $elasticaObject->getId();
         }
 
-        $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
+        $objects = $this->findByIdentifiers($ids, $options['hydrate']);
 
         // Sort objects in the order of their IDs
         $idPos = array_flip($ids);
-        $identifier = $this->options['identifier'];
+        $identifier = $options['identifier'];
         $sortCallback = $this->getSortingClosure($idPos, $identifier);
 
         if (is_object($objects)) {
@@ -80,9 +83,11 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
     /**
      * {@inheritdoc}
      */
-    public function hybridTransform(array $elasticaObjects)
+    public function hybridTransform(array $elasticaObjects, array $options = array())
     {
-        $objects = $this->transform($elasticaObjects);
+        $options = array_merge($this->options, $options);
+
+        $objects = $this->transform($elasticaObjects, $options);
 
         $result = array();
         for ($i = 0, $j = count($elasticaObjects); $i < $j; $i++) {
@@ -114,20 +119,22 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * If $hydrate is false, the returned array elements will be arrays.
      * Otherwise, the results will be hydrated to instances of the model class.
      *
-     * @param array   $identifierValues Identifier values
-     * @param boolean $hydrate          Whether or not to hydrate the results
+     * @param array $identifierValues Identifier values
+     * @param array $options transform options
      *
      * @return array
      */
-    protected function findByIdentifiers(array $identifierValues, $hydrate)
+    protected function findByIdentifiers(array $identifierValues, array $options = array())
     {
+        $options = array_merge($this->options, $options);
+
         if (empty($identifierValues)) {
             return array();
         }
 
-        $query = $this->createQuery($this->objectClass, $this->options['identifier'], $identifierValues);
+        $query = $this->createQuery($this->objectClass, $options['identifier'], $identifierValues);
 
-        if (! $hydrate) {
+        if (!$options['hydrate']) {
             return $query->toArray();
         }
 
