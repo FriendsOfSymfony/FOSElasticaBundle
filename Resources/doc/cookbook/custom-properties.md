@@ -9,6 +9,9 @@ Set up an event listener or subscriber for
 parameters.
 
 ```php
+
+namespace AcmeBundle\EventListener;
+
 class CustomPropertyListener implements EventSubscriberInterface
 {
     private $anotherService;
