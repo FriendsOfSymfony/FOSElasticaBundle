@@ -5,7 +5,7 @@ Create a service with the tag "fos_elastica.provider" and attributes for the
 index and type for which the service will provide.
 
 ```yaml
-# app/config/config.yml
+# config/services.yml
 services:
     acme.search_provider.user:
         class: Acme\UserBundle\Provider\UserProvider
