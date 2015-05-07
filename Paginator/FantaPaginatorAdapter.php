@@ -4,6 +4,9 @@ namespace FOS\ElasticaBundle\Paginator;
 
 use Pagerfanta\Adapter\AdapterInterface;
 
+/**
+ * @class FantaPaginatorAdapter
+ */
 class FantaPaginatorAdapter implements AdapterInterface
 {
     private $adapter;
@@ -38,6 +41,18 @@ class FantaPaginatorAdapter implements AdapterInterface
     public function getFacets()
     {
         return $this->adapter->getFacets();
+    }
+
+    /**
+     * Returns Aggregations.
+     *
+     * @return mixed
+     *
+     * @api
+     */
+    public function getAggregations()
+    {
+        return $this->adapter->getAggregations();
     }
 
     /**

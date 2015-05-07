@@ -138,14 +138,28 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     }
 
     /**
-     * Returns Facets.
+     * Returns Aggregations.
      *
-     * @return array
+     * @return mixed
      */
-    public function getAggregation()
+    public function getAggregations()
     {
         if (!isset($this->aggregation)) {
-            $this->aggregation = $this->searchable->search($this->query)->getAggregation();
+            $this->aggregation = $this->searchable->search($this->query)->getAggregations();
+        }
+
+        return $this->aggregation;
+    }
+
+    /**
+     * Returns Aggregation.
+     * @param string $name
+     * @return array
+     */
+    public function getAggregation($name)
+    {
+        if (!isset($this->aggregation)) {
+            $this->aggregation = $this->searchable->search($this->query)->getAggregation($name);
         }
 
         return $this->aggregation;
