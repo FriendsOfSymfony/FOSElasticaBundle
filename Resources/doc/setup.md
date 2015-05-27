@@ -8,7 +8,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```bash
-$ composer require friendsofsymfony/elastica-bundle "~3.0"
+$ composer require friendsofsymfony/elastica-bundle
 ```
 
 This command requires you to have Composer installed globally, as explained
@@ -17,7 +17,7 @@ of the Composer documentation.
 
 ### Elasticsearch
 
-Instructions for installing and deploying Elasticsearch may be found [here](http://www.elasticsearch.org/guide/reference/setup/installation/).
+Instructions for installing and deploying Elasticsearch may be found [here](https://www.elastic.co/downloads/elasticsearch).
 
 Step 2: Enable the Bundle
 -------------------------
