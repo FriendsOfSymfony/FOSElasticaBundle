@@ -23,6 +23,10 @@ options on how to handle this:
 
 1) Delete the index from Elasticsearch. This option will make searching unavailable in your
    application until a population has completed itself, and an alias is created.
+   
+```bash
+$ curl -XDELETE 'http://localhost:9200/website/'
+```
 
 2) Change the index_name parameter for your index to something new, and manually alias the
    current index to the new index_name, which will then be replaced when you run a repopulate.
