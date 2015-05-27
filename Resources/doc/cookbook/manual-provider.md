@@ -10,9 +10,9 @@ services:
     acme.search_provider.user:
         class: Acme\UserBundle\Provider\UserProvider
         arguments:
-            - @fos_elastica.index.website.user
+            - @fos_elastica.index.app.user
         tags:
-            - { name: fos_elastica.provider, index: website, type: user }
+            - { name: fos_elastica.provider, index: app, type: user }
 ```
 
 Its class must implement `FOS\ElasticaBundle\Provider\ProviderInterface`.

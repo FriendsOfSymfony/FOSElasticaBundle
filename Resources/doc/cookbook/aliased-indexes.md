@@ -13,7 +13,7 @@ true.
 ```yaml
 fos_elastica:
     indexes:
-        website:
+        app:
             use_alias: true
 ```
 
@@ -34,16 +34,16 @@ $ curl -XDELETE 'http://localhost:9200/website/'
 ```yaml
 fos_elastica:
     indexes:
-        website:
+        app:
             use_alias: true
-            index_name: website_prod
+            index_name: app_prod
 ```
 
 ```bash
 $ curl -XPOST 'http://localhost:9200/_aliases' -d '
 {
     "actions" : [
-        { "add" : { "index" : "website", "alias" : "website_prod" } }
+        { "add" : { "index" : "app", "alias" : "app_prod" } }
     ]
 }'
 ```
