@@ -3,6 +3,8 @@
 namespace FOS\ElasticaBundle\Provider;
 
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -34,6 +36,11 @@ abstract class AbstractProvider implements ProviderInterface
      * @var IndexableInterface
      */
     private $indexable;
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $dispatcher;
 
     /**
      * Constructor.
@@ -73,6 +80,14 @@ abstract class AbstractProvider implements ProviderInterface
         if (null !== $logger) {
             $this->enableLogging($logger);
         }
+    }
+
+    /**
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
     }
 
     /**

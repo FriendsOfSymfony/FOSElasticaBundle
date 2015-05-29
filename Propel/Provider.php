@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Propel;
 
+use FOS\ElasticaBundle\Event\PersistingEvent;
 use FOS\ElasticaBundle\Provider\AbstractProvider;
 
 /**
@@ -29,6 +30,13 @@ class Provider extends AbstractProvider
                 ->getArrayCopy();
             $objects = $this->filterObjects($options, $objects);
             if (!empty($objects)) {
+
+                if ($this->dispatcher) {
+                    $event = new PersistingEvent($objects);
+                    $this->dispatcher->dispatch(PersistingEvent::INSERT_OBJECTS, $event);
+                    $objects = $event->getObjects();
+                }
+
                 $this->objectPersister->insertMany($objects);
             }
 

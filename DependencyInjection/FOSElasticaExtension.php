@@ -453,6 +453,7 @@ class FOSElasticaExtension extends Extension
             'indexName' => $indexName,
             'typeName' => $typeName,
         )));
+        $providerDef->addMethodCall('setEventDispatcher', array(new Reference('event_dispatcher')));
         $container->setDefinition($providerId, $providerDef);
 
         return $providerId;

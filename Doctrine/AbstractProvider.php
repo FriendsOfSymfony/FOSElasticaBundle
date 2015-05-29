@@ -4,6 +4,7 @@ namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
+use FOS\ElasticaBundle\Event\PersistingEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
@@ -92,6 +93,13 @@ abstract class AbstractProvider extends BaseAbstractProvider
                 $objects = $this->filterObjects($options, $objects);
 
                 if (!empty($objects)) {
+
+                    if ($this->dispatcher) {
+                        $event = new PersistingEvent($objects);
+                        $this->dispatcher->dispatch(PersistingEvent::INSERT_OBJECTS, $event);
+                        $objects = $event->getObjects();
+                    }
+
                     $this->objectPersister->insertMany($objects);
                 }
             } catch (BulkResponseException $e) {
