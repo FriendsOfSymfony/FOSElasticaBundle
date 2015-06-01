@@ -147,6 +147,12 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function replaceMany(array $objects)
     {
+        if ($this->dispatcher) {
+            $event = new PersistingEvent($objects);
+            $this->dispatcher->dispatch(PersistingEvent::REPLACE_OBJECTS, $event);
+            $objects = $event->getObjects();
+        }
+
         $documents = array();
         foreach ($objects as $object) {
             $document = $this->transformToElasticaDocument($object);

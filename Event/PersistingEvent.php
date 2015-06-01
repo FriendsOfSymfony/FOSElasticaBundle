@@ -19,6 +19,7 @@ use Symfony\Component\EventDispatcher\Event;
 class PersistingEvent extends Event
 {
     const INSERT_OBJECTS = 'fos_elastica.insert_objects';
+    const REPLACE_OBJECTS = 'fos_elastica.replace_objects';
 
     /**
      * @var mixed
