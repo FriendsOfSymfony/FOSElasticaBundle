@@ -2,8 +2,10 @@
 
 namespace FOS\ElasticaBundle\Tests\ObjectPersister;
 
+use FOS\ElasticaBundle\Event\PersistingEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class POPO
@@ -31,6 +33,17 @@ class InvalidObjectPersister extends ObjectPersister
 
 class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    public function setUp()
+    {
+        $this->dispatcher = $this->getMockBuilder('Symfony\\Component\\EventDispatcher\\EventDispatcherInterface')
+            ->getMock();
+    }
+
     public function testThatCanReplaceObject()
     {
         $transformer = $this->getTransformer();
@@ -167,10 +180,43 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->once())
             ->method('addDocuments');
 
+        $this->dispatcherExpects(array(
+            array(PersistingEvent::INSERT_OBJECTS, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\PersistingEvent')),
+        ));
+
         $fields = array('name' => array());
 
         $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister->setEventDispatcher($this->dispatcher);
         $objectPersister->insertMany(array(new POPO(), new POPO()));
+    }
+
+    public function testThatCanReplaceManyObjects()
+    {
+        $transformer = $this->getTransformer();
+
+        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
+        $typeMock = $this->getMockBuilder('Elastica\Type')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $typeMock->expects($this->never())
+            ->method('deleteById');
+        $typeMock->expects($this->never())
+            ->method('addDocument');
+        $typeMock->expects($this->never())
+            ->method('addDocuments');
+        $typeMock->expects($this->once())
+            ->method('updateDocuments');
+
+        $this->dispatcherExpects(array(
+            array(PersistingEvent::REPLACE_OBJECTS, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\PersistingEvent')),
+        ));
+
+        $fields = array('name' => array());
+
+        $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister->setEventDispatcher($this->dispatcher);
+        $objectPersister->replaceMany(array(new POPO(), new POPO()));
     }
 
     /**
@@ -206,5 +252,13 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $transformer->setPropertyAccessor(PropertyAccess::createPropertyAccessor());
 
         return $transformer;
+    }
+
+    private function dispatcherExpects(array $events)
+    {
+        $expectation = $this->dispatcher->expects($this->exactly(count($events)))
+            ->method('dispatch');
+
+        call_user_func_array(array($expectation, 'withConsecutive'), $events);
     }
 }
