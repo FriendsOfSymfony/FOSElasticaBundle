@@ -38,11 +38,6 @@ abstract class AbstractProvider implements ProviderInterface
     private $indexable;
 
     /**
-     * @var EventDispatcher
-     */
-    protected $dispatcher;
-
-    /**
      * Constructor.
      *
      * @param ObjectPersisterInterface $objectPersister
@@ -80,14 +75,6 @@ abstract class AbstractProvider implements ProviderInterface
         if (null !== $logger) {
             $this->enableLogging($logger);
         }
-    }
-
-    /**
-     * @param EventDispatcherInterface $dispatcher
-     */
-    public function setEventDispatcher(EventDispatcherInterface $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
     }
 
     /**

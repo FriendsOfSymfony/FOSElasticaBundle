@@ -417,7 +417,7 @@ class FOSElasticaExtension extends Extension
         foreach ($arguments as $i => $argument) {
             $serviceDef->replaceArgument($i, $argument);
         }
-
+        $serviceDef->addMethodCall('setEventDispatcher', array(new Reference('event_dispatcher')));
         $container->setDefinition($serviceId, $serviceDef);
 
         return $serviceId;
@@ -453,7 +453,6 @@ class FOSElasticaExtension extends Extension
             'indexName' => $indexName,
             'typeName' => $typeName,
         )));
-        $providerDef->addMethodCall('setEventDispatcher', array(new Reference('event_dispatcher')));
         $container->setDefinition($providerId, $providerDef);
 
         return $providerId;
