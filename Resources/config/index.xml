@@ -19,6 +19,7 @@
 
         <service id="fos_elastica.indexable" class="%fos_elastica.indexable.class%">
             <argument type="collection" /> <!-- array of indexable callbacks keyed by type name -->
+            <argument type="collection" /> <!-- array of updatable callbacks keyed by type name -->
             <argument type="service" id="service_container" />
         </service>
 

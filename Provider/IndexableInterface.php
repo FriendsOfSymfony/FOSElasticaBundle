@@ -23,4 +23,15 @@ interface IndexableInterface
      * @return bool
      */
     public function isObjectIndexable($indexName, $typeName, $object);
+
+    /**
+     * Checks if an object passed should be updated or not.
+     *
+     * @param string $indexName
+     * @param string $typeName
+     * @param mixed  $object
+     *
+     * @return bool
+     */
+    public function isObjectNeedUpdate($indexName, $typeName, $object);
 }

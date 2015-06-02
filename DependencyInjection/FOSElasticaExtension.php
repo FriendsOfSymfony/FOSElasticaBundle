@@ -134,6 +134,7 @@ class FOSElasticaExtension extends Extension
     private function loadIndexes(array $indexes, ContainerBuilder $container)
     {
         $indexableCallbacks = array();
+        $updatableCallbacks = array();
 
         foreach ($indexes as $name => $index) {
             $indexId = sprintf('fos_elastica.index.%s', $name);
@@ -166,11 +167,18 @@ class FOSElasticaExtension extends Extension
                 $this->loadIndexFinder($container, $name, $reference);
             }
 
-            $this->loadTypes((array) $index['types'], $container, $this->indexConfigs[$name], $indexableCallbacks);
+            $this->loadTypes(
+                (array) $index['types'],
+                $container,
+                $this->indexConfigs[$name],
+                $indexableCallbacks,
+                $updatableCallbacks
+            );
         }
 
         $indexable = $container->getDefinition('fos_elastica.indexable');
         $indexable->replaceArgument(0, $indexableCallbacks);
+        $indexable->replaceArgument(1, $updatableCallbacks);
     }
 
     /**
@@ -206,8 +214,15 @@ class FOSElasticaExtension extends Extension
      * @param ContainerBuilder $container
      * @param array            $indexConfig
      * @param array            $indexableCallbacks
+     * @param array            $updatableCallbacks
      */
-    private function loadTypes(array $types, ContainerBuilder $container, array $indexConfig, array &$indexableCallbacks)
+    private function loadTypes(
+        array $types,
+        ContainerBuilder $container,
+        array $indexConfig,
+        array &$indexableCallbacks,
+        array &$updatableCallbacks
+    )
     {
         foreach ($types as $name => $type) {
             $indexName = $indexConfig['name'];
@@ -262,6 +277,9 @@ class FOSElasticaExtension extends Extension
 
             if (isset($type['indexable_callback'])) {
                 $indexableCallbacks[sprintf('%s/%s', $indexName, $name)] = $type['indexable_callback'];
+            }
+            if (isset($type['updatable_callback'])) {
+                $updatableCallbacks[sprintf('%s/%s', $indexName, $name)] = $type['updatable_callback'];
             }
 
             if ($container->hasDefinition('fos_elastica.serializer_callback_prototype')) {

@@ -134,8 +134,7 @@ class Listener implements EventSubscriber
         $entity = $this->getDoctrineObject($eventArgs);
 
         if ($this->objectPersister->handlesObject($entity)
-            && (!isset($entity->needUpdateIndex) || $entity->needUpdateIndex)||
-            (isset($entity->__updateStatus) && $entity->__updateStatus)
+            && ($this->isObjectUpdatable($entity))
         ) {
             if ($this->isObjectIndexable($entity)) {
                 $this->scheduledForUpdate[] = $entity;
@@ -222,6 +221,23 @@ class Listener implements EventSubscriber
     private function isObjectIndexable($object)
     {
         return $this->indexable->isObjectIndexable(
+            $this->config['indexName'],
+            $this->config['typeName'],
+            $object
+        );
+    }
+
+
+    /**
+     * Checks if the object is indexable or not.
+     *
+     * @param object $object
+     *
+     * @return bool
+     */
+    private function isObjectUpdatable($object)
+    {
+        return $this->indexable->isObjectNeedUpdate(
             $this->config['indexName'],
             $this->config['typeName'],
             $object

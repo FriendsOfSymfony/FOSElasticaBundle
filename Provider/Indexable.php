@@ -25,7 +25,7 @@ class Indexable implements IndexableInterface
      *
      * @var array
      */
-    private $callbacks = array();
+    private $callbacks = [];
 
     /**
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
@@ -44,7 +44,7 @@ class Indexable implements IndexableInterface
      *
      * @var array
      */
-    private $initialisedCallbacks = array();
+    private $initialisedCallbacks = [];
 
     /**
      * PropertyAccessor instance.
@@ -54,13 +54,48 @@ class Indexable implements IndexableInterface
     private $propertyAccessor;
 
     /**
-     * @param array $callbacks
+     * @param array              $indexCallbacks
+     * @param array              $updateCallbacks
+     * @param ContainerInterface $container
      */
-    public function __construct(array $callbacks, ContainerInterface $container)
+    public function __construct(array $indexCallbacks, array $updateCallbacks, ContainerInterface $container)
     {
-        $this->callbacks = $callbacks;
+        $this->callbacks =[
+            'index' => $indexCallbacks,
+            'update' => $updateCallbacks,
+        ];
         $this->container = $container;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+    }
+
+    /**
+     * Return callback result for index and type, default result is true.
+     *
+     * @param string $indexName
+     * @param string $typeName
+     * @param mixed  $object
+     * @param string $callbackType
+     *
+     * @return bool|string
+     */
+    private function getCallbackResult($indexName, $typeName, $object, $callbackType)
+    {
+        $type = sprintf('%s/%s', $indexName, $typeName);
+        $callback = $this->getCallback($type, $object, $callbackType);
+        if (!$callback) {
+            return true;
+        }
+
+        if ($callback instanceof Expression) {
+            return $this->getExpressionLanguage()->evaluate($callback, [
+                'object' => $object,
+                $this->getExpressionVar($object) => $object,
+            ]);
+        }
+
+        return is_string($callback)
+            ? call_user_func([$object, $callback])
+            : call_user_func($callback, $object);
     }
 
     /**
@@ -74,22 +109,17 @@ class Indexable implements IndexableInterface
      */
     public function isObjectIndexable($indexName, $typeName, $object)
     {
-        $type = sprintf('%s/%s', $indexName, $typeName);
-        $callback = $this->getCallback($type, $object);
-        if (!$callback) {
-            return true;
-        }
+        $result = $this->getCallbackResult($indexName, $typeName, $object, 'index');
+        return $result;
+    }
 
-        if ($callback instanceof Expression) {
-            return $this->getExpressionLanguage()->evaluate($callback, array(
-                'object' => $object,
-                $this->getExpressionVar($object) => $object,
-            ));
-        }
-
-        return is_string($callback)
-            ? call_user_func(array($object, $callback))
-            : call_user_func($callback, $object);
+    /**
+     * @inheritdoc
+     */
+    public function isObjectNeedUpdate($indexName, $typeName, $object)
+    {
+        $result = $this->getCallbackResult($indexName, $typeName, $object, 'update');
+        return $result;
     }
 
     /**
@@ -97,18 +127,19 @@ class Indexable implements IndexableInterface
      *
      * @param string $type
      * @param object $object
+     * @param string $callbackType
      *
      * @return mixed
      */
-    private function buildCallback($type, $object)
+    private function buildCallback($type, $object, $callbackType = 'index')
     {
-        if (!array_key_exists($type, $this->callbacks)) {
-            return;
+        if (!isset($this->callbacks[$callbackType][$type])) {
+            return null;
         }
 
-        $callback = $this->callbacks[$type];
+        $callback = $this->callbacks[$callbackType][$type];
 
-        if (is_callable($callback) or is_callable(array($object, $callback))) {
+        if (is_callable($callback) || is_callable([$object, $callback])) {
             return $callback;
         }
 
@@ -150,16 +181,17 @@ class Indexable implements IndexableInterface
      *
      * @param string $type
      * @param object $object
+     * @param string $callbackType
      *
      * @return mixed
      */
-    private function getCallback($type, $object)
+    private function getCallback($type, $object, $callbackType = 'index')
     {
-        if (!array_key_exists($type, $this->initialisedCallbacks)) {
-            $this->initialisedCallbacks[$type] = $this->buildCallback($type, $object);
+        if (!isset($this->initialisedCallbacks[$callbackType][$type])) {
+            $this->initialisedCallbacks[$callbackType][$type] = $this->buildCallback($type, $object, $callbackType);
         }
 
-        return $this->initialisedCallbacks[$type];
+        return $this->initialisedCallbacks[$callbackType][$type];
     }
 
     /**
