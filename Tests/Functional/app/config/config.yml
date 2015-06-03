@@ -7,4 +7,4 @@ framework:
         engines: ['php']
 
 services:
-    logger: { class: Symfony\Component\HttpKernel\Log\NullLogger }
+    logger: { class: Psr\Log\NullLogger }
