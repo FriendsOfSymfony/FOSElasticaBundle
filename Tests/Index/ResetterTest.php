@@ -174,11 +174,13 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $indexConfig = new IndexConfig('index', array(), array('settings' => $settingsValue));
         $this->mockType('type', 'index', $typeConfig, $indexConfig);
 
-        $this->elasticaClient->expects($this->exactly(3))
+        $this->elasticaClient->expects($this->exactly(5))
             ->method('request')
             ->withConsecutive(
                 array('index/type/', 'DELETE'),
+                array('index/_close', 'POST'),
                 array('index/_settings', 'PUT', $settingsValue),
+                array('index/_open', 'POST'),
                 array('index/type/_mapping', 'PUT', array('type' => array()), array())
             );
 

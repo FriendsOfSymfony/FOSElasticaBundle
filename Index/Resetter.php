@@ -136,7 +136,9 @@ class Resetter
         }
 
         if (!empty($settings)) {
+            $index->close();
             $index->setSettings($settings);
+            $index->open();
         }
 
         $mapping = new Mapping();
