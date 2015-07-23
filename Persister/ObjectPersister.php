@@ -42,6 +42,9 @@ class ObjectPersister implements ObjectPersisterInterface
         return $object instanceof $this->objectClass;
     }
 
+    /**
+     * @param LoggerInterface $logger
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;

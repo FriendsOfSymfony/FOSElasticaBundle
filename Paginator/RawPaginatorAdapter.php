@@ -36,12 +36,11 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * @var array for the facets
      */
     private $facets;
-
     /**
-     * @var array for the aggregation
+     * @var array for the aggregations
      */
-    private $aggregation;
-
+    private $aggregations;
+    
     /**
      * @see PaginatorAdapterInterface::__construct
      *
@@ -74,7 +73,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
             ? (integer) $this->query->getParam('size')
             : null;
 
-        if ($size && $size < $offset + $itemCountPerPage) {
+        if (null !== $size && $size < $offset + $itemCountPerPage) {
             $itemCountPerPage = $size - $offset;
         }
 
@@ -89,7 +88,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         $resultSet = $this->searchable->search($query, $this->options);
         $this->totalHits = $resultSet->getTotalHits();
         $this->facets = $resultSet->getFacets();
-        $this->aggregation = $resultSet->getAggregations();
+        $this->aggregations = $resultSet->getAggregations();
 
         return $resultSet;
     }
@@ -110,15 +109,21 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * Returns the number of results.
      *
+     * If genuineTotal is provided as true, total hits is returned from the
+     * hits.total value from the search results instead of just returning
+     * the requested size.
+     *
+     * @param boolean $genuineTotal
+     *
      * @return integer The number of results.
      */
-    public function getTotalHits()
+    public function getTotalHits($genuineTotal = false)
     {
         if (! isset($this->totalHits)) {
-            $this->totalHits = $this->searchable->search($this->query)->getTotalHits();
+            $this->totalHits = $this->searchable->count($this->query);
         }
 
-        return $this->query->hasParam('size')
+        return $this->query->hasParam('size') && !$genuineTotal
             ? min($this->totalHits, (integer) $this->query->getParam('size'))
             : $this->totalHits;
     }

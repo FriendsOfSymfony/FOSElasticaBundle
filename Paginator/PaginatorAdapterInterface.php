@@ -10,6 +10,7 @@ interface PaginatorAdapterInterface
      * @return integer The number of results.
      */
     public function getTotalHits();
+
     /**
      * Returns an slice of the results.
      *
@@ -19,12 +20,14 @@ interface PaginatorAdapterInterface
      * @return PartialResultsInterface
      */
     public function getResults($offset, $length);
+
     /**
      * Returns Facets.
      *
      * @return mixed
      */
     public function getFacets();
+
     /**
      * Returns Aggregations.
      *

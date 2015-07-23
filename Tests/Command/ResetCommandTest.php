@@ -9,8 +9,8 @@ use Symfony\Component\DependencyInjection\Container;
 
 class ResetCommandTest extends \PHPUnit_Framework_TestCase
 {
+    private $command;
     private $resetter;
-
     private $indexManager;
 
     public function setup()

@@ -25,7 +25,7 @@ class Indexable implements IndexableInterface
      *
      * @var array
      */
-    private $callbacks = [];
+    private $callbacks = array();
 
     /**
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
@@ -44,7 +44,7 @@ class Indexable implements IndexableInterface
      *
      * @var array
      */
-    private $initialisedCallbacks = [];
+    private $initialisedCallbacks = array();
 
     /**
      * PropertyAccessor instance.
@@ -58,7 +58,7 @@ class Indexable implements IndexableInterface
      * @param array              $updateCallbacks
      * @param ContainerInterface $container
      */
-    public function __construct(array $indexCallbacks, array $updateCallbacks, ContainerInterface $container)
+    public function __construct(array $callbacks, ContainerInterface $container, array $updateCallbacks)
     {
         $this->callbacks =[
             'index' => $indexCallbacks,
@@ -87,14 +87,14 @@ class Indexable implements IndexableInterface
         }
 
         if ($callback instanceof Expression) {
-            return $this->getExpressionLanguage()->evaluate($callback, [
+            return $this->getExpressionLanguage()->evaluate($callback, array(
                 'object' => $object,
                 $this->getExpressionVar($object) => $object,
-            ]);
+            ));
         }
 
         return is_string($callback)
-            ? call_user_func([$object, $callback])
+            ? call_user_func(array($object, $callback))
             : call_user_func($callback, $object);
     }
 
@@ -139,43 +139,66 @@ class Indexable implements IndexableInterface
 
         $callback = $this->callbacks[$callbackType][$type];
 
-        if (is_callable($callback) || is_callable([$object, $callback])) {
+        if (is_callable($callback) || is_callable(array($object, $callback))) {
             return $callback;
         }
 
-        if (is_array($callback)) {
-            list($class, $method) = $callback + array(null, null);
-
-            if (is_object($class)) {
-                $class = get_class($class);
-            }
-
-            if (strpos($class, '@') === 0) {
-                $service = $this->container->get(substr($class, 1));
-
-                return array($service, $method);
-            }
-
-            if ($class && $method) {
-                throw new \InvalidArgumentException(sprintf('Callback for type "%s", "%s::%s()", is not callable.', $type, $class, $method));
-            }
+        if (is_array($callback) && !is_object($callback[0])) {
+            return $this->processArrayToCallback($type, $callback);
         }
 
-        if (is_string($callback) && $expression = $this->getExpressionLanguage()) {
-            $callback = new Expression($callback);
-
-            try {
-                $expression->compile($callback, array('object', $this->getExpressionVar($object)));
-
-                return $callback;
-            } catch (SyntaxError $e) {
-                throw new \InvalidArgumentException(sprintf('Callback for type "%s" is an invalid expression', $type), $e->getCode(), $e);
-            }
+        if (is_string($callback)) {
+            return $this->buildExpressionCallback($type, $object, $callback);
         }
 
         throw new \InvalidArgumentException(sprintf('Callback for type "%s" is not a valid callback.', $type));
     }
 
+    /**
+     * Processes a string expression into an Expression.
+     *
+     * @param string $type
+     * @param mixed $object
+     * @param string $callback
+     *
+     * @return Expression
+     */
+    private function buildExpressionCallback($type, $object, $callback)
+    {
+        $expression = $this->getExpressionLanguage();
+        if (!$expression) {
+            throw new \RuntimeException('Unable to process an expression without the ExpressionLanguage component.');
+        }
+
+        try {
+            $callback = new Expression($callback);
+            $expression->compile($callback, array(
+                'object', $this->getExpressionVar($object)
+            ));
+
+            return $callback;
+        } catch (SyntaxError $e) {
+            throw new \InvalidArgumentException(sprintf(
+                                                    'Callback for type "%s" is an invalid expression',
+                                                    $type
+                                                ), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * Returns the ExpressionLanguage class if it is available.
+     *
+     * @return ExpressionLanguage|null
+     */
+    private function getExpressionLanguage()
+    {
+        if (null === $this->expressionLanguage && class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+            $this->expressionLanguage = new ExpressionLanguage();
+        }
+
+        return $this->expressionLanguage;
+    }
+    
     /**
      * Retreives a cached callback, or creates a new callback if one is not found.
      *
@@ -195,7 +218,9 @@ class Indexable implements IndexableInterface
     }
 
     /**
-     * @return bool|ExpressionLanguage
+     * Returns the ExpressionLanguage class if it is available.
+     *
+     * @return ExpressionLanguage|null
      */
     private function getExpressionLanguage()
     {
@@ -211,14 +236,54 @@ class Indexable implements IndexableInterface
     }
 
     /**
+     * Returns the variable name to be used to access the object when using the ExpressionLanguage
+     * component to parse and evaluate an expression.
+     *
      * @param mixed $object
      *
      * @return string
      */
     private function getExpressionVar($object = null)
     {
+        if (!is_object($object)) {
+            return 'object';
+        }
+
         $ref = new \ReflectionClass($object);
 
         return strtolower($ref->getShortName());
+    }
+
+    /**
+     * Processes an array into a callback. Replaces the first element with a service if
+     * it begins with an @.
+     *
+     * @param string $type
+     * @param array $callback
+     * @return array
+     */
+    private function processArrayToCallback($type, array $callback)
+    {
+        list($class, $method) = $callback + array(null, '__invoke');
+
+        if (strpos($class, '@') === 0) {
+            $service = $this->container->get(substr($class, 1));
+            $callback = array($service, $method);
+
+            if (!is_callable($callback)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Method "%s" on service "%s" is not callable.',
+                    $method,
+                    substr($class, 1)
+                ));
+            }
+
+            return $callback;
+        }
+
+        throw new \InvalidArgumentException(sprintf(
+            'Unable to parse callback array for type "%s"',
+            $type
+        ));
     }
 }

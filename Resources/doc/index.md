@@ -13,6 +13,7 @@ Cookbook Entries
 ----------------
 
 * [Aliased Indexes](cookbook/aliased-indexes.md)
+* [Custom Indexed Properties](cookbook/custom-properties.md)
 * [Custom Repositories](cookbook/custom-repositories.md)
 * [HTTP Headers for Elastica](cookbook/elastica-client-http-headers.md)
 * Performance - [Logging](cookbook/logging.md)

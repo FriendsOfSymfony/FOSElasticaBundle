@@ -3,10 +3,17 @@
 namespace FOS\ElasticaBundle\Transformer;
 
 /**
- * Maps Elastica documents with model objects.
+ * Indicates that the model should have elastica highlights injected.
  */
 interface HighlightableModelInterface
 {
+    /**
+     * Returns a unique identifier for the model.
+     *
+     * @return mixed
+     */
+    public function getId();
+
     /**
      * Set ElasticSearch highlight data.
      *

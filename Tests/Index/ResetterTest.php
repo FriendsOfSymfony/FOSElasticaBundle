@@ -5,8 +5,14 @@ namespace FOS\ElasticaBundle\Tests\Index;
 use Elastica\Exception\ResponseException;
 use Elastica\Request;
 use Elastica\Response;
+use Elastica\Type;
 use Elastica\Type\Mapping;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
+use FOS\ElasticaBundle\Configuration\TypeConfig;
+use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Event\IndexResetEvent;
+use FOS\ElasticaBundle\Event\TypeResetEvent;
+use FOS\ElasticaBundle\Index\AliasProcessor;
 use FOS\ElasticaBundle\Index\Resetter;
 
 class ResetterTest extends \PHPUnit_Framework_TestCase
@@ -16,227 +22,253 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
      */
     private $resetter;
 
-    private $configManager;
-    private $indexManager;
     private $aliasProcessor;
+    private $configManager;
+    private $dispatcher;
+    private $elasticaClient;
+    private $indexManager;
     private $mappingBuilder;
 
-    public function setUp()
+    public function testResetAllIndexes()
     {
-        $this->markTestIncomplete('To be rewritten');
+        $indexName = 'index1';
+        $indexConfig = new IndexConfig($indexName, array(), array());
+        $this->mockIndex($indexName, $indexConfig);
+
+        $this->configManager->expects($this->once())
+            ->method('getIndexNames')
+            ->will($this->returnValue(array($indexName)));
+
+        $this->dispatcherExpects(array(
+            array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
+            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent'))
+        ));
+
+        $this->elasticaClient->expects($this->exactly(2))
+            ->method('request')
+            ->withConsecutive(
+                array('index1/', 'DELETE'),
+                array('index1/', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetAllIndexes();
+    }
+
+    public function testResetIndex()
+    {
+        $indexConfig = new IndexConfig('index1', array(), array());
+        $this->mockIndex('index1', $indexConfig);
+
+        $this->dispatcherExpects(array(
+            array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
+            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent'))
+        ));
+
+        $this->elasticaClient->expects($this->exactly(2))
+            ->method('request')
+            ->withConsecutive(
+                array('index1/', 'DELETE'),
+                array('index1/', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetIndex('index1');
+    }
+
+    public function testResetIndexWithDifferentName()
+    {
+        $indexConfig = new IndexConfig('index1', array(), array(
+            'elasticSearchName' => 'notIndex1'
+        ));
+        $this->mockIndex('index1', $indexConfig);
+        $this->dispatcherExpects(array(
+            array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
+            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent'))
+        ));
+
+        $this->elasticaClient->expects($this->exactly(2))
+            ->method('request')
+            ->withConsecutive(
+                array('index1/', 'DELETE'),
+                array('index1/', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetIndex('index1');
+    }
+
+    public function testResetIndexWithDifferentNameAndAlias()
+    {
+        $indexConfig = new IndexConfig('index1', array(), array(
+            'elasticSearchName' => 'notIndex1',
+            'useAlias' => true
+        ));
+        $index = $this->mockIndex('index1', $indexConfig);
+        $this->dispatcherExpects(array(
+            array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
+            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent'))
+        ));
+
+        $this->aliasProcessor->expects($this->once())
+            ->method('switchIndexAlias')
+            ->with($indexConfig, $index, false);
+
+        $this->elasticaClient->expects($this->exactly(2))
+            ->method('request')
+            ->withConsecutive(
+                array('index1/', 'DELETE'),
+                array('index1/', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetIndex('index1');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testFailureWhenMissingIndexDoesntDispatch()
+    {
+        $this->configManager->expects($this->once())
+            ->method('getIndexConfiguration')
+            ->with('nonExistant')
+            ->will($this->throwException(new \InvalidArgumentException));
+
+        $this->indexManager->expects($this->never())
+            ->method('getIndex');
+
+        $this->resetter->resetIndex('nonExistant');
+    }
+
+    public function testResetType()
+    {
+        $typeConfig = new TypeConfig('type', array(), array());
+        $this->mockType('type', 'index', $typeConfig);
+
+        $this->dispatcherExpects(array(
+            array(TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent')),
+            array(TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent'))
+        ));
+
+        $this->elasticaClient->expects($this->exactly(2))
+            ->method('request')
+            ->withConsecutive(
+                array('index/type/', 'DELETE'),
+                array('index/type/_mapping', 'PUT', array('type' => array()), array())
+            );
+
+        $this->resetter->resetIndexType('index', 'type');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testNonExistantResetType()
+    {
+        $this->configManager->expects($this->once())
+            ->method('getTypeConfiguration')
+            ->with('index', 'nonExistant')
+            ->will($this->throwException(new \InvalidArgumentException));
+
+        $this->indexManager->expects($this->never())
+            ->method('getIndex');
+
+        $this->resetter->resetIndexType('index', 'nonExistant');
+    }
+
+    public function testPostPopulateWithoutAlias()
+    {
+        $this->mockIndex('index', new IndexConfig('index', array(), array()));
+
+        $this->indexManager->expects($this->never())
+            ->method('getIndex');
+        $this->aliasProcessor->expects($this->never())
+            ->method('switchIndexAlias');
+
+        $this->resetter->postPopulate('index');
+    }
+
+    public function testPostPopulate()
+    {
+        $indexConfig = new IndexConfig('index', array(), array( 'useAlias' => true));
+        $index = $this->mockIndex('index', $indexConfig);
+
+        $this->aliasProcessor->expects($this->once())
+            ->method('switchIndexAlias')
+            ->with($indexConfig, $index);
+
+        $this->resetter->postPopulate('index');
+    }
+
+    private function dispatcherExpects(array $events)
+    {
+        $expectation = $this->dispatcher->expects($this->exactly(count($events)))
+            ->method('dispatch');
+
+        call_user_func_array(array($expectation, 'withConsecutive'), $events);
+    }
+
+    private function mockIndex($indexName, IndexConfig $config, $mapping = array())
+    {
+        $this->configManager->expects($this->atLeast(1))
+            ->method('getIndexConfiguration')
+            ->with($indexName)
+            ->will($this->returnValue($config));
+        $index = new Index($this->elasticaClient, $indexName);
+        $this->indexManager->expects($this->any())
+            ->method('getIndex')
+            ->with($indexName)
+            ->willReturn($index);
+        $this->mappingBuilder->expects($this->any())
+            ->method('buildIndexMapping')
+            ->with($config)
+            ->willReturn($mapping);
+
+        return $index;
+    }
+
+    private function mockType($typeName, $indexName, TypeConfig $config, $mapping = array())
+    {
+        $this->configManager->expects($this->atLeast(1))
+            ->method('getTypeConfiguration')
+            ->with($indexName, $typeName)
+            ->will($this->returnValue($config));
+        $index = new Index($this->elasticaClient, $indexName);
+        $this->indexManager->expects($this->once())
+            ->method('getIndex')
+            ->with($indexName)
+            ->willReturn($index);
+        $this->mappingBuilder->expects($this->once())
+            ->method('buildTypeMapping')
+            ->with($config)
+            ->willReturn($mapping);
+
+        return $index;
+    }
+
+    protected function setUp()
+    {
+        $this->aliasProcessor = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\AliasProcessor')
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->configManager = $this->getMockBuilder('FOS\\ElasticaBundle\\Configuration\\ConfigManager')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->indexManager = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\IndexManager')
+        $this->dispatcher = $this->getMockBuilder('Symfony\\Component\\EventDispatcher\\EventDispatcherInterface')
+            ->getMock();
+        $this->elasticaClient = $this->getMockBuilder('Elastica\\Client')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->aliasProcessor = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\AliasProcessor')
+        $this->indexManager = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\IndexManager')
             ->disableOriginalConstructor()
             ->getMock();
         $this->mappingBuilder = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\MappingBuilder')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->resetter = new Resetter($this->configManager, $this->indexManager, $this->aliasProcessor, $this->mappingBuilder);
-
-        /*$this->indexConfigsByName = array(
-            'foo' => array(
-                'index' => $this->getMockElasticaIndex(),
-                'config' => array(
-                    'properties' => array(
-                        'a' => array(
-                            'dynamic_templates' => array(),
-                            'properties' => array(),
-                        ),
-                        'b' => array('properties' => array()),
-                    ),
-                ),
-            ),
-            'bar' => array(
-                'index' => $this->getMockElasticaIndex(),
-                'config' => array(
-                    'properties' => array(
-                        'a' => array('properties' => array()),
-                        'b' => array('properties' => array()),
-                    ),
-                ),
-            ),
-            'parent' => array(
-                'index' => $this->getMockElasticaIndex(),
-                'config' => array(
-                    'properties' => array(
-                        'a' => array(
-                            'properties' => array(
-                                'field_2' => array()
-                            ),
-                            '_parent' => array(
-                                'type' => 'b',
-                                'property' => 'b',
-                                'identifier' => 'id'
-                            ),
-                        ),
-                        'b' => array('properties' => array()),
-                    ),
-                ),
-            ),
-        );*/
-    }
-
-    public function testResetAllIndexes()
-    {
-        $this->configManager->expects($this->once())
-            ->method('getIndexNames')
-            ->will($this->returnValue(array('index1')));
-
-        $this->configManager->expects($this->once())
-            ->method('getIndexConfiguration')
-            ->with('index1')
-            ->will($this->returnValue(new IndexConfig('index1', array(), array())));
-
-        $this->indexManager->expects($this->once())
-            ->method('getIndex')
-            ->with('index1')
-            ->will($this->returnValue());
-
-        /*$this->indexConfigsByName['foo']['index']->expects($this->once())
-            ->method('create')
-            ->with($this->indexConfigsByName['foo']['config'], true);
-
-        $this->indexConfigsByName['bar']['index']->expects($this->once())
-            ->method('create')
-            ->with($this->indexConfigsByName['bar']['config'], true);
-
-        $resetter = new Resetter($this->indexConfigsByName);*/
-        $this->resetter->resetAllIndexes();
-    }
-
-    public function testResetIndex()
-    {
-        $this->indexConfigsByName['foo']['index']->expects($this->once())
-            ->method('create')
-            ->with($this->indexConfigsByName['foo']['config'], true);
-
-        $this->indexConfigsByName['bar']['index']->expects($this->never())
-            ->method('create');
-
-        $resetter = new Resetter($this->indexConfigsByName);
-        $resetter->resetIndex('foo');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testResetIndexShouldThrowExceptionForInvalidIndex()
-    {
-        $resetter = new Resetter($this->indexConfigsByName);
-        $resetter->resetIndex('baz');
-    }
-
-    public function testResetIndexType()
-    {
-        $type = $this->getMockElasticaType();
-
-        $this->indexConfigsByName['foo']['index']->expects($this->once())
-            ->method('getType')
-            ->with('a')
-            ->will($this->returnValue($type));
-
-        $type->expects($this->once())
-            ->method('delete');
-
-        $mapping = Mapping::create($this->indexConfigsByName['foo']['config']['properties']['a']['properties']);
-        $mapping->setParam('dynamic_templates', $this->indexConfigsByName['foo']['config']['properties']['a']['dynamic_templates']);
-        $type->expects($this->once())
-            ->method('setMapping')
-            ->with($mapping);
-
-        $resetter = new Resetter($this->indexConfigsByName);
-        $resetter->resetIndexType('foo', 'a');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testResetIndexTypeShouldThrowExceptionForInvalidIndex()
-    {
-        $resetter = new Resetter($this->indexConfigsByName);
-        $resetter->resetIndexType('baz', 'a');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testResetIndexTypeShouldThrowExceptionForInvalidType()
-    {
-        $resetter = new Resetter($this->indexConfigsByName);
-        $resetter->resetIndexType('foo', 'c');
-    }
-
-    public function testResetIndexTypeIgnoreTypeMissingException()
-    {
-        $type = $this->getMockElasticaType();
-
-        $this->indexConfigsByName['foo']['index']->expects($this->once())
-            ->method('getType')
-            ->with('a')
-            ->will($this->returnValue($type));
-
-        $type->expects($this->once())
-            ->method('delete')
-            ->will($this->throwException(new ResponseException(
-                new Request(''),
-                new Response(array('error' => 'TypeMissingException[[de_20131022] type[bla] missing]', 'status' => 404)))
-            ));
-
-        $mapping = Mapping::create($this->indexConfigsByName['foo']['config']['properties']['a']['properties']);
-        $mapping->setParam('dynamic_templates', $this->indexConfigsByName['foo']['config']['properties']['a']['dynamic_templates']);
-        $type->expects($this->once())
-            ->method('setMapping')
-            ->with($mapping);
-
-        $resetter = new Resetter($this->indexConfigsByName);
-        $resetter->resetIndexType('foo', 'a');
-    }
-
-    public function testIndexMappingForParent()
-    {
-        $type = $this->getMockElasticaType();
-
-        $this->indexConfigsByName['parent']['index']->expects($this->once())
-            ->method('getType')
-            ->with('a')
-            ->will($this->returnValue($type));
-
-        $type->expects($this->once())
-            ->method('delete');
-
-        $mapping = Mapping::create($this->indexConfigsByName['parent']['config']['properties']['a']['properties']);
-        $mapping->setParam('_parent', array('type' => 'b'));
-        $type->expects($this->once())
-            ->method('setMapping')
-            ->with($mapping);
-
-        $resetter = new Resetter($this->indexConfigsByName);
-        $resetter->resetIndexType('parent', 'a');
-    }
-
-    /**
-     * @return \Elastica\Index
-     */
-    private function getMockElasticaIndex()
-    {
-        return $this->getMockBuilder('Elastica\Index')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    /**
-     * @return \Elastica\Type
-     */
-    private function getMockElasticaType()
-    {
-        return $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->resetter = new Resetter(
+            $this->configManager,
+            $this->indexManager,
+            $this->aliasProcessor,
+            $this->mappingBuilder,
+            $this->dispatcher
+        );
     }
 }

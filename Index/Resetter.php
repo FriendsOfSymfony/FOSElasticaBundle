@@ -6,6 +6,9 @@ use Elastica\Index;
 use Elastica\Exception\ResponseException;
 use Elastica\Type\Mapping;
 use FOS\ElasticaBundle\Configuration\ConfigManager;
+use FOS\ElasticaBundle\Event\IndexResetEvent;
+use FOS\ElasticaBundle\Event\TypeResetEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Deletes and recreates indexes.
@@ -18,9 +21,14 @@ class Resetter
     private $aliasProcessor;
 
     /***
-     * @var \FOS\ElasticaBundle\Configuration\Manager
+     * @var ConfigManager
      */
     private $configManager;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
 
     /**
      * @var IndexManager
@@ -32,16 +40,32 @@ class Resetter
      */
     private $mappingBuilder;
 
-    public function __construct(ConfigManager $configManager, IndexManager $indexManager, AliasProcessor $aliasProcessor, MappingBuilder $mappingBuilder)
-    {
+    /**
+     * @param ConfigManager            $configManager
+     * @param IndexManager             $indexManager
+     * @param AliasProcessor           $aliasProcessor
+     * @param MappingBuilder           $mappingBuilder
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(
+        ConfigManager $configManager,
+        IndexManager $indexManager,
+        AliasProcessor $aliasProcessor,
+        MappingBuilder $mappingBuilder,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->aliasProcessor = $aliasProcessor;
         $this->configManager = $configManager;
+        $this->dispatcher = $eventDispatcher;
         $this->indexManager = $indexManager;
         $this->mappingBuilder = $mappingBuilder;
     }
 
     /**
      * Deletes and recreates all indexes.
+     *
+     * @param bool $populating
+     * @param bool $force
      */
     public function resetAllIndexes($populating = false, $force = false)
     {
@@ -65,6 +89,9 @@ class Resetter
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
         $index = $this->indexManager->getIndex($indexName);
 
+        $event = new IndexResetEvent($indexName, $populating, $force);
+        $this->dispatcher->dispatch(IndexResetEvent::PRE_INDEX_RESET, $event);
+
         if ($indexConfig->isUseAlias()) {
             $this->aliasProcessor->setRootName($indexConfig, $index);
         }
@@ -75,6 +102,8 @@ class Resetter
         if (!$populating and $indexConfig->isUseAlias()) {
             $this->aliasProcessor->switchIndexAlias($indexConfig, $index, $force);
         }
+
+        $this->dispatcher->dispatch(IndexResetEvent::POST_INDEX_RESET, $event);
     }
 
     /**
@@ -91,6 +120,9 @@ class Resetter
         $typeConfig = $this->configManager->getTypeConfiguration($indexName, $typeName);
         $type = $this->indexManager->getIndex($indexName)->getType($typeName);
 
+        $event = new TypeResetEvent($indexName, $typeName);
+        $this->dispatcher->dispatch(TypeResetEvent::PRE_TYPE_RESET, $event);
+
         try {
             $type->delete();
         } catch (ResponseException $e) {
@@ -105,6 +137,8 @@ class Resetter
         }
 
         $type->setMapping($mapping);
+
+        $this->dispatcher->dispatch(TypeResetEvent::POST_TYPE_RESET, $event);
     }
 
     /**

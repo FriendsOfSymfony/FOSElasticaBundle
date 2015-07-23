@@ -10,8 +10,10 @@ allowing you to use relationships of returned entities. For more information abo
 configuration options for this kind of searching, please see the [types](types.md)
 documentation.
 
+> This example assumes you have defined an index `app` and a type `user` in your `config.yml`.
+
 ```php
-$finder = $this->container->get('fos_elastica.finder.search.user');
+$finder = $this->container->get('fos_elastica.finder.app.user');
 
 // Option 1. Returns all users who have example.net in any of their mapped fields
 $results = $finder->find('example.net');
@@ -26,7 +28,9 @@ $userPaginator = $finder->findPaginated('bob');
 $countOfResults = $userPaginator->getNbResults();
 
 // Option 3b. KnpPaginator resultset
-
+$paginator = $this->get('knp_paginator');
+$results = $finder->createPaginatorAdapter('bob');
+$pagination = $paginator->paginate($results, $page, 10);
 ```
 
 Faceted Searching
@@ -57,15 +61,15 @@ configuration as per below:
 ```yaml
 fos_elastica:
     indexes:
-        website:
+        app:
             finder: ~
 ```
 
-You can now use the index wide finder service `fos_elastica.finder.website`:
+You can now use the index wide finder service `fos_elastica.finder.app`:
 
 ```php
 /** var FOS\ElasticaBundle\Finder\MappedFinder */
-$finder = $this->container->get('fos_elastica.finder.website');
+$finder = $this->container->get('fos_elastica.finder.app');
 
 // Returns a mixed array of any objects mapped
 $results = $finder->find('bob');
@@ -157,10 +161,10 @@ Assuming a type is configured as follows:
 ```yaml
 fos_elastica:
     indexes:
-        site:
+        app:
             settings:
                 index:
-                  analysis:
+                    analysis:
                         analyzer:
                             my_analyzer:
                                 type: snowball
@@ -181,7 +185,7 @@ fos_elastica:
 The following code will execute a search against the Elasticsearch server:
 
 ```php
-$finder = $this->container->get('fos_elastica.finder.site.article');
+$finder = $this->container->get('fos_elastica.finder.app.article');
 $boolQuery = new \Elastica\Query\Bool();
 
 $fieldQuery = new \Elastica\Query\Match();

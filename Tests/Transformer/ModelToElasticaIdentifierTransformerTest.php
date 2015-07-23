@@ -51,7 +51,7 @@ class ModelToElasticaIdentifierTransformerTest extends \PHPUnit_Framework_TestCa
     private function getTransformer()
     {
         $transformer = new ModelToElasticaIdentifierTransformer();
-        $transformer->setPropertyAccessor(PropertyAccess::getPropertyAccessor());
+        $transformer->setPropertyAccessor(PropertyAccess::createPropertyAccessor());
 
         return $transformer;
     }

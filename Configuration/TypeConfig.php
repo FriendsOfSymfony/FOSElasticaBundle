@@ -36,6 +36,22 @@ class TypeConfig
     }
 
     /**
+     * @return bool|null
+     */
+    public function getDateDetection()
+    {
+        return $this->getConfig('date_detection');
+    }
+
+    /**
+     * @return array
+     */
+    public function getDynamicDateFormats()
+    {
+        return $this->getConfig('dynamic_date_formats');
+    }
+
+    /**
      * @return string|null
      */
     public function getIndexAnalyzer()
@@ -59,6 +75,14 @@ class TypeConfig
         return isset($this->config['persistence']['model']) ?
             $this->config['persistence']['model'] :
             null;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNumericDetection()
+    {
+        return $this->getConfig('numeric_detection');
     }
 
     /**

@@ -31,7 +31,7 @@ for a type in this case:
 ```yaml
 fos_elastica:
     indexes:
-        search:
+        app:
             types:
                 user:
                     serializer:

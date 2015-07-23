@@ -53,6 +53,9 @@ class MappingToElasticaTest extends WebTestCase
         $mapping = $type->getMapping();
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
+        $this->assertFalse($mapping['type']['date_detection']);
+        $this->assertTrue($mapping['type']['numeric_detection']);
+        $this->assertEquals(array('yyyy-MM-dd'), $mapping['type']['dynamic_date_formats']);
         $this->assertArrayHasKey('store', $mapping['type']['properties']['field1']);
         $this->assertTrue($mapping['type']['properties']['field1']['store']);
         $this->assertArrayNotHasKey('store', $mapping['type']['properties']['field2']);
@@ -110,6 +113,7 @@ class MappingToElasticaTest extends WebTestCase
 
     /**
      * @param Client $client
+     * @param string $type
      *
      * @return \Elastica\Type
      */

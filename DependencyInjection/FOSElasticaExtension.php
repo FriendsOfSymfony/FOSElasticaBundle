@@ -261,6 +261,9 @@ class FOSElasticaExtension extends Extension
                 'serializer',
                 'index_analyzer',
                 'search_analyzer',
+                'date_detection',
+                'dynamic_date_formats',
+                'numeric_detection',
             ) as $field) {
                 $typeConfig['config'][$field] = array_key_exists($field, $type) ?
                     $type[$field] :
@@ -497,19 +500,30 @@ class FOSElasticaExtension extends Extension
         $listenerId = sprintf('fos_elastica.listener.%s.%s', $indexName, $typeName);
         $listenerDef = new DefinitionDecorator($abstractListenerId);
         $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
-        $listenerDef->replaceArgument(1, $this->getDoctrineEvents($typeConfig));
-        $listenerDef->replaceArgument(3, array(
+        $listenerDef->replaceArgument(2, array(
             'identifier' => $typeConfig['identifier'],
             'indexName' => $indexName,
             'typeName' => $typeName,
         ));
-        if ($typeConfig['listener']['logger']) {
-            $listenerDef->replaceArgument(4, new Reference($typeConfig['listener']['logger']));
+        $listenerDef->replaceArgument(3, $typeConfig['listener']['logger'] ?
+            new Reference($typeConfig['listener']['logger']) :
+            null
+        );
+
+        $tagName = null;
+        switch ($typeConfig['driver']) {
+            case 'orm':
+                $tagName = 'doctrine.event_listener';
+                break;
+            case 'mongodb':
+                $tagName = 'doctrine_mongodb.odm.event_listener';
+                break;
         }
 
-        switch ($typeConfig['driver']) {
-            case 'orm': $listenerDef->addTag('doctrine.event_subscriber'); break;
-            case 'mongodb': $listenerDef->addTag('doctrine_mongodb.odm.event_subscriber'); break;
+        if (null !== $tagName) {
+            foreach ($this->getDoctrineEvents($typeConfig) as $event) {
+                $listenerDef->addTag($tagName, array('event' => $event));
+            }
         }
 
         $container->setDefinition($listenerId, $listenerDef);
@@ -531,7 +545,6 @@ class FOSElasticaExtension extends Extension
                 break;
             default:
                 throw new InvalidArgumentException(sprintf('Cannot determine events for driver "%s"', $typeConfig['driver']));
-                break;
         }
 
         $events = array();
