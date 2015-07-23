@@ -99,9 +99,7 @@ class Listener
     {
         $entity = $eventArgs->getObject();
 
-        if ($this->objectPersister->handlesObject($entity)
-            && $this->isObjectIndexable($entity)
-            && $this->isObjectUpdatable($entity)
+        if ($this->objectPersister->handlesObject($entity) && $this->isObjectIndexable($entity)
         ) {
             $this->scheduledForInsertion[] = $entity;
         }
