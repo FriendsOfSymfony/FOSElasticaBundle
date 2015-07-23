@@ -178,7 +178,7 @@ class FOSElasticaExtension extends Extension
 
         $indexable = $container->getDefinition('fos_elastica.indexable');
         $indexable->replaceArgument(0, $indexableCallbacks);
-        $indexable->replaceArgument(1, $updatableCallbacks);
+        $indexable->replaceArgument(2, $updatableCallbacks);
     }
 
     /**

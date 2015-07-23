@@ -18,6 +18,9 @@ use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
+/**
+ * class for indexing elastica documents
+ */
 class Indexable implements IndexableInterface
 {
     /**
@@ -58,12 +61,12 @@ class Indexable implements IndexableInterface
      * @param array              $updateCallbacks
      * @param ContainerInterface $container
      */
-    public function __construct(array $callbacks, ContainerInterface $container, array $updateCallbacks)
+    public function __construct(array $indexCallbacks, ContainerInterface $container, array $updateCallbacks = array())
     {
-        $this->callbacks =[
+        $this->callbacks = array(
             'index' => $indexCallbacks,
             'update' => $updateCallbacks,
-        ];
+        );
         $this->container = $container;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
     }
@@ -178,10 +181,11 @@ class Indexable implements IndexableInterface
 
             return $callback;
         } catch (SyntaxError $e) {
-            throw new \InvalidArgumentException(sprintf(
-                                                    'Callback for type "%s" is an invalid expression',
-                                                    $type
-                                                ), $e->getCode(), $e);
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Callback for type "%s" is an invalid expression',
+                    $type
+                ), $e->getCode(), $e);
         }
     }
 
@@ -217,23 +221,6 @@ class Indexable implements IndexableInterface
         return $this->initialisedCallbacks[$callbackType][$type];
     }
 
-    /**
-     * Returns the ExpressionLanguage class if it is available.
-     *
-     * @return ExpressionLanguage|null
-     */
-    private function getExpressionLanguage()
-    {
-        if (null === $this->expressionLanguage) {
-            if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
-                return false;
-            }
-
-            $this->expressionLanguage = new ExpressionLanguage();
-        }
-
-        return $this->expressionLanguage;
-    }
 
     /**
      * Returns the variable name to be used to access the object when using the ExpressionLanguage

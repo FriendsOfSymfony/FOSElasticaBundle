@@ -8,13 +8,6 @@ use FOS\ElasticaBundle\Provider\IndexableInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Doctrine\Common\EventArgs;
-use Doctrine\Common\EventSubscriber;
-use FOS\ElasticaBundle\Persister\ObjectPersister;
-use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
-use FOS\ElasticaBundle\Provider\IndexableInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Automatically update ElasticSearch based on changes to the Doctrine source
@@ -86,7 +79,6 @@ class Listener
         $this->config = array_merge(array(
             'identifier' => 'id',
         ), $config);
-        $this->events = $events;
         $this->indexable = $indexable;
         $this->objectPersister = $objectPersister;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
