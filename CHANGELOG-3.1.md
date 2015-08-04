@@ -9,6 +9,11 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/commit/XXX where XXX is
 the commit hash. To get the diff between two versions, go to
 https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
 
+* 3.1.5 (2015-08-05)
+
+ * Allow Elastica 2.1
+ * Remove usage of deprecated APIs to avoid deprecation warnings in Symfony 2.7
+
 * 3.1.4 (2015-05-28)
 
  * Bump Elastica constraint to 2.0

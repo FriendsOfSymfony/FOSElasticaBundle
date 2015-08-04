@@ -22,12 +22,12 @@
             <argument type="service" id="service_container" />
         </service>
 
-        <service id="fos_elastica.index_prototype" class="%fos_elastica.index.class%" factory-service="fos_elastica.client" factory-method="getIndex" abstract="true">
+        <service id="fos_elastica.index_prototype" class="%fos_elastica.index.class%" abstract="true">
             <argument /> <!-- index name -->
             <!-- tagged with fos_elastica.index in the Extension -->
         </service>
 
-        <service id="fos_elastica.type_prototype" class="%fos_elastica.type.class%" factory-method="getType" abstract="true">
+        <service id="fos_elastica.type_prototype" class="%fos_elastica.type.class%" abstract="true">
             <argument /> <!-- type name -->
         </service>
 
