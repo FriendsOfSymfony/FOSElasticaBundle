@@ -16,8 +16,8 @@
         "symfony/framework-bundle": "~2.3",
         "symfony/console": "~2.1",
         "symfony/form": "~2.1",
-        "symfony/property-access": "~2.2",
-        "ruflin/elastica": ">=0.90.10.0, <2.1-dev",
+        "symfony/property-access": "~2.3",
+        "ruflin/elastica": ">=0.90.10.0, <2.2-dev",
         "psr/log": "~1.0"
     },
     "require-dev":{
