@@ -11,7 +11,8 @@
 
 namespace FOS\ElasticaBundle\Index;
 
-use FOS\ElasticaBundle\Configuration\IndexConfig;
+use FOS\ElasticaBundle\Configuration\IndexConfigAbstract;
+use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Configuration\TypeConfig;
 
 class MappingBuilder
@@ -26,11 +27,11 @@ class MappingBuilder
     /**
      * Builds mappings for an entire index.
      *
-     * @param IndexConfig $indexConfig
+     * @param IndexConfigAbstract $indexConfig
      *
      * @return array
      */
-    public function buildIndexMapping(IndexConfig $indexConfig)
+    public function buildIndexMapping(IndexConfigAbstract $indexConfig)
     {
         $typeMappings = array();
         foreach ($indexConfig->getTypes() as $typeConfig) {
@@ -48,6 +49,20 @@ class MappingBuilder
             $mapping['settings'] = $settings;
         }
 
+        return $mapping;
+    }
+
+    /**
+     * Builds mappings for an entire index template.
+     *
+     * @param IndexTemplateConfig $indexTemplateConfig
+     *
+     * @return array
+     */
+    public function buildIndexTemplateMapping(IndexTemplateConfig $indexTemplateConfig)
+    {
+        $mapping = $this->buildIndexMapping($indexTemplateConfig);
+        $mapping['template'] = $indexTemplateConfig->getTemplate();
         return $mapping;
     }
 

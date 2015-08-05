@@ -141,6 +141,22 @@ class Resetter
         $this->dispatcher->dispatch(TypeResetEvent::POST_TYPE_RESET, $event);
     }
 
+    public function resetAllTemplates()
+    {
+        foreach ($this->configManager->getIndexTemplatesNames() as $name) {
+            $this->resetTemplate($name);
+        }
+    }
+
+    public function resetTemplate($indexTemplateName)
+    {
+        $indexConfig = $this->configManager->getIndexTemplateConfiguration($indexTemplateName);
+        $indexTemplate = $this->indexManager->getIndexTemplate($indexTemplateName);
+
+        $mapping = $this->mappingBuilder->buildIndexTemplateMapping($indexConfig);
+        $indexTemplate->create($mapping);
+    }
+
     /**
      * A command run when a population has finished.
      *

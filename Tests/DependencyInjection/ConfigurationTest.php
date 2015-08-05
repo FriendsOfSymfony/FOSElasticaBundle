@@ -34,6 +34,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(
             'clients' => array(),
             'indexes' => array(),
+            'index_templates' => array(),
             'default_manager' => 'orm',
         ), $configuration);
     }
@@ -225,6 +226,56 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             ),
             'indexes' => array(
                 'test' => array(
+                    'types' => array(
+                        'user' => array(
+                            'properties' => array(
+                                'field1' => array(),
+                            ),
+                            'persistence' => array(),
+                        ),
+                        'user_profile' => array(
+                            '_parent' => array(
+                                'type' => 'user',
+                                'property' => 'owner',
+                            ),
+                            'properties' => array(
+                                'field1' => array(),
+                                'field2' => array(
+                                    'type' => 'nested',
+                                    'properties' => array(
+                                        'nested_field1' => array(
+                                            'type' => 'integer',
+                                        ),
+                                        'nested_field2' => array(
+                                            'type' => 'object',
+                                            'properties' => array(
+                                                'id' => array(
+                                                    'type' => 'integer',
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ));
+    }
+
+    public function testIndexTemplates()
+    {
+        $this->getConfigs(array(
+            'clients' => array(
+                'default' => array('url' => 'http://localhost:9200'),
+            ),
+            'index_templates' => array(
+                'test' => array(
+                    'template' => 't*',
+                    'settings' => array(
+                        'number_of_shards' => 1
+                    ),
                     'types' => array(
                         'user' => array(
                             'properties' => array(

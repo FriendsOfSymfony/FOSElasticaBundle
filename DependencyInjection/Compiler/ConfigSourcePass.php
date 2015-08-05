@@ -17,6 +17,8 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ConfigSourcePass implements CompilerPassInterface
 {
+    const SOURCE_TYPE_INDEX_TEMPLATE = 'index_template';
+
     /**
      * {@inheritDoc}
      */
@@ -26,11 +28,18 @@ class ConfigSourcePass implements CompilerPassInterface
             return;
         }
 
-        $sources = array();
+        $indexSources = array();
+        $indexTemplateSources = array();
         foreach (array_keys($container->findTaggedServiceIds('fos_elastica.config_source')) as $id) {
-            $sources[] = new Reference($id);
+            $tag = $container->findDefinition($id)->getTag('fos_elastica.config_source');
+            if (isset($tag[0]['source']) && $tag[0]['source'] === self::SOURCE_TYPE_INDEX_TEMPLATE) {
+                $indexTemplateSources[] = new Reference($id);
+            } else {
+                $indexSources[] = new Reference($id);
+            }
         }
 
-        $container->getDefinition('fos_elastica.config_manager')->replaceArgument(0, $sources);
+        $container->getDefinition('fos_elastica.config_manager')->replaceArgument(0, $indexSources);
+        $container->getDefinition('fos_elastica.config_manager')->replaceArgument(1, $indexTemplateSources);
     }
 }

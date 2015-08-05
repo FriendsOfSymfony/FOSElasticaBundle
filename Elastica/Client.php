@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Elastica;
 
 use Elastica\Client as BaseClient;
+use Elastica\IndexTemplate;
 use Elastica\Request;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -21,6 +22,13 @@ class Client extends BaseClient
      * @var array
      */
     private $indexCache = array();
+
+    /**
+     * Stores created index template to avoid recreation.
+     *
+     * @var array
+     */
+    private $indexTemplateCache = array();
 
     /**
      * Symfony's debugging Stopwatch.
@@ -62,6 +70,15 @@ class Client extends BaseClient
         }
 
         return $this->indexCache[$name] = new Index($this, $name);
+    }
+
+    public function getIndexTemplate($name)
+    {
+        if (isset($this->indexTemplateCache[$name])) {
+            return $this->indexTemplateCache[$name];
+        }
+
+        return $this->indexTemplateCache[$name] = new IndexTemplate($this, $name);
     }
 
     /**

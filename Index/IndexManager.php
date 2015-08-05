@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Index;
 
+use Elastica\IndexTemplate;
 use FOS\ElasticaBundle\Elastica\Index;
 
 class IndexManager
@@ -17,13 +18,20 @@ class IndexManager
     private $indexes;
 
     /**
+     * @var IndexTemplate[]
+     */
+    private $indexTemplates;
+
+    /**
      * @param array $indexes
      * @param Index $defaultIndex
+     * @param array $templates
      */
-    public function __construct(array $indexes, Index $defaultIndex)
+    public function __construct(array $indexes, Index $defaultIndex, array $templates = array())
     {
         $this->defaultIndex = $defaultIndex;
         $this->indexes = $indexes;
+        $this->indexTemplates = $templates;
     }
 
     /**
@@ -56,6 +64,24 @@ class IndexManager
         }
 
         return $this->indexes[$name];
+    }
+
+    /**
+     * Gets an index template by its name.
+     *
+     * @param string $name Index template to return
+     *
+     * @return IndexTemplate
+     *
+     * @throws \InvalidArgumentException if no index template exists for the given name
+     */
+    public function getIndexTemplate($name = null)
+    {
+        if (!isset($this->indexTemplates[$name])) {
+            throw new \InvalidArgumentException(sprintf('The index template "%s" does not exist', $name));
+        }
+
+        return $this->indexTemplates[$name];
     }
 
     /**
