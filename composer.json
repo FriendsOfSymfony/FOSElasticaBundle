@@ -17,11 +17,11 @@
         "symfony/console": "~2.1",
         "symfony/form": "~2.1",
         "symfony/property-access": "~2.3",
-        "ruflin/elastica": "dev-index-templates-support",
+        "ruflin/elastica": "dev-GRS-1252",
         "psr/log": "~1.0"
     },
     "repositories": [
-        { "type": "vcs", "url": "git@github.com:torinaki/Elastica.git" }
+        { "type": "vcs", "url": "ssh://git@stash.dev.opticplanet.net/tool/elastica.git" }
     ],
     "require-dev":{
         "doctrine/orm": "~2.4",
