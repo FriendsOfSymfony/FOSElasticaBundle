@@ -87,8 +87,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
 
         $objects = array();
         for (; $offset < $nbObjects; $offset += $options['batch_size']) {
+            $sliceSize = $options['batch_size'];
             try {
                 $objects = $this->getSlice($queryBuilder, $options['batch_size'], $offset, $objects);
+                $sliceSize = count($objects);
                 $objects = $this->filterObjects($options, $objects);
 
                 if (!empty($objects)) {
@@ -115,7 +117,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             usleep($options['sleep']);
 
             if (null !== $loggerClosure) {
-                $loggerClosure($options['batch_size'], $nbObjects);
+                $loggerClosure($sliceSize, $nbObjects);
             }
         }
     }
