@@ -32,8 +32,9 @@ class ResetCommand extends ContainerAwareCommand
         $this
             ->setName('fos:elastica:reset')
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to reset')
+            ->addOption('index-template', null, InputOption::VALUE_OPTIONAL, 'The index template to reset')
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to reset')
-            ->addOption('force', null, InputOption::VALUE_NONE, 'Force index deletion if same name as alias')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force index deletion if same name as alias or index matches index template pattern')
             ->setDescription('Reset search indexes')
         ;
     }
@@ -53,6 +54,7 @@ class ResetCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $index = $input->getOption('index');
+        $indexTemplate = $input->getOption('index-template');
         $type = $input->getOption('type');
         $force = (bool) $input->getOption('force');
 
@@ -60,7 +62,15 @@ class ResetCommand extends ContainerAwareCommand
             throw new \InvalidArgumentException('Cannot specify type option without an index.');
         }
 
-        if (null !== $type) {
+        if ($indexTemplate && $index) {
+            throw new \InvalidArgumentException('Only index or index template name can by specify at the same time.');
+        }
+
+        if ($indexTemplate) {
+            $output->writeln(sprintf('<info>Resetting template</info> <comment>%s</comment>', $indexTemplate));
+            $this->resetter->resetTemplate($indexTemplate, $force);
+        } elseif (null !== $type) {
+            $output->writeln(sprintf('<info>Resetting templates</info>'));
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
             $this->resetter->resetAllTemplates();
             $this->resetter->resetIndexType($index, $type);
@@ -70,6 +80,7 @@ class ResetCommand extends ContainerAwareCommand
                 : array($index)
             ;
 
+            $output->writeln(sprintf('<info>Resetting templates</info>'));
             $this->resetter->resetAllTemplates();
 
             foreach ($indexes as $index) {

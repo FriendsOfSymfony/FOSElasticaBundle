@@ -141,19 +141,22 @@ class Resetter
         $this->dispatcher->dispatch(TypeResetEvent::POST_TYPE_RESET, $event);
     }
 
-    public function resetAllTemplates()
+    public function resetAllTemplates($deleteIndexes = false)
     {
         foreach ($this->configManager->getIndexTemplatesNames() as $name) {
-            $this->resetTemplate($name);
+            $this->resetTemplate($name, $deleteIndexes);
         }
     }
 
-    public function resetTemplate($indexTemplateName)
+    public function resetTemplate($indexTemplateName, $deleteIndexes = false)
     {
-        $indexConfig = $this->configManager->getIndexTemplateConfiguration($indexTemplateName);
+        $indexTemplateConfig = $this->configManager->getIndexTemplateConfiguration($indexTemplateName);
         $indexTemplate = $this->indexManager->getIndexTemplate($indexTemplateName);
 
-        $mapping = $this->mappingBuilder->buildIndexTemplateMapping($indexConfig);
+        $mapping = $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig);
+        if ($deleteIndexes) {
+            $indexTemplate->deleteIndexes();
+        }
         $indexTemplate->create($mapping);
     }
 
