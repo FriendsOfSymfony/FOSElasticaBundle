@@ -12,7 +12,7 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.0...v3.0.1
 To generate a changelog summary since the last version, run
 `git log --no-merges --oneline v3.0.0...3.0.x`
 
-* 3.0.11 (2015-xx-xx)
+* 3.0.11 (2015-08-05)
 
  * Bump allowed Elastica version to 2.1
  * Fixed Symfony 2.7 deprecated messages
