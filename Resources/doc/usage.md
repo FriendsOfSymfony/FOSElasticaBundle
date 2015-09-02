@@ -183,7 +183,7 @@ The following code will execute a search against the Elasticsearch server:
 
 ```php
 $finder = $this->container->get('fos_elastica.finder.site.article');
-$boolQuery = new \Elastica\Query\Bool();
+$boolQuery = new \Elastica\Query\BoolQuery();
 
 $fieldQuery = new \Elastica\Query\Match();
 $fieldQuery->setFieldQuery('title', 'I am a title string');
