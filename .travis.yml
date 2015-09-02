@@ -9,13 +9,20 @@ php:
   - 5.4
   - 5.5
   - 5.6
+  - nightly
+  - hhvm
 
 matrix:
   include:
-    - php: 5.5
+    - php: 5.6
       env: SYMFONY_VERSION='2.3.*'
-    - php: 5.5
-      env: SYMFONY_VERSION='2.5.*'
+    - php: 5.6
+      env: SYMFONY_VERSION='2.7.*'
+  allow_failures:
+    - php: nightly
+    - php: hhvm
+  fast_finish: true
+
 
 before_script:
   - /usr/share/elasticsearch/bin/elasticsearch -v
