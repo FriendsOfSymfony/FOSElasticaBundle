@@ -86,6 +86,10 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $limit = $options['limit'] ?: $nbObjects;
         $offset = $options['offset'];
 
+        if (null !== $loggerClosure) {
+            $loggerClosure($offset, $nbObjects);
+        }
+
         $objects = array();
         for ($count = 0; ($count < $limit) && ($offset < $nbObjects); $count += $options['batch_size'], $offset += $options['batch_size']) {
             $sliceSize = $options['batch_size'];
@@ -117,7 +121,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
             usleep($options['sleep']);
 
             if (null !== $loggerClosure) {
-                $loggerClosure($sliceSize, $limit);
+                $loggerClosure($sliceSize, $nbObjects);
             }
         }
     }

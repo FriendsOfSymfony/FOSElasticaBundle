@@ -1,0 +1,13 @@
+FOS\ElasticaBundle\Tests\Functional\TypeObj:
+    type: entity
+    repositoryClass: Doctrine\ORM\EntityRepository
+    id:
+        id:
+            type: integer
+    fields:
+        coll:
+            type: integer
+        field1:
+            type: integer
+        field2:
+            type: integer
