@@ -2,14 +2,12 @@
 
 namespace FOS\ElasticaBundle\Command;
 
-use Elastica\Query;
 use Elastica\Search;
 use Elastica\Type;
 use FOS\ElasticaBundle\Elastica\Index;
-use FOS\ElasticaBundle\Event\IndexPopulateEvent;
-use FOS\ElasticaBundle\Event\TypePopulateEvent;
+// use FOS\ElasticaBundle\Event\IndexPopulateEvent;
+// use FOS\ElasticaBundle\Event\TypePopulateEvent;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -55,14 +53,12 @@ class ReindexCommand extends ContainerAwareCommand
         $this
             ->setName('fos:elastica:reindex')
             ->addOption('index', null, InputOption::VALUE_REQUIRED, 'The index to reindex')
-            ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
-            ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
-            ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
-            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
+            ->addOption('expiry-time', null, InputOption::VALUE_REQUIRED, 'How long each batch of documents has to process', '1m')
+            ->addOption('size-per-shard', null, InputOption::VALUE_REQUIRED, 'Maximum number of documents each shard may contribute to a batch', 1000)
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->addOption('no-overwrite-format', null, InputOption::VALUE_NONE, 'Prevent this command from overwriting ProgressBar\'s formats')
-            ->addOption('no-post-populate', null, InputOption::VALUE_NONE, 'Prevent this command from overwriting ProgressBar\'s formats')
-            ->setDescription('Populates search indexes from providers')
+            ->addOption('no-post-populate', null, InputOption::VALUE_NONE, 'Prevent this command from switching the index alias on completion')
+            ->setDescription('Reindexes a search index')
         ;
     }
 
@@ -91,8 +87,6 @@ class ReindexCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $indexName = $input->getOption('index');
-        $options =  $input->getOptions();
-
         if (!$indexName) {
             throw new \InvalidArgumentException('Must specify index option.');
         }
@@ -101,6 +95,8 @@ class ReindexCommand extends ContainerAwareCommand
         if (!$indexConfig->isUseAlias()) {
             throw new \InvalidArgumentException('Specified index not configured to use alias.');
         }
+
+        $options = $input->getOptions();
 
         $this->reindexIndex($output, $indexName, $options);
     }
@@ -134,10 +130,9 @@ class ReindexCommand extends ContainerAwareCommand
         $search->addIndex($type->getIndex()->getOriginalName());
         $search->addType($type);
 
-        // $numShards = count($this->getContainer()->getParameter('elasticsearch.servers'));
-        $numShards = 1;
-        $sizePerShard = 10;
-        $scanAndScroll = $search->scanAndScroll($numShards . 'm', $sizePerShard);
+        $nbObjects = $search->count();
+        $loggerClosure = $this->progressClosureBuilder->build($output, 'Reindexing', $type->getIndex()->getOriginalName(), $type->getName());
+        $scanAndScroll = $search->scanAndScroll($options['expiry-time'], $options['size-per-shard']);
 
         try {
             $scanAndScroll->rewind();
@@ -147,33 +142,49 @@ class ReindexCommand extends ContainerAwareCommand
             throw $e;
         }
 
-        $total = 0;
         $type->setSerializer(function($object) { return $object->getData(); });
 
-        $output->writeln("Looping through " . $type->getIndex()->getOriginalName() . "/" . $type->getName() . " results...");
+        $output->writeln(sprintf("<info>Reading</info> <comment>from %s/%s</comment>", $type->getIndex()->getOriginalName(), $type->getName()));
+        $output->writeln(sprintf("<info>Writing</info> <comment>to %s/%s</comment>", $type->getIndex()->getName(), $type->getName()));
         while ($scanAndScroll->valid()) {
             $resultSet = $scanAndScroll->current();
+            $resultCount = $resultSet->count();
 
-            $output->writeln("Writing " . $resultSet->count() . " results to " . $type->getIndex()->getName() . "/" . $type->getName());
             try {
                 $type->addObjects($resultSet->getResults());
             } catch (\Exception $e) {
-                $output->writeln("Exception trying to add documents: " . $e->getMessage());
-                $output->writeln($e->getTraceAsString());
-                throw $e;
+                if ($output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG) {
+                    $output->writeln($e->getTraceAsString());
+                }
+
+                if (!$options['ignore-errors']) {
+                    throw $e;
+                }
+
+                if (null !== $loggerClosure) {
+                    $loggerClosure(
+                        $resultCount,
+                        $nbObjects,
+                        sprintf('<error>%s</error>', $e->getMessage())
+                    );
+                }
+            }
+
+            if (null !== $loggerClosure) {
+                $loggerClosure($resultCount, $nbObjects);
             }
 
             // Get the next batch
             try {
                 $scanAndScroll->next();
             } catch (\Exception $e) {
-                $output->writeln("Exception trying to perform next scroll search: " . $e->getMessage());
-                $output->writeln($e->getTraceAsString());
-                exit;
+                if ($output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG) {
+                    $output->writeln($e->getTraceAsString());
+                }
+
+                throw $e;
             }
         }
-
-        $output->writeln("Wrote $total total results to " . $type->getIndex()->getName() . "/" . $type->getName());
 
         // $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
     }
