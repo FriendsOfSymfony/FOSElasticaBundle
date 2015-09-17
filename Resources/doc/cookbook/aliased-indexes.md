@@ -25,7 +25,7 @@ options on how to handle this:
    application until a population has completed itself, and an alias is created.
    
 ```bash
-$ curl -XDELETE 'http://localhost:9200/website/'
+$ curl -XDELETE 'http://localhost:9200/app/'
 ```
 
 2) Change the index_name parameter for your index to something new, and manually alias the
