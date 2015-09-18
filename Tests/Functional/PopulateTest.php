@@ -28,6 +28,7 @@ class PopulateTest extends WebTestCase
         $command = $this->application->find('fos:elastica:populate');
         $tester = new CommandTester($command);
         $tester->execute(array(
+            'command' => $command->getName(),
             '--batch-size' => 4,
             '--index' => 'index', 
             '--limit' => 10,
@@ -49,7 +50,7 @@ class PopulateTest extends WebTestCase
     private function createSchema() {
         $command = $this->application->find('doctrine:schema:create');
         $tester = new CommandTester($command);
-        $tester->execute(array());
+        $tester->execute(array(), array());
         $this->assertContains('Database schema created successfully', $tester->getDisplay());
     }
 

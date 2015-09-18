@@ -5,12 +5,17 @@ namespace FOS\ElasticaBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\Persistence\ObjectManager;
 use FOS\ElasticaBundle\Tests\Functional\TypeObj;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoadTypeObjects implements ContainerAwareInterface
 // , FixtureInterface
 {
-    use ContainerAwareTrait;
+    private $container;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
 
     /**
      * {@inheritDoc}
