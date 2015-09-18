@@ -150,6 +150,7 @@ class ReindexCommand extends ContainerAwareCommand
             $resultSet = $scanAndScroll->current();
             $resultCount = $resultSet->count();
 
+            // Process the current batch
             try {
                 $type->addObjects($resultSet->getResults());
             } catch (\Exception $e) {

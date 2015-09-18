@@ -1,0 +1,50 @@
+imports:
+    - { resource: ./../config/config.yml }
+
+doctrine:
+    dbal:
+        path: %kernel.cache_dir%/db.sqlite
+        charset:  UTF8
+    orm:
+        auto_generate_proxy_classes: false
+        auto_mapping: false
+
+services:
+    indexableService:
+        class: FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService
+
+jms_serializer:
+    metadata:
+        auto_detection: true
+        directories:
+            type_obj:
+                namespace_prefix: "FOS\\ElasticaBundle\\Tests\\Functional"
+                path: "%kernel.root_dir%/Serializer"
+
+fos_elastica:
+    clients:
+        default:
+            url: http://localhost:9200
+    serializer: ~
+    indexes:
+        index:
+            index_name: foselastica_ser_test_%kernel.environment%
+            use_alias: true
+            types:
+                type:
+                    properties:
+                        coll: ~
+                        field1: ~
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                    serializer:
+                        groups: ['search', 'Default']
+                        version: 1.1
+                unmapped:
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                    serializer:
+                        groups: ['search', 'Default']
+                        version: 1.1
