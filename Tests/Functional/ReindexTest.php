@@ -29,6 +29,7 @@ class ReindexTest extends WebTestCase
         $command = $this->application->find('fos:elastica:reindex');
         $tester = new CommandTester($command);
         $tester->execute(array(
+            'command' => $command->getName(),
             '--index' => 'index', 
         ));
         $display = $tester->getDisplay();
@@ -40,6 +41,7 @@ class ReindexTest extends WebTestCase
         $command = $this->application->find('fos:elastica:reset');
         $tester = new CommandTester($command);
         $tester->execute(array(
+            'command' => $command->getName(),
             '--force' => true,
         ));
         $display = $tester->getDisplay();
