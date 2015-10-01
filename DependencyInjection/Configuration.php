@@ -434,6 +434,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('enabled')->defaultValue(true)->end()
             ->scalarNode('index_analyzer')->end()
             ->scalarNode('search_analyzer')->end()
+            ->scalarNode('analyzer')->end()
             ->end()
         ;
 
