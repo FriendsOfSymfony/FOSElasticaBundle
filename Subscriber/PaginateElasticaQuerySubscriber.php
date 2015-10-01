@@ -66,7 +66,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 
             // set sort on active query
             $event->target->getQuery()->setSort(array(
-                $sortField => array('order' => $dir),
+                $sortField => array('order' => $dir, 'ignore_unmapped' => true),
             ));
         }
     }
