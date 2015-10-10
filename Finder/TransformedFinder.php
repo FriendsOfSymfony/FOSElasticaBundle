@@ -9,6 +9,7 @@ use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use Pagerfanta\Pagerfanta;
 use Elastica\SearchableInterface;
 use Elastica\Query;
+use Elastica\Query\MoreLikeThis;
 
 /**
  * Finds elastica documents and map them to persisted objects.
@@ -48,20 +49,24 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * Find documents similar to one with passed id.
+     * Find documents similar.
      *
-     * @param integer $id
      * @param array   $params
-     * @param array   $query
      *
      * @return array of model objects
      **/
-    public function moreLikeThis($id, $params = array(), $query = array())
+    public function moreLikeThis($params = array())
     {
-        $doc = new Document($id);
-        $results = $this->searchable->moreLikeThis($doc, $params, $query)->getResults();
+        $mltQuery = new MoreLikeThis();
 
-        return $this->transformer->transform($results);
+        foreach($params as $param => $value) {
+            $mltQuery->setParam($param, $value);
+        }
+
+        $query = new Query();
+        $query->setQuery($mltQuery);
+
+        return $this->find($query);
     }
 
     /**
