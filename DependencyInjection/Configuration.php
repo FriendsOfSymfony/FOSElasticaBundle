@@ -556,6 +556,12 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('service')->end()
                     ->end()
                 ->end()
+                ->arrayNode('persister')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('service')->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $node;
