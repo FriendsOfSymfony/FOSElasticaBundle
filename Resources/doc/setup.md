@@ -19,7 +19,7 @@ of the Composer documentation.
 
 Instructions for installing and deploying Elasticsearch may be found [here](https://www.elastic.co/downloads/elasticsearch).
 
-Step 2: Enable the Bundle
+B: Enable the Bundle
 -------------------------
 
 Then, enable the bundle by adding the following line in the `app/AppKernel.php`
