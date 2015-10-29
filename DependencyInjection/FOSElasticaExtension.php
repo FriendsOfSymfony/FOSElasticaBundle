@@ -318,7 +318,9 @@ class FOSElasticaExtension extends Extension
      */
     private function loadTypePersistenceIntegration(array $typeConfig, ContainerBuilder $container, Reference $typeRef, $indexName, $typeName)
     {
-        $this->loadDriver($container, $typeConfig['driver']);
+        if (isset($typeConfig['driver'])) {
+            $this->loadDriver($container, $typeConfig['driver']);
+        }
 
         $elasticaToModelTransformerId = $this->loadElasticaToModelTransformer($typeConfig, $container, $indexName, $typeName);
         $modelToElasticaTransformerId = $this->loadModelToElasticaTransformer($typeConfig, $container, $indexName, $typeName);
@@ -415,6 +417,10 @@ class FOSElasticaExtension extends Extension
      */
     private function loadObjectPersister(array $typeConfig, Reference $typeRef, ContainerBuilder $container, $indexName, $typeName, $transformerId)
     {
+        if (isset($typeConfig['persister']['service'])) {
+            return $typeConfig['persister']['service'];
+        }
+
         $arguments = array(
             $typeRef,
             new Reference($transformerId),

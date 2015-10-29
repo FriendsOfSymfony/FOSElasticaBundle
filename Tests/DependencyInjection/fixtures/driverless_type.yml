@@ -1,0 +1,16 @@
+fos_elastica:
+    clients:
+        default:
+            url: http://localhost:9200
+    indexes:
+        test_index:
+            client: default
+            types:
+                driverless:
+                    mappings:
+                        text: ~
+                    persistence:
+                        elastica_to_model_transformer:
+                            service: 'custom.transformer.service'
+                        persister:
+                            service: 'custom.persist.service'
