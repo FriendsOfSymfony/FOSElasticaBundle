@@ -82,7 +82,7 @@ class MappingBuilder
             $mapping['search_analyzer'] = $typeConfig->getSearchAnalyzer();
         }
 
-        if ($typeConfig->getDynamic()) {
+        if ($typeConfig->getDynamic() !== null) {
             $mapping['dynamic'] = $typeConfig->getDynamic();
         }
 
