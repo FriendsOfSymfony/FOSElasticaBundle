@@ -255,6 +255,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('index_analyzer')->end()
                     ->booleanNode('numeric_detection')->end()
                     ->scalarNode('search_analyzer')->end()
+                    ->scalarNode('dynamic')->end()
                     ->variableNode('indexable_callback')->end()
                     ->append($this->getPersistenceNode())
                     ->append($this->getSerializerNode())

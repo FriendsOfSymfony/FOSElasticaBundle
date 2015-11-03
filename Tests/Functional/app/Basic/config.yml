@@ -39,6 +39,7 @@ fos_elastica:
                             max_gram: 5
             types:
                 parent:
+                    dynamic: false
                     dynamic_templates:
                         dates:
                             match: "date_*"
@@ -50,6 +51,7 @@ fos_elastica:
                     search_analyzer: whitespace
                     index_analyzer: my_analyzer
                 type:
+                    dynamic: strict
                     search_analyzer: my_analyzer
                     date_detection: false
                     dynamic_date_formats: [ 'yyyy-MM-dd' ]
@@ -94,6 +96,7 @@ fos_elastica:
                             type: "attachment"
                         lastlogin: { type: date, format: basic_date_time }
                         birthday: { type: date, format: "yyyy-MM-dd" }
+                        dynamic_allowed: { type: object, dynamic: true }
                     _parent:
                         type: "parent"
                         property: "parent"

@@ -149,6 +149,23 @@ If you want to specify a [date format](http://www.elasticsearch.org/guide/en/ela
                         birthday: { type: date, format: "yyyy-MM-dd" }
 ```
 
+
+Disable dynamic mapping example
+-------------------
+
+If you want to specify manually the dynamic capabilities of Elasticsearch mapping, you can use 
+the [dynamic](https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic.html) option:
+
+```yaml
+                user:
+                    dynamic: strict
+                    mappings:
+                        username: { type: string }
+                        addresses: { type: object, dynamic: true }
+```
+
+With this example, Elasticsearch is going to throw exceptions if you try to index a not mapped field, except in `addresses`.
+
 Custom settings
 ---------------
 

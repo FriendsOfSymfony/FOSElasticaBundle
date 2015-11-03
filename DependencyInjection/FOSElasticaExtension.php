@@ -269,6 +269,7 @@ class FOSElasticaExtension extends Extension
                 'serializer',
                 'index_analyzer',
                 'search_analyzer',
+                'dynamic',
                 'date_detection',
                 'dynamic_date_formats',
                 'numeric_detection',

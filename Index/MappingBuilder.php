@@ -82,6 +82,10 @@ class MappingBuilder
             $mapping['search_analyzer'] = $typeConfig->getSearchAnalyzer();
         }
 
+        if ($typeConfig->getDynamic()) {
+            $mapping['dynamic'] = $typeConfig->getDynamic();
+        }
+
         if (isset($mapping['dynamic_templates']) and empty($mapping['dynamic_templates'])) {
             unset($mapping['dynamic_templates']);
         }

@@ -102,7 +102,16 @@ class TypeConfig
     }
 
     /**
+     * @return string|null
+     */
+    public function getDynamic()
+    {
+        return $this->getConfig('dynamic');
+    }
+
+    /**
      * @param string $key
+     * @return null|string
      */
     private function getConfig($key)
     {
