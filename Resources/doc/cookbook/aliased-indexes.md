@@ -13,7 +13,7 @@ true.
 ```yaml
 fos_elastica:
     indexes:
-        website:
+        app:
             use_alias: true
 ```
 
@@ -23,6 +23,10 @@ options on how to handle this:
 
 1) Delete the index from Elasticsearch. This option will make searching unavailable in your
    application until a population has completed itself, and an alias is created.
+   
+```bash
+$ curl -XDELETE 'http://localhost:9200/app/'
+```
 
 2) Change the index_name parameter for your index to something new, and manually alias the
    current index to the new index_name, which will then be replaced when you run a repopulate.
@@ -30,16 +34,16 @@ options on how to handle this:
 ```yaml
 fos_elastica:
     indexes:
-        website:
+        app:
             use_alias: true
-            index_name: website_prod
+            index_name: app_prod
 ```
 
 ```bash
 $ curl -XPOST 'http://localhost:9200/_aliases' -d '
 {
     "actions" : [
-        { "add" : { "index" : "website", "alias" : "website_prod" } }
+        { "add" : { "index" : "app", "alias" : "app_prod" } }
     ]
 }'
 ```

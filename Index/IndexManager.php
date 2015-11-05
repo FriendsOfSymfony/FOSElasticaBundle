@@ -7,6 +7,11 @@ use FOS\ElasticaBundle\Elastica\Index;
 class IndexManager
 {
     /**
+     * @var Index
+     */
+    private $defaultIndex;
+
+    /**
      * @var array
      */
     private $indexes;

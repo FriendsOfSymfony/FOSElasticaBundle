@@ -37,7 +37,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $this->collection = new ElasticaToModelTransformerCollection($this->transformers = array(
             'type1' => $transformer1,
             'type2' => $transformer2,
-        ), array());
+        ));
     }
 
     public function testGetObjectClass()

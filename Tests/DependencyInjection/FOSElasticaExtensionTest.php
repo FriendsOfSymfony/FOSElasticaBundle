@@ -29,4 +29,20 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('_parent', $arguments);
         $this->assertEquals('parent_field', $arguments['_parent']['type']);
     }
+
+    public function testExtensionSupportsDriverlessTypePersistence()
+    {
+        $config = Yaml::parse(file_get_contents(__DIR__.'/fixtures/driverless_type.yml'));
+
+        $containerBuilder = new ContainerBuilder();
+        $containerBuilder->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load($config, $containerBuilder);
+
+        $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.index.test_index'));
+        $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.index.test_index.driverless'));
+        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.elastica_to_model_transformer.test_index.driverless'));
+        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index.driverless'));
+    }
 }

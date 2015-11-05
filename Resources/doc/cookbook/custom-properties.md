@@ -9,6 +9,9 @@ Set up an event listener or subscriber for
 parameters.
 
 ```php
+
+namespace AcmeBundle\EventListener;
+
 class CustomPropertyListener implements EventSubscriberInterface
 {
     private $anotherService;
@@ -30,4 +33,12 @@ class CustomPropertyListener implements EventSubscriberInterface
         );
     }
 }
+```
+
+Service definition:
+```yml
+acme.listener.custom_property:
+    class: AcmeBundle\EventListener\CustomPropertyListener
+    tags:
+        - { name: kernel.event_subscriber }
 ```

@@ -38,13 +38,13 @@ class MappingBuilder
         }
 
         $mapping = array();
-        if ($typeMappings) {
+        if (!empty($typeMappings)) {
             $mapping['mappings'] = $typeMappings;
         }
         // 'warmers' => $indexConfig->getWarmers(),
 
         $settings = $indexConfig->getSettings();
-        if ($settings) {
+        if (!empty($settings)) {
             $mapping['settings'] = $settings;
         }
 
@@ -95,7 +95,7 @@ class MappingBuilder
             $mapping['_meta']['model'] = $typeConfig->getModel();
         }
 
-        if (!$mapping) {
+        if (empty($mapping)) {
             // Empty mapping, we want it encoded as a {} instead of a []
             $mapping = new \stdClass();
         }

@@ -11,14 +11,12 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-
 /**
  * Index ResetEvent.
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
-class IndexResetEvent extends Event
+class IndexResetEvent extends IndexEvent
 {
     const PRE_INDEX_RESET = 'elastica.index.pre_reset';
     const POST_INDEX_RESET = 'elastica.index.post_reset';
@@ -27,11 +25,6 @@ class IndexResetEvent extends Event
      * @var bool
      */
     private $force;
-
-    /**
-     * @var string
-     */
-    private $index;
 
     /**
      * @var bool
@@ -45,17 +38,10 @@ class IndexResetEvent extends Event
      */
     public function __construct($index, $populating, $force)
     {
-        $this->force = $force;
-        $this->index = $index;
-        $this->populating = $populating;
-    }
+        parent::__construct($index);
 
-    /**
-     * @return string
-     */
-    public function getIndex()
-    {
-        return $this->index;
+        $this->force = $force;
+        $this->populating = $populating;
     }
 
     /**

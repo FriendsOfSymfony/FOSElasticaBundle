@@ -3,6 +3,8 @@ framework:
     router: { resource: "%kernel.root_dir%/%kernel.test_case%/routing.yml" }
     test: ~
     default_locale: en
+    templating:
+        engines: ['php']
 
 services:
-    logger: { class: Symfony\Component\HttpKernel\Log\NullLogger }
+    logger: { class: Psr\Log\NullLogger }

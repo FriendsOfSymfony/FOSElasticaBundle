@@ -145,9 +145,24 @@ class FOSElasticaExtension extends Extension
                 'name' => $name,
             ));
 
+            if (method_exists($indexDef, 'setFactory')) {
+                $indexDef->setFactory(array(new Reference('fos_elastica.client'), 'getIndex'));
+            } else {
+                // To be removed when dependency on Symfony DependencyInjection is bumped to 2.6
+                $indexDef->setFactoryService('fos_elastica.client');
+                $indexDef->setFactoryMethod('getIndex');
+            }
+
             if (isset($index['client'])) {
                 $client = $this->getClient($index['client']);
-                $indexDef->setFactoryService($client);
+
+                if (method_exists($indexDef, 'setFactory')) {
+                    $indexDef->setFactory(array($client, 'getIndex'));
+                } else {
+                    // To be removed when dependency on Symfony DependencyInjection is bumped to 2.6
+                    $indexDef->setFactoryService($client);
+                    $indexDef->setFactoryMethod('getIndex');
+                }
             }
 
             $container->setDefinition($indexId, $indexDef);
@@ -215,7 +230,15 @@ class FOSElasticaExtension extends Extension
             $typeId = sprintf('%s.%s', $indexConfig['reference'], $name);
             $typeDef = new DefinitionDecorator('fos_elastica.type_prototype');
             $typeDef->replaceArgument(0, $name);
-            $typeDef->setFactoryService($indexConfig['reference']);
+
+            if (method_exists($typeDef, 'setFactory')) {
+                $typeDef->setFactory(array($indexConfig['reference'], 'getType'));
+            } else {
+                // To be removed when dependency on Symfony DependencyInjection is bumped to 2.6
+                $typeDef->setFactoryService($indexConfig['reference']);
+                $typeDef->setFactoryMethod('getType');
+            }
+
             $container->setDefinition($typeId, $typeDef);
 
             $typeConfig = array(
@@ -295,7 +318,9 @@ class FOSElasticaExtension extends Extension
      */
     private function loadTypePersistenceIntegration(array $typeConfig, ContainerBuilder $container, Reference $typeRef, $indexName, $typeName)
     {
-        $this->loadDriver($container, $typeConfig['driver']);
+        if (isset($typeConfig['driver'])) {
+            $this->loadDriver($container, $typeConfig['driver']);
+        }
 
         $elasticaToModelTransformerId = $this->loadElasticaToModelTransformer($typeConfig, $container, $indexName, $typeName);
         $modelToElasticaTransformerId = $this->loadModelToElasticaTransformer($typeConfig, $container, $indexName, $typeName);
@@ -392,6 +417,10 @@ class FOSElasticaExtension extends Extension
      */
     private function loadObjectPersister(array $typeConfig, Reference $typeRef, ContainerBuilder $container, $indexName, $typeName, $transformerId)
     {
+        if (isset($typeConfig['persister']['service'])) {
+            return $typeConfig['persister']['service'];
+        }
+
         $arguments = array(
             $typeRef,
             new Reference($transformerId),
@@ -502,7 +531,7 @@ class FOSElasticaExtension extends Extension
                 break;
         }
 
-        if ($tagName) {
+        if (null !== $tagName) {
             foreach ($this->getDoctrineEvents($typeConfig) as $event) {
                 $listenerDef->addTag($tagName, array('event' => $event));
             }
@@ -527,7 +556,6 @@ class FOSElasticaExtension extends Extension
                 break;
             default:
                 throw new InvalidArgumentException(sprintf('Cannot determine events for driver "%s"', $typeConfig['driver']));
-                break;
         }
 
         $events = array();
