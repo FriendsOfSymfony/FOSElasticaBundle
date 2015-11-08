@@ -102,6 +102,77 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $this->resetter->resetAllTemplates();
     }
 
+    public function testResetAllIndexTemplatesAndDeleteIndexes()
+    {
+        $indexTemplate = 'index_template1';
+
+        $config = array(
+            'template' => 't*'
+        );
+        $indexTemplateConfig = new IndexTemplateConfig($indexTemplate, array(), $config);
+        $this->mockIndexTemplate($indexTemplate, $indexTemplateConfig);
+
+        $this->configManager->expects($this->once())
+            ->method('getIndexTemplatesNames')
+            ->will($this->returnValue(array($indexTemplate)));
+
+        $this->elasticaClient->expects($this->at(0))
+            ->method('request')
+            ->withConsecutive(
+                array($config['template'] . '/', 'DELETE', array(), array())
+            );
+        $this->elasticaClient->expects($this->at(1))
+            ->method('request')
+            ->withConsecutive(
+                array('/_template/index_template1', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetAllTemplates(true);
+    }
+
+    public function testResetIndexTemplate()
+    {
+        $indexTemplate = 'index_template1';
+
+        $config = array(
+            'template' => 't*'
+        );
+        $indexTemplateConfig = new IndexTemplateConfig($indexTemplate, array(), $config);
+        $this->mockIndexTemplate($indexTemplate, $indexTemplateConfig);
+
+        $this->elasticaClient->expects($this->exactly(1))
+            ->method('request')
+            ->withConsecutive(
+                array('/_template/index_template1', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetTemplate('index_template1');
+    }
+
+    public function testResetIndexTemplateAndDeleteIndex()
+    {
+        $indexTemplate = 'index_template1';
+
+        $config = array(
+            'template' => 't*'
+        );
+        $indexTemplateConfig = new IndexTemplateConfig($indexTemplate, array(), $config);
+        $this->mockIndexTemplate($indexTemplate, $indexTemplateConfig);
+
+        $this->elasticaClient->expects($this->at(0))
+            ->method('request')
+            ->withConsecutive(
+                array($config['template'] . '/', 'DELETE', array(), array())
+            );
+        $this->elasticaClient->expects($this->at(1))
+            ->method('request')
+            ->withConsecutive(
+                array('/_template/index_template1', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetTemplate('index_template1', true);
+    }
+
     public function testResetIndex()
     {
         $indexConfig = new IndexConfig('index1', array(), array());
@@ -335,7 +406,8 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             $this->indexManager,
             $this->aliasProcessor,
             $this->mappingBuilder,
-            $this->dispatcher
+            $this->dispatcher,
+            $this->elasticaClient
         );
     }
 }

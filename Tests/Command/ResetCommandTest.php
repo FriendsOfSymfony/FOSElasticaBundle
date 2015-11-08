@@ -32,7 +32,7 @@ class ResetCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->resetter = $this->getMockBuilder('\FOS\ElasticaBundle\Resetter')
             ->disableOriginalConstructor()
-            ->setMethods(array('resetIndex', 'resetIndexType', 'resetAllTemplates'))
+            ->setMethods(array('resetIndex', 'resetIndexType', 'resetAllTemplates', 'resetTemplate'))
             ->getMock();
 
         $container->set('fos_elastica.resetter', $this->resetter);
@@ -106,6 +106,81 @@ class ResetCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->command->run(
             new ArrayInput(array('--index' => 'index1', '--type' => 'type1')),
+            new NullOutput()
+        );
+    }
+
+    public function testResetAllIndexTemplates()
+    {
+        $this->resetter->expects($this->once())
+            ->method('resetAllTemplates')
+            ->with(false)
+        ;
+
+        $this->resetter->expects($this->never())
+            ->method('resetIndex');
+
+        $this->command->run(
+            new ArrayInput(array('--index-template' => null)),
+            new NullOutput()
+        );
+    }
+
+    public function testResetAndDeleteAllIndexTemplates()
+    {
+        $this->resetter->expects($this->once())
+            ->method('resetAllTemplates')
+            ->with(true)
+        ;
+
+        $this->resetter->expects($this->never())
+            ->method('resetIndex');
+
+        $this->command->run(
+            new ArrayInput(array('--index-template' => null, '--delete-template-indexes' => null)),
+            new NullOutput()
+        );
+    }
+
+    public function testResetOneIndexTemplate()
+    {
+        $this->resetter->expects($this->once())
+            ->method('resetTemplate')
+            ->with('template name', false)
+        ;
+
+        $this->resetter->expects($this->never())
+            ->method('resetIndex');
+
+        $this->command->run(
+            new ArrayInput(array('--index-template' => 'template name')),
+            new NullOutput()
+        );
+    }
+
+    public function testResetAndDeleteOneIndexTemplate()
+    {
+        $this->resetter->expects($this->once())
+            ->method('resetTemplate')
+            ->with('template name', true)
+        ;
+
+        $this->resetter->expects($this->never())
+            ->method('resetIndex');
+
+        $this->command->run(
+            new ArrayInput(array('--index-template' => 'template name', '--delete-template-indexes' => null)),
+            new NullOutput()
+        );
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testThrowExceptionWhenIndexAndIndexTemplateProvidedInSameTime()
+    {
+        $this->command->run(
+            new ArrayInput(array('--index-template' => null, '--index' => 'some template')),
             new NullOutput()
         );
     }

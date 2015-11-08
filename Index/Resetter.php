@@ -6,6 +6,9 @@ use Elastica\Index;
 use Elastica\Exception\ResponseException;
 use Elastica\Type\Mapping;
 use FOS\ElasticaBundle\Configuration\ConfigManager;
+use Elastica\Client;
+use Elastica\Request;
+use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -41,24 +44,32 @@ class Resetter
     private $mappingBuilder;
 
     /**
-     * @param ConfigManager            $configManager
-     * @param IndexManager             $indexManager
-     * @param AliasProcessor           $aliasProcessor
-     * @param MappingBuilder           $mappingBuilder
+     * @var Client
+     */
+    private $client;
+
+    /**
+     * @param ConfigManager $configManager
+     * @param IndexManager $indexManager
+     * @param AliasProcessor $aliasProcessor
+     * @param MappingBuilder $mappingBuilder
      * @param EventDispatcherInterface $eventDispatcher
+     * @param Client $client
      */
     public function __construct(
         ConfigManager $configManager,
         IndexManager $indexManager,
         AliasProcessor $aliasProcessor,
         MappingBuilder $mappingBuilder,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        Client $client
     ) {
         $this->aliasProcessor = $aliasProcessor;
         $this->configManager = $configManager;
         $this->dispatcher = $eventDispatcher;
         $this->indexManager = $indexManager;
         $this->mappingBuilder = $mappingBuilder;
+        $this->client = $client;
     }
 
     /**
@@ -155,9 +166,19 @@ class Resetter
 
         $mapping = $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig);
         if ($deleteIndexes) {
-            $indexTemplate->deleteIndexes();
+            $this->deleteTemplateIndexes($indexTemplateConfig);
         }
         $indexTemplate->create($mapping);
+    }
+
+    /**
+     * Delete all template indexes
+     *
+     * @param IndexTemplateConfig $template
+     */
+    public function deleteTemplateIndexes(IndexTemplateConfig $template)
+    {
+        $this->client->request($template->getTemplate() . '/', Request::DELETE);
     }
 
     /**

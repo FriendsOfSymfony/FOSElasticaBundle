@@ -111,8 +111,6 @@ class PopulateCommand extends ContainerAwareCommand
             throw new \InvalidArgumentException('Cannot specify type option without an index.');
         }
 
-        $this->resetter->resetAllTemplates();
-
         if (null !== $index) {
             if (null !== $type) {
                 $this->populateIndexType($output, $index, $type, $reset, $options);

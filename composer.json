@@ -17,7 +17,7 @@
         "symfony/console": "~2.1",
         "symfony/form": "~2.1",
         "symfony/property-access": "~2.3",
-        "ruflin/elastica": "dev-GRS-1252",
+        "ruflin/elastica": "~2.2,~2.3",
         "psr/log": "~1.0"
     },
     "repositories": [
