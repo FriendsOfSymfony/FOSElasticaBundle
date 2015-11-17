@@ -33,7 +33,10 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
         $qb->andWhere($qb->expr()->in(static::ENTITY_ALIAS.'.'.$this->options['identifier'], ':values'))
             ->setParameter('values', $identifierValues);
 
-        return $qb->getQuery()->setHydrationMode($hydrationMode)->execute();
+        $query = $qb->getQuery();
+        $query->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
+
+        return $query->setHydrationMode($hydrationMode)->execute();
     }
 
     /**
