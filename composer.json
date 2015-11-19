@@ -23,6 +23,8 @@
     "require-dev":{
         "doctrine/orm": "~2.4",
         "doctrine/doctrine-bundle": "~1.2",
+        "doctrine/phpcr-bundle": "~1.2",
+        "jackalope/jackalope-doctrine-dbal": "~1.1",
         "jms/serializer-bundle": "@stable",
         "phpunit/phpunit": "~4.1",
         "propel/propel1": "1.6.*",

@@ -526,6 +526,9 @@ class FOSElasticaExtension extends Extension
             case 'orm':
                 $tagName = 'doctrine.event_listener';
                 break;
+            case 'phpcr':
+                $tagName = 'doctrine_phpcr.event_listener';
+                break;
             case 'mongodb':
                 $tagName = 'doctrine_mongodb.odm.event_listener';
                 break;
@@ -550,6 +553,9 @@ class FOSElasticaExtension extends Extension
         switch ($typeConfig['driver']) {
             case 'orm':
                 $eventsClass = '\Doctrine\ORM\Events';
+                break;
+            case 'phpcr':
+                $eventsClass = '\Doctrine\ODM\PHPCR\Event';
                 break;
             case 'mongodb':
                 $eventsClass = '\Doctrine\ODM\MongoDB\Events';

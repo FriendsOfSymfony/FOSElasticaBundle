@@ -38,7 +38,7 @@ class AppKernel extends Kernel
             // ...
             new FOS\ElasticaBundle\FOSElasticaBundle(),
         );
-        
+
         // ...
     }
 }
@@ -121,7 +121,7 @@ Below is an example for the Doctrine ORM.
                         lastName: ~
                         email: ~
                     persistence:
-                        # the driver can be orm, mongodb or propel
+                        # the driver can be orm, mongodb, phpcr or propel
                         # listener and finder are not supported by
                         # propel and should be removed
                         driver: orm
