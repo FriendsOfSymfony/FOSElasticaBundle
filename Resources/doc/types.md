@@ -12,7 +12,7 @@ to be used for data retrieval from the underlying model.
                     mappings:
                         username:
                             property_path: indexableUsername
-                        firstName: 
+                        firstName:
                             property_path: names[first]
 ```
 
@@ -288,7 +288,7 @@ Declare that you want to update the index in real time:
 ```yaml
                 user:
                     persistence:
-                        driver: orm
+                        driver: orm #the driver can be orm, mongodb, phpcr or propel
                         model: Application\UserBundle\Entity\User
                         listener: ~ # by default, listens to "insert", "update" and "delete"
 ```
