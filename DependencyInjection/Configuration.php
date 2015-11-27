@@ -587,6 +587,9 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
                 ->scalarNode('version')->end()
+                ->booleanNode('serialize_null')
+                    ->defaultFalse()
+                ->end()
             ->end();
 
         return $node;
