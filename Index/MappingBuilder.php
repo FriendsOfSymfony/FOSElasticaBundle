@@ -21,7 +21,7 @@ class MappingBuilder
      *
      * @var array
      */
-    private $skipTypes = array('completion');
+    private $skipTypes = array('completion','nested');
 
     /**
      * Builds mappings for an entire index.
@@ -126,9 +126,9 @@ class MappingBuilder
             if (in_array($property['type'], $this->skipTypes)) {
                 continue;
             }
-            //if (!isset($property['store'])) {
-            //    $property['store'] = true;
-            //}
+            if (!isset($property['store'])) {
+                $property['store'] = true;
+            }
         }
     }
 }
