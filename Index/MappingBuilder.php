@@ -126,9 +126,9 @@ class MappingBuilder
             if (in_array($property['type'], $this->skipTypes)) {
                 continue;
             }
-            if (!isset($property['store'])) {
-                $property['store'] = true;
-            }
+            //if (!isset($property['store'])) {
+            //    $property['store'] = true;
+            //}
         }
     }
 }
