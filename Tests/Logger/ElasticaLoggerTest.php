@@ -10,11 +10,11 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
 class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpKernel\Log\LoggerInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Psr\Log\LoggerInterface
      */
     private function getMockLogger()
     {
-        return $this->getMockBuilder('Symfony\Component\HttpKernel\Log\LoggerInterface')
+        return $this->getMockBuilder('Psr\Log\LoggerInterface')
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -28,7 +28,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockLoggerForLevelMessageAndContext($level, $message, $context)
     {
-        $loggerMock = $this->getMockBuilder('Symfony\Component\HttpKernel\Log\LoggerInterface')
+        $loggerMock = $this->getMockBuilder('Psr\Log\LoggerInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
