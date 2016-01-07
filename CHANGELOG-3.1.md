@@ -9,6 +9,18 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/commit/XXX where XXX is
 the commit hash. To get the diff between two versions, go to
 https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
 
+* 3.1.8 (Unreleased)
+ * Removes store:true from mappings unless specifically defined
+
+* 3.1.7 (2015-12-08)
+ * Allow Elastica 2.3
+
+* 3.1.6 (2015-09-17)
+
+ * Allow Elastica 2.2
+ * Add PHP 7 compatibility
+ * Fix: Don't use parent identifier for objects/nested documents
+
 * 3.1.5 (2015-08-05)
 
  * Allow Elastica 2.1
