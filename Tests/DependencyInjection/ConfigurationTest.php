@@ -44,6 +44,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             'clients' => array(
                 'default' => array(
                     'url' => 'http://localhost:9200',
+                    'retryOnConflict' => 5,
                 ),
                 'clustered' => array(
                     'connections' => array(
@@ -67,6 +68,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $configuration['clients']);
         $this->assertCount(1, $configuration['clients']['default']['connections']);
         $this->assertCount(0, $configuration['clients']['default']['connections'][0]['headers']);
+        $this->assertEquals(5, $configuration['clients']['default']['connections'][0]['retryOnConflict']);
 
         $this->assertCount(2, $configuration['clients']['clustered']['connections']);
         $this->assertEquals('http://es2:9200/', $configuration['clients']['clustered']['connections'][1]['url']);
