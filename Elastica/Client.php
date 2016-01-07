@@ -45,9 +45,10 @@ class Client extends BaseClient
 
         $start = microtime(true);
         $response = parent::request($path, $method, $data, $query);
+        $responseData = $response->getData();
 
-        if (isset($response->getData()['took'])) {
-            $this->logQuery($path, $method, $data, $query, $start, $response->getEngineTime(), $response->getData()['hits']['total']);
+        if (isset($responseData['took']) && isset($responseData['hits'])) {
+            $this->logQuery($path, $method, $data, $query, $start, $response->getEngineTime(), $responseData['hits']['total']);
         } else {
             $this->logQuery($path, $method, $data, $query, $start, 0, 0);
         }

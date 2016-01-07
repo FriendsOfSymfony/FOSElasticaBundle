@@ -82,7 +82,13 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $queries = array(array('executionMS' => 10), array('executionMS' => 20));
+        $queries = array(array(
+            'engineMS' => 15,
+            'executionMS' => 10
+        ), array(
+            'engineMS' => 25,
+            'executionMS' => 20
+        ));
 
         $loggerMock->expects($this->once())
             ->method('getQueries')
@@ -90,6 +96,6 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 
         $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
         $elasticaDataCollector->collect($requestMock, $responseMock);
-        $this->assertEquals(30, $elasticaDataCollector->getTime());
+        $this->assertEquals(40, $elasticaDataCollector->getTime());
     }
 }
