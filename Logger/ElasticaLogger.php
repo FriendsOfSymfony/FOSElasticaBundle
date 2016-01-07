@@ -51,7 +51,7 @@ class ElasticaLogger implements LoggerInterface
      * @param array  $connection Host, port, transport, and headers of the query
      * @param array  $query      Arguments
      */
-    public function logQuery($path, $method, $data, $time, $connection = array(), $query = array())
+    public function logQuery($path, $method, $data, $time, $connection = array(), $query = array(), $engineTime = 0, $itemCount = 0)
     {
         if ($this->debug) {
             $this->queries[] = array(
@@ -59,8 +59,10 @@ class ElasticaLogger implements LoggerInterface
                 'method' => $method,
                 'data' => $data,
                 'executionMS' => $time,
+                'engineMS' => $engineTime,
                 'connection' => $connection,
                 'queryString' => $query,
+                'itemCount' => $itemCount,
             );
         }
 

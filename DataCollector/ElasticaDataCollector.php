@@ -44,7 +44,7 @@ class ElasticaDataCollector extends DataCollector
     {
         $time = 0;
         foreach ($this->data['queries'] as $query) {
-            $time += $query['executionMS'];
+            $time += $query['engineMS'];
         }
 
         return $time;
