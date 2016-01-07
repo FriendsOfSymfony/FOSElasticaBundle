@@ -88,7 +88,11 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
 
         $resultSet = $this->searchable->search($query, $this->options);
         $this->totalHits = $resultSet->getTotalHits();
-        $this->facets = $resultSet->getFacets();
+
+        if (method_exists($resultSet, 'getFacets')) {
+            $this->facets = $resultSet->getFacets();
+        }
+        
         $this->aggregations = $resultSet->getAggregations();
 
         return $resultSet;
