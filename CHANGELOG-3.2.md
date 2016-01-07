@@ -5,3 +5,4 @@ CHANGELOG for 3.2.x
 
  * Allow driverless type definitions #953
  * Change Elastica constraints to allow ~2.1 as Elastica now follows semver
+ * Add support for the [dynamic](https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic.html) setting in mapping
