@@ -127,7 +127,9 @@ class MappingBuilder
                 continue;
             }
             if (!isset($property['store'])) {
-                $property['store'] = true;
+                if($property['type'] != 'nested' && $property['type'] != 'attachment') {
+                    $property['store'] = true;
+                }
             }
         }
     }
