@@ -12,6 +12,9 @@ parameters.
 
 namespace AcmeBundle\EventListener;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use FOS\ElasticaBundle\Event\TransformEvent;
+
 class CustomPropertyListener implements EventSubscriberInterface
 {
     private $anotherService;
