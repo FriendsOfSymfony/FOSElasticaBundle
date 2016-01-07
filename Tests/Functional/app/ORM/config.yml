@@ -3,7 +3,7 @@ imports:
 
 doctrine:
     dbal:
-        path: %kernel.cache_dir%/db.sqlite
+        path: "%kernel.cache_dir%/db.sqlite"
         charset:  UTF8
     orm:
         auto_generate_proxy_classes: false
@@ -44,7 +44,7 @@ fos_elastica:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener:
-                            is_indexable_callback: [ @indexableService, 'isIndexable' ]
+                            is_indexable_callback: [ "@indexableService", 'isIndexable' ]
                 type3:
                     mappings:
                         field1: ~
