@@ -86,6 +86,9 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 
         $elasticaLogger->logQuery($path, $method, $data, $time, $connection, $query);
         $returnedQueries = $elasticaLogger->getQueries();
+        $this->assertArrayHasKey('backtrace', $returnedQueries[0]);
+        $this->assertIsNotEmpty($returnedQueries[0]['backtrace']);
+        unset($returnedQueries[0]['backtrace']);
         $this->assertEquals($expected, $returnedQueries[0]);
     }
 
