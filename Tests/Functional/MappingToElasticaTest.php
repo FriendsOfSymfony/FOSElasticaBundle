@@ -24,8 +24,6 @@ class MappingToElasticaTest extends WebTestCase
 
         $type = $this->getType($client);
         $mapping = $type->getMapping();
-        var_dump($mapping);
-        die;
 
 
 
