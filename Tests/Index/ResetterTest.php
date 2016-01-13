@@ -137,42 +137,6 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $this->resetter->resetIndex('nonExistant');
     }
 
-    public function testResetType()
-    {
-        $typeConfig = new TypeConfig('type', array(), array());
-        $this->mockType('type', 'index', $typeConfig);
-
-        $this->dispatcherExpects(array(
-            array(TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent')),
-            array(TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent'))
-        ));
-
-        $this->elasticaClient->expects($this->exactly(2))
-            ->method('request')
-            ->withConsecutive(
-                array('index/type/', 'DELETE'),
-                array('index/type/_mapping', 'PUT', array('type' => array()), array())
-            );
-
-        $this->resetter->resetIndexType('index', 'type');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testNonExistantResetType()
-    {
-        $this->configManager->expects($this->once())
-            ->method('getTypeConfiguration')
-            ->with('index', 'nonExistant')
-            ->will($this->throwException(new \InvalidArgumentException));
-
-        $this->indexManager->expects($this->never())
-            ->method('getIndex');
-
-        $this->resetter->resetIndexType('index', 'nonExistant');
-    }
-
     public function testPostPopulateWithoutAlias()
     {
         $this->mockIndex('index', new IndexConfig('index', array(), array()));

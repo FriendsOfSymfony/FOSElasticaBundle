@@ -19,7 +19,7 @@ class ResetCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->resetter = $this->getMockBuilder('\FOS\ElasticaBundle\Resetter')
             ->disableOriginalConstructor()
-            ->setMethods(array('resetIndex', 'resetIndexType'))
+            ->setMethods(array('resetIndex'))
             ->getMock();
 
         $container->set('fos_elastica.resetter', $this->resetter);
@@ -78,13 +78,5 @@ class ResetCommandTest extends \PHPUnit_Framework_TestCase
         $this->resetter->expects($this->never())
             ->method('resetIndex');
 
-        $this->resetter->expects($this->at(0))
-            ->method('resetIndexType')
-            ->with($this->equalTo('index1'), $this->equalTo('type1'));
-
-        $this->command->run(
-            new ArrayInput(array('--index' => 'index1', '--type' => 'type1')),
-            new NullOutput()
-        );
     }
 }
