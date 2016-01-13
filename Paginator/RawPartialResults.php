@@ -40,13 +40,10 @@ class RawPartialResults implements PartialResultsInterface
 
     /**
      * {@inheritDoc}
+     * @deprecated remvem from rufflin api 3.0.1
      */
     public function getFacets()
     {
-        if ($this->resultSet->hasFacets()) {
-            return $this->resultSet->getFacets();
-        }
-
         return;
     }
 

@@ -26,8 +26,6 @@ class MappingToElasticaTest extends WebTestCase
         $mapping = $type->getMapping();
 
 
-
-
         $resetter = $this->getResetter($client);
         $resetter->resetIndex('index');
 
