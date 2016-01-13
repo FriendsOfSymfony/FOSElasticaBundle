@@ -21,11 +21,18 @@ class MappingToElasticaTest extends WebTestCase
     public function testResetIndexAddsMappings()
     {
         $client = $this->createClient(array('test_case' => 'Basic'));
-        $resetter = $this->getResetter($client);
-        $resetter->resetIndex('index');
 
         $type = $this->getType($client);
         $mapping = $type->getMapping();
+        var_dump($mapping);
+        die;
+
+
+
+
+        $resetter = $this->getResetter($client);
+        $resetter->resetIndex('index');
+
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
 
@@ -44,38 +51,12 @@ class MappingToElasticaTest extends WebTestCase
         $this->assertEquals('whitespace', $mapping['parent']['search_analyzer']);
     }
 
-    public function testResetType()
-    {
-        $client = $this->createClient(array('test_case' => 'Basic'));
-        $resetter = $this->getResetter($client);
-        $resetter->resetIndexType('index', 'type');
-
-        $type = $this->getType($client);
-        $mapping = $type->getMapping();
-
-        $this->assertNotEmpty($mapping, 'Mapping was populated');
-        $this->assertFalse($mapping['type']['date_detection']);
-        $this->assertTrue($mapping['type']['numeric_detection']);
-        $this->assertEquals(array('yyyy-MM-dd'), $mapping['type']['dynamic_date_formats']);
-    }
 
     public function testORMResetIndexAddsMappings()
     {
         $client = $this->createClient(array('test_case' => 'ORM'));
         $resetter = $this->getResetter($client);
         $resetter->resetIndex('index');
-
-        $type = $this->getType($client);
-        $mapping = $type->getMapping();
-
-        $this->assertNotEmpty($mapping, 'Mapping was populated');
-    }
-
-    public function testORMResetType()
-    {
-        $client = $this->createClient(array('test_case' => 'ORM'));
-        $resetter = $this->getResetter($client);
-        $resetter->resetIndexType('index', 'type');
 
         $type = $this->getType($client);
         $mapping = $type->getMapping();
