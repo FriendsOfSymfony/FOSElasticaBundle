@@ -36,7 +36,7 @@
         "symfony/twig-bundle": "~2.3|~3.0"
     },
     "replace": {
-        "friendsofsymfony/elastica-bundle": "self.version"
+        "friendsofsymfony/elastica-bundle": "^3.1.8"
     },
     "autoload": {
         "psr-4": { "FOS\\ElasticaBundle\\": "" }
