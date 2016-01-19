@@ -139,6 +139,13 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     {
         $document = new Document($identifier);
 
+        if ($this->dispatcher) {
+            $event = new TransformEvent($document, $fields, $object);
+            $this->dispatcher->dispatch(TransformEvent::PRE_TRANSFORM, $event);
+
+            $document = $event->getDocument();
+        }
+
         foreach ($fields as $key => $mapping) {
             if ($key == '_parent') {
                 $property = (null !== $mapping['property']) ? $mapping['property'] : $mapping['type'];

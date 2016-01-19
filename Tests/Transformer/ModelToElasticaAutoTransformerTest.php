@@ -143,11 +143,18 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     {
         $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')
             ->getMock();
-        $dispatcher->expects($this->once())
+
+        $dispatcher->expects($this->exactly(2))
             ->method('dispatch')
-            ->with(
-                TransformEvent::POST_TRANSFORM,
-                $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent')
+            ->withConsecutive(
+                array(
+                    TransformEvent::PRE_TRANSFORM,
+                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent')
+                ),
+                array(
+                    TransformEvent::POST_TRANSFORM,
+                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent')
+                )
             );
 
         $transformer = $this->getTransformer($dispatcher);
