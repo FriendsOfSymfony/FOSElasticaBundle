@@ -21,7 +21,7 @@ class MappingBuilder
      *
      * @var array
      */
-    private $skipTypes = array('completion', 'array', 'object');
+    private $skipTypes = array('completion', 'array', 'object', 'nested');
 
     /**
      * Builds mappings for an entire index.
