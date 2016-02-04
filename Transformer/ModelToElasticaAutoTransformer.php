@@ -6,6 +6,7 @@ use FOS\ElasticaBundle\Event\TransformEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Elastica\Document;
+use Elastica\Type;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -60,15 +61,16 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     /**
      * Transforms an object into an elastica object having the required keys.
      *
-     * @param object $object the object to convert
-     * @param array  $fields the keys we want to have in the returned array
+     * @param object    $object the object to convert
+     * @param array     $fields the keys we want to have in the returned array
+     * @param Type|null $type   the current type
      *
      * @return Document
      **/
-    public function transform($object, array $fields)
+    public function transform($object, array $fields, Type $type = null)
     {
         $identifier = $this->propertyAccessor->getValue($object, $this->options['identifier']);
-        $document = $this->transformObjectToDocument($object, $fields, $identifier);
+        $document = $this->transformObjectToDocument($object, $fields, $type, $identifier);
 
         return $document;
     }
@@ -130,17 +132,19 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     /**
      * Transforms the given object to an elastica document
      *
-     * @param object $object the object to convert
-     * @param array  $fields the keys we want to have in the returned array
-     * @param string $identifier the identifier for the new document
+     * @param object    $object the object to convert
+     * @param array     $fields the keys we want to have in the returned array
+     * @param Type|null $type   the current type
+     * @param string    $identifier the identifier for the new document
+     *
      * @return Document
      */
-    protected function transformObjectToDocument($object, array $fields, $identifier = '')
+    protected function transformObjectToDocument($object, array $fields, Type $type = null, $identifier = '')
     {
-        $document = new Document($identifier);
+        $document = new Document($identifier, array(), $type ? $type->getName() : '');
 
         if ($this->dispatcher) {
-            $event = new TransformEvent($document, $fields, $object);
+            $event = new TransformEvent($document, $fields, $object, $type);
             $this->dispatcher->dispatch(TransformEvent::PRE_TRANSFORM, $event);
 
             $document = $event->getDocument();
@@ -190,7 +194,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         }
 
         if ($this->dispatcher) {
-            $event = new TransformEvent($document, $fields, $object);
+            $event = new TransformEvent($document, $fields, $object, $type);
             $this->dispatcher->dispatch(TransformEvent::POST_TRANSFORM, $event);
 
             $document = $event->getDocument();

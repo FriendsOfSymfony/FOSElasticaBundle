@@ -40,7 +40,7 @@ class ObjectSerializerPersister extends ObjectPersister
      */
     public function transformToElasticaDocument($object)
     {
-        $document = $this->transformer->transform($object, array());
+        $document = $this->transformer->transform($object, array(), $this->type);
 
         $data = call_user_func($this->serializer, $object);
         $document->setData($data);

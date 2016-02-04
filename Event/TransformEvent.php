@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
+use Elastica\Type;
 
 class TransformEvent extends Event
 {
@@ -34,15 +35,22 @@ class TransformEvent extends Event
     private $object;
 
     /**
-     * @param mixed $document
-     * @param array $fields
-     * @param mixed $object
+     * @var Type|null
      */
-    public function __construct($document, array $fields, $object)
+    private $type;
+
+    /**
+     * @param mixed     $document
+     * @param array     $fields
+     * @param mixed     $object
+     * @param Type|null $type
+     */
+    public function __construct($document, array $fields, $object, Type $type = null)
     {
         $this->document = $document;
         $this->fields = $fields;
         $this->object = $object;
+        $this->type = $type;
     }
 
     /**
@@ -67,6 +75,14 @@ class TransformEvent extends Event
     public function getObject()
     {
         return $this->object;
+    }
+
+    /**
+     * @return Type
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**
