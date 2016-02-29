@@ -40,10 +40,9 @@ class MappingToElasticaTest extends WebTestCase
         $parent = $this->getType($client, 'parent');
         $mapping = $parent->getMapping();
 
-        $this->assertEquals('my_analyzer', $mapping['parent']['index_analyzer']);
-        $this->assertEquals('whitespace', $mapping['parent']['search_analyzer']);
+        $this->assertArrayHasKey('field1', $mapping['parent']['properties']);
+        $this->assertArrayHasKey('field2', $mapping['parent']['properties']);
     }
-
 
     public function testORMResetIndexAddsMappings()
     {
