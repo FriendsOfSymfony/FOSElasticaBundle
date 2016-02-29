@@ -21,13 +21,11 @@ class MappingToElasticaTest extends WebTestCase
     public function testResetIndexAddsMappings()
     {
         $client = $this->createClient(array('test_case' => 'Basic'));
+        $resetter = $this->getResetter($client);
+        $resetter->resetIndex('index');
 
         $type = $this->getType($client);
         $mapping = $type->getMapping();
-        $resetter = $this->getResetter($client);
-
-        $resetter->resetIndex('index');
-
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
 
