@@ -75,7 +75,7 @@ class MappingBuilder
         }
 
         if ($typeConfig->getIndexAnalyzer()) {
-            $mapping['index_analyzer'] = $typeConfig->getIndexAnalyzer();
+            $mapping['analyzer'] = $typeConfig->getIndexAnalyzer();
         }
 
         if ($typeConfig->getSearchAnalyzer()) {

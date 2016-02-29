@@ -26,8 +26,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $arguments = $persisterCallDefinition->getArguments();
         $arguments = $arguments['index_3'];
 
-        $this->assertArrayHasKey('_parent', $arguments);
-        $this->assertEquals('parent_field', $arguments['_parent']['type']);
+        $this->assertArrayHasKey('text', $arguments);
     }
 
     public function testExtensionSupportsDriverlessTypePersistence()
