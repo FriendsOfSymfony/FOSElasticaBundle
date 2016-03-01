@@ -417,8 +417,6 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
                 ->scalarNode('type')->end()
-//                ->scalarNode('property')->defaultValue(null)->end()
-//                ->scalarNode('identifier')->defaultValue('id')->end()
             ->end()
         ;
 
