@@ -18,32 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Client;
  */
 class MappingToElasticaTest extends WebTestCase
 {
-    public function testResetIndexAddsMappings()
-    {
-        $client = $this->createClient(array('test_case' => 'Basic'));
-        $resetter = $this->getResetter($client);
-        $resetter->resetIndex('index');
-
-        $type = $this->getType($client);
-        $mapping = $type->getMapping();
-
-        $this->assertNotEmpty($mapping, 'Mapping was populated');
-
-        $type = $this->getType($client, 'type');
-        $mapping = $type->getMapping();
-        $this->assertEquals('parent', $mapping['type']['_parent']['type']);
-
-        $this->assertEquals('strict', $mapping['type']['dynamic']);
-        $this->assertArrayHasKey('dynamic', $mapping['type']['properties']['dynamic_allowed']);
-        $this->assertEquals('true', $mapping['type']['properties']['dynamic_allowed']['dynamic']);
-
-        $parent = $this->getType($client, 'parent');
-        $mapping = $parent->getMapping();
-
-        $this->assertArrayHasKey('field1', $mapping['parent']['properties']);
-        $this->assertArrayHasKey('field2', $mapping['parent']['properties']);
-    }
-
     public function testORMResetIndexAddsMappings()
     {
         $client = $this->createClient(array('test_case' => 'ORM'));
