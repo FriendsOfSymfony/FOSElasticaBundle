@@ -11,8 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
-use Symfony\Bundle\FrameworkBundle\Client;
-
 /**
  * @group functional
  */
