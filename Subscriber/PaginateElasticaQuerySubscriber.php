@@ -7,14 +7,48 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Knp\Component\Pager\Event\ItemsEvent;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var Request|null
+     */
     private $request;
 
+    /**
+     * @var RequestStack|null
+     */
+    private $requestStack;
+
+    /**
+     * @param Request|null $request
+     */
     public function setRequest(Request $request = null)
     {
         $this->request = $request;
+    }
+
+    /**
+     * @param RequestStack|null $requestStack
+     */
+    public function setRequestStack(RequestStack $requestStack = null)
+    {
+        $this->requestStack = $requestStack;
+    }
+
+    /**
+     * @return Request|null
+     */
+    private function getRequest()
+    {
+        if ($this->requestStack instanceof RequestStack) {
+            return $this->requestStack->getMasterRequest();
+        } elseif ($this->request instanceof Request) {
+            return $this->request;
+        } else {
+            return null;
+        }
     }
 
     public function items(ItemsEvent $event)
@@ -48,13 +82,15 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
      */
     protected function setSorting(ItemsEvent $event)
     {
+        $request = $this->getRequest();
+
         $options = $event->options;
-        $sortField = $this->request->get($options['sortFieldParameterName']);
+        $sortField = $request instanceof Request ? $request->get($options['sortFieldParameterName']) : null;
 
         if (!empty($sortField)) {
             // determine sort direction
             $dir = 'asc';
-            $sortDirection = $this->request->get($options['sortDirectionParameterName']);
+            $sortDirection = $request instanceof Request ? $request->get($options['sortDirectionParameterName']) : null;
             if ('desc' === strtolower($sortDirection)) {
                 $dir = 'desc';
             }

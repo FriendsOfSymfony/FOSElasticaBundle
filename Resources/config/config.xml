@@ -35,6 +35,9 @@
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>
+            <call method="setRequestStack">
+                <argument type="service" id="request_stack" on-invalid="null" strict="false" />
+            </call>
             <tag name="knp_paginator.subscriber" />
         </service>
 
