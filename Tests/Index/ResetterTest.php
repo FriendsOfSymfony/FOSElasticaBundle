@@ -140,7 +140,8 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     public function testResetType()
     {
         $typeConfig = new TypeConfig('type', array(), array());
-        $this->mockType('type', 'index', $typeConfig);
+        $indexConfig = new IndexConfig('index', array(), array());
+        $this->mockType('type', 'index', $typeConfig, $indexConfig);
 
         $this->dispatcherExpects(array(
             array(TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent')),
@@ -151,6 +152,35 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             ->method('request')
             ->withConsecutive(
                 array('index/type/', 'DELETE'),
+                array('index/type/_mapping', 'PUT', array('type' => array()), array())
+            );
+
+        $this->resetter->resetIndexType('index', 'type');
+    }
+
+    public function testResetTypeWithChangedSettings()
+    {
+        $settingsValue = array(
+            'analysis' => array(
+                'analyzer' => array(
+                    'test_analyzer' => array(
+                        'type' => 'standard',
+                        'tokenizer' => 'standard'
+                    )
+                )
+            )
+        );
+        $typeConfig = new TypeConfig('type', array(), array());
+        $indexConfig = new IndexConfig('index', array(), array('settings' => $settingsValue));
+        $this->mockType('type', 'index', $typeConfig, $indexConfig);
+
+        $this->elasticaClient->expects($this->exactly(5))
+            ->method('request')
+            ->withConsecutive(
+                array('index/type/', 'DELETE'),
+                array('index/_close', 'POST'),
+                array('index/_settings', 'PUT', $settingsValue),
+                array('index/_open', 'POST'),
                 array('index/type/_mapping', 'PUT', array('type' => array()), array())
             );
 
@@ -224,20 +254,24 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         return $index;
     }
 
-    private function mockType($typeName, $indexName, TypeConfig $config, $mapping = array())
+    private function mockType($typeName, $indexName, TypeConfig $typeConfig, IndexConfig $indexConfig, $mapping = array())
     {
         $this->configManager->expects($this->atLeast(1))
             ->method('getTypeConfiguration')
             ->with($indexName, $typeName)
-            ->will($this->returnValue($config));
+            ->will($this->returnValue($typeConfig));
         $index = new Index($this->elasticaClient, $indexName);
         $this->indexManager->expects($this->once())
             ->method('getIndex')
             ->with($indexName)
             ->willReturn($index);
+        $this->configManager->expects($this->atLeast(1))
+            ->method('getIndexConfiguration')
+            ->with($indexName)
+            ->will($this->returnValue($indexConfig));
         $this->mappingBuilder->expects($this->once())
             ->method('buildTypeMapping')
-            ->with($config)
+            ->with($typeConfig)
             ->willReturn($mapping);
 
         return $index;
