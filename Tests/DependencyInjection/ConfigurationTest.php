@@ -134,6 +134,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'serializer' => array(
                             'groups' => array('Search'),
                             'version' => 1,
+                            'serialize_null' => false,
                         ),
                     ),
                     'types' => array(
