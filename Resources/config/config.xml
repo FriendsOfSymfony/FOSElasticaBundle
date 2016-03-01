@@ -27,14 +27,12 @@
         </service>
 
         <service id="fos_elastica.data_collector" class="%fos_elastica.data_collector.class%">
-            <tag name="data_collector" template="FOSElasticaBundle:Collector:elastica" id="elastica" />
             <argument type="service" id="fos_elastica.logger" />
+            <tag name="data_collector" template="FOSElasticaBundle:Collector:elastica" id="elastica" />
         </service>
 
         <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
-            <call method="setRequest">
-                <argument type="service" id="request" on-invalid="null" strict="false" />
-            </call>
+            <argument type="service" id="request_stack" />
             <tag name="knp_paginator.subscriber" />
         </service>
 
