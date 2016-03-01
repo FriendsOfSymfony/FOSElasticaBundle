@@ -11,3 +11,4 @@ CHANGELOG for 3.2.x
  * New event `PRE_TRANSFORM` which allows developers to modify objects before
    transformation into documents for indexing
  * Introduce `serialize_null` option for Serializer
+ * Ability to specify custom connection settings for functional tests
