@@ -40,7 +40,7 @@ class RawPartialResults implements PartialResultsInterface
 
     /**
      * {@inheritDoc}
-     * @deprecated remvem from rufflin api 3.0.1
+     * @deprecated removed from rufflin api 3.0.1
      */
     public function getFacets()
     {
