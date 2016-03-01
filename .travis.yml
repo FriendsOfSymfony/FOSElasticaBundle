@@ -22,9 +22,8 @@ matrix:
     - php: 5.6
       env: DEPENDENCIES='dev' SYMFONY_VERSION='3.0.*@dev'
   allow_failures:
-    - php: 
-	- 5.3
-	- hhvm
+    - php: 5.3
+    - php: hhvm
   fast_finish: true
 
 
