@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Client;
  */
 class MappingToElasticaTest extends WebTestCase
 {
+
     public function testORMResetIndexAddsMappings()
     {
         $client = $this->createClient(array('test_case' => 'ORM'));
