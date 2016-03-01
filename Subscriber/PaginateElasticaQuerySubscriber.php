@@ -2,7 +2,7 @@
 
 namespace FOS\ElasticaBundle\Subscriber;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Knp\Component\Pager\Event\ItemsEvent;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
@@ -12,9 +12,9 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {
     private $request;
 
-    public function setRequest(Request $request = null)
+    public function setRequest(RequestStack $request = null)
     {
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
     }
 
     public function items(ItemsEvent $event)
