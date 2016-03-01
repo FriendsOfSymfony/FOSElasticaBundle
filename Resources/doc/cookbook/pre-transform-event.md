@@ -4,7 +4,7 @@ Since FOSElasticaBundle 3.2.0, we now dispatch an event before an object is
 transformed into an Elastica document. It allows yout to do some necessary
 operation before indexing.
 
-For examble, you have a backoffice which is exclusively used in a certain locale.
+For example, you have a backoffice which is exclusively used in a certain locale.
 When you save objects which have translation, you have to index objects in
 several indices (one per locale supported). It is necessary to reload data before
 transforming to document with the good locale if it is not already done.
