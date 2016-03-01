@@ -56,7 +56,7 @@ class TypeConfig
      */
     public function getIndexAnalyzer()
     {
-        return $this->getConfig('index_analyzer');
+        return $this->getConfig('analyzer');
     }
 
     /**
