@@ -60,12 +60,12 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     protected function setSorting(ItemsEvent $event)
     {
         $options = $event->options;
-        $sortField = $this->request->get($options['sortFieldParameterName']);
+        $sortField = $this->request->get($options['sortFieldParameterName'], $options['defaultSortFieldName']);
 
         if (!empty($sortField)) {
             // determine sort direction
             $dir = 'asc';
-            $sortDirection = $this->request->get($options['sortDirectionParameterName']);
+            $sortDirection = $this->request->get($options['sortDirectionParameterName'], $options['defaultSortDirection']);
             if ('desc' === strtolower($sortDirection)) {
                 $dir = 'desc';
             }
