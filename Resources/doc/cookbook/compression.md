@@ -1,7 +1,7 @@
-Http compression
+HTTP compression
 ==========================================
 
-By default, FOSElasticaBundle and elastica do not compress the http request but you can do it with a simple configuration:
+By default, FOSElasticaBundle and Elastica do not compress the HTTP request but you can do it with a simple configuration:
 
 ```yaml
 # app/config/config.yml
