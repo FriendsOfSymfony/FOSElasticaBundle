@@ -56,7 +56,7 @@ Dynamic templates
 Dynamic templates allow to define mapping templates that will be
 applied when dynamic introduction of fields / objects happens.
 
-[Documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-root-object-type.html#_dynamic_templates)
+[Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic-templates.html)
 
 ```yaml
 fos_elastica:
@@ -139,7 +139,7 @@ to store a document that should have a parent but does not specify it.
 Date format example
 -------------------
 
-If you want to specify a [date format](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-date-format.html):
+If you want to specify a [date format](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html):
 
 ```yaml
                 user:
