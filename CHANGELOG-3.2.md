@@ -12,3 +12,4 @@ CHANGELOG for 3.2.x
    transformation into documents for indexing
  * Introduce `serialize_null` option for Serializer
  * Ability to specify custom connection settings for functional tests
+ * Doctrine: possible to use hints when hydrating objects
