@@ -267,13 +267,17 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     {
         $configuration = $this->getConfigs(array(
             'clients' => array(
-                'client_1' => array('compression' => true),
-                'client_2' => array('compression' => false),
-            )
-        );
+                'compression_enabled' => array(
+                    'compression' => true,
+                ),
+                'compression_disabled' => array(
+                    'compression' => false,
+                ),
+            ),
+        ));
 
-        $this->assertTrue($configuration['clients']['client_1']'compression']);
-        $this->assertFalse($configuration['clients']['client_2']'compression']);
+        $this->assertTrue($configuration['clients']['compression_enabled']['connections'][0]['compression']);
+        $this->assertFalse($configuration['clients']['compression_disabled']['connections'][0]['compression']);
     }
 
     public function testCompressionDefaultConfig()
@@ -281,9 +285,9 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $configuration = $this->getConfigs(array(
             'clients' => array(
                 'default' => array(),
-            )
-        );
+            ),
+        ));
 
-        $this->assertFalse($configuration['clients']['default']'compression']);
+        $this->assertFalse($configuration['clients']['default']['connections'][0]['compression']);
     }
 }
