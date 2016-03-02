@@ -9,6 +9,9 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/commit/XXX where XXX is
 the commit hash. To get the diff between two versions, go to
 https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.4...v3.1.0
 
+* 3.1.9 (2016-xx-xx)
+ * Add Elastica compression option
+
 * 3.1.8 (2016-01-07)
  * Removes store:true from mappings unless specifically defined
 
