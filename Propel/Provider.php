@@ -27,6 +27,7 @@ class Provider extends AbstractProvider
                 ->offset($offset)
                 ->find()
                 ->getArrayCopy();
+            $sliceSize = count($objects);
             $objects = $this->filterObjects($options, $objects);
             if (!empty($objects)) {
                 $this->objectPersister->insertMany($objects);
@@ -35,7 +36,7 @@ class Provider extends AbstractProvider
             usleep($options['sleep']);
 
             if ($loggerClosure) {
-                $loggerClosure($options['batch_size'], $nbObjects);
+                $loggerClosure($sliceSize, $nbObjects);
             }
         }
     }

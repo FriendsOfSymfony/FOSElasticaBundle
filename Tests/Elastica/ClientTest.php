@@ -3,7 +3,7 @@
 namespace FOS\ElasticaBundle\Tests\Client;
 
 use Elastica\Request;
-use Elastica\Transport\Null as NullTransport;
+use Elastica\Transport\NullTransport;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {

@@ -82,6 +82,10 @@ class MappingBuilder
             $mapping['search_analyzer'] = $typeConfig->getSearchAnalyzer();
         }
 
+        if ($typeConfig->getDynamic() !== null) {
+            $mapping['dynamic'] = $typeConfig->getDynamic();
+        }
+
         if (isset($mapping['dynamic_templates']) and empty($mapping['dynamic_templates'])) {
             unset($mapping['dynamic_templates']);
         }
@@ -125,9 +129,6 @@ class MappingBuilder
             }
             if (in_array($property['type'], $this->skipTypes)) {
                 continue;
-            }
-            if (!isset($property['store'])) {
-                $property['store'] = true;
             }
         }
     }

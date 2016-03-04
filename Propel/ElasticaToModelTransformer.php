@@ -143,7 +143,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             return $query->toArray();
         }
 
-        return $query->find();
+        return $query->find()->getArrayCopy();
     }
 
     /**

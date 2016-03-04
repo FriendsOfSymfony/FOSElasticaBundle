@@ -15,6 +15,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 class TransformEvent extends Event
 {
+    const PRE_TRANSFORM = 'fos_elastica.pre_transform';
     const POST_TRANSFORM = 'fos_elastica.post_transform';
 
     /**

@@ -12,7 +12,7 @@ to be used for data retrieval from the underlying model.
                     mappings:
                         username:
                             property_path: indexableUsername
-                        firstName: 
+                        firstName:
                             property_path: names[first]
 ```
 
@@ -56,12 +56,12 @@ Dynamic templates
 Dynamic templates allow to define mapping templates that will be
 applied when dynamic introduction of fields / objects happens.
 
-[Documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-root-object-type.html#_dynamic_templates)
+[Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic-templates.html)
 
 ```yaml
 fos_elastica:
     indexes:
-        site:
+        app:
             types:
                 user:
                     dynamic_templates:
@@ -87,7 +87,7 @@ Note that object can autodetect properties
 ```yaml
 fos_elastica:
     indexes:
-        website:
+        app:
             types:
                 post:
                     mappings:
@@ -113,7 +113,7 @@ Parent fields
 ```yaml
 fos_elastica:
     indexes:
-        website:
+        app:
             types:
                 comment:
                     mappings:
@@ -139,7 +139,7 @@ to store a document that should have a parent but does not specify it.
 Date format example
 -------------------
 
-If you want to specify a [date format](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-date-format.html):
+If you want to specify a [date format](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html):
 
 ```yaml
                 user:
@@ -148,6 +148,23 @@ If you want to specify a [date format](http://www.elasticsearch.org/guide/en/ela
                         lastlogin: { type: date, format: basic_date_time }
                         birthday: { type: date, format: "yyyy-MM-dd" }
 ```
+
+
+Disable dynamic mapping example
+-------------------
+
+If you want to specify manually the dynamic capabilities of Elasticsearch mapping, you can use 
+the [dynamic](https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic.html) option:
+
+```yaml
+                user:
+                    dynamic: strict
+                    mappings:
+                        username: { type: string }
+                        addresses: { type: object, dynamic: true }
+```
+
+With this example, Elasticsearch is going to throw exceptions if you try to index a not mapped field, except in `addresses`.
 
 Custom settings
 ---------------
@@ -288,7 +305,7 @@ Declare that you want to update the index in real time:
 ```yaml
                 user:
                     persistence:
-                        driver: orm
+                        driver: orm #the driver can be orm, mongodb, phpcr or propel
                         model: Application\UserBundle\Entity\User
                         listener: ~ # by default, listens to "insert", "update" and "delete"
 ```

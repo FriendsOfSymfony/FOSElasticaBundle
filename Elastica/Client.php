@@ -45,8 +45,13 @@ class Client extends BaseClient
 
         $start = microtime(true);
         $response = parent::request($path, $method, $data, $query);
+        $responseData = $response->getData();
 
-        $this->logQuery($path, $method, $data, $query, $start);
+        if (isset($responseData['took']) && isset($responseData['hits'])) {
+            $this->logQuery($path, $method, $data, $query, $start, $response->getEngineTime(), $responseData['hits']['total']);
+        } else {
+            $this->logQuery($path, $method, $data, $query, $start, 0, 0);
+        }
 
         if ($this->stopwatch) {
             $this->stopwatch->stop('es_request');
@@ -83,7 +88,7 @@ class Client extends BaseClient
      * @param array  $query
      * @param int    $start
      */
-    private function logQuery($path, $method, $data, array $query, $start)
+    private function logQuery($path, $method, $data, array $query, $start, $engineMS = 0, $itemCount = 0)
     {
         if (!$this->_logger or !$this->_logger instanceof ElasticaLogger) {
             return;
@@ -99,6 +104,6 @@ class Client extends BaseClient
             'headers' => $connection->hasConfig('headers') ? $connection->getConfig('headers') : array(),
         );
 
-        $this->_logger->logQuery($path, $method, $data, $time, $connection_array, $query);
+        $this->_logger->logQuery($path, $method, $data, $time, $connection_array, $query, $engineMS, $itemCount);
     }
 }
