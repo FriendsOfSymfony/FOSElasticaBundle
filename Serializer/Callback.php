@@ -59,7 +59,9 @@ class Callback
             $context->setVersion($this->version);
         }
 
-        $context->setSerializeNull($this->serializeNull);
+        if (!is_array($context)) {
+          $context->setSerializeNull($this->serializeNull);
+        }
 
         return $this->serializer->serialize($object, 'json', $context);
     }
