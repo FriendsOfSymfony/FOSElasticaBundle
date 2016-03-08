@@ -265,4 +265,28 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             ),
         ));
     }
+
+    public function testCompressionConfig()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'client_1' => array('compression' => true),
+                'client_2' => array('compression' => false),
+            )
+        );
+
+        $this->assertTrue($configuration['clients']['client_1']'compression']);
+        $this->assertFalse($configuration['clients']['client_2']'compression']);
+    }
+
+    public function testCompressionDefaultConfig()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'default' => array(),
+            )
+        );
+
+        $this->assertFalse($configuration['clients']['default']'compression']);
+    }
 }
