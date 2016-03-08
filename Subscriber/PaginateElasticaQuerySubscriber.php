@@ -62,7 +62,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         $options = $event->options;
         $sortField = $this->request->get($options['sortFieldParameterName']);
 
-        if(!$sortField && isset($options['defaultSortFieldName'])) {
+        if (!$sortField && isset($options['defaultSortFieldName'])) {
             $sortField = $options['defaultSortFieldName'];
         }
 
@@ -71,7 +71,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             $dir = 'asc';
             $sortDirection = $this->request->get($options['sortDirectionParameterName']);
             
-            if(!$sortDirection && isset($options['defaultSortDirection'])) {
+            if (!$sortDirection && isset($options['defaultSortDirection'])) {
                 $sortDirection = $options['defaultSortDirection'];
             }
             
