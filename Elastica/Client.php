@@ -45,6 +45,7 @@ class Client extends BaseClient
 
         $start = microtime(true);
         $response = parent::request($path, $method, $data, $query);
+        $responseData = $response->getData();
 
         $this->logQuery($path, $method, $data, $query, $start);
 
