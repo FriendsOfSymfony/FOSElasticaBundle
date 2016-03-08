@@ -70,11 +70,11 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             // determine sort direction
             $dir = 'asc';
             $sortDirection = $this->request->get($options['sortDirectionParameterName']);
-            
+
             if (!$sortDirection && isset($options['defaultSortDirection'])) {
                 $sortDirection = $options['defaultSortDirection'];
             }
-            
+
             if ('desc' === strtolower($sortDirection)) {
                 $dir = 'desc';
             }
