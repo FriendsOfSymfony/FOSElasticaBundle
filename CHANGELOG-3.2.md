@@ -14,3 +14,4 @@ CHANGELOG for 3.2.x
  * Ability to specify custom connection settings for functional tests
  * Doctrine: possible to use hints when hydrating objects
  * Resolved Propel configuration
+ * Add Elastica compression option
