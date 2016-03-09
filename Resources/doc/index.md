@@ -22,3 +22,4 @@ Cookbook Entries
 * [Clustering - Multiple Connections](cookbook/multiple-connections.md)
 * [Suppressing server errors](cookbook/suppress-server-errors.md)
 * [Hints on result hydration](cookbook/hints-on-result-hydration.md)
+* [Multi type search](cookbook/multi-type-search.md)
