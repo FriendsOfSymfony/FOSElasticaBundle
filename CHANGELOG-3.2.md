@@ -15,3 +15,4 @@ CHANGELOG for 3.2.x
  * Doctrine: possible to use hints when hydrating objects
  * Resolved Propel configuration
  * Add Elastica compression option
+ * Add support for `defaultSortFieldName` and `defaultSortDirection` pagination options
