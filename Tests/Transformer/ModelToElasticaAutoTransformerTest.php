@@ -526,7 +526,6 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
 
         $data = $document->getData();
         $this->assertEquals('bar', $data['unmappedValue']);
->>>>>>> 49486cc... Cover edge cases in ModelToElasticaAutoTransformer
     }
 
     /**
