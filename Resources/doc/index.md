@@ -24,3 +24,4 @@ Cookbook Entries
 * [Hints on result hydration](cookbook/hints-on-result-hydration.md)
 * [Multi type search](cookbook/multi-type-search.md)
 * [Attachments Handling](cookbook/attachments.md)
+* [Populate Events](cookbook/populate-events.md)
