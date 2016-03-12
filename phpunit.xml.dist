@@ -2,7 +2,7 @@
 
 <phpunit bootstrap="./vendor/autoload.php" colors="true">
     <php>
-        <server name="SYMFONY__FOS_ELASTICA__HOST" value="localhost" />
+        <server name="SYMFONY__FOS_ELASTICA__HOST" value="127.0.0.1" />
         <server name="SYMFONY__FOS_ELASTICA__PORT" value="9200" />
     </php>
 
