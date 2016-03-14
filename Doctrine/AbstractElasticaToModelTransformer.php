@@ -34,6 +34,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      * @var array
      */
     protected $options = array(
+        'hints'        => array(),
         'hydrate'        => true,
         'identifier'     => 'id',
         'ignore_missing' => false,

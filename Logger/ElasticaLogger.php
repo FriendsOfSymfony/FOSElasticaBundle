@@ -54,6 +54,8 @@ class ElasticaLogger implements LoggerInterface
     public function logQuery($path, $method, $data, $time, $connection = array(), $query = array(), $engineTime = 0, $itemCount = 0)
     {
         if ($this->debug) {
+            $e = new \Exception();
+
             $this->queries[] = array(
                 'path' => $path,
                 'method' => $method,
@@ -63,6 +65,7 @@ class ElasticaLogger implements LoggerInterface
                 'connection' => $connection,
                 'queryString' => $query,
                 'itemCount' => $itemCount,
+                'backtrace' => $e->getTraceAsString()
             );
         }
 
