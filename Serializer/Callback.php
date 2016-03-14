@@ -23,10 +23,6 @@ class Callback
     public function setGroups(array $groups)
     {
         $this->groups = $groups;
-
-        if (!empty($this->groups) && !$this->serializer instanceof SerializerInterface) {
-            throw new \RuntimeException('Setting serialization groups requires using "JMS\Serializer\Serializer".');
-        }
     }
 
     public function setVersion($version)
@@ -49,18 +45,24 @@ class Callback
 
     public function serialize($object)
     {
-        $context = $this->serializer instanceof SerializerInterface ? SerializationContext::create()->enableMaxDepthChecks() : array();
+        if ($this->serializer instanceof SerializerInterface) {
+            $context = SerializationContext::create()->enableMaxDepthChecks();
 
-        if (!empty($this->groups)) {
-            $context->setGroups($this->groups);
-        }
+            if (!empty($this->groups)) {
+                $context->setGroups($this->groups);
+            }
 
-        if ($this->version) {
-            $context->setVersion($this->version);
-        }
+            if ($this->version) {
+                $context->setVersion($this->version);
+            }
 
-        if (!is_array($context)) {
-          $context->setSerializeNull($this->serializeNull);
+            $context->setSerializeNull($this->serializeNull);
+        } else {
+            $context = array();
+
+            if (!empty($this->groups)) {
+                $context['groups'] = $this->groups;
+            }
         }
 
         return $this->serializer->serialize($object, 'json', $context);
