@@ -84,12 +84,13 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
      */
     private function createMockTransformer($options = array())
     {
+        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
         $objectClass = 'FOS\ElasticaBundle\Tests\Doctrine\Foo';
         $propertyAccessor = $this->createMockPropertyAccessor();
 
         $transformer = $this->getMockForAbstractClass(
             'FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer',
-            array(null, $objectClass, $options)
+            array($registry, $objectClass, $options)
         );
 
         $transformer->setPropertyAccessor($propertyAccessor);
