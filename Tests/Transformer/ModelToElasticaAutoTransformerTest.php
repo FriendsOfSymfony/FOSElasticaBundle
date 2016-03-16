@@ -503,7 +503,10 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $document    = $transformer->transform(new POPO(), array(
             'nullValue' => array(
                 'type' => 'nested',
-                'properties' => array()
+                'properties' => array(
+                    'foo' => array(),
+                    'bar' => array()
+                ),
             )
         ));
 
