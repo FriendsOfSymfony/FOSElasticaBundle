@@ -406,7 +406,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
             '_parent' => array('type' => 'upper', 'property' => 'upper', 'identifier' => 'id'),
         ));
 
-        $this->assertEquals("parent", $document->getParent());
+        $this->assertEquals('parent', $document->getParent());
     }
 
     public function testParentMappingWithCustomIdentifier()
@@ -416,7 +416,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
             '_parent' => array('type' => 'upper', 'property' => 'upper', 'identifier' => 'name'),
         ));
 
-        $this->assertEquals("a random name", $document->getParent());
+        $this->assertEquals('a random name', $document->getParent());
     }
 
     public function testParentMappingWithNullProperty()
@@ -426,7 +426,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
             '_parent' => array('type' => 'upper', 'property' => null, 'identifier' => 'id'),
         ));
 
-        $this->assertEquals("parent", $document->getParent());
+        $this->assertEquals('parent', $document->getParent());
     }
 
     public function testParentMappingWithCustomProperty()
@@ -436,7 +436,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
             '_parent' => array('type' => 'upper', 'property' => 'upperAlias', 'identifier' => 'id'),
         ));
 
-        $this->assertEquals("parent", $document->getParent());
+        $this->assertEquals('parent', $document->getParent());
     }
 
     public function testThatMappedObjectsDontNeedAnIdentifierField()
