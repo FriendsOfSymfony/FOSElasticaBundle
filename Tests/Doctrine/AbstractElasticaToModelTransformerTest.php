@@ -61,43 +61,6 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($thirdElasticaResult, $hybridResults[1]->getResult());
     }
 
-    private function createMockPropertyAccessor()
-    {
-        $callback = function ($object, $identifier) {
-            return $object->$identifier;
-        };
-
-        $propertyAccessor = $this->getMock('Symfony\Component\PropertyAccess\PropertyAccessorInterface');
-        $propertyAccessor
-            ->expects($this->any())
-            ->method('getValue')
-            ->with($this->isType('object'), $this->isType('string'))
-            ->will($this->returnCallback($callback));
-
-        return $propertyAccessor;
-    }
-
-    /**
-     * @param array $options
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer
-     */
-    private function createMockTransformer($options = array())
-    {
-        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
-        $objectClass = 'FOS\ElasticaBundle\Tests\Doctrine\Foo';
-        $propertyAccessor = $this->createMockPropertyAccessor();
-
-        $transformer = $this->getMockForAbstractClass(
-            'FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer',
-            array($registry, $objectClass, $options)
-        );
-
-        $transformer->setPropertyAccessor($propertyAccessor);
-
-        return $transformer;
-    }
-
     public function testObjectClassCanBeSet()
     {
         $transformer = $this->createMockTransformer();
@@ -249,6 +212,43 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->createMockTransformer();
         $this->assertEquals('id', $transformer->getIdentifierField());
+    }
+
+    private function createMockPropertyAccessor()
+    {
+        $callback = function ($object, $identifier) {
+            return $object->$identifier;
+        };
+
+        $propertyAccessor = $this->getMock('Symfony\Component\PropertyAccess\PropertyAccessorInterface');
+        $propertyAccessor
+            ->expects($this->any())
+            ->method('getValue')
+            ->with($this->isType('object'), $this->isType('string'))
+            ->will($this->returnCallback($callback));
+
+        return $propertyAccessor;
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer
+     */
+    private function createMockTransformer($options = array())
+    {
+        $registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $objectClass = 'FOS\ElasticaBundle\Tests\Doctrine\Foo';
+        $propertyAccessor = $this->createMockPropertyAccessor();
+
+        $transformer = $this->getMockForAbstractClass(
+            'FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer',
+            array($registry, $objectClass, $options)
+        );
+
+        $transformer->setPropertyAccessor($propertyAccessor);
+
+        return $transformer;
     }
 }
 
