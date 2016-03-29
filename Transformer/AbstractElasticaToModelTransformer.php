@@ -45,7 +45,7 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
         $propertyAccessor = $this->propertyAccessor;
 
         return function ($a, $b) use ($idPos, $identifierPath, $propertyAccessor) {
-            return $idPos[$propertyAccessor->getValue($a, $identifierPath)] > $idPos[$propertyAccessor->getValue($b, $identifierPath)];
+            return $idPos[(string) $propertyAccessor->getValue($a, $identifierPath)] > $idPos[(string) $propertyAccessor->getValue($b, $identifierPath)];
         };
     }
 }
