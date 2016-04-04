@@ -111,10 +111,6 @@ class FOSElasticaExtension extends Extension
                 $clientDef->addMethodCall('setLogger', array(new Reference($logger)));
             }
 
-            if (isset($clientConfig['connections'][0]['connectTimeout'])) {
-                $clientDef->addMethodCall('setConnectTimeout', array($clientConfig['connections'][0]['connectTimeout']));
-            }
-
             $clientDef->addTag('fos_elastica.client');
 
             $container->setDefinition($clientId, $clientDef);
