@@ -293,4 +293,23 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($configuration['clients']['default']['connections'][0]['compression']);
     }
+
+    public function testTimeoutConfig()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'simple_timeout'       => array(
+                    'url'    => 'http://localhost:9200',
+                    'timeout' => 123,
+                ),
+                'connect_timeout'      => array(
+                    'url'    => 'http://localhost:9200',
+                    'connectTimeout' => 234,
+                ),
+            ),
+        ));
+
+        $this->assertEquals(123, $configuration['clients']['simple_timeout']['connections'][0]['timeout']);
+        $this->assertEquals(234, $configuration['clients']['connect_timeout']['connections'][0]['connectTimeout']);
+    }
 }
