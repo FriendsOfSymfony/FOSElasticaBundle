@@ -112,7 +112,7 @@ class FOSElasticaExtension extends Extension
             }
 
             if (isset($clientConfig['connections'][0]['connectTimeout'])) {
-                $clientDef->addMethodCall('setConnectTimeout', [$clientConfig['connections'][0]['connectTimeout']]);
+                $clientDef->addMethodCall('setConnectTimeout', array($clientConfig['connections'][0]['connectTimeout']));
             }
 
             $clientDef->addTag('fos_elastica.client');
