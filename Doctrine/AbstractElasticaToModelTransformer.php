@@ -106,7 +106,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
     {
         $indexedElasticaResults = array();
         foreach ($elasticaObjects as $elasticaObject) {
-            $indexedElasticaResults[$elasticaObject->getId()] = $elasticaObject;
+            $indexedElasticaResults[(string) $elasticaObject->getId()] = $elasticaObject;
         }
 
         $objects = $this->transform($elasticaObjects);
