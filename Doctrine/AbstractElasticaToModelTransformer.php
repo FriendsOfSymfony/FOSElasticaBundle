@@ -87,7 +87,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         $objectsCnt = count($objects);
         $elasticaObjectsCnt = count($elasticaObjects);
         if (!$this->options['ignore_missing'] && $objectsCnt < $elasticaObjectsCnt) {
-            throw new \RuntimeException(sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%s). IDs: %s', $objectsCnt, $elasticaObjectsCnt, join(', ', $ids)));
+            throw new \RuntimeException(sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%d). IDs: %s', $objectsCnt, $elasticaObjectsCnt, join(', ', $ids)));
         };
 
         foreach ($objects as $object) {
