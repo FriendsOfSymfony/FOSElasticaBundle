@@ -127,8 +127,7 @@ Below is an example for the Doctrine ORM.
                         driver: orm
                         model: Acme\ApplicationBundle\Entity\User
                         provider: ~
-                        listener:
-                            immediate: ~
+                        listener: ~
                         finder: ~
 ```
 
