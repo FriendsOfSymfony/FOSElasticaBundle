@@ -3,6 +3,8 @@
 namespace FOS\ElasticaBundle\Provider;
 
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**

@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\Propel;
 
+use FOS\ElasticaBundle\Event\PersistingEvent;
 use FOS\ElasticaBundle\Provider\AbstractProvider;
 
 /**

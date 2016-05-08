@@ -4,6 +4,7 @@ namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
+use FOS\ElasticaBundle\Event\PersistingEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
 use FOS\ElasticaBundle\Provider\IndexableInterface;

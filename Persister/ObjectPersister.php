@@ -2,11 +2,14 @@
 
 namespace FOS\ElasticaBundle\Persister;
 
+use FOS\ElasticaBundle\Event\PersistingEvent;
 use Psr\Log\LoggerInterface;
 use Elastica\Exception\BulkException;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Elastica\Type;
 use Elastica\Document;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Inserts, replaces and deletes single documents in an elastica type
@@ -21,6 +24,11 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $objectClass;
     protected $fields;
     protected $logger;
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $dispatcher;
 
     public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields)
     {
@@ -115,6 +123,12 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function insertMany(array $objects)
     {
+        if ($this->dispatcher) {
+            $event = new PersistingEvent($objects);
+            $this->dispatcher->dispatch(PersistingEvent::INSERT_OBJECTS, $event);
+            $objects = $event->getObjects();
+        }
+
         $documents = array();
         foreach ($objects as $object) {
             $documents[] = $this->transformToElasticaDocument($object);
@@ -133,6 +147,12 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function replaceMany(array $objects)
     {
+        if ($this->dispatcher) {
+            $event = new PersistingEvent($objects);
+            $this->dispatcher->dispatch(PersistingEvent::REPLACE_OBJECTS, $event);
+            $objects = $event->getObjects();
+        }
+
         $documents = array();
         foreach ($objects as $object) {
             $document = $this->transformToElasticaDocument($object);
@@ -189,5 +209,13 @@ class ObjectPersister implements ObjectPersisterInterface
     public function transformToElasticaDocument($object)
     {
         return $this->transformer->transform($object, $this->fields);
+    }
+
+    /**
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
     }
 }

@@ -453,7 +453,7 @@ class FOSElasticaExtension extends Extension
         foreach ($arguments as $i => $argument) {
             $serviceDef->replaceArgument($i, $argument);
         }
-
+        $serviceDef->addMethodCall('setEventDispatcher', array(new Reference('event_dispatcher')));
         $container->setDefinition($serviceId, $serviceDef);
 
         return $serviceId;
