@@ -48,7 +48,6 @@
         <service id="fos_elastica.property_accessor" class="%fos_elastica.property_accessor.class%">
             <argument>%fos_elastica.property_accessor.magicCall%</argument>
             <argument>%fos_elastica.property_accessor.throwExceptionOnInvalidIndex%</argument>
-            <tag name="monolog.logger" channel="elastica" />
         </service>
     </services>
 </container>
