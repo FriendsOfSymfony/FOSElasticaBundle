@@ -20,9 +20,6 @@
         "ruflin/elastica": "~2.2,~2.3",
         "psr/log": "~1.0"
     },
-    "repositories": [
-        { "type": "vcs", "url": "ssh://git@stash.dev.opticplanet.net/tool/elastica.git" }
-    ],
     "require-dev":{
         "doctrine/orm": "~2.4",
         "doctrine/doctrine-bundle": "~1.2",
