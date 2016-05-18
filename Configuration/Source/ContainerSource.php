@@ -26,6 +26,9 @@ class ContainerSource implements SourceInterface
      */
     private $configArray;
 
+    /**
+     * @param array $configArray
+     */
     public function __construct(array $configArray)
     {
         $this->configArray = $configArray;

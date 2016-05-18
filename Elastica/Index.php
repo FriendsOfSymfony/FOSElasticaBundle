@@ -33,6 +33,8 @@ class Index extends BaseIndex
 
     /**
      * @param string $type
+     *
+     * @return mixed
      */
     public function getType($type)
     {

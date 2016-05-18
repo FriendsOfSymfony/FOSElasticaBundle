@@ -211,6 +211,7 @@ class Indexable implements IndexableInterface
      *
      * @param string $type
      * @param array $callback
+     *
      * @return array
      */
     private function processArrayToCallback($type, array $callback)

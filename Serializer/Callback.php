@@ -12,6 +12,9 @@ class Callback
     protected $version;
     protected $serializeNull;
 
+    /**
+     * @param $serializer
+     */
     public function setSerializer($serializer)
     {
         $this->serializer = $serializer;
@@ -20,6 +23,9 @@ class Callback
         }
     }
 
+    /**
+     * @param array $groups
+     */
     public function setGroups(array $groups)
     {
         $this->groups = $groups;
@@ -29,6 +35,9 @@ class Callback
         }
     }
 
+    /**
+     * @param $version
+     */
     public function setVersion($version)
     {
         $this->version = $version;
@@ -38,6 +47,9 @@ class Callback
         }
     }
 
+    /**
+     * @param $serializeNull
+     */
     public function setSerializeNull($serializeNull)
     {
         $this->serializeNull = $serializeNull;
@@ -47,6 +59,11 @@ class Callback
         }
     }
 
+    /**
+     * @param $object
+     *
+     * @return mixed
+     */
     public function serialize($object)
     {
         $context = $this->serializer instanceof SerializerInterface ? SerializationContext::create()->enableMaxDepthChecks() : array();

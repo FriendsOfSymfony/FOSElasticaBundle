@@ -57,6 +57,15 @@ class SearchCommand extends ContainerAwareCommand
         }
     }
 
+    /**
+     * @param Result $result
+     * @param string $showField
+     * @param string $showSource
+     * @param string $showId
+     * @param string $explain
+     *
+     * @return string
+     */
     protected function formatResult(Result $result, $showField, $showSource, $showId, $explain)
     {
         $source = $result->getSource();

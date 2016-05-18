@@ -78,14 +78,6 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             $_objects[] = $object;
         }
 
-
-//        $objects = $objects->toArray();
-//
-//        // Sort objects in the order of their IDs
-//        $idPos = array_flip($ids);
-//        $identifier = $this->options['identifier'];
-//        usort($objects, $this->getSortingClosure($idPos, $identifier));
-
         return $_objects;
     }
 
@@ -167,6 +159,8 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * @see https://github.com/doctrine/common/blob/master/lib/Doctrine/Common/Util/Inflector.php
      *
      * @param string $str
+     *
+     * @return string
      */
     private function camelize($str)
     {

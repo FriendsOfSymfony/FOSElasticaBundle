@@ -52,6 +52,11 @@ class RepositoryManager implements RepositoryManagerInterface
         return $repository;
     }
 
+    /**
+     * @param string $entityName
+     *
+     * @return string
+     */
     protected function getRepositoryName($entityName)
     {
         if (isset($this->entities[$entityName]['repositoryName'])) {
@@ -72,6 +77,8 @@ class RepositoryManager implements RepositoryManagerInterface
 
     /**
      * @param string $entityName
+     *
+     * @return mixed
      */
     private function createRepository($entityName)
     {
