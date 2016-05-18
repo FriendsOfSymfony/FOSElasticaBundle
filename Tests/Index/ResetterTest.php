@@ -2,18 +2,20 @@
 
 namespace FOS\ElasticaBundle\Tests\Index;
 
-use Elastica\Exception\ResponseException;
-use Elastica\Request;
-use Elastica\Response;
 use Elastica\Type;
-use Elastica\Type\Mapping;
+use FOS\ElasticaBundle\Configuration\ConfigManager;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
+use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Configuration\TypeConfig;
 use FOS\ElasticaBundle\Elastica\Index;
+use Elastica\IndexTemplate;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
 use FOS\ElasticaBundle\Index\AliasProcessor;
+use FOS\ElasticaBundle\Index\IndexManager;
+use FOS\ElasticaBundle\Index\MappingBuilder;
 use FOS\ElasticaBundle\Index\Resetter;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ResetterTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,11 +24,34 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
      */
     private $resetter;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|AliasProcessor
+     */
     private $aliasProcessor;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|ConfigManager
+     */
     private $configManager;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|EventDispatcherInterface
+     */
     private $dispatcher;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Elastica\Client
+     */
     private $elasticaClient;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|IndexManager
+     */
     private $indexManager;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|MappingBuilder
+     */
     private $mappingBuilder;
 
     public function testResetAllIndexes()
@@ -52,6 +77,100 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             );
 
         $this->resetter->resetAllIndexes();
+    }
+
+    public function testResetAllIndexTemplates()
+    {
+        $indexTemplate = 'index_template1';
+
+        $config = array(
+            'template' => 't*'
+        );
+        $indexTemplateConfig = new IndexTemplateConfig($indexTemplate, array(), $config);
+        $this->mockIndexTemplate($indexTemplate, $indexTemplateConfig);
+
+        $this->configManager->expects($this->once())
+            ->method('getIndexTemplatesNames')
+            ->will($this->returnValue(array($indexTemplate)));
+
+        $this->elasticaClient->expects($this->exactly(1))
+            ->method('request')
+            ->withConsecutive(
+                array('/_template/index_template1', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetAllTemplates();
+    }
+
+    public function testResetAllIndexTemplatesAndDeleteIndexes()
+    {
+        $indexTemplate = 'index_template1';
+
+        $config = array(
+            'template' => 't*'
+        );
+        $indexTemplateConfig = new IndexTemplateConfig($indexTemplate, array(), $config);
+        $this->mockIndexTemplate($indexTemplate, $indexTemplateConfig);
+
+        $this->configManager->expects($this->once())
+            ->method('getIndexTemplatesNames')
+            ->will($this->returnValue(array($indexTemplate)));
+
+        $this->elasticaClient->expects($this->at(0))
+            ->method('request')
+            ->withConsecutive(
+                array($config['template'] . '/', 'DELETE', array(), array())
+            );
+        $this->elasticaClient->expects($this->at(1))
+            ->method('request')
+            ->withConsecutive(
+                array('/_template/index_template1', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetAllTemplates(true);
+    }
+
+    public function testResetIndexTemplate()
+    {
+        $indexTemplate = 'index_template1';
+
+        $config = array(
+            'template' => 't*'
+        );
+        $indexTemplateConfig = new IndexTemplateConfig($indexTemplate, array(), $config);
+        $this->mockIndexTemplate($indexTemplate, $indexTemplateConfig);
+
+        $this->elasticaClient->expects($this->exactly(1))
+            ->method('request')
+            ->withConsecutive(
+                array('/_template/index_template1', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetTemplate('index_template1');
+    }
+
+    public function testResetIndexTemplateAndDeleteIndex()
+    {
+        $indexTemplate = 'index_template1';
+
+        $config = array(
+            'template' => 't*'
+        );
+        $indexTemplateConfig = new IndexTemplateConfig($indexTemplate, array(), $config);
+        $this->mockIndexTemplate($indexTemplate, $indexTemplateConfig);
+
+        $this->elasticaClient->expects($this->at(0))
+            ->method('request')
+            ->withConsecutive(
+                array($config['template'] . '/', 'DELETE', array(), array())
+            );
+        $this->elasticaClient->expects($this->at(1))
+            ->method('request')
+            ->withConsecutive(
+                array('/_template/index_template1', 'PUT', array(), array())
+            );
+
+        $this->resetter->resetTemplate('index_template1', true);
     }
 
     public function testResetIndex()
@@ -254,6 +373,25 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         return $index;
     }
 
+    private function mockIndexTemplate($indexTemplateName, IndexTemplateConfig $config, $mapping = array())
+    {
+        $this->configManager->expects($this->atLeast(1))
+            ->method('getIndexTemplateConfiguration')
+            ->with($indexTemplateName)
+            ->will($this->returnValue($config));
+        $index = new IndexTemplate($this->elasticaClient, $indexTemplateName);
+        $this->indexManager->expects($this->any())
+            ->method('getIndexTemplate')
+            ->with($indexTemplateName)
+            ->willReturn($index);
+        $this->mappingBuilder->expects($this->any())
+            ->method('buildIndexTemplateMapping')
+            ->with($config)
+            ->willReturn($mapping);
+
+        return $index;
+    }
+    
     private function mockType($typeName, $indexName, TypeConfig $typeConfig, IndexConfig $indexConfig, $mapping = array())
     {
         $this->configManager->expects($this->atLeast(1))
@@ -302,7 +440,8 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             $this->indexManager,
             $this->aliasProcessor,
             $this->mappingBuilder,
-            $this->dispatcher
+            $this->dispatcher,
+            $this->elasticaClient
         );
     }
 }

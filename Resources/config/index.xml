@@ -8,6 +8,7 @@
         <parameter key="fos_elastica.alias_processor.class">FOS\ElasticaBundle\Index\AliasProcessor</parameter>
         <parameter key="fos_elastica.finder.class">FOS\ElasticaBundle\Finder\TransformedFinder</parameter>
         <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\Elastica\Index</parameter>
+        <parameter key="fos_elastica.index_template.class">Elastica\IndexTemplate</parameter>
         <parameter key="fos_elastica.indexable.class">FOS\ElasticaBundle\Provider\Indexable</parameter>
         <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\Index\IndexManager</parameter>
         <parameter key="fos_elastica.resetter.class">FOS\ElasticaBundle\Index\Resetter</parameter>
@@ -27,6 +28,11 @@
             <!-- tagged with fos_elastica.index in the Extension -->
         </service>
 
+        <service id="fos_elastica.index_template_prototype" class="%fos_elastica.index_template.class%" factory-service="fos_elastica.client" factory-method="getIndexTemplate" abstract="true">
+            <argument /> <!-- index name -->
+            <!-- tagged with fos_elastica.index in the Extension -->
+        </service>
+
         <service id="fos_elastica.type_prototype" class="%fos_elastica.type.class%" abstract="true">
             <argument /> <!-- type name -->
         </service>
@@ -34,6 +40,7 @@
         <service id="fos_elastica.index_manager" class="%fos_elastica.index_manager.class%">
             <argument /> <!-- indexes -->
             <argument type="service" id="fos_elastica.index" /> <!-- default index -->
+            <argument /> <!-- index templates -->
         </service>
 
         <service id="fos_elastica.resetter" class="%fos_elastica.resetter.class%">
@@ -42,6 +49,7 @@
             <argument type="service" id="fos_elastica.alias_processor" />
             <argument type="service" id="fos_elastica.mapping_builder" />
             <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="fos_elastica.client"/>
         </service>
 
         <!-- Abstract definition for all finders. -->

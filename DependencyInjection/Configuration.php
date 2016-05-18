@@ -39,6 +39,7 @@ class Configuration implements ConfigurationInterface
 
         $this->addClientsSection($rootNode);
         $this->addIndexesSection($rootNode);
+        $this->addIndexTemplatesSection($rootNode);
 
         $rootNode
             ->children()
@@ -606,5 +607,35 @@ class Configuration implements ConfigurationInterface
             ->end();
 
         return $node;
+    }
+
+    /**
+     * Adds the configuration for the "index_templates" key.
+     *
+     * @param ArrayNodeDefinition $rootNode
+     *
+     * @return void
+     */
+    private function addIndexTemplatesSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->fixXmlConfig('index_template')
+            ->children()
+                ->arrayNode('index_templates')
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('template_name')
+                                ->info('Defaults to the name of the index template, but can be modified if the index name is different in ElasticSearch')
+                            ->end()
+                            ->scalarNode('template')->isRequired()->end()
+                            ->scalarNode('client')->end()
+                            ->variableNode('settings')->defaultValue(array())->end()
+                        ->end()
+                        ->append($this->getTypesNode())
+                    ->end()
+                ->end()
+            ->end()
+        ;
     }
 }
