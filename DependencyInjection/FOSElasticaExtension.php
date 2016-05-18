@@ -161,7 +161,7 @@ class FOSElasticaExtension extends Extension
                     $indexDef->setFactory(array($client, 'getIndex'));
                 } else {
                     // To be removed when dependency on Symfony DependencyInjection is bumped to 2.6
-                    $indexDef->setFactoryService($client);
+                    $indexDef->setFactoryService('fos_elastica.client');
                     $indexDef->setFactoryMethod('getIndex');
                 }
             }
@@ -236,7 +236,7 @@ class FOSElasticaExtension extends Extension
                 $typeDef->setFactory(array($indexConfig['reference'], 'getType'));
             } else {
                 // To be removed when dependency on Symfony DependencyInjection is bumped to 2.6
-                $typeDef->setFactoryService($indexConfig['reference']);
+                $typeDef->setFactoryService((string) $indexConfig['reference']);
                 $typeDef->setFactoryMethod('getType');
             }
 
