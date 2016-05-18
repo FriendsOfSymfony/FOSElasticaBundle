@@ -14,7 +14,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockLogger()
     {
-        return $this->getMockBuilder('Symfony\Component\HttpKernel\Log\LoggerInterface')
+        return $this->getMockBuilder('Psr\Log\LoggerInterface')
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -28,7 +28,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockLoggerForLevelMessageAndContext($level, $message, $context)
     {
-        $loggerMock = $this->getMockBuilder('Symfony\Component\HttpKernel\Log\LoggerInterface')
+        $loggerMock = $this->getMockBuilder('Psr\Log\LoggerInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -80,10 +80,15 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
             'executionMS' => $time,
             'connection'  => $connection,
             'queryString' => $query,
+            'engineMS' => 0,
+            'itemCount' => 0
         );
 
         $elasticaLogger->logQuery($path, $method, $data, $time, $connection, $query);
         $returnedQueries = $elasticaLogger->getQueries();
+        $this->assertArrayHasKey('backtrace', $returnedQueries[0]);
+        $this->assertNotEmpty($returnedQueries[0]['backtrace']);
+        unset($returnedQueries[0]['backtrace']);
         $this->assertEquals($expected, $returnedQueries[0]);
     }
 

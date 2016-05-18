@@ -10,6 +10,7 @@ class Callback
     protected $serializer;
     protected $groups = array();
     protected $version;
+    protected $serializeNull;
 
     public function setSerializer($serializer)
     {
@@ -37,6 +38,15 @@ class Callback
         }
     }
 
+    public function setSerializeNull($serializeNull)
+    {
+        $this->serializeNull = $serializeNull;
+
+        if (true === $this->serializeNull && !$this->serializer instanceof SerializerInterface) {
+            throw new \RuntimeException('Setting null value serialization option requires using "JMS\Serializer\Serializer".');
+        }
+    }
+
     public function serialize($object)
     {
         $context = $this->serializer instanceof SerializerInterface ? SerializationContext::create()->enableMaxDepthChecks() : array();
@@ -47,6 +57,10 @@ class Callback
 
         if ($this->version) {
             $context->setVersion($this->version);
+        }
+
+        if (!is_array($context)) {
+          $context->setSerializeNull($this->serializeNull);
         }
 
         return $this->serializer->serialize($object, 'json', $context);

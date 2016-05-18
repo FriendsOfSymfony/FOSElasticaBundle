@@ -19,7 +19,7 @@ of the Composer documentation.
 
 Instructions for installing and deploying Elasticsearch may be found [here](https://www.elastic.co/downloads/elasticsearch).
 
-Step 2: Enable the Bundle
+B: Enable the Bundle
 -------------------------
 
 Then, enable the bundle by adding the following line in the `app/AppKernel.php`
@@ -38,7 +38,7 @@ class AppKernel extends Kernel
             // ...
             new FOS\ElasticaBundle\FOSElasticaBundle(),
         );
-        
+
         // ...
     }
 }
@@ -121,7 +121,7 @@ Below is an example for the Doctrine ORM.
                         lastName: ~
                         email: ~
                     persistence:
-                        # the driver can be orm, mongodb or propel
+                        # the driver can be orm, mongodb, phpcr or propel
                         # listener and finder are not supported by
                         # propel and should be removed
                         driver: orm

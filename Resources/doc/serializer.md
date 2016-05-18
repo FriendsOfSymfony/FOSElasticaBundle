@@ -6,7 +6,7 @@ which will be sent directly to the Elasticsearch server. Combined with automatic
 it means types do not have to be mapped.
 
 A) Install and declare the serializer
--------------------------
+-------------------------------------
 
 Follow the installation instructions for [JMSSerializerBundle](http://jmsyst.com/bundles/JMSSerializerBundle).
 
@@ -20,7 +20,15 @@ fos_elastica:
 
 The default configuration that comes with FOSElasticaBundle supports both the JMS Serializer
 and the Symfony Serializer. If JMSSerializerBundle is installed, additional support for
-serialization groups and versions are added to the bundle.
+serialization groups, versions and null value serialization are added to the bundle. Example:
+
+```yaml
+fos_elastica:
+    serializer:
+        groups: [elastica, Default]
+        version: '1.1'
+        serialize_null: true
+```
 
 B) Set up each defined type to support serialization
 ----------------------------------------------------

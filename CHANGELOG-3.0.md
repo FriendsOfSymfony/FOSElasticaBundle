@@ -12,6 +12,15 @@ https://github.com/FriendsOfSymfony/FOSElasticaBundle/compare/v3.0.0...v3.0.1
 To generate a changelog summary since the last version, run
 `git log --no-merges --oneline v3.0.0...3.0.x`
 
+* 3.0.13 (2015-09-17)
+
+ * Add PHP 7 compatibility
+ * Fix: Don't use parent identifier for objects/nested documents
+
+* 3.0.12 (2015-08-31)
+
+ * Bump allowed Elastica version to 2.2
+
 * 3.0.11 (2015-08-05)
 
  * Bump allowed Elastica version to 2.1

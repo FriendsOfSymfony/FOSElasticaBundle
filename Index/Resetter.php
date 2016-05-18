@@ -129,7 +129,11 @@ class Resetter
     public function resetIndexType($indexName, $typeName)
     {
         $typeConfig = $this->configManager->getTypeConfiguration($indexName, $typeName);
-        $type = $this->indexManager->getIndex($indexName)->getType($typeName);
+        $index = $this->indexManager->getIndex($indexName);
+        $type = $index->getType($typeName);
+
+        $indexConfig = $this->configManager->getIndexConfiguration($indexName);
+        $settings = $indexConfig->getSettings();
 
         $event = new TypeResetEvent($indexName, $typeName);
         $this->dispatcher->dispatch(TypeResetEvent::PRE_TYPE_RESET, $event);
@@ -140,6 +144,12 @@ class Resetter
             if (strpos($e->getMessage(), 'TypeMissingException') === false) {
                 throw $e;
             }
+        }
+
+        if (!empty($settings)) {
+            $index->close();
+            $index->setSettings($settings);
+            $index->open();
         }
 
         $mapping = new Mapping();

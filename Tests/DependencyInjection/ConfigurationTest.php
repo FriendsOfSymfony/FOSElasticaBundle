@@ -45,6 +45,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             'clients' => array(
                 'default' => array(
                     'url' => 'http://localhost:9200',
+                    'retryOnConflict' => 5,
                 ),
                 'clustered' => array(
                     'connections' => array(
@@ -68,6 +69,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $configuration['clients']);
         $this->assertCount(1, $configuration['clients']['default']['connections']);
         $this->assertCount(0, $configuration['clients']['default']['connections'][0]['headers']);
+        $this->assertEquals(5, $configuration['clients']['default']['connections'][0]['retryOnConflict']);
 
         $this->assertCount(2, $configuration['clients']['clustered']['connections']);
         $this->assertEquals('http://es2:9200/', $configuration['clients']['clustered']['connections'][1]['url']);
@@ -133,6 +135,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'serializer' => array(
                             'groups' => array('Search'),
                             'version' => 1,
+                            'serialize_null' => false,
                         ),
                     ),
                     'types' => array(
@@ -262,6 +265,53 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 ),
             ),
         ));
+    }
+
+    public function testCompressionConfig()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'compression_enabled' => array(
+                    'compression' => true,
+                ),
+                'compression_disabled' => array(
+                    'compression' => false,
+                ),
+            ),
+        ));
+
+        $this->assertTrue($configuration['clients']['compression_enabled']['connections'][0]['compression']);
+        $this->assertFalse($configuration['clients']['compression_disabled']['connections'][0]['compression']);
+    }
+
+    public function testCompressionDefaultConfig()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'default' => array(),
+            ),
+        ));
+
+        $this->assertFalse($configuration['clients']['default']['connections'][0]['compression']);
+    }
+
+    public function testTimeoutConfig()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'simple_timeout'       => array(
+                    'url'    => 'http://localhost:9200',
+                    'timeout' => 123,
+                ),
+                'connect_timeout'      => array(
+                    'url'    => 'http://localhost:9200',
+                    'connectTimeout' => 234,
+                ),
+            ),
+        ));
+
+        $this->assertEquals(123, $configuration['clients']['simple_timeout']['connections'][0]['timeout']);
+        $this->assertEquals(234, $configuration['clients']['connect_timeout']['connections'][0]['connectTimeout']);
     }
 
     public function testIndexTemplates()

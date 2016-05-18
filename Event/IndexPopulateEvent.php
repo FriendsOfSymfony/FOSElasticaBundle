@@ -18,7 +18,14 @@ namespace FOS\ElasticaBundle\Event;
  */
 class IndexPopulateEvent extends IndexEvent
 {
+    /**
+     * @Event("FOS\ElasticaBundle\Event\IndexPopulateEvent")
+     */
     const PRE_INDEX_POPULATE = 'elastica.index.index_pre_populate';
+
+    /**
+     * @Event("FOS\ElasticaBundle\Event\IndexPopulateEvent")
+     */
     const POST_INDEX_POPULATE = 'elastica.index.index_post_populate';
 
     /**

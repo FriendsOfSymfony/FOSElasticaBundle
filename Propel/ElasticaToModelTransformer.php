@@ -5,6 +5,7 @@ namespace FOS\ElasticaBundle\Propel;
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\AbstractElasticaToModelTransformer;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
@@ -56,25 +57,36 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      */
     public function transform(array $elasticaObjects)
     {
-        $ids = array();
+        $ids = $highlights = array();
         foreach ($elasticaObjects as $elasticaObject) {
             $ids[] = $elasticaObject->getId();
+            $highlights[$elasticaObject->getId()] = $elasticaObject->getHighlights();
         }
 
         $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
 
-        // Sort objects in the order of their IDs
-        $idPos = array_flip($ids);
-        $identifier = $this->options['identifier'];
-        $sortCallback = $this->getSortingClosure($idPos, $identifier);
-
-        if (is_object($objects)) {
-            $objects->uasort($sortCallback);
-        } else {
-            usort($objects, $sortCallback);
+        if (!$this->options['ignore_missing'] && count($objects) < count($elasticaObjects)) {
+            throw new \RuntimeException('Cannot find corresponding Propel objects for all Elastica results.');
         }
 
-        return $objects;
+        $_objects = [];
+        foreach ($objects as $object) {
+            if ($objects instanceof HighlightableModelInterface) {
+                $object->setElasticHighlights($highlights[$object->getId()]);
+            }
+
+            $_objects[] = $object;
+        }
+
+
+//        $objects = $objects->toArray();
+//
+//        // Sort objects in the order of their IDs
+//        $idPos = array_flip($ids);
+//        $identifier = $this->options['identifier'];
+//        usort($objects, $this->getSortingClosure($idPos, $identifier));
+
+        return $_objects;
     }
 
     /**
@@ -131,7 +143,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             return $query->toArray();
         }
 
-        return $query->find();
+        return $query->find()->getArrayCopy();
     }
 
     /**

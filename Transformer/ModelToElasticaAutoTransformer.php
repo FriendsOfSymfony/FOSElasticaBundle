@@ -68,54 +68,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     public function transform($object, array $fields)
     {
         $identifier = $this->propertyAccessor->getValue($object, $this->options['identifier']);
-        $document = new Document($identifier);
-
-        foreach ($fields as $key => $mapping) {
-            if ($key == '_parent') {
-                $property = (null !== $mapping['property']) ? $mapping['property'] : $mapping['type'];
-                $value = $this->propertyAccessor->getValue($object, $property);
-                $document->setParent($this->propertyAccessor->getValue($value, $mapping['identifier']));
-
-                continue;
-            }
-
-            $path = isset($mapping['property_path']) ?
-                $mapping['property_path'] :
-                $key;
-            if (false === $path) {
-                continue;
-            }
-            $value = $this->propertyAccessor->getValue($object, $path);
-
-            if (isset($mapping['type']) && in_array($mapping['type'], array('nested', 'object')) && isset($mapping['properties']) && !empty($mapping['properties'])) {
-                /* $value is a nested document or object. Transform $value into
-                 * an array of documents, respective the mapped properties.
-                 */
-                $document->set($key, $this->transformNested($value, $mapping['properties']));
-
-                continue;
-            }
-
-            if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
-                // $value is an attachment. Add it to the document.
-                if ($value instanceof \SplFileInfo) {
-                    $document->addFile($key, $value->getPathName());
-                } else {
-                    $document->addFileContent($key, $value);
-                }
-
-                continue;
-            }
-
-            $document->set($key, $this->normalizeValue($value));
-        }
-
-        if ($this->dispatcher) {
-            $event = new TransformEvent($document, $fields, $object);
-            $this->dispatcher->dispatch(TransformEvent::POST_TRANSFORM, $event);
-
-            $document = $event->getDocument();
-        }
+        $document = $this->transformObjectToDocument($object, $fields, $identifier);
 
         return $document;
     }
@@ -133,13 +86,13 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         if (is_array($objects) || $objects instanceof \Traversable || $objects instanceof \ArrayAccess) {
             $documents = array();
             foreach ($objects as $object) {
-                $document = $this->transform($object, $fields);
+                $document = $this->transformObjectToDocument($object, $fields);
                 $documents[] = $document->getData();
             }
 
             return $documents;
         } elseif (null !== $objects) {
-            $document = $this->transform($objects, $fields);
+            $document = $this->transformObjectToDocument($objects, $fields);
 
             return $document->getData();
         }
@@ -172,5 +125,77 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         }
 
         return $value;
+    }
+
+    /**
+     * Transforms the given object to an elastica document
+     *
+     * @param object $object the object to convert
+     * @param array  $fields the keys we want to have in the returned array
+     * @param string $identifier the identifier for the new document
+     * @return Document
+     */
+    protected function transformObjectToDocument($object, array $fields, $identifier = '')
+    {
+        $document = new Document($identifier);
+
+        if ($this->dispatcher) {
+            $event = new TransformEvent($document, $fields, $object);
+            $this->dispatcher->dispatch(TransformEvent::PRE_TRANSFORM, $event);
+
+            $document = $event->getDocument();
+        }
+
+        foreach ($fields as $key => $mapping) {
+            if ($key == '_parent') {
+                $property = (null !== $mapping['property']) ? $mapping['property'] : $mapping['type'];
+                $value = $this->propertyAccessor->getValue($object, $property);
+                $document->setParent($this->propertyAccessor->getValue($value, $mapping['identifier']));
+
+                continue;
+            }
+
+            $path = isset($mapping['property_path']) ?
+                $mapping['property_path'] :
+                $key;
+            if (false === $path) {
+                continue;
+            }
+            $value = $this->propertyAccessor->getValue($object, $path);
+
+            if (isset($mapping['type']) && in_array(
+                    $mapping['type'], array('nested', 'object')
+                ) && isset($mapping['properties']) && !empty($mapping['properties'])
+            ) {
+                /* $value is a nested document or object. Transform $value into
+                 * an array of documents, respective the mapped properties.
+                 */
+                $document->set($key, $this->transformNested($value, $mapping['properties']));
+
+                continue;
+            }
+
+            if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
+                // $value is an attachment. Add it to the document.
+                if ($value instanceof \SplFileInfo) {
+                    $document->addFile($key, $value->getPathName());
+                } else {
+                    $document->addFileContent($key, $value);
+                }
+
+                continue;
+            }
+
+            $document->set($key, $this->normalizeValue($value));
+        }
+
+        if ($this->dispatcher) {
+            $event = new TransformEvent($document, $fields, $object);
+            $this->dispatcher->dispatch(TransformEvent::POST_TRANSFORM, $event);
+
+            $document = $event->getDocument();
+        }
+
+        return $document;
     }
 }

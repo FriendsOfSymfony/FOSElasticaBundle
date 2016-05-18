@@ -122,6 +122,19 @@ class POPO
     {
         return $this->getUpper();
     }
+
+    public function getObjWithoutIdentifier()
+    {
+        return (object) array('foo' => 'foo', 'bar' => 'foo');
+    }
+
+    public function getSubWithoutIdentifier()
+    {
+        return array(
+            (object) array('foo' => 'foo', 'bar' => 'foo'),
+            (object) array('foo' => 'bar', 'bar' => 'bar'),
+        );
+    }
 }
 
 class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
@@ -130,11 +143,18 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     {
         $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')
             ->getMock();
-        $dispatcher->expects($this->once())
+
+        $dispatcher->expects($this->exactly(2))
             ->method('dispatch')
-            ->with(
-                TransformEvent::POST_TRANSFORM,
-                $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent')
+            ->withConsecutive(
+                array(
+                    TransformEvent::PRE_TRANSFORM,
+                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent')
+                ),
+                array(
+                    TransformEvent::POST_TRANSFORM,
+                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent')
+                )
             );
 
         $transformer = $this->getTransformer($dispatcher);
@@ -407,6 +427,50 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals("parent", $document->getParent());
+    }
+
+    public function testThatMappedObjectsDontNeedAnIdentifierField()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+            'objWithoutIdentifier' => array(
+                'type' => 'object',
+                'properties' => array(
+                    'foo' => array(),
+                    'bar' => array()
+                )
+            ),
+        ));
+        $data        = $document->getData();
+
+        $this->assertTrue(array_key_exists('objWithoutIdentifier', $data));
+        $this->assertInternalType('array', $data['objWithoutIdentifier']);
+        $this->assertEquals(array(
+            'foo' => 'foo',
+            'bar' => 'foo'
+        ), $data['objWithoutIdentifier']);
+    }
+
+    public function testThatNestedObjectsDontNeedAnIdentifierField()
+    {
+        $transformer = $this->getTransformer();
+        $document    = $transformer->transform(new POPO(), array(
+            'subWithoutIdentifier' => array(
+                'type' => 'nested',
+                'properties' => array(
+                    'foo' => array(),
+                    'bar' => array()
+                ),
+            ),
+        ));
+        $data        = $document->getData();
+
+        $this->assertTrue(array_key_exists('subWithoutIdentifier', $data));
+        $this->assertInternalType('array', $data['subWithoutIdentifier']);
+        $this->assertEquals(array(
+            array('foo' => 'foo', 'bar' => 'foo'),
+            array('foo' => 'bar', 'bar' => 'bar'),
+        ), $data['subWithoutIdentifier']);
     }
 
     /**

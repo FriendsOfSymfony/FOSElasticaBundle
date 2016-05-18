@@ -12,16 +12,16 @@ fos_elastica:
     clients:
         default:
             connections:
-                - url: http://localhost:9200
-                - host: localhost
-                  port: 9200
+                - url: http://%fos_elastica.host%:%fos_elastica.port%
+                - host: %fos_elastica.host%
+                  port: %fos_elastica.port%
             connectionStrategy: RoundRobin
         second_server:
             connections:
-                - url: http://localhost:9200
+                - url: http://%fos_elastica.host%:%fos_elastica.port%
             connection_strategy: RoundRobin
         third:
-            url: http://localhost:9200
+            url: http://%fos_elastica.host%:%fos_elastica.port%
     indexes:
         index:
             index_name: foselastica_basic_test_%kernel.environment%
@@ -39,6 +39,7 @@ fos_elastica:
                             max_gram: 5
             types:
                 parent:
+                    dynamic: false
                     dynamic_templates:
                         dates:
                             match: "date_*"
@@ -50,6 +51,7 @@ fos_elastica:
                     search_analyzer: whitespace
                     index_analyzer: my_analyzer
                 type:
+                    dynamic: strict
                     search_analyzer: my_analyzer
                     date_detection: false
                     dynamic_date_formats: [ 'yyyy-MM-dd' ]
@@ -94,6 +96,7 @@ fos_elastica:
                             type: "attachment"
                         lastlogin: { type: date, format: basic_date_time }
                         birthday: { type: date, format: "yyyy-MM-dd" }
+                        dynamic_allowed: { type: object, dynamic: true }
                     _parent:
                         type: "parent"
                         property: "parent"
