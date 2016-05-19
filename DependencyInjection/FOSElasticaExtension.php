@@ -268,7 +268,7 @@ class FOSElasticaExtension extends Extension
             foreach (array(
                 'persistence',
                 'serializer',
-                'index_analyzer',
+                'analyzer',
                 'search_analyzer',
                 'dynamic',
                 'date_detection',

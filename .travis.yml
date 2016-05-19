@@ -5,7 +5,6 @@ cache:
         - $HOME/.composer/cache
 
 php:
-  - 5.3
   - 5.4
   - 5.5
   - 5.6
@@ -23,6 +22,7 @@ matrix:
     - php: 5.6
       env: SYMFONY_VERSION='3.0.*'
   allow_failures:
+    - php: 5.3
     - php: hhvm
   fast_finish: true
 

@@ -47,12 +47,10 @@ fos_elastica:
                                 type: date
                     mappings:
                         field1: ~
-                        field2: ~
-                    search_analyzer: whitespace
-                    index_analyzer: my_analyzer
+                        field2:
+                            type: integer
                 type:
                     dynamic: strict
-                    search_analyzer: my_analyzer
                     date_detection: false
                     dynamic_date_formats: [ 'yyyy-MM-dd' ]
                     dynamic_templates:
@@ -83,9 +81,6 @@ fos_elastica:
                                 content: ~
                         multiple:
                             type: "multi_field"
-                            properties:
-                                name: ~
-                                position: ~
                         user:
                             type: "object"
                         approver:
@@ -99,8 +94,6 @@ fos_elastica:
                         dynamic_allowed: { type: object, dynamic: true }
                     _parent:
                         type: "parent"
-                        property: "parent"
-                        identifier: "id"
                 null_mappings:
                     mappings: ~
         empty_index: ~

@@ -171,7 +171,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->arrayNode('type_prototype')
                                 ->children()
-                                    ->scalarNode('index_analyzer')->end()
+                                    ->scalarNode('analyzer')->end()
                                     ->scalarNode('search_analyzer')->end()
                                     ->append($this->getPersistenceNode())
                                     ->append($this->getSerializerNode())
@@ -258,7 +258,7 @@ class Configuration implements ConfigurationInterface
                 ->children()
                     ->booleanNode('date_detection')->end()
                     ->arrayNode('dynamic_date_formats')->prototype('scalar')->end()->end()
-                    ->scalarNode('index_analyzer')->end()
+                    ->scalarNode('analyzer')->end()
                     ->booleanNode('numeric_detection')->end()
                     ->scalarNode('search_analyzer')->end()
                     ->scalarNode('dynamic')->end()
@@ -420,8 +420,6 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
                 ->scalarNode('type')->end()
-                ->scalarNode('property')->defaultValue(null)->end()
-                ->scalarNode('identifier')->defaultValue('id')->end()
             ->end()
         ;
 
@@ -439,7 +437,7 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
             ->scalarNode('enabled')->defaultValue(true)->end()
-            ->scalarNode('index_analyzer')->end()
+            ->scalarNode('analyzer')->end()
             ->scalarNode('search_analyzer')->end()
             ->end()
         ;
