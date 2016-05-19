@@ -12,8 +12,12 @@ use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
  */
 class Repository
 {
+    /** @var PaginatedFinderInterface */
     protected $finder;
 
+    /**
+     * @param PaginatedFinderInterface $finder
+     */
     public function __construct(PaginatedFinderInterface $finder)
     {
         $this->finder = $finder;

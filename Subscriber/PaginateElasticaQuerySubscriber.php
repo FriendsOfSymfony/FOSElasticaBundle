@@ -28,6 +28,9 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param ItemsEvent $event
+     */
     public function items(ItemsEvent $event)
     {
         if ($event->target instanceof PaginatorAdapterInterface) {
@@ -91,6 +94,9 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(

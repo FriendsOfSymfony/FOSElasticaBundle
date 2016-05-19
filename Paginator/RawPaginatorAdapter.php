@@ -99,12 +99,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     }
 
     /**
-     * Returns the paginated results.
-     *
-     * @param int $offset
-     * @param int $itemCountPerPage
-     *
-     * @return PartialResultsInterface
+     * {@inheritdoc}
      */
     public function getResults($offset, $itemCountPerPage)
     {
@@ -118,9 +113,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * hits.total value from the search results instead of just returning
      * the requested size.
      *
-     * @param boolean $genuineTotal
-     *
-     * @return integer The number of results.
+     * {@inheritdoc}
      */
     public function getTotalHits($genuineTotal = false)
     {
@@ -134,9 +127,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     }
 
     /**
-     * Returns Facets.
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getFacets()
     {
@@ -148,9 +139,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     }
 
     /**
-     * Returns Aggregations.
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getAggregations()
     {

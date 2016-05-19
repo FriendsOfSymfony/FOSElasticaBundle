@@ -16,6 +16,9 @@ class ElasticaDataCollector extends DataCollector
 {
     protected $logger;
 
+    /**
+     * @param ElasticaLogger $logger
+     */
     public function __construct(ElasticaLogger $logger)
     {
         $this->logger = $logger;
@@ -30,16 +33,25 @@ class ElasticaDataCollector extends DataCollector
         $this->data['queries'] = $this->logger->getQueries();
     }
 
+    /**
+     * @return mixed
+     */
     public function getQueryCount()
     {
         return $this->data['nb_queries'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getQueries()
     {
         return $this->data['queries'];
     }
 
+    /**
+     * @return int
+     */
     public function getTime()
     {
         $time = 0;

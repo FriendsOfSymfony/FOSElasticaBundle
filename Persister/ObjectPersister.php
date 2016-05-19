@@ -22,6 +22,12 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $fields;
     protected $logger;
 
+    /**
+     * @param Type                                $type
+     * @param ModelToElasticaTransformerInterface $transformer
+     * @param string                              $objectClass
+     * @param array                               $fields
+     */
     public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields)
     {
         $this->type            = $type;
@@ -31,11 +37,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * If the ObjectPersister handles a given object.
-     *
-     * @param object $object
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function handlesObject($object)
     {
@@ -67,10 +69,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Insert one object into the type
-     * The object will be transformed to an elastica document.
-     *
-     * @param object $object
+     * {@inheritdoc}
      */
     public function insertOne($object)
     {
@@ -78,40 +77,31 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Replaces one object in the type.
-     *
-     * @param object $object
-     **/
+     * {@inheritdoc}
+     */
     public function replaceOne($object)
     {
         $this->replaceMany(array($object));
     }
 
     /**
-     * Deletes one object in the type.
-     *
-     * @param object $object
-     **/
+     * {@inheritdoc}
+     */
     public function deleteOne($object)
     {
         $this->deleteMany(array($object));
     }
 
     /**
-     * Deletes one object in the type by id.
-     *
-     * @param mixed $id
-     **/
+     * {@inheritdoc}
+     */
     public function deleteById($id)
     {
         $this->deleteManyByIdentifiers(array($id));
     }
 
     /**
-     * Bulk insert an array of objects in the type for the given method.
-     *
-     * @param array $objects array of domain model objects
-     * @param string Method to call
+     * {@inheritdoc}
      */
     public function insertMany(array $objects)
     {
@@ -127,9 +117,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk update an array of objects in the type.  Create document if it does not already exist.
-     *
-     * @param array $objects array of domain model objects
+     * {@inheritdoc}
      */
     public function replaceMany(array $objects)
     {
@@ -148,9 +136,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk deletes an array of objects in the type.
-     *
-     * @param array $objects array of domain model objects
+     * {@inheritdoc}
      */
     public function deleteMany(array $objects)
     {
@@ -166,9 +152,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk deletes records from an array of identifiers.
-     *
-     * @param array $identifiers array of domain model object identifiers
+     * {@inheritdoc}
      */
     public function deleteManyByIdentifiers(array $identifiers)
     {

@@ -14,6 +14,8 @@ class ProviderRegistry implements ContainerAwareInterface
      * @var ContainerInterface
      */
     private $container;
+    
+    /** @var array */
     private $providers = array();
 
     /**

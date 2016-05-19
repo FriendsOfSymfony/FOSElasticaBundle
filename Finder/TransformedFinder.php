@@ -18,6 +18,10 @@ class TransformedFinder implements PaginatedFinderInterface
     protected $searchable;
     protected $transformer;
 
+    /**
+     * @param SearchableInterface                 $searchable
+     * @param ElasticaToModelTransformerInterface $transformer
+     */
     public function __construct(SearchableInterface $searchable, ElasticaToModelTransformerInterface $transformer)
     {
         $this->searchable  = $searchable;
@@ -25,14 +29,8 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * Search for a query string.
-     *
-     * @param string  $query
-     * @param integer $limit
-     * @param array   $options
-     *
-     * @return array of model objects
-     **/
+     * {@inheritdoc}
+     */
     public function find($query, $limit = null, $options = array())
     {
         $results = $this->search($query, $limit, $options);
@@ -83,12 +81,7 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * Gets a paginator wrapping the result of a search.
-     *
-     * @param string $query
-     * @param array  $options
-     *
-     * @return Pagerfanta
+     * {@inheritdoc}
      */
     public function findPaginated($query, $options = array())
     {

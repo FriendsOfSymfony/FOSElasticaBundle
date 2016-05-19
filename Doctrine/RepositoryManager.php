@@ -14,10 +14,19 @@ use FOS\ElasticaBundle\Manager\RepositoryManager as BaseManager;
  */
 class RepositoryManager extends BaseManager
 {
+    /** @var array */
     protected $entities = array();
+    
+    /** @var array */
     protected $repositories = array();
+    
+    /** @var ManagerRegistry */
     protected $managerRegistry;
 
+    /**
+     * @param ManagerRegistry $managerRegistry
+     * @param Reader          $reader
+     */
     public function __construct(ManagerRegistry $managerRegistry, Reader $reader)
     {
         $this->managerRegistry = $managerRegistry;
@@ -25,10 +34,9 @@ class RepositoryManager extends BaseManager
     }
 
     /**
-     * Return repository for entity.
+     * Returns custom repository if one specified otherwise returns a basic repository.
      *
-     * Returns custom repository if one specified otherwise
-     * returns a basic repository.
+     * {@inheritdoc}
      */
     public function getRepository($entityName)
     {
