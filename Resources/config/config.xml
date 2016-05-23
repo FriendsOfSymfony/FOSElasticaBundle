@@ -9,7 +9,7 @@
         <parameter key="fos_elastica.logger.class">FOS\ElasticaBundle\Logger\ElasticaLogger</parameter>
         <parameter key="fos_elastica.data_collector.class">FOS\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
         <parameter key="fos_elastica.mapping_builder.class">FOS\ElasticaBundle\Index\MappingBuilder</parameter>
-        <parameter key="fos_elastica.property_accessor.class">Symfony\Component\PropertyAccess\PropertyAccessor</parameter>
+        <parameter key="fos_elastica.property_accessor.class">FOS\ElasticaBundle\PropertyAccessor\CastToStringPropertyAccessor</parameter>
         <parameter key="fos_elastica.property_accessor.magicCall">false</parameter>
         <parameter key="fos_elastica.property_accessor.throwExceptionOnInvalidIndex">false</parameter>
     </parameters>
