@@ -11,7 +11,7 @@ A) Install and declare the serializer
 Both the [Symfony Serializer](http://symfony.com/doc/current/components/serializer.html) and 
 [JMSSerializerBundle](http://jmsyst.com/bundles/JMSSerializerBundle) are supported.
 
-If you want to override the default serializer service you can do so in the configuration:
+Enable the serializer in the configuration:
 
 ```yaml
 #app/config/config.yml
