@@ -18,13 +18,13 @@ class CallbackTest extends PHPUnit_Framework_TestCase
         $serializer = $this->prophesize(Serializer::class);
         $callback->setSerializer($serializer->reveal());
 
-        $callback->setGroups(['foo']);
+        $callback->setGroups(array('foo'));
     }
 
     public function testSetGroupsFailsWithInvalidSerializer()
     {
         $callback = new Callback();
-        $serializer = $this->getMockBuilder('FakeSerializer')->setMethods(['serialize'])->getMock();
+        $serializer = $this->getMockBuilder('FakeSerializer')->setMethods(array('serialize'))->getMock();
         $callback->setSerializer($serializer);
 
         $this->setExpectedException(
@@ -33,6 +33,6 @@ class CallbackTest extends PHPUnit_Framework_TestCase
                 . '"Symfony\Component\Serializer\Serializer"'
         );
 
-        $callback->setGroups(['foo']);
+        $callback->setGroups(array('foo'));
     }
 }
