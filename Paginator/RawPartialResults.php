@@ -43,7 +43,7 @@ class RawPartialResults implements PartialResultsInterface
      */
     public function getFacets()
     {
-        if ($this->resultSet->hasFacets()) {
+        if (method_exists($this->resultSet, 'getFacets') && $this->resultSet->hasFacets()) {
             return $this->resultSet->getFacets();
         }
 
