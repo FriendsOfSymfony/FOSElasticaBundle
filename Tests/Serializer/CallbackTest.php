@@ -14,7 +14,7 @@ class CallbackTest extends PHPUnit_Framework_TestCase
     public function testSetGroupsWorksWithValidSerializer()
     {
         $callback = new Callback();
-        $serializer = $this->getMock('Symfony\Component\Serializer\Serializer', [], [], '', false);
+        $serializer = $this->getMock('Symfony\Component\Serializer\Serializer', array(), array(), '', false);
         $callback->setSerializer($serializer);
 
         $callback->setGroups(array('foo'));
