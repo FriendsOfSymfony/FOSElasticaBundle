@@ -98,7 +98,11 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 
         // sort objects in the order of ids
         $idPos = array_flip($ids);
-        $identifier = $this->options['identifier'];
+        if ($this->options['hydrate']) {
+            $identifier = $this->options['identifier'];
+        } else {
+            $identifier = '[' . $this->options['identifier'] . ']';
+        }
         usort($objects, $this->getSortingClosure($idPos, $identifier));
 
         return $objects;
