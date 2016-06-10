@@ -36,12 +36,6 @@ class MappingToElasticaTest extends WebTestCase
         $this->assertEquals('strict', $mapping['type']['dynamic']);
         $this->assertArrayHasKey('dynamic', $mapping['type']['properties']['dynamic_allowed']);
         $this->assertEquals('true', $mapping['type']['properties']['dynamic_allowed']['dynamic']);
-
-        $parent = $this->getType($client, 'parent');
-        $mapping = $parent->getMapping();
-
-        $this->assertEquals('my_analyzer', $mapping['parent']['index_analyzer']);
-        $this->assertEquals('whitespace', $mapping['parent']['search_analyzer']);
     }
 
     public function testResetType()

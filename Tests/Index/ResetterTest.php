@@ -144,14 +144,17 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $this->mockType('type', 'index', $typeConfig, $indexConfig);
 
         $this->dispatcherExpects(array(
+            array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
+            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
             array(TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent')),
             array(TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent'))
         ));
 
-        $this->elasticaClient->expects($this->exactly(2))
+        $this->elasticaClient->expects($this->exactly(3))
             ->method('request')
             ->withConsecutive(
-                array('index/type/', 'DELETE'),
+                array('index/', 'DELETE'),
+                array('index/', 'PUT', array(), array()),
                 array('index/type/_mapping', 'PUT', array('type' => array()), array())
             );
 
@@ -174,13 +177,11 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $indexConfig = new IndexConfig('index', array(), array('settings' => $settingsValue));
         $this->mockType('type', 'index', $typeConfig, $indexConfig);
 
-        $this->elasticaClient->expects($this->exactly(5))
+        $this->elasticaClient->expects($this->exactly(3))
             ->method('request')
             ->withConsecutive(
-                array('index/type/', 'DELETE'),
-                array('index/_close', 'POST'),
-                array('index/_settings', 'PUT', $settingsValue),
-                array('index/_open', 'POST'),
+                array('index/', 'DELETE'),
+                array('index/', 'PUT', array(), array()),
                 array('index/type/_mapping', 'PUT', array('type' => array()), array())
             );
 
@@ -217,7 +218,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
 
     public function testPostPopulate()
     {
-        $indexConfig = new IndexConfig('index', array(), array( 'useAlias' => true));
+        $indexConfig = new IndexConfig('index', array(), array('useAlias' => true));
         $index = $this->mockIndex('index', $indexConfig);
 
         $this->aliasProcessor->expects($this->once())
@@ -261,7 +262,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             ->with($indexName, $typeName)
             ->will($this->returnValue($typeConfig));
         $index = new Index($this->elasticaClient, $indexName);
-        $this->indexManager->expects($this->once())
+        $this->indexManager->expects($this->atLeast(2))
             ->method('getIndex')
             ->with($indexName)
             ->willReturn($index);
@@ -269,6 +270,10 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             ->method('getIndexConfiguration')
             ->with($indexName)
             ->will($this->returnValue($indexConfig));
+        $this->mappingBuilder->expects($this->any())
+            ->method('buildIndexMapping')
+            ->with($indexConfig)
+            ->willReturn($mapping);
         $this->mappingBuilder->expects($this->once())
             ->method('buildTypeMapping')
             ->with($typeConfig)
