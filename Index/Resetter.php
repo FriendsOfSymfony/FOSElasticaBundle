@@ -148,14 +148,29 @@ class Resetter
      * A command run when a population has finished.
      *
      * @param string $indexName
+     *
+     * @deprecated
      */
     public function postPopulate($indexName)
+    {
+        $this->switchIndexAlias($indexName);
+    }
+
+    /**
+     * Switching aliases
+     *
+     * @param string $indexName
+     * @param bool   $delete Delete or close index
+     *
+     * @throws \FOS\ElasticaBundle\Exception\AliasIsIndexException
+     */
+    public function switchIndexAlias($indexName, $delete = true)
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
 
         if ($indexConfig->isUseAlias()) {
             $index = $this->indexManager->getIndex($indexName);
-            $this->aliasProcessor->switchIndexAlias($indexConfig, $index);
+            $this->aliasProcessor->switchIndexAlias($indexConfig, $index, false, $delete);
         }
     }
 }

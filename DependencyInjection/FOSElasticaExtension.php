@@ -46,7 +46,7 @@ class FOSElasticaExtension extends Extension
             return;
         }
 
-        foreach (array('config', 'index', 'persister', 'provider', 'source', 'transformer') as $basename) {
+        foreach (array('config', 'index', 'persister', 'provider', 'source', 'transformer', 'event_listener') as $basename) {
             $loader->load(sprintf('%s.xml', $basename));
         }
 
