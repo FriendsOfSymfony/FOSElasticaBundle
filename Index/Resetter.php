@@ -136,6 +136,7 @@ class Resetter
         }
 
         if (!empty($settings)) {
+            unset($settings['number_of_shards']);
             $index->close();
             $index->setSettings($settings);
             $index->open();
