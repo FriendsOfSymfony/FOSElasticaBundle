@@ -127,7 +127,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             'indexes' => array(
                 'test' => array(
                     'type_prototype' => array(
-                        'index_analyzer' => 'custom_analyzer',
+                        'analyzer' => 'custom_analyzer',
                         'persistence' => array(
                             'identifier' => 'ID',
                         ),
@@ -238,7 +238,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'user_profile' => array(
                             '_parent' => array(
                                 'type' => 'user',
-                                'property' => 'owner',
                             ),
                             'properties' => array(
                                 'field1' => array(),
