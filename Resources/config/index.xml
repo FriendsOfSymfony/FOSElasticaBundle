@@ -12,9 +12,12 @@
         <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\Index\IndexManager</parameter>
         <parameter key="fos_elastica.resetter.class">FOS\ElasticaBundle\Index\Resetter</parameter>
         <parameter key="fos_elastica.type.class">Elastica\Type</parameter>
+        <parameter key="fos_elastica.repository_manager.class">FOS\ElasticaBundle\Manager\RepositoryManager</parameter>
     </parameters>
 
     <services>
+        <service id="fos_elastica.repository_manager" class="%fos_elastica.repository_manager.class%" />
+
         <service id="fos_elastica.alias_processor" class="%fos_elastica.alias_processor.class%" />
 
         <service id="fos_elastica.indexable" class="%fos_elastica.indexable.class%">

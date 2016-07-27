@@ -3,6 +3,7 @@
 namespace FOS\ElasticaBundle\Manager;
 
 use FOS\ElasticaBundle\Finder\FinderInterface;
+use FOS\ElasticaBundle\Repository;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -13,14 +14,14 @@ use FOS\ElasticaBundle\Finder\FinderInterface;
 interface RepositoryManagerInterface
 {
     /**
-     * Adds entity name and its finder.
+     * Adds type name and its finder.
      * Custom repository class name can also be added.
      *
-     * @param string $entityName
+     * @param string $indexTypeName The type name in "index/type" format
      * @param        $finder
      * @param string $repositoryName
      */
-    public function addEntity($entityName, FinderInterface $finder, $repositoryName = null);
+    public function addType($indexTypeName, FinderInterface $finder, $repositoryName = null);
 
     /**
      * Return repository for entity.
@@ -28,7 +29,9 @@ interface RepositoryManagerInterface
      * Returns custom repository if one specified otherwise
      * returns a basic repository.
      *
-     * @param string $entityName
+     * @param $typeName
+     *
+     * @return Repository
      */
-    public function getRepository($entityName);
+    public function getRepository($typeName);
 }

@@ -617,13 +617,18 @@ class FOSElasticaExtension extends Extension
             $container->setDefinition($finderId, $finderDef);
         }
 
-        $managerId = sprintf('fos_elastica.manager.%s', $typeConfig['driver']);
-        $managerDef = $container->getDefinition($managerId);
-        $arguments = array( $typeConfig['model'], new Reference($finderId));
+        $indexTypeName = "$indexName/$typeName";
+        $arguments = [$indexTypeName, new Reference($finderId)];
         if (isset($typeConfig['repository'])) {
             $arguments[] = $typeConfig['repository'];
         }
-        $managerDef->addMethodCall('addEntity', $arguments);
+
+        $container->getDefinition('fos_elastica.repository_manager')
+            ->addMethodCall('addType', $arguments);
+
+        $managerId = sprintf('fos_elastica.manager.%s', $typeConfig['driver']);
+        $container->getDefinition($managerId)
+            ->addMethodCall('addEntity', [$indexTypeName]);
 
         return $finderId;
     }
