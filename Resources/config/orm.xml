@@ -43,7 +43,7 @@
 
         <service id="fos_elastica.manager.orm" class="%fos_elastica.manager.orm.class%">
             <argument type="service" id="doctrine" />
-            <argument type="service" id="annotation_reader" />
+            <argument type="service" id="fos_elastica.repository_manager" />
         </service>
     </services>
 </container>

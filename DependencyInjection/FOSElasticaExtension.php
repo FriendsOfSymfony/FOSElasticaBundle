@@ -628,7 +628,7 @@ class FOSElasticaExtension extends Extension
 
         $managerId = sprintf('fos_elastica.manager.%s', $typeConfig['driver']);
         $container->getDefinition($managerId)
-            ->addMethodCall('addEntity', [$indexTypeName]);
+            ->addMethodCall('addEntity', [$typeConfig['model'], $indexTypeName]);
 
         return $finderId;
     }
