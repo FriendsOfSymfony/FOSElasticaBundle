@@ -115,7 +115,7 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException(
             '\RuntimeException',
-            'Cannot find corresponding Doctrine objects for all Elastica results.'
+            'Cannot find corresponding Doctrine objects (0) for all Elastica results (3). IDs: 1, 2, 3'
         );
 
         $transformer->transform($elasticaResults);
