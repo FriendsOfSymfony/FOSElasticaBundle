@@ -55,6 +55,33 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $repository->findHybrid($testQuery);
     }
 
+    public function testThatFindRawResultCallsFindRawResultOnFinder()
+    {
+        $testQuery = 'Test Query';
+
+        $finderMock = $this->getFinderMock($testQuery, null, 'findRawResult');
+        $repository = new Repository($finderMock);
+        $repository->findRawResult($testQuery);
+    }
+    
+    public function testThatFindRawPaginatedCallsFindRawPaginatedOnFinder()
+    {
+        $testQuery = 'Test Query';
+
+        $finderMock = $this->getFinderMock($testQuery, array(), 'findRawPaginated');
+        $repository = new Repository($finderMock);
+        $repository->findRawPaginated($testQuery);
+    }
+
+    public function testThatCreateRawPaginatorCreatesAPaginatorViaFinder()
+    {
+        $testQuery = 'Test Query';
+
+        $finderMock = $this->getFinderMock($testQuery, array(), 'createRawPaginatorAdapter');
+        $repository = new Repository($finderMock);
+        $repository->createRawPaginatorAdapter($testQuery);
+    }
+
     /**
      * @param string $testQuery
      * @param mixed $testLimit

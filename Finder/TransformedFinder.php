@@ -6,6 +6,7 @@ use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
+use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use Pagerfanta\Pagerfanta;
 use Elastica\SearchableInterface;
 use Elastica\Query;
@@ -44,7 +45,13 @@ class TransformedFinder implements PaginatedFinderInterface
 
         return $this->transformer->hybridTransform($results);
     }
+    
+    public function findRawResult($query, $limit = null, $options = array())
+    {
+        $results = $this->search($query, $limit, $options);
 
+        return $results;
+    }
     /**
      * Find documents similar to one with passed id.
      *
@@ -90,6 +97,17 @@ class TransformedFinder implements PaginatedFinderInterface
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function findRawPaginated($query, $options = array())
+    {
+        $queryObject = Query::create($query);
+        $paginatorAdapter = $this->createRawPaginatorAdapter($queryObject, $options);
+
+        return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
+    }
 
     /**
      * {@inheritdoc}
@@ -99,5 +117,14 @@ class TransformedFinder implements PaginatedFinderInterface
         $query = Query::create($query);
 
         return new TransformedPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createRawPaginatorAdapter($query, $options = array())
+    {
+        $query = Query::create($query);
+        return new RawPaginatorAdapter($this->searchable, $query, $options);
     }
 }
