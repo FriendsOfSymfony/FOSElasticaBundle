@@ -17,3 +17,4 @@ CHANGELOG for 3.2.x
  * Add Elastica compression option
  * Add support for `defaultSortFieldName` and `defaultSortDirection` pagination options
  * Removed `immediate` option on type persistence configuration
+ * Enable pagination of hybrid results

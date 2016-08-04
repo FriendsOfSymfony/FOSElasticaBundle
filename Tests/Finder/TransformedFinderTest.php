@@ -126,4 +126,24 @@ class TransformedFinderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Pagerfanta\Pagerfanta', $pagerfanta);
     }
+
+    public function testCreatePaginatorAdapter()
+    {
+        $searchable = $this->getMock('Elastica\SearchableInterface');
+        $transformer = $this->getMock('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
+
+        $finder = new TransformedFinder($searchable, $transformer);
+
+        $this->assertInstanceOf('FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter', $finder->createPaginatorAdapter(''));
+    }
+
+    public function testCreateHybridPaginatorAdapter()
+    {
+        $searchable = $this->getMock('Elastica\SearchableInterface');
+        $transformer = $this->getMock('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
+
+        $finder = new TransformedFinder($searchable, $transformer);
+
+        $this->assertInstanceOf('FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter', $finder->createHybridPaginatorAdapter(''));
+    }
 }
