@@ -27,6 +27,7 @@ matrix:
   fast_finish: true
 
 before_script:
+  - phpenv config-add travis.php.ini
   - /usr/share/elasticsearch/bin/elasticsearch -v
   - sudo /usr/share/elasticsearch/bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/2.0.0
   - sudo service elasticsearch restart
