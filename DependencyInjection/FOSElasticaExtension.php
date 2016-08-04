@@ -288,6 +288,11 @@ class FOSElasticaExtension extends Extension
                 $typeConfig['persistence'] = $type['persistence'];
             }
 
+            if (isset($type['_parent'])) {
+                // _parent mapping cannot contain `property` and `identifier`, so removing them after building `persistence`
+                unset($indexConfig['types'][$name]['mapping']['_parent']['property'], $indexConfig['types'][$name]['mapping']['_parent']['identifier']);
+            }
+
             if (isset($type['indexable_callback'])) {
                 $indexableCallbacks[sprintf('%s/%s', $indexName, $name)] = $type['indexable_callback'];
             }
