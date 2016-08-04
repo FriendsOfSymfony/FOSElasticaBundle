@@ -263,6 +263,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('search_analyzer')->end()
                     ->scalarNode('dynamic')->end()
                     ->variableNode('indexable_callback')->end()
+                    ->variableNode('updatable_callback')->end()
                     ->append($this->getPersistenceNode())
                     ->append($this->getSerializerNode())
                 ->end()

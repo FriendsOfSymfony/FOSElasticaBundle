@@ -4,6 +4,9 @@ namespace FOS\ElasticaBundle\Paginator;
 
 use Pagerfanta\Adapter\AdapterInterface;
 
+/**
+ * @class FantaPaginatorAdapter
+ */
 class FantaPaginatorAdapter implements AdapterInterface
 {
     private $adapter;

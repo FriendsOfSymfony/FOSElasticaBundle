@@ -53,7 +53,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $entity = new Listener\Entity(1);
         $persister = $this->getMockPersister($entity, 'index', 'type');
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
-        $indexable = $this->getMockIndexable('index', 'type', $entity, true);
+        $indexable = $this->getMockIndexable('index', 'type', $entity, true, true);
 
         $listener = $this->createListener($persister, $indexable, array('indexName' => 'index', 'typeName' => 'type'));
         $listener->postUpdate($eventArgs);
@@ -77,7 +77,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $entity = new Listener\Entity(1);
         $persister = $this->getMockPersister($entity, 'index', 'type');
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
-        $indexable = $this->getMockIndexable('index', 'type', $entity, false);
+        $indexable = $this->getMockIndexable('index', 'type', $entity, false, true);
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
@@ -251,8 +251,10 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
      * @param string          $typeName
      * @param Listener\Entity $object
      * @param boolean         $return
+     * @param bool            $excpectUpdateCall
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getMockIndexable($indexName, $typeName, $object, $return = null)
+    private function getMockIndexable($indexName, $typeName, $object, $return = null, $excpectUpdateCall = false)
     {
         $mock = $this->getMock('FOS\ElasticaBundle\Provider\IndexableInterface');
 
@@ -261,6 +263,12 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
                 ->method('isObjectIndexable')
                 ->with($indexName, $typeName, $object)
                 ->will($this->returnValue($return));
+            if ($excpectUpdateCall) {
+                $mock->expects($this->once())
+                     ->method('isObjectNeedUpdate')
+                     ->with($indexName, $typeName, $object)
+                     ->will($this->returnValue(true));
+            }
         }
 
         return $mock;

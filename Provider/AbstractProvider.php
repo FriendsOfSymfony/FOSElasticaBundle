@@ -162,6 +162,25 @@ abstract class AbstractProvider implements ProviderInterface
         );
     }
 
+
+    /**
+     * Checks if a given object should be updated or not.
+     *
+     * @deprecated
+     *
+     * @param object $object
+     *
+     * @return bool
+     */
+    protected function isObjectNeedUpdate($object)
+    {
+        return $this->indexable->isObjectNeedUpdate(
+            $this->baseOptions['indexName'],
+            $this->baseOptions['typeName'],
+            $object
+        );
+    }
+
     /**
      * Get string with RAM usage information (current and peak).
      *

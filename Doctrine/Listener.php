@@ -1,5 +1,4 @@
 <?php
-
 namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
@@ -26,7 +25,7 @@ class Listener
     /**
      * Configuration for the listener.
      *
-     * @var array
+     * @var string
      */
     private $config;
 
@@ -89,6 +88,8 @@ class Listener
         }
     }
 
+
+
     /**
      * Looks for new objects that should be indexed.
      *
@@ -98,7 +99,8 @@ class Listener
     {
         $entity = $eventArgs->getObject();
 
-        if ($this->objectPersister->handlesObject($entity) && $this->isObjectIndexable($entity)) {
+        if ($this->objectPersister->handlesObject($entity) && $this->isObjectIndexable($entity)
+        ) {
             $this->scheduledForInsertion[] = $entity;
         }
     }
@@ -112,7 +114,9 @@ class Listener
     {
         $entity = $eventArgs->getObject();
 
-        if ($this->objectPersister->handlesObject($entity)) {
+        if ($this->objectPersister->handlesObject($entity)
+            && ($this->isObjectUpdatable($entity))
+        ) {
             if ($this->isObjectIndexable($entity)) {
                 $this->scheduledForUpdate[] = $entity;
             } else {
@@ -187,7 +191,7 @@ class Listener
      *
      * @param object $object
      */
-    private function scheduleForDeletion($object)
+    protected function scheduleForDeletion($object)
     {
         if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
             $this->scheduledForDeletion[] = $identifierValue;
@@ -204,6 +208,23 @@ class Listener
     private function isObjectIndexable($object)
     {
         return $this->indexable->isObjectIndexable(
+            $this->config['indexName'],
+            $this->config['typeName'],
+            $object
+        );
+    }
+
+
+    /**
+     * Checks if the object is indexable or not.
+     *
+     * @param object $object
+     *
+     * @return bool
+     */
+    private function isObjectUpdatable($object)
+    {
+        return $this->indexable->isObjectNeedUpdate(
             $this->config['indexName'],
             $this->config['typeName'],
             $object

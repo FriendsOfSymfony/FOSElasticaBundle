@@ -36,12 +36,11 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * @var array for the facets
      */
     private $facets;
-
     /**
      * @var array for the aggregations
      */
     private $aggregations;
-
+    
     /**
      * @see PaginatorAdapterInterface::__construct
      *
@@ -143,11 +142,25 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getAggregations()
     {
-        if (!isset($this->aggregations)) {
-            $this->aggregations = $this->searchable->search($this->query)->getAggregations();
+        if (!isset($this->aggregation)) {
+            $this->aggregation = $this->searchable->search($this->query)->getAggregations();
         }
 
-        return $this->aggregations;
+        return $this->aggregation;
+    }
+
+    /**
+     * Returns Aggregation.
+     * @param string $name
+     * @return array
+     */
+    public function getAggregation($name)
+    {
+        if (!isset($this->aggregation)) {
+            $this->aggregation = $this->searchable->search($this->query)->getAggregation($name);
+        }
+
+        return $this->aggregation;
     }
 
     /**
