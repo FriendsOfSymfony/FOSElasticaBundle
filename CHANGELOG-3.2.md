@@ -16,3 +16,4 @@ CHANGELOG for 3.2.x
  * Resolved Propel configuration
  * Add Elastica compression option
  * Add support for `defaultSortFieldName` and `defaultSortDirection` pagination options
+ * Removed `immediate` option on type persistence configuration
