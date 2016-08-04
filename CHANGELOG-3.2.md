@@ -18,3 +18,4 @@ CHANGELOG for 3.2.x
  * Add support for `defaultSortFieldName` and `defaultSortDirection` pagination options
  * Removed `immediate` option on type persistence configuration
  * Enable pagination of hybrid results
+ * Add Symfony Serializer support
