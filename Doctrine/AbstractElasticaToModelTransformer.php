@@ -90,16 +90,21 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
             throw new \RuntimeException(sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%d). IDs: %s', $objectsCnt, $elasticaObjectsCnt, join(', ', $ids)));
         };
 
+        $propertyAccessor = $this->propertyAccessor;
+        $identifier = $this->options['identifier'];
         foreach ($objects as $object) {
             if ($object instanceof HighlightableModelInterface) {
-                $object->setElasticHighlights($highlights[$object->getId()]);
+                $id = $propertyAccessor->getValue($object, $identifier);
+                $object->setElasticHighlights($highlights[$id]);
             }
         }
 
         // sort objects in the order of ids
         $idPos = array_flip($ids);
-        $identifier = $this->options['identifier'];
-        usort($objects, $this->getSortingClosure($idPos, $identifier));
+        usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor)
+        {
+            return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
+        });
 
         return $objects;
     }
