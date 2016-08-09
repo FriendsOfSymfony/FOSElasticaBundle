@@ -74,12 +74,8 @@ class MappingBuilder
             $mapping['numeric_detection'] = $typeConfig->getNumericDetection();
         }
 
-        if ($typeConfig->getIndexAnalyzer()) {
-            $mapping['index_analyzer'] = $typeConfig->getIndexAnalyzer();
-        }
-
-        if ($typeConfig->getSearchAnalyzer()) {
-            $mapping['search_analyzer'] = $typeConfig->getSearchAnalyzer();
+        if ($typeConfig->getAnalyzer()) {
+            $mapping['analyzer'] = $typeConfig->getAnalyzer();
         }
 
         if ($typeConfig->getDynamic() !== null) {
