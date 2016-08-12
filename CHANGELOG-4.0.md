@@ -10,3 +10,4 @@ in 4.0 versions.
  * Add `ruflin/Elastica` 3.x support.
  * Removed `AbstractProvider::isObjectIndexable`.
  * Removed `AbstractProvider::getMemoryUsage`.
+ * Removed deprecated `Resetter` class.

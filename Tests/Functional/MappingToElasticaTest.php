@@ -96,7 +96,7 @@ class MappingToElasticaTest extends WebTestCase
     /**
      * @param Client $client
      *
-     * @return \FOS\ElasticaBundle\Resetter $resetter
+     * @return \FOS\ElasticaBundle\Index\Resetter $resetter
      */
     private function getResetter(Client $client)
     {
