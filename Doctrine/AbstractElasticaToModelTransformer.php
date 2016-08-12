@@ -95,7 +95,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         foreach ($objects as $object) {
             if ($object instanceof HighlightableModelInterface) {
                 $id = $propertyAccessor->getValue($object, $identifier);
-                $object->setElasticHighlights($highlights[$id]);
+                $object->setElasticHighlights($highlights[(string) $id]);
             }
         }
 
@@ -103,7 +103,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         $idPos = array_flip($ids);
         usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor)
         {
-            return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
+            return $idPos[(string) $propertyAccessor->getValue($a, $identifier)] > $idPos[(string) $propertyAccessor->getValue($b, $identifier)];
         });
 
         return $objects;
@@ -121,7 +121,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         $result = array();
         foreach ($objects as $object) {
             $id = $this->propertyAccessor->getValue($object, $this->options['identifier']);
-            $result[] = new HybridResult($indexedElasticaResults[$id], $object);
+            $result[] = new HybridResult($indexedElasticaResults[(string) $id], $object);
         }
 
         return $result;
