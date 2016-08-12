@@ -495,8 +495,6 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->validate()
-                ->ifTrue(function ($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
-                    ->thenInvalid('Propel doesn\'t support listeners')
                 ->ifTrue(function ($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
                     ->thenInvalid('Propel doesn\'t support the "repository" parameter')
                 ->ifTrue(function($v) { return isset($v['driver']) && 'orm' !== $v['driver'] && !empty($v['elastica_to_model_transformer']['hints']); })

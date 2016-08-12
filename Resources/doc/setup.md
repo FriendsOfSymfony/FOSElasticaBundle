@@ -131,6 +131,12 @@ Below is an example for the Doctrine ORM.
                         finder: ~
 ```
 
+To use Propel driver you are required to install GlorpenPropelBundle, eg:
+
+```bash
+$ composer require glorpen/propel-bundle
+```
+
 There are a significant number of options available for types, that can be
 [found here](types.md)
 

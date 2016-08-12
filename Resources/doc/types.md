@@ -323,8 +323,6 @@ You can also choose to only listen for some of the events:
                             delete: true
 ```
 
-> **Propel** doesn't support this feature yet.
-
 Logging Errors
 --------------
 
