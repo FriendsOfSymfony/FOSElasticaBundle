@@ -141,29 +141,16 @@ class FOSElasticaExtension extends Extension
             $indexName = isset($index['index_name']) ? $index['index_name'] : $name;
 
             $indexDef = new DefinitionDecorator('fos_elastica.index_prototype');
+            $indexDef->setFactory(array(new Reference('fos_elastica.client'), 'getIndex'));
             $indexDef->replaceArgument(0, $indexName);
             $indexDef->addTag('fos_elastica.index', array(
                 'name' => $name,
             ));
 
-            if (method_exists($indexDef, 'setFactory')) {
-                $indexDef->setFactory(array(new Reference('fos_elastica.client'), 'getIndex'));
-            } else {
-                // To be removed when dependency on Symfony DependencyInjection is bumped to 2.6
-                $indexDef->setFactoryService('fos_elastica.client');
-                $indexDef->setFactoryMethod('getIndex');
-            }
-
             if (isset($index['client'])) {
                 $client = $this->getClient($index['client']);
 
-                if (method_exists($indexDef, 'setFactory')) {
-                    $indexDef->setFactory(array($client, 'getIndex'));
-                } else {
-                    // To be removed when dependency on Symfony DependencyInjection is bumped to 2.6
-                    $indexDef->setFactoryService('fos_elastica.client');
-                    $indexDef->setFactoryMethod('getIndex');
-                }
+                $indexDef->setFactory(array($client, 'getIndex'));
             }
 
             $container->setDefinition($indexId, $indexDef);
@@ -230,15 +217,8 @@ class FOSElasticaExtension extends Extension
 
             $typeId = sprintf('%s.%s', $indexConfig['reference'], $name);
             $typeDef = new DefinitionDecorator('fos_elastica.type_prototype');
+            $typeDef->setFactory(array($indexConfig['reference'], 'getType'));
             $typeDef->replaceArgument(0, $name);
-
-            if (method_exists($typeDef, 'setFactory')) {
-                $typeDef->setFactory(array($indexConfig['reference'], 'getType'));
-            } else {
-                // To be removed when dependency on Symfony DependencyInjection is bumped to 2.6
-                $typeDef->setFactoryService((string) $indexConfig['reference']);
-                $typeDef->setFactoryMethod('getType');
-            }
 
             $container->setDefinition($typeId, $typeDef);
 
