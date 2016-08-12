@@ -19,13 +19,6 @@ interface PartialResultsInterface
     public function getTotalHits();
 
     /**
-     * Returns the facets.
-     *
-     * @return array
-     */
-    public function getFacets();
-
-    /**
      * Returns the aggregations.
      *
      * @return array
