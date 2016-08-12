@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use FOS\ElasticaBundle\IndexManager;
-use FOS\ElasticaBundle\Resetter;
+use FOS\ElasticaBundle\Index\Resetter;
 
 /**
  * Reset search indexes.

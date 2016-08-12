@@ -17,7 +17,7 @@ class ResetCommandTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Container();
 
-        $this->resetter = $this->getMockBuilder('\FOS\ElasticaBundle\Resetter')
+        $this->resetter = $this->getMockBuilder('\FOS\ElasticaBundle\Index\Resetter')
             ->disableOriginalConstructor()
             ->setMethods(array('resetIndex', 'resetIndexType'))
             ->getMock();
