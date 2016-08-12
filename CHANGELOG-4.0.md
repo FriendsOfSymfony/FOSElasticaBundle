@@ -12,3 +12,4 @@ in 4.0 versions.
  * Removed `AbstractProvider::isObjectIndexable`.
  * Removed `AbstractProvider::getMemoryUsage`.
  * Removed deprecated `Resetter` class.
+ * Removed deprecated `Client` class.
