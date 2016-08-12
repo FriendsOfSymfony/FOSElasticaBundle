@@ -8,3 +8,5 @@ in 4.0 versions.
 
  * Removed PHP 5.3 support.
  * Add `ruflin/Elastica` 3.x support.
+ * Removed `AbstractProvider::isObjectIndexable`.
+ * Removed `AbstractProvider::getMemoryUsage`.
