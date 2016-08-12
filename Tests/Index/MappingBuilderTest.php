@@ -32,6 +32,11 @@ class MappingBuilderTest extends \PHPUnit_Framework_TestCase
                     'type' => 'string',
                     'store' => false
                 ),
+            ),
+            '_parent' => array(
+                'type' => 'parent_type',
+                'identifier' => 'name',
+                'property' => 'parent_property'
             )
         ));
 
@@ -42,6 +47,10 @@ class MappingBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($mapping['properties']['stored']['store']);
         $this->assertArrayHasKey('store', $mapping['properties']['unstored']);
         $this->assertFalse($mapping['properties']['unstored']['store']);
+
+        $this->assertArrayHasKey('_parent', $mapping);
+        $this->assertArrayNotHasKey('identifier', $mapping['_parent']);
+        $this->assertArrayNotHasKey('property', $mapping['_parent']);
     }
 
 }

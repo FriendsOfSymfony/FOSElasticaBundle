@@ -18,4 +18,4 @@ fos_elastica:
                     persistence:
                         driver: orm
                         model: foo_model
-                    _parent: { type: "parent_field" }
+                    _parent: { type: "parent_field", property: "parent" }

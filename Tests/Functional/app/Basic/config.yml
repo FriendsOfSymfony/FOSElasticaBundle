@@ -93,6 +93,8 @@ fos_elastica:
                         dynamic_allowed: { type: object, dynamic: true }
                     _parent:
                         type: "parent"
+                        property: "parent"
+                        identifier: "id"
                 null_mappings:
                     mappings: ~
         empty_index: ~
