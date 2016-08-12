@@ -22,13 +22,6 @@ interface PaginatorAdapterInterface
     public function getResults($offset, $length);
 
     /**
-     * Returns Facets.
-     *
-     * @return mixed
-     */
-    public function getFacets();
-
-    /**
      * Returns Aggregations.
      *
      * @return mixed
