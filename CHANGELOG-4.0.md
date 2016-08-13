@@ -14,3 +14,4 @@ in 4.0 versions.
  * Removed deprecated `Resetter` class.
  * Removed deprecated `Client` class.
  * Removed deprecated `IndexManager` class.
+ * Removed deprecated `DynamicIndex` class.
