@@ -68,15 +68,17 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             ->method('getManager')
             ->will($this->returnValue($this->manager));
 
-        $this->repository = $this->getMock('Doctrine\Common\Persistence\ObjectRepository', array(
-            'customQueryBuilderCreator',
-            'createQueryBuilder',
-            'find',
-            'findAll',
-            'findBy',
-            'findOneBy',
-            'getClassName'
-        ));
+        $this->repository = $this
+            ->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')
+            ->setMethods(array(
+                'customQueryBuilderCreator',
+                'createQueryBuilder',
+                'find',
+                'findAll',
+                'findBy',
+                'findOneBy',
+                'getClassName',
+            ))->getMock();
 
         $this->manager->expects($this->any())
             ->method('getRepository')

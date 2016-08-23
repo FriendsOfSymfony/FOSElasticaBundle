@@ -16,7 +16,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
 
     protected function collectionSetup()
     {
-        $transformer1 = $this->getMock('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
+        $transformer1 = $this->getMockBuilder('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface')->getMock();
         $transformer1->expects($this->any())
             ->method('getObjectClass')
             ->will($this->returnValue('FOS\ElasticaBundle\Tests\Transformer\POPO'));
@@ -25,7 +25,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
             ->method('getIdentifierField')
             ->will($this->returnValue('id'));
 
-        $transformer2 = $this->getMock('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
+        $transformer2 = $this->getMockBuilder('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface')->getMock();
         $transformer2->expects($this->any())
             ->method('getObjectClass')
             ->will($this->returnValue('FOS\ElasticaBundle\Tests\Transformer\POPO2'));
@@ -156,7 +156,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
      */
     public function testHybridTransformDecoratesResultsWithHybridResultObjects($result, $transformedObject)
     {
-        $transformer = $this->getMock('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface');
+        $transformer = $this->getMockBuilder('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface')->getMock();
         $transformer->expects($this->any())->method('getIdentifierField')->will($this->returnValue('id'));
 
         $transformer

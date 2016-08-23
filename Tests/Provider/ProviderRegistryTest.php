@@ -15,7 +15,7 @@ class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $this->container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
 
         // Mock ContainerInterface::get() to return the service ID
         $this->container->expects($this->any())

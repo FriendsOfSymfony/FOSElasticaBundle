@@ -31,11 +31,10 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function testIgnoreMissingOptionDuringTransformHybrid()
     {
-        $transformer = $this->getMock(
-            'FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer',
-            array('findByIdentifiers'),
-            array($this->registry, $this->objectClass, array('ignore_missing' => true))
-        );
+        $transformer = $this->getMockBuilder('FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer')
+            ->setMethods(array('findByIdentifiers'))
+            ->setConstructorArgs(array($this->registry, $this->objectClass, array('ignore_missing' => true)))
+            ->getMock();
 
         $transformer->setPropertyAccessor(PropertyAccess::createPropertyAccessor());
 
@@ -220,7 +219,7 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             return $object->$identifier;
         };
 
-        $propertyAccessor = $this->getMock('Symfony\Component\PropertyAccess\PropertyAccessorInterface');
+        $propertyAccessor = $this->getMockBuilder('Symfony\Component\PropertyAccess\PropertyAccessorInterface')->getMock();
         $propertyAccessor
             ->expects($this->any())
             ->method('getValue')
