@@ -77,6 +77,16 @@ fos_elastica:
                             property_path: coll
                         dynamic:
                             property_path: false
+                type_with_repository:
+                    properties:
+                        field1: ~
+                        coll: ~
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObject
+                        repository: FOS\ElasticaBundle\Tests\Functional\TypeObjectRepository
+                        finder: ~
+                        provider: ~
         second_index:
             index_name: foselastica_orm_test_second_%kernel.environment%
             types:
