@@ -239,7 +239,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getIndex')
             ->will($this->returnValue($index));
 
-        $mock->expects($this->any())
+        $index->expects($this->any())
             ->method('getType')
             ->will($this->returnValue($type));
 
@@ -254,7 +254,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockIndexable($indexName, $typeName, $object, $return = null)
     {
-        $mock = $this->getMock('FOS\ElasticaBundle\Provider\IndexableInterface');
+        $mock = $this->getMockBuilder('FOS\ElasticaBundle\Provider\IndexableInterface')->getMock();
 
         if (null !== $return) {
             $mock->expects($this->once())

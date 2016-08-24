@@ -1,8 +1,10 @@
 <?php
 
-use \FOS\ElasticaBundle\Serializer\Callback;
+namespace FOS\ElasticaBundle\Tests\Serializer;
 
-class CallbackTest extends PHPUnit_Framework_TestCase
+use FOS\ElasticaBundle\Serializer\Callback;
+
+class CallbackTest extends \PHPUnit_Framework_TestCase
 {
     public function testSerializerMustHaveSerializeMethod()
     {
@@ -14,7 +16,7 @@ class CallbackTest extends PHPUnit_Framework_TestCase
     public function testSetGroupsWorksWithValidSerializer()
     {
         $callback = new Callback();
-        $serializer = $this->getMock('Symfony\Component\Serializer\Serializer', array(), array(), '', false);
+        $serializer = $this->getMockBuilder('Symfony\Component\Serializer\Serializer')->disableOriginalConstructor()->getMock();
         $callback->setSerializer($serializer);
 
         $callback->setGroups(array('foo'));
@@ -23,7 +25,7 @@ class CallbackTest extends PHPUnit_Framework_TestCase
     public function testSetGroupsFailsWithInvalidSerializer()
     {
         $callback = new Callback();
-        $serializer = $this->getMockBuilder('FakeSerializer')->setMethods(array('serialize'))->getMock();
+        $serializer = $this->getMockBuilder('FOS\ElasticaBundle\Tests\Serializer\FakeSerializer')->setMethods(array('serialize'))->getMock();
         $callback->setSerializer($serializer);
 
         $this->setExpectedException(
@@ -33,5 +35,12 @@ class CallbackTest extends PHPUnit_Framework_TestCase
         );
 
         $callback->setGroups(array('foo'));
+    }
+}
+
+class FakeSerializer
+{
+    public function serialize()
+    {
     }
 }

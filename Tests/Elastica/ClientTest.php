@@ -11,11 +11,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $transport = new NullTransport();
 
-        $connection = $this->getMock('Elastica\Connection');
+        $connection = $this->getMockBuilder('Elastica\Connection')->getMock();
         $connection->expects($this->any())->method('getTransportObject')->will($this->returnValue($transport));
         $connection->expects($this->any())->method('toArray')->will($this->returnValue(array()));
 
-        $logger = $this->getMock('FOS\ElasticaBundle\Logger\ElasticaLogger');
+        $logger = $this->getMockBuilder('FOS\ElasticaBundle\Logger\ElasticaLogger')->getMock();
         $logger
             ->expects($this->once())
             ->method('logQuery')

@@ -80,7 +80,6 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
         $method->invokeArgs($transformer, array());
     }
 
-
     /**
      * Checks that the 'hints' parameter is used on the created query
      */
@@ -100,7 +99,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $qb->expects($this->any())->method('getQuery')->willReturn($query);
-        $qb->expects($this->any())->method('expr')->willReturn($this->getMock('Doctrine\ORM\Query\Expr'));
+        $qb->expects($this->any())->method('expr')->willReturn($this->getMockBuilder('Doctrine\ORM\Query\Expr')->getMock());
         $qb->expects($this->any())->method('andWhere')->willReturnSelf();
 
         $this->repository->expects($this->once())
@@ -136,15 +135,17 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             ->with($this->objectClass)
             ->will($this->returnValue($this->manager));
 
-        $this->repository = $this->getMock('Doctrine\Common\Persistence\ObjectRepository', array(
-            'customQueryBuilderCreator',
-            'createQueryBuilder',
-            'find',
-            'findAll',
-            'findBy',
-            'findOneBy',
-            'getClassName',
-        ));
+        $this->repository = $this
+            ->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')
+            ->setMethods(array(
+                'customQueryBuilderCreator',
+                'createQueryBuilder',
+                'find',
+                'findAll',
+                'findBy',
+                'findOneBy',
+                'getClassName',
+            ))->getMock();
 
         $this->manager->expects($this->any())
             ->method('getRepository')

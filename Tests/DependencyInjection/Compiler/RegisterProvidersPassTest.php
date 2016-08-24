@@ -68,7 +68,7 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
 
     private function createProviderDefinition(array $attributes = array())
     {
-        $provider = $this->getMock('FOS\ElasticaBundle\Provider\ProviderInterface');
+        $provider = $this->getMockBuilder('FOS\ElasticaBundle\Provider\ProviderInterface')->getMock();
 
         $definition = new Definition(get_class($provider));
         $definition->addTag('fos_elastica.provider', $attributes);
