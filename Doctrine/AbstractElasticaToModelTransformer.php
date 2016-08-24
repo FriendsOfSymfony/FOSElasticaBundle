@@ -101,10 +101,19 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 
         // sort objects in the order of ids
         $idPos = array_flip($ids);
-        usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor)
-        {
-            return $idPos[(string) $propertyAccessor->getValue($a, $identifier)] > $idPos[(string) $propertyAccessor->getValue($b, $identifier)];
-        });
+        usort(
+            $objects,
+            function ($a, $b) use ($idPos, $identifier, $propertyAccessor) {
+                if ($this->options['hydrate']) {
+                    return $idPos[(string)$propertyAccessor->getValue(
+                        $a,
+                        $identifier
+                    )] > $idPos[(string)$propertyAccessor->getValue($b, $identifier)];
+                } else {
+                    return $idPos[$a[$identifier]] > $idPos[$b[$identifier]];
+                }
+            }
+        );
 
         return $objects;
     }
@@ -120,7 +129,11 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 
         $result = array();
         foreach ($objects as $object) {
-            $id = $this->propertyAccessor->getValue($object, $this->options['identifier']);
+            if ($this->options['hydrate']) {
+                $id = $this->propertyAccessor->getValue($object, $this->options['identifier']);
+            } else {
+                $id = $object[$this->options['identifier']];
+            }
             $result[] = new HybridResult($indexedElasticaResults[(string) $id], $object);
         }
 
