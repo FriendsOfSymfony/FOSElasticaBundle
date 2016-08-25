@@ -77,11 +77,12 @@ class Provider extends AbstractProvider
     /**
      * {@inheritDoc}
      */
-    protected function createQueryBuilder($method)
+    protected function createQueryBuilder($method, array $arguments = array())
     {
-        return $this->managerRegistry
+        $repository = $this->managerRegistry
             ->getManagerForClass($this->objectClass)
-            ->getRepository($this->objectClass)
-            ->{$method}();
+            ->getRepository($this->objectClass);
+
+        return call_user_func_array([$repository, $method], $arguments);
     }
 }
