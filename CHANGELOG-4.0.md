@@ -15,3 +15,4 @@ in 4.0 versions.
  * Removed deprecated `Client` class.
  * Removed deprecated `IndexManager` class.
  * Removed deprecated `DynamicIndex` class.
+ * Allow additional parameters to `AbstractProvider::queryBuilder`.
