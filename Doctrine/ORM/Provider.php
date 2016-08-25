@@ -107,12 +107,14 @@ class Provider extends AbstractProvider
     /**
      * {@inheritDoc}
      */
-    protected function createQueryBuilder($method)
+    protected function createQueryBuilder($method, array $arguments = array())
     {
-        return $this->managerRegistry
+        $repository = $this->managerRegistry
             ->getManagerForClass($this->objectClass)
-            ->getRepository($this->objectClass)
-            // ORM query builders require an alias argument
-            ->{$method}(static::ENTITY_ALIAS);
+            ->getRepository($this->objectClass);
+        // ORM query builders require an alias argument
+        $arguments = [static::ENTITY_ALIAS] + $arguments;
+
+        return call_user_func_array([$repository, $method], $arguments);
     }
 }

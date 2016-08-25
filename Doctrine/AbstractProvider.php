@@ -58,10 +58,11 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * Creates the query builder, which will be used to fetch objects to index.
      *
      * @param string $method
+     * @param array $arguments
      *
      * @return object
      */
-    abstract protected function createQueryBuilder($method);
+    abstract protected function createQueryBuilder($method, array $arguments = array());
 
     /**
      * Fetches a slice of objects using the query builder.
