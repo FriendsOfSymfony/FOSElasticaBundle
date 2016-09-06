@@ -151,7 +151,7 @@ class PopulateCommand extends ContainerAwareCommand
 
         $this->dispatcher->dispatch(IndexPopulateEvent::POST_INDEX_POPULATE, $event);
 
-        $this->refreshIndex($output, $index, !$reset);
+        $this->refreshIndex($output, $index, $reset);
     }
 
     /**
