@@ -54,6 +54,11 @@ class Indexable implements IndexableInterface
     private $propertyAccessor;
 
     /**
+     * @var bool
+     */
+    private $indexingEnabled = true;
+
+    /**
      * @param array $callbacks
      * @param ContainerInterface $container
      */
@@ -75,6 +80,10 @@ class Indexable implements IndexableInterface
      */
     public function isObjectIndexable($indexName, $typeName, $object)
     {
+        if(!$this->indexingEnabled) {
+            return false;
+        }
+
         $type = sprintf('%s/%s', $indexName, $typeName);
         $callback = $this->getCallback($type, $object);
         if (!$callback) {
@@ -93,6 +102,26 @@ class Indexable implements IndexableInterface
             : call_user_func($callback, $object);
     }
 
+    /**
+     * Returns true if global indexing is enabled, false otherwise.
+     * 
+     * @return bool
+     */
+    public function isIndexingEnabled()
+    {
+        return $this->indexingEnabled;
+    }
+
+    /**
+     * Sets global indexing.
+     * 
+     * @param bool $indexingEnabled
+     */
+    public function setIndexingEnabled($indexingEnabled)
+    {
+        $this->indexingEnabled = $indexingEnabled;
+    }
+    
     /**
      * Builds and initialises a callback.
      *

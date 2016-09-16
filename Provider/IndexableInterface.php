@@ -23,4 +23,18 @@ interface IndexableInterface
      * @return bool
      */
     public function isObjectIndexable($indexName, $typeName, $object);
+
+    /**
+     * Returns true if global indexing is enabled, false otherwise.
+     *
+     * @return bool
+     */
+    public function isIndexingEnabled();
+
+    /**
+     * Sets global indexing.
+     *
+     * @param bool $indexingEnabled
+     */
+    public function setIndexingEnabled($indexingEnabled);
 }

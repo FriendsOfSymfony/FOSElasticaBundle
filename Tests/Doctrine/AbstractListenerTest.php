@@ -7,7 +7,7 @@ namespace FOS\ElasticaBundle\Tests\Doctrine;
  *
  * @author Richard Miller <info@limethinking.co.uk>
  */
-abstract class ListenerTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
 {
     public function testObjectInsertedOnPersist()
     {
@@ -250,18 +250,23 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
      * @param string          $indexName
      * @param string          $typeName
      * @param Listener\Entity $object
-     * @param boolean         $return
+     * @param boolean         $isObjectIndexable
+     * @param boolean         $isIndexingEnabled
      */
-    private function getMockIndexable($indexName, $typeName, $object, $return = null)
+    private function getMockIndexable($indexName, $typeName, $object, $isObjectIndexable = null, $isIndexingEnabled = true)
     {
         $mock = $this->getMock('FOS\ElasticaBundle\Provider\IndexableInterface');
 
-        if (null !== $return) {
+        if (null !== $isObjectIndexable) {
             $mock->expects($this->once())
                 ->method('isObjectIndexable')
                 ->with($indexName, $typeName, $object)
-                ->will($this->returnValue($return));
+                ->will($this->returnValue($isObjectIndexable));
         }
+
+        $mock->expects($this->once())
+            ->method('isIndexingEnabled')
+            ->will($this->returnValue($isIndexingEnabled));
 
         return $mock;
     }
