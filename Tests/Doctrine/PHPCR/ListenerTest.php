@@ -2,7 +2,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine\PHPCR;
 
-use FOS\ElasticaBundle\Tests\Doctrine\ListenerTest as BaseListenerTest;
+use FOS\ElasticaBundle\Tests\Doctrine\AbstractListenerTest as BaseListenerTest;
 
 class ListenerTest extends BaseListenerTest
 {
