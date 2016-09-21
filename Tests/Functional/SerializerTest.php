@@ -68,6 +68,25 @@ class SerializerTest extends WebTestCase
         $resetter->resetIndex('index');
     }
 
+    public function testIfEventOnPostTransformEventIsCalled()
+    {
+        $client = $this->createClient(array('test_case' => 'SerializerWithListener'));
+        $container = $client->getContainer();
+        $object = new TypeObj();
+        $object->id = 2;
+        $object->field1 = 'a listener will change me';
+
+        $elasticaPersister = $container->get('fos_elastica.object_persister.index.type');
+        $elasticaPersister->insertOne($object);
+
+        $elasticaType = $container->get('fos_elastica.index.index.type');
+
+        $documentData = $elasticaType->getDocument(2)->getData();
+
+        $this->assertArrayHasKey('field1', $documentData);
+        $this->assertEquals($documentData['field1'], 'post_persister');
+    }
+
     protected function setUp()
     {
         parent::setUp();
