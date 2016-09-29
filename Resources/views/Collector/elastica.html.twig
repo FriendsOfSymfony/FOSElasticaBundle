@@ -31,6 +31,10 @@
             <b>Query Time</b>
             <span>{{ '%0.2f'|format(collector.time) }} ms</span>
         </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Execution Time</b>
+            <span>{{ '%0.2f'|format(collector.executionTime) }} ms</span>
+        </div>
     {% endset %}
     {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
 {% endblock %}
@@ -68,7 +72,7 @@
                     <strong>Query time</strong>: {{ query.engineMS }} ms<br />
                     <strong>Item count</strong>: {{ query.itemCount }}<br />
                     <small>
-                        <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS * 1000) }} ms
+                        <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS) }} ms
                     </small>
                     {% if query.connection.transport in ['Http', 'Https'] %}{# cURL support only HTTP #}
                         <a href="#elastica_curl_query_{{ key }}" onclick="return toggle_details(this);" style="text-decoration: none;" title="Get the cURL repeatable query">
