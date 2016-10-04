@@ -311,4 +311,24 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(123, $configuration['clients']['simple_timeout']['connections'][0]['timeout']);
         $this->assertEquals(234, $configuration['clients']['connect_timeout']['connections'][0]['connectTimeout']);
     }
+
+    public function testAWSConfig()
+    {
+        $configuration = $this->getConfigs(array(
+            'clients' => array(
+                'default' => array(
+                    'aws_access_key_id'     => 'AWS_KEY',
+                    'aws_secret_access_key' => 'AWS_SECRET',
+                    'aws_region'            => 'AWS_REGION',
+                    'aws_session_token'     => 'AWS_SESSION_TOKEN',
+                ),
+            ),
+        ));
+
+        $connection = $configuration['clients']['default']['connections'][0];
+        $this->assertEquals('AWS_KEY', $connection['aws_access_key_id']);
+        $this->assertEquals('AWS_SECRET', $connection['aws_secret_access_key']);
+        $this->assertEquals('AWS_REGION', $connection['aws_region']);
+        $this->assertEquals('AWS_SESSION_TOKEN', $connection['aws_session_token']);
+    }
 }
