@@ -33,8 +33,9 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $loggerMock->expects($this->once())
-            ->method($level)
+            ->method('log')
             ->with(
+                $level,
                 $this->equalTo($message),
                 $this->equalTo($context)
             );
@@ -77,7 +78,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
             'path'        => $path,
             'method'      => $method,
             'data'        => $data,
-            'executionMS' => $time,
+            'executionMS' => $time * 1000,
             'connection'  => $connection,
             'queryString' => $query,
             'engineMS' => 0,
