@@ -89,12 +89,12 @@ class Resetter
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
         $index = $this->indexManager->getIndex($indexName);
 
-        $event = new IndexResetEvent($indexName, $populating, $force);
-        $this->dispatcher->dispatch(IndexResetEvent::PRE_INDEX_RESET, $event);
-
         if ($indexConfig->isUseAlias()) {
             $this->aliasProcessor->setRootName($indexConfig, $index);
         }
+
+        $event = new IndexResetEvent($indexName, $populating, $force);
+        $this->dispatcher->dispatch(IndexResetEvent::PRE_INDEX_RESET, $event);
 
         $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
         $index->create($mapping, true);
