@@ -54,23 +54,3 @@ $repository = $repositoryManager->getRepository('UserBundle:User');
 /** var array of Acme\UserBundle\Entity\User */
 $users = $repository->findWithCustomQuery('bob');
 ```
-
-Alternatively you can specify the custom repository using an annotation in the entity:
-
-```php
-<?php
-
-namespace Application\UserBundle\Entity;
-
-use FOS\ElasticaBundle\Annotation\Search;
-
-/**
- * @Search(repositoryClass="Acme\ElasticaBundle\SearchRepository\UserRepository")
- */
-class User
-{
-
-   //---
-
-}
-```

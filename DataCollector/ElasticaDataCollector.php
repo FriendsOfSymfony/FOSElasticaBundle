@@ -63,6 +63,19 @@ class ElasticaDataCollector extends DataCollector
     }
 
     /**
+     * @return int
+     */
+    public function getExecutionTime()
+    {
+        $time = 0;
+        foreach ($this->data['queries'] as $query) {
+            $time += $query['executionMS'];
+        }
+
+        return $time;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
