@@ -120,4 +120,14 @@ class TransformedFinder implements PaginatedFinderInterface
 
         return new HybridPaginatorAdapter($this->searchable, $query, $this->transformer);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createRawPaginatorAdapter($query)
+    {
+        $query = Query::create($query);
+
+        return new RawPaginatorAdapter($this->searchable, $query);
+    }
 }
