@@ -84,14 +84,18 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             $path = is_callable($options['sortNestedPath']) ?
                 $options['sortNestedPath']($sortField) : $options['sortNestedPath'];
 
-            $sort['nested_path'] = $path;
+            if (!empty($path)) {
+                $sort['nested_path'] = $path;
+            }
         }
 
         if (isset($options['sortNestedFilter'])) {
             $filter = is_callable($options['sortNestedFilter']) ?
                 $options['sortNestedFilter']($sortField) : $options['sortNestedFilter'];
 
-            $sort['nested_filter'] = $filter;
+            if (!empty($filter)) {
+                $sort['nested_filter'] = $filter;
+            }
         }
 
         return $sort;
