@@ -5,7 +5,7 @@ namespace FOS\ElasticaBundle\Command;
 use FOS\ElasticaBundle\Event\IndexPopulateEvent;
 use FOS\ElasticaBundle\Event\TypePopulateEvent;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,6 +13,7 @@ use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
 use FOS\ElasticaBundle\Index\Resetter;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Populate the search index.
@@ -100,9 +101,9 @@ class PopulateCommand extends ContainerAwareCommand
         }
 
         if ($input->isInteractive() && $reset && $input->getOption('offset')) {
-            /** @var DialogHelper $dialog */
-            $dialog = $this->getHelperSet()->get('dialog');
-            if (!$dialog->askConfirmation($output, '<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>', true)) {
+            /** @var QuestionHelper $dialog */
+            $dialog = $this->getHelperSet()->get('question');
+            if (!$dialog->askConfirmation($input, $output, new Question('<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>'))) {
                 return;
             }
         }
