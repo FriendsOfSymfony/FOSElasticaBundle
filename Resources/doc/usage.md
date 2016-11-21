@@ -31,6 +31,20 @@ $countOfResults = $userPaginator->getNbResults();
 $paginator = $this->get('knp_paginator');
 $results = $finder->createPaginatorAdapter('bob');
 $pagination = $paginator->paginate($results, $page, 10);
+
+// You can specify additional options as the fourth parameter of Knp Paginator
+// paginate method to set ignore_unmapped, nested_filter and nested_sort
+
+$options = [
+    'sortIgnoreUnmapped' => true,
+    'sortNestedPath' => 'owner',
+    'sortNestedFilter' => new Query\Term(['enabled' => ['value' => true]]),
+];
+
+// sortNestedPath and sortNestedFilter also accepts a callable
+// which takes the current sort field to get the correct sort path/filter
+
+$pagination = $paginator->paginate($results, $page, 10, $options);
 ```
 
 Aggregations
