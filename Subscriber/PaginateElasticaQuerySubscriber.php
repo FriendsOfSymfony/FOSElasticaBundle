@@ -66,28 +66,60 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
 
         if (!empty($sortField)) {
-            // determine sort direction
-            $dir = 'asc';
-            $sortDirection = $this->request->get($options['sortDirectionParameterName']);
-
-            if (!$sortDirection && isset($options['defaultSortDirection'])) {
-                $sortDirection = $options['defaultSortDirection'];
-            }
-
-            if ('desc' === strtolower($sortDirection)) {
-                $dir = 'desc';
-            }
-
-            // check if the requested sort field is in the sort whitelist
-            if (isset($options['sortFieldWhitelist']) && !in_array($sortField, $options['sortFieldWhitelist'])) {
-                throw new \UnexpectedValueException(sprintf('Cannot sort by: [%s] this field is not in whitelist', $sortField));
-            }
-
-            // set sort on active query
             $event->target->getQuery()->setSort(array(
-                $sortField => array('order' => $dir, 'ignore_unmapped' => true),
+                $sortField => $this->getSort($sortField, $options),
             ));
         }
+    }
+
+    protected function getSort($sortField, array $options = [])
+    {
+        $ignoreUnmapped = isset($options['sortIgnoreUnmapped']) ? $options['sortIgnoreUnmapped'] : true;
+        $sort = [
+            'order' => $this->getSortDirection($sortField, $options),
+            'ignore_unmapped' => $ignoreUnmapped,
+        ];
+
+        if (isset($options['sortNestedPath'])) {
+            $path = is_callable($options['sortNestedPath']) ?
+                $options['sortNestedPath']($sortField) : $options['sortNestedPath'];
+
+            if (!empty($path)) {
+                $sort['nested_path'] = $path;
+            }
+        }
+
+        if (isset($options['sortNestedFilter'])) {
+            $filter = is_callable($options['sortNestedFilter']) ?
+                $options['sortNestedFilter']($sortField) : $options['sortNestedFilter'];
+
+            if (!empty($filter)) {
+                $sort['nested_filter'] = $filter;
+            }
+        }
+
+        return $sort;
+    }
+
+    protected function getSortDirection($sortField, array $options = [])
+    {
+        $dir = 'asc';
+        $sortDirection = $this->request->get($options['sortDirectionParameterName']);
+
+        if (empty($sortDirection) && isset($options['defaultSortDirection'])) {
+            $sortDirection = $options['defaultSortDirection'];
+        }
+
+        if ('desc' === strtolower($sortDirection)) {
+            $dir = 'desc';
+        }
+
+        // check if the requested sort field is in the sort whitelist
+        if (isset($options['sortFieldWhitelist']) && !in_array($sortField, $options['sortFieldWhitelist'])) {
+            throw new \UnexpectedValueException(sprintf('Cannot sort by: [%s] this field is not in whitelist', $sortField));
+        }
+
+        return $dir;
     }
 
     /**
