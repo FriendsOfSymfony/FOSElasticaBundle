@@ -11,26 +11,24 @@
 
 namespace FOS\ElasticaBundle\Provider;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-class Indexable implements IndexableInterface
+class Indexable implements IndexableInterface, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * An array of raw configured callbacks for all types.
      *
      * @var array
      */
     private $callbacks = array();
-
-    /**
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    private $container;
 
     /**
      * An instance of ExpressionLanguage.
@@ -55,12 +53,10 @@ class Indexable implements IndexableInterface
 
     /**
      * @param array $callbacks
-     * @param ContainerInterface $container
      */
-    public function __construct(array $callbacks, ContainerInterface $container)
+    public function __construct(array $callbacks)
     {
         $this->callbacks = $callbacks;
-        $this->container = $container;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
     }
 
@@ -179,7 +175,7 @@ class Indexable implements IndexableInterface
      */
     private function getExpressionLanguage()
     {
-        if (null === $this->expressionLanguage && class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+        if (null === $this->expressionLanguage) {
             $this->expressionLanguage = new ExpressionLanguage();
         }
 

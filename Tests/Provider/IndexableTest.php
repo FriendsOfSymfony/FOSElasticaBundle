@@ -20,7 +20,8 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
 
     public function testIndexableUnknown()
     {
-        $indexable = new Indexable(array(), $this->container);
+        $indexable = new Indexable(array());
+        $indexable->setContainer($this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
         $this->assertTrue($index);
@@ -33,7 +34,8 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     {
         $indexable = new Indexable(array(
             'index/type' => $callback,
-        ), $this->container);
+        ));
+        $indexable->setContainer($this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
         $this->assertEquals($return, $index);
@@ -47,7 +49,8 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     {
         $indexable = new Indexable(array(
             'index/type' => $callback,
-        ), $this->container);
+        ));
+        $indexable->setContainer($this->container);
         $indexable->isObjectIndexable('index', 'type', new Entity());
     }
 
