@@ -30,6 +30,10 @@ class TypeObj
 
     public function getSerializableColl()
     {
+        if (null === $this->coll) {
+            return null;
+        }
+
         return iterator_to_array($this->coll, false);
     }
 }

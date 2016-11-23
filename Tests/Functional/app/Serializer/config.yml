@@ -32,7 +32,7 @@ fos_elastica:
             types:
                 type:
                     properties:
-#                        coll: ~
+                        coll: ~
                         field1: ~
                     persistence:
                         driver: orm

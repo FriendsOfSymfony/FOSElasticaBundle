@@ -1,8 +1,9 @@
 FOS\ElasticaBundle\Tests\Functional\TypeObj:
+    exclusion_policy: ALL
     properties:
         field1:
             type: string
-    virtualProperties:
+    virtual_properties:
         getSerializableColl:
-            serializedName: coll
+            serialized_name: coll
             type: array
