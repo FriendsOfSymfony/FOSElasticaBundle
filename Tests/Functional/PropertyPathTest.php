@@ -29,7 +29,7 @@ class PropertyPathTest extends WebTestCase
 
         /** @var \Elastica\Index $elClient */
         $index = $client->getContainer()->get('fos_elastica.index.index');
-        $index->flush(true);
+        $index->flush();
 
         $query = new Match();
         $query->setField('something', 'Hello');
