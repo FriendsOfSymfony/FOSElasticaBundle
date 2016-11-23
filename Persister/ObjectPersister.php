@@ -172,6 +172,6 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function transformToElasticaDocument($object)
     {
-        return $this->transformer->transform($object, $this->fields);
+        return $this->transformer->transform($object, $this->fields, $this->type);
     }
 }
