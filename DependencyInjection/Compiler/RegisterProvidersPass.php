@@ -30,7 +30,16 @@ class RegisterProvidersPass implements CompilerPassInterface
         $registry = $container->getDefinition('fos_elastica.provider_registry');
         $providers = $container->findTaggedServiceIds('fos_elastica.provider');
 
-        foreach ($providers as $providerId => $tags) {
+        $providersByPriority = array();
+        foreach ($providers as $id => $attributes) {
+            $priority = isset($attributes[0]['priority']) ? $attributes[0]['priority'] : 0;
+            $providersByPriority[$priority][$id] = $attributes;
+        }
+
+        krsort($providersByPriority);
+        $providersByPriority = call_user_func_array('array_merge', $providersByPriority);
+
+        foreach ($providersByPriority as $providerId => $tags) {
             $index = $type = null;
             $class = $container->getDefinition($providerId)->getClass();
 
