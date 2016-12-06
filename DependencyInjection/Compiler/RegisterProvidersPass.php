@@ -36,7 +36,7 @@ class RegisterProvidersPass implements CompilerPassInterface
             $providersByPriority[$priority][$id] = $attributes;
         }
 
-        if (!empty($providersByPriority){
+        if (!empty($providersByPriority)){
             krsort($providersByPriority);
             $providersByPriority = call_user_func_array('array_merge', $providersByPriority);
         }
