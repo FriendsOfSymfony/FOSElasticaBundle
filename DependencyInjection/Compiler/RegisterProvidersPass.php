@@ -36,9 +36,11 @@ class RegisterProvidersPass implements CompilerPassInterface
             $providersByPriority[$priority][$id] = $attributes;
         }
 
-        krsort($providersByPriority);
-        $providersByPriority = call_user_func_array('array_merge', $providersByPriority);
-
+        if (!empty($providersByPriority){
+            krsort($providersByPriority);
+            $providersByPriority = call_user_func_array('array_merge', $providersByPriority);
+        }
+            
         foreach ($providersByPriority as $providerId => $tags) {
             $index = $type = null;
             $class = $container->getDefinition($providerId)->getClass();
