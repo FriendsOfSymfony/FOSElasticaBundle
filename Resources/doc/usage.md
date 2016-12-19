@@ -96,7 +96,7 @@ In the case where you need many different methods for different searching terms,
 may be better to separate methods for each type into their own dedicated repository
 classes, just like Doctrine ORM's EntityRepository classes.
 
-The manager class that handles repositories has a service key of `fos_elastica.manager`.
+The manager class that handles repositories has a service key of `fos_elastica.repository_manager`.
 The manager will default to handling ORM entities, and the configuration must be changed
 for MongoDB users.
 
@@ -109,7 +109,7 @@ An example for using a repository:
 
 ```php
 /** var FOS\ElasticaBundle\Manager\RepositoryManager */
-$repositoryManager = $this->container->get('fos_elastica.manager');
+$repositoryManager = $this->container->get('fos_elastica.repository_manager');
 
 /** var FOS\ElasticaBundle\Repository */
 $repository = $repositoryManager->getRepository('UserBundle:User');
