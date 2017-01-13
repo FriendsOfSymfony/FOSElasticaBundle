@@ -43,6 +43,23 @@ class Provider extends AbstractProvider
     /**
      * {@inheritDoc}
      */
+    protected function configureOptions()
+    {
+        parent::configureOptions();
+
+        $this->resolver->setDefaults(array(
+            'clear_object_manager' => true,
+            'debug_logging'        => false,
+            'ignore_errors'        => false,
+            'offset'               => 0,
+            'query_builder_method' => 'createQueryBuilder',
+            'sleep'                => 0
+        ));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected function disableLogging()
     {
     }
