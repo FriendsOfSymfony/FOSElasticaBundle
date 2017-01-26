@@ -365,11 +365,11 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
                     'type'       => 'object',
                     'properties' => array(
                         'key1sub1' => array(
-                            'type'       => 'string',
+                            'type'       => 'text',
                             'properties' => array(),
                         ),
                         'key1sub2' => array(
-                            'type'       => 'string',
+                            'type'       => 'text',
                             'properties' => array(),
                         ),
                     ),

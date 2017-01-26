@@ -61,7 +61,7 @@ fos_elastica:
                             match: "*"
                             mapping:
                                 analyzer: english
-                                type: string
+                                type: text
                     numeric_detection: true
                     properties:
                         field1: ~
@@ -78,10 +78,10 @@ fos_elastica:
                                 date: { boost: 5 }
                                 content: ~
                         multiple:
-                            type: string
+                            type: text
                             fields:
-                                name: { type: string }
-                                position: { type: string }
+                                name: { type: text }
+                                position: { type: text }
                         user:
                             type: "object"
                         approver:

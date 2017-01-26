@@ -27,9 +27,9 @@ class PropertyPathTest extends WebTestCase
         $obj->coll = 'Hello';
         $persister->insertOne($obj);
 
-        /** @var \Elastica\Index $elClient */
+        /** @var \Elastica\Index $index */
         $index = $client->getContainer()->get('fos_elastica.index.index');
-        $index->flush(true);
+        $index->refresh();
 
         $query = new Match();
         $query->setField('something', 'Hello');
