@@ -103,7 +103,7 @@ class PopulateCommand extends ContainerAwareCommand
         if ($input->isInteractive() && $reset && $input->getOption('offset')) {
             /** @var QuestionHelper $dialog */
             $dialog = $this->getHelperSet()->get('question');
-            if (!$dialog->askConfirmation($input, $output, new Question('<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>'))) {
+            if (!$dialog->ask($input, $output, new Question('<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>'))) {
                 return;
             }
         }
