@@ -129,30 +129,25 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             return array();
         }
 
-        $query = $this->createQuery($this->objectClass, $this->options['identifier'], $identifierValues);
+        $queryClass = $this->objectClass.'Query';
+        $camelizedIdentifier = $this->camelize($this->options['identifier']);
+        $filterMethod = 'filterBy'.$camelizedIdentifier;
+
+        $query = $queryClass::create()->$filterMethod($identifierValues);
 
         if (! $hydrate) {
-            return $query->toArray();
+            $query->setFormatter($queryClass::FORMAT_ARRAY);
         }
 
-        return $query->find()->getArrayCopy();
-    }
+        $data = $query->find()->getArrayCopy($camelizedIdentifier);
 
-    /**
-     * Create a query to use in the findByIdentifiers() method.
-     *
-     * @param string $class            Propel model class
-     * @param string $identifierField  Identifier field name (e.g. "id")
-     * @param array  $identifierValues Identifier values
-     *
-     * @return \ModelCriteria
-     */
-    protected function createQuery($class, $identifierField, array $identifierValues)
-    {
-        $queryClass   = $class.'Query';
-        $filterMethod = 'filterBy'.$this->camelize($identifierField);
+        // order results, since Propel Criteria::IN doesn't preserve it
+        $idsOrder = array_flip($identifierValues);
+        uksort($data, function($a, $b) use ($idsOrder) {
+            return $idsOrder[$a] - $idsOrder[$b];
+        });
 
-        return $queryClass::create()->$filterMethod($identifierValues);
+        return $data;
     }
 
     /**

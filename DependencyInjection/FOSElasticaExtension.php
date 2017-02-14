@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Config\FileLocator;
 use InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Container;
 
 class FOSElasticaExtension extends Extension
 {
@@ -525,11 +526,18 @@ class FOSElasticaExtension extends Extension
             case 'mongodb':
                 $tagName = 'doctrine_mongodb.odm.event_listener';
                 break;
+            case 'propel':
+                $tagName = 'propel.event';
+                break;
         }
 
         if (null !== $tagName) {
             foreach ($this->getDoctrineEvents($typeConfig) as $event) {
-                $listenerDef->addTag($tagName, array('event' => $event));
+                $tagArgs = array('event' => $event);
+                if ($tagName == 'propel.event') {
+                    $tagArgs['method'] = 'on'.Container::camelize(str_replace('.', '_', $event));
+                }
+                $listenerDef->addTag($tagName, $tagArgs);
             }
         }
 
@@ -552,6 +560,9 @@ class FOSElasticaExtension extends Extension
                 break;
             case 'mongodb':
                 $eventsClass = '\Doctrine\ODM\MongoDB\Events';
+                break;
+            case 'propel':
+                $eventsClass = '\FOS\ElasticaBundle\Propel\EventMap';
                 break;
             default:
                 throw new InvalidArgumentException(sprintf('Cannot determine events for driver "%s"', $typeConfig['driver']));
