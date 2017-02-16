@@ -127,14 +127,6 @@ class Resetter
         $event = new TypeResetEvent($indexName, $typeName);
         $this->dispatcher->dispatch(TypeResetEvent::PRE_TYPE_RESET, $event);
 
-        if (!empty($settings)) {
-            unset($settings['number_of_shards'], $settings['index']['number_of_shards']);
-            unset($settings['number_of_replicas'], $settings['index']['number_of_replicas']);
-            $index->close();
-            $index->setSettings($settings);
-            $index->open();
-        }
-
         $mapping = new Mapping();
         foreach ($this->mappingBuilder->buildTypeMapping($typeConfig) as $name => $field) {
             $mapping->setParam($name, $field);
