@@ -25,10 +25,10 @@ curl -XPUT localhost:9200/test/_settings -d '{
     } }'
 ```
 
-And _optimize should be called:
+And _forcemerge should be called:
 
 ```bash
-curl -XPOST 'http://localhost:9200/test/_optimize?max_num_segments=5'
+curl -XPOST 'http://localhost:9200/test/_forcemerge?max_num_segments=5'
 ```
 
 Everything seems to be straightforward, but you'll how this can be achieved with FOSElasticaBundle? 
