@@ -18,3 +18,4 @@ in 4.0 versions.
  * Removed deprecated `IndexManager` class.
  * Removed deprecated `DynamicIndex` class.
  * Removed `sortIgnoreUnmapped` support for Paginator. `ignore_unmapped` is not supported in ES 5.0 anymore.
+ * Removed `ttl` and `timestamp` support in configuration. These attributes are not supported in ES 5.0 anymore.

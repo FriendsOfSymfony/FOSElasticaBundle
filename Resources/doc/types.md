@@ -71,12 +71,11 @@ fos_elastica:
                                 type: float
                         my_template_2:
                             match: *
-                            match_mapping_type: string
+                            match_mapping_type: text
                             mapping:
-                                type: string
-                                index: not_analyzed
+                                type: keyword
                     mappings:
-                        username: { type: string }
+                        username: { type: text }
 ```
 
 Nested objects in FOSElasticaBundle
@@ -144,7 +143,7 @@ If you want to specify a [date format](https://www.elastic.co/guide/en/elasticse
 ```yaml
                 user:
                     mappings:
-                        username: { type: string }
+                        username: { type: text }
                         lastlogin: { type: date, format: basic_date_time }
                         birthday: { type: date, format: "yyyy-MM-dd" }
 ```
@@ -160,7 +159,7 @@ the [dynamic](https://www.elastic.co/guide/en/elasticsearch/reference/current/dy
                 user:
                     dynamic: strict
                     mappings:
-                        username: { type: string }
+                        username: { type: text }
                         addresses: { type: object, dynamic: true }
 ```
 
