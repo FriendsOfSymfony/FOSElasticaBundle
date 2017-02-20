@@ -123,6 +123,7 @@ class Configuration implements ConfigurationInterface
                                             ->treatNullLike('fos_elastica.logger')
                                             ->treatTrueLike('fos_elastica.logger')
                                         ->end()
+                                        ->booleanNode('compression')->defaultValue(false)->end()
                                         ->arrayNode('headers')
                                             ->useAttributeAsKey('name')
                                             ->prototype('scalar')->end()

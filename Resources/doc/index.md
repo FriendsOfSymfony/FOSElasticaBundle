@@ -16,7 +16,7 @@ Cookbook Entries
 * [Custom Indexed Properties](cookbook/custom-properties.md)
 * [Custom Repositories](cookbook/custom-repositories.md)
 * [HTTP Headers for Elastica](cookbook/elastica-client-http-headers.md)
-* Performance - [Logging](cookbook/logging.md)
+* Performance - [Logging](cookbook/logging.md) - [Compression](cookbook/compression.md)
 * [Manual Providers](cookbook/manual-provider.md)
 * [Clustering - Multiple Connections](cookbook/multiple-connections.md)
 * [Suppressing server errors](cookbook/suppress-server-errors.md)
