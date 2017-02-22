@@ -117,8 +117,12 @@ class MappingBuilder
             unset($property['property_path']);
 
             if (!isset($property['type'])) {
-                $property['type'] = 'string';
+                $property['type'] = 'text';
             }
+            /**
+             * @todo multi_field has been removed
+             * @todo fields has been removed
+             */
             if ($property['type'] == 'multi_field' && isset($property['fields'])) {
                 $this->fixProperties($property['fields']);
             }
