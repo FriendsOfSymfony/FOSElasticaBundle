@@ -13,3 +13,4 @@ in 5.0 versions.
  * Removed `ignore_unmapped` support for Paginator.
  * Removed `_boost`, `ttl` and `timestamp` config options.
  * Removed deprecated config options `servers`, `mappings` and `is_indexable_callback`.
+ * [BC break] Add `PaginatedFinderInterface::createRawPaginatorAdapter`.
