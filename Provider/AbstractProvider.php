@@ -115,6 +115,7 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $this->resolver->setDefaults(array(
             'reset' => true,
+            'delete' => true,
             'batch_size' => 100,
             'skip_indexable_check' => false,
         ));
