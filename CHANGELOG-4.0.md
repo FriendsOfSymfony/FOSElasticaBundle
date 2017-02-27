@@ -7,6 +7,7 @@ in 4.0 versions.
 * 4.0.0 (xxxx-xx-xx)
 
  * Add `ruflin/Elastica` 3.x support.
+ * Add new repository manager.
  * Allow additional parameters to `AbstractProvider::queryBuilder`.
  * Removed PHP 5.3 and 5.4 support.
  * Removed Symfony < 2.7 support.
