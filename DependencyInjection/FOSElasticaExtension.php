@@ -242,13 +242,10 @@ class FOSElasticaExtension extends Extension
                 'dynamic_templates',
                 'properties',
                 '_all',
-                '_boost',
                 '_id',
                 '_parent',
                 '_routing',
                 '_source',
-                '_timestamp',
-                '_ttl',
             ) as $field) {
                 if (isset($type[$field])) {
                     $typeConfig['mapping'][$field] = $type[$field];
