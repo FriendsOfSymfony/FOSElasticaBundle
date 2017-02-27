@@ -74,10 +74,8 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 
     protected function getSort($sortField, array $options = [])
     {
-        $ignoreUnmapped = isset($options['sortIgnoreUnmapped']) ? $options['sortIgnoreUnmapped'] : true;
         $sort = [
             'order' => $this->getSortDirection($sortField, $options),
-            'ignore_unmapped' => $ignoreUnmapped,
         ];
 
         if (isset($options['sortNestedPath'])) {

@@ -17,13 +17,6 @@ use FOS\ElasticaBundle\Configuration\TypeConfig;
 class MappingBuilder
 {
     /**
-     * Skip adding default information to certain fields.
-     *
-     * @var array
-     */
-    private $skipTypes = array('completion');
-
-    /**
      * Builds mappings for an entire index.
      *
      * @param IndexConfig $indexConfig
@@ -117,16 +110,13 @@ class MappingBuilder
             unset($property['property_path']);
 
             if (!isset($property['type'])) {
-                $property['type'] = 'string';
+                $property['type'] = 'text';
             }
-            if ($property['type'] == 'multi_field' && isset($property['fields'])) {
+            if (isset($property['fields'])) {
                 $this->fixProperties($property['fields']);
             }
             if (isset($property['properties'])) {
                 $this->fixProperties($property['properties']);
-            }
-            if (in_array($property['type'], $this->skipTypes)) {
-                continue;
             }
         }
     }
