@@ -74,16 +74,6 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('id')
                     ->prototype('array')
                         ->performNoDeepMerging()
-                        // BC - Renaming 'servers' node to 'connections'
-                        ->beforeNormalization()
-                        ->ifTrue(function ($v) { return isset($v['servers']); })
-                        ->then(function ($v) {
-                            $v['connections'] = $v['servers'];
-                            unset($v['servers']);
-
-                            return $v;
-                        })
-                        ->end()
                         // Elastica names its properties with camel case, support both
                         ->beforeNormalization()
                         ->ifTrue(function ($v) { return isset($v['connection_strategy']); })
@@ -207,41 +197,7 @@ class Configuration implements ConfigurationInterface
                 ->treatNullLike(array())
                 ->beforeNormalization()
                 ->ifNull()
-                ->thenEmptyArray()
-                ->end()
-                // BC - Renaming 'mappings' node to 'properties'
-                ->beforeNormalization()
-                ->ifTrue(function ($v) { return array_key_exists('mappings', $v); })
-                ->then(function ($v) {
-                    $v['properties'] = $v['mappings'];
-                    unset($v['mappings']);
-
-                    return $v;
-                })
-                ->end()
-                // BC - Support the old is_indexable_callback property
-                ->beforeNormalization()
-                ->ifTrue(function ($v) {
-                    return isset($v['persistence']) &&
-                        isset($v['persistence']['listener']) &&
-                        isset($v['persistence']['listener']['is_indexable_callback']);
-                })
-                ->then(function ($v) {
-                    $callback = $v['persistence']['listener']['is_indexable_callback'];
-
-                    if (is_array($callback)) {
-                        list($class) = $callback + array(null);
-
-                        if ($class[0] !== '@' && is_string($class) && !class_exists($class)) {
-                            $callback[0] = '@'.$class;
-                        }
-                    }
-
-                    $v['indexable_callback'] = $callback;
-                    unset($v['persistence']['listener']['is_indexable_callback']);
-
-                    return $v;
-                })
+                    ->thenEmptyArray()
                 ->end()
                 // Support multiple dynamic_template formats to match the old bundle style
                 // and the way ElasticSearch expects them
