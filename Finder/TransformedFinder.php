@@ -18,6 +18,8 @@ use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
+use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use Pagerfanta\Pagerfanta;
 
 /**
