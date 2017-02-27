@@ -4,6 +4,7 @@ namespace FOS\ElasticaBundle\Tests\ObjectSerializerPersister;
 
 use FOS\ElasticaBundle\Persister\ObjectSerializerPersister;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class POPO
@@ -38,7 +39,9 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->once())->method('serialize');
 
-        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'));
+        $dispatcherMock = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')->getMock();
+
+        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'), $dispatcherMock);
         $objectPersister->replaceOne(new POPO());
     }
 
@@ -58,7 +61,9 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->once())->method('serialize');
 
-        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'));
+        $dispatcherMock = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')->getMock();
+
+        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'), $dispatcherMock);
         $objectPersister->insertOne(new POPO());
     }
 
@@ -78,7 +83,9 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->once())->method('serialize');
 
-        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'));
+        $dispatcherMock = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')->getMock();
+
+        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'), $dispatcherMock);
         $objectPersister->deleteOne(new POPO());
     }
 
@@ -102,7 +109,9 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->exactly(2))->method('serialize');
 
-        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'));
+        $dispatcherMock = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')->getMock();
+
+        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'), $dispatcherMock);
         $objectPersister->insertMany(array(new POPO(), new POPO()));
     }
 

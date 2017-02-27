@@ -4,7 +4,9 @@ namespace FOS\ElasticaBundle\Persister;
 
 use Elastica\Document;
 use Elastica\Type;
+use FOS\ElasticaBundle\Event\TransformEvent;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Inserts, replaces and deletes single objects in an elastica type, making use
@@ -18,16 +20,23 @@ class ObjectSerializerPersister extends ObjectPersister
     protected $serializer;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $dispatcher;
+
+    /**
      * @param Type $type
      * @param ModelToElasticaTransformerInterface $transformer
      * @param string $objectClass
      * @param callable $serializer
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, $serializer)
+    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, $serializer,  EventDispatcherInterface $dispatcher)
     {
         parent::__construct($type, $transformer, $objectClass, array());
 
         $this->serializer = $serializer;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -44,6 +53,13 @@ class ObjectSerializerPersister extends ObjectPersister
 
         $data = call_user_func($this->serializer, $object);
         $document->setData($data);
+
+        if ($this->dispatcher) {
+            $event = new TransformEvent($document, array(), $object);
+            $this->dispatcher->dispatch(TransformEvent::POST_TRANSFORM, $event);
+
+            $document = $event->getDocument();
+        }
 
         return $document;
     }
