@@ -19,7 +19,7 @@ class IndexableCallbackTest extends WebTestCase
     /**
      * 2 reasons for this test:.
      *
-     * 1) To test that the configuration rename from is_indexable_callback under the listener
+     * 1) To test that the configuration rename from indexable_callback under the listener
      * key is respected, and
      * 2) To test the Extension's set up of the Indexable service.
      */

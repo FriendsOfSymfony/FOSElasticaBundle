@@ -34,7 +34,7 @@ fos_elastica:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener:
-                            is_indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
+                            indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
                         provider:
                             debug_logging: true
                 type2:
@@ -44,7 +44,7 @@ fos_elastica:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener:
-                            is_indexable_callback: [ "@indexable_service", 'isIndexable' ]
+                            indexable_callback: [ "@indexable_service", 'isIndexable' ]
                 type3:
                     mappings:
                         field1: ~
@@ -54,7 +54,7 @@ fos_elastica:
                         finder: ~
                         provider: ~
                         listener:
-                            is_indexable_callback: 'isntIndexable'
+                            indexable_callback: 'isntIndexable'
                 type4:
                     mappings:
                         field1: ~
@@ -64,7 +64,7 @@ fos_elastica:
                         finder: ~
                         provider: ~
                         listener:
-                            is_indexable_callback: [ 'FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService', 'isntIndexable' ]
+                            indexable_callback: [ 'FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService', 'isntIndexable' ]
                 property_paths_type:
                     persistence:
                         driver: orm
@@ -98,4 +98,4 @@ fos_elastica:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener:
-                            is_indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
+                            indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
