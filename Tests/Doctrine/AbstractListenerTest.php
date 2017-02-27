@@ -186,7 +186,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener->postFlush($eventArgs);
     }
 
-    public function testShouldPersistOnKernelTerminateIfAsyncIsTrue()
+    public function testShouldPersistOnKernelTerminateIfDeferIsTrue()
     {
         $entity = new Listener\Entity(1);
         $persister = $this->getMockPersister($entity, 'index', 'type');
@@ -194,7 +194,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener = $this->createListener(
             $persister,
             $indexable,
-            array('identifier' => 'identifier', 'indexName' => 'index', 'typeName' => 'type', 'async' => true, 'defer' => true)
+            array('identifier' => 'identifier', 'indexName' => 'index', 'typeName' => 'type', 'defer' => true)
         );
         $scheduledForInsertion = array('data');
         $refListener = new \ReflectionObject($listener);

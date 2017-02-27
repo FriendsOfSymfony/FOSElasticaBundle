@@ -513,7 +513,7 @@ class FOSElasticaExtension extends Extension
             'indexName' => $indexName,
             'typeName' => $typeName
         );
-        
+
         $tagName = null;
         switch ($typeConfig['driver']) {
             case 'orm':
@@ -527,13 +527,12 @@ class FOSElasticaExtension extends Extension
                 break;
         }
 
-        if($typeConfig['listener']['async']) {
+        if ($typeConfig['listener']['defer']) {
             $listenerDef->setPublic(true);
             $listenerDef->addTag(
                 'kernel.event_listener',
                 array('event' => 'kernel.terminate', 'method' => 'onKernelTerminate')
             );
-            $listenerConfig['async'] = true;
             $listenerConfig['defer'] = true;
         }
 

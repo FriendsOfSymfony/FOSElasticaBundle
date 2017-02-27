@@ -79,7 +79,6 @@ class Listener
     ) {
         $this->config = array_merge(array(
             'identifier' => 'id',
-            'async' => false,
             'defer' => false
         ), $config);
         $this->indexable = $indexable;
@@ -97,7 +96,7 @@ class Listener
      */
     public function onKernelTerminate()
     {
-        if($this->config['async'] && $this->config['defer']) {
+        if ($this->config['defer']) {
             $this->config['defer'] = false;
             $this->persistScheduled();
         }

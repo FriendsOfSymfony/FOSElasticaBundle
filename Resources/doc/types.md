@@ -326,15 +326,15 @@ You can also choose to only listen for some of the events:
 
 ### Asnychronous index update
 
-You can also tell ElasticaBundle to update the indexes after Symfony response has returned. 
-This is useful when you want your responses to return quickly and not be slowed down by round 
-trips to your Elasticsearch instance. All updates to Elasticsearch will be batched up and 
+You can also tell ElasticaBundle to update the indexes after Symfony response has returned.
+This is useful when you want your responses to return quickly and not be slowed down by round
+trips to your Elasticsearch instance. All updates to Elasticsearch will be batched up and
 only fire after the `kernel.terminate` event.
 
 ```yaml
                     persistence:
                         listener:
-                            async: true
+                            defer: true
 ```
 
 
