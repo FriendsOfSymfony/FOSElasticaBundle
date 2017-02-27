@@ -53,5 +53,5 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return PaginatorAdapterInterface
      */
-    public function createRawPaginatorAdapter($query);    
+    public function createRawPaginatorAdapter($query);
 }
