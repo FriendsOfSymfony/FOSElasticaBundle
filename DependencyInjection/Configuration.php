@@ -498,14 +498,6 @@ class Configuration implements ConfigurationInterface
         $node = $builder->root('persistence');
 
         $node
-            ->beforeNormalization()
-                ->ifTrue(function($v) { return isset($v['immediate']); })
-                    ->then(function($v) {
-                        @trigger_error('The immediate configuration key is deprecated since version 3.2 and will be removed in 4.0.', E_USER_DEPRECATED);
-
-                        return $v;
-                    })
-            ->end()
             ->validate()
                 ->ifTrue(function ($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
                     ->thenInvalid('Propel doesn\'t support listeners')
@@ -545,7 +537,6 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('update')->defaultTrue()->end()
                         ->scalarNode('delete')->defaultTrue()->end()
                         ->scalarNode('flush')->defaultTrue()->end()
-                        ->booleanNode('immediate')->defaultFalse()->end()
                         ->scalarNode('logger')
                             ->defaultFalse()
                             ->treatNullLike('fos_elastica.logger')
