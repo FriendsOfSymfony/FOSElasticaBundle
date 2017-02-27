@@ -143,6 +143,11 @@ class Listener
      */
     private function persistScheduled()
     {
+        // Don't persist if indexing is disabled
+        if (!$this->indexable->isIndexingEnabled()) {
+            return;
+        }
+
         if (count($this->scheduledForInsertion)) {
             $this->objectPersister->insertMany($this->scheduledForInsertion);
             $this->scheduledForInsertion = array();

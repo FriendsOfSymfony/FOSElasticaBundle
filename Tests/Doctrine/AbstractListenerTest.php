@@ -7,7 +7,7 @@ namespace FOS\ElasticaBundle\Tests\Doctrine;
  *
  * @author Richard Miller <info@limethinking.co.uk>
  */
-abstract class ListenerTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractListenerTest extends \PHPUnit_Framework_TestCase
 {
     public function testObjectInsertedOnPersist()
     {
@@ -169,6 +169,56 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener->postFlush($eventArgs);
     }
 
+    public function testObjectNotInsertedIfIndexingDisabled()
+    {
+        $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', 'type', $entity, null, false);
+
+        $listener = $this->createListener($persister, $indexable, array('indexName' => 'index', 'typeName' => 'type'));
+        $listener->postPersist($eventArgs);
+
+        $persister->expects($this->never())
+            ->method('insertOne');
+        $persister->expects($this->never())
+            ->method('insertMany');
+
+        $listener->postFlush($eventArgs);
+    }
+
+    public function testObjectNotReplacedIfIndexingDisabled()
+    {
+        $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', 'type', $entity, true, false);
+
+        $listener = $this->createListener($persister, $indexable, array('indexName' => 'index', 'typeName' => 'type'));
+        $listener->postUpdate($eventArgs);
+
+        $persister->expects($this->never())
+            ->method('replaceMany');
+
+        $listener->postFlush($eventArgs);
+    }
+
+    public function testObjectNotDeletedIfIndexingDisabled()
+    {
+        $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', 'type', $entity, null, false);
+
+        $listener = $this->createListener($persister, $indexable, array('indexName' => 'index', 'typeName' => 'type'));
+        $listener->preRemove($eventArgs);
+
+        $persister->expects($this->never())
+            ->method('deleteManyByIdentifiers');
+
+        $listener->postFlush($eventArgs);
+    }
+
     abstract protected function getLifecycleEventArgsClass();
 
     abstract protected function getListenerClass();
@@ -250,18 +300,23 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
      * @param string          $indexName
      * @param string          $typeName
      * @param Listener\Entity $object
-     * @param boolean         $return
+     * @param boolean         $isObjectIndexable
+     * @param boolean         $isIndexingEnabled
      */
-    private function getMockIndexable($indexName, $typeName, $object, $return = null)
+    private function getMockIndexable($indexName, $typeName, $object, $isObjectIndexable = null, $isIndexingEnabled = true)
     {
         $mock = $this->getMockBuilder('FOS\ElasticaBundle\Provider\IndexableInterface')->getMock();
 
-        if (null !== $return) {
+        if (null !== $isObjectIndexable) {
             $mock->expects($this->once())
                 ->method('isObjectIndexable')
                 ->with($indexName, $typeName, $object)
-                ->will($this->returnValue($return));
+                ->will($this->returnValue($isObjectIndexable));
         }
+
+        $mock->expects($this->once())
+            ->method('isIndexingEnabled')
+            ->will($this->returnValue($isIndexingEnabled));
 
         return $mock;
     }

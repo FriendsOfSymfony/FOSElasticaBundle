@@ -65,6 +65,15 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testObjectIsNotIndexableIfIndexingDisabled()
+    {
+        $indexable = new Indexable(array(), $this->container);
+        $indexable->setIndexingEnabled(false);
+        $index = $indexable->isObjectIndexable('index', 'type', new Entity());
+
+        $this->assertFalse($index);
+    }
+
     public function provideIsIndexableCallbacks()
     {
         return array(
