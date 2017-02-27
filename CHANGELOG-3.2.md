@@ -4,6 +4,10 @@ CHANGELOG for 3.2.x
 This changelog references the relevant changes (bug and security fixes) done
 in 3.2 versions.
 
+* 3.2.3 (2017-xx-xx)
+
+* Fixed service priority when registering providers
+
 * 3.2.2 (2017-01-25)
 
  * Fixed `Resetter::resetIndexType` on Elasticsearch 1.x
