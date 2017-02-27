@@ -88,9 +88,9 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
             'method' => $method,
             'data' => $data,
             'executionMS' => $time * 1000,
+            'engineMS' => 0,
             'connection' => $connection,
             'queryString' => $query,
-            'engineMS' => 0,
             'itemCount' => 0,
         );
 
