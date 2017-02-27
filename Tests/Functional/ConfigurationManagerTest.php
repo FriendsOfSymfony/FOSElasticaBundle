@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -25,7 +34,7 @@ class ConfigurationManagerTest extends WebTestCase
 
         $index = $manager->getIndexConfiguration('index');
 
-        $this->assertEquals('index', $index->getName());
+        $this->assertSame('index', $index->getName());
         $this->assertGreaterThanOrEqual(2, count($index->getTypes()));
         $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('type'));
         $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('parent'));

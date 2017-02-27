@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
@@ -44,7 +53,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function countObjects($queryBuilder)
     {
@@ -58,7 +67,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function fetchSlice($queryBuilder, $limit, $offset)
     {
@@ -75,7 +84,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function createQueryBuilder($method, array $arguments = array())
     {
@@ -83,6 +92,6 @@ class Provider extends AbstractProvider
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass);
 
-        return call_user_func_array([$repository, $method], $arguments);
+        return call_user_func_array(array($repository, $method), $arguments);
     }
 }

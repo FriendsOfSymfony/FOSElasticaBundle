@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -76,7 +85,9 @@ class Configuration implements ConfigurationInterface
                         ->performNoDeepMerging()
                         // Elastica names its properties with camel case, support both
                         ->beforeNormalization()
-                        ->ifTrue(function ($v) { return isset($v['connection_strategy']); })
+                        ->ifTrue(function ($v) {
+                            return isset($v['connection_strategy']);
+                        })
                         ->then(function ($v) {
                             $v['connectionStrategy'] = $v['connection_strategy'];
                             unset($v['connection_strategy']);
@@ -86,7 +97,9 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         // If there is no connections array key defined, assume a single connection.
                         ->beforeNormalization()
-                        ->ifTrue(function ($v) { return is_array($v) && !array_key_exists('connections', $v); })
+                        ->ifTrue(function ($v) {
+                            return is_array($v) && !array_key_exists('connections', $v);
+                        })
                         ->then(function ($v) {
                             return array(
                                 'connections' => array($v),
@@ -101,8 +114,12 @@ class Configuration implements ConfigurationInterface
                                     ->children()
                                         ->scalarNode('url')
                                             ->validate()
-                                                ->ifTrue(function ($url) { return $url && substr($url, -1) !== '/'; })
-                                                ->then(function ($url) { return $url.'/'; })
+                                                ->ifTrue(function ($url) {
+                                                    return $url && substr($url, -1) !== '/';
+                                                })
+                                                ->then(function ($url) {
+                                                    return $url.'/';
+                                                })
                                             ->end()
                                         ->end()
                                         ->scalarNode('host')->end()
@@ -202,7 +219,9 @@ class Configuration implements ConfigurationInterface
                 // Support multiple dynamic_template formats to match the old bundle style
                 // and the way ElasticSearch expects them
                 ->beforeNormalization()
-                ->ifTrue(function ($v) { return isset($v['dynamic_templates']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['dynamic_templates']);
+                })
                 ->then(function ($v) {
                     $dt = array();
                     foreach ($v['dynamic_templates'] as $key => $type) {
@@ -397,11 +416,17 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->validate()
-                ->ifTrue(function ($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']);
+                })
                     ->thenInvalid('Propel doesn\'t support listeners')
-                ->ifTrue(function ($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']);
+                })
                     ->thenInvalid('Propel doesn\'t support the "repository" parameter')
-                ->ifTrue(function($v) { return isset($v['driver']) && 'orm' !== $v['driver'] && !empty($v['elastica_to_model_transformer']['hints']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['driver']) && 'orm' !== $v['driver'] && !empty($v['elastica_to_model_transformer']['hints']);
+                })
                     ->thenInvalid('Hints are only supported by the "orm" driver')
             ->end()
             ->children()

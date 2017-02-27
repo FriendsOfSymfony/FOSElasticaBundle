@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Transformer;
 
+use Elastica\Document;
 use FOS\ElasticaBundle\Event\TransformEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Elastica\Document;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -128,11 +137,12 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     }
 
     /**
-     * Transforms the given object to an elastica document
+     * Transforms the given object to an elastica document.
      *
-     * @param object $object the object to convert
-     * @param array  $fields the keys we want to have in the returned array
+     * @param object $object     the object to convert
+     * @param array  $fields     the keys we want to have in the returned array
      * @param string $identifier the identifier for the new document
+     *
      * @return Document
      */
     protected function transformObjectToDocument($object, array $fields, $identifier = '')

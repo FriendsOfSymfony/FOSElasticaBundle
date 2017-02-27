@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Propel;
 
 use FOS\ElasticaBundle\Provider\AbstractProvider;
@@ -12,7 +21,7 @@ use FOS\ElasticaBundle\Provider\AbstractProvider;
 class Provider extends AbstractProvider
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function doPopulate($options, \Closure $loggerClosure = null)
     {
@@ -42,21 +51,21 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function disableLogging()
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function enableLogging($logger)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configureOptions()
     {
@@ -64,11 +73,11 @@ class Provider extends AbstractProvider
 
         $this->resolver->setDefaults(array(
             'clear_object_manager' => true,
-            'debug_logging'        => false,
-            'ignore_errors'        => false,
-            'offset'               => 0,
+            'debug_logging' => false,
+            'ignore_errors' => false,
+            'offset' => 0,
             'query_builder_method' => 'createQueryBuilder',
-            'sleep'                => 0
+            'sleep' => 0,
         ));
     }
 }

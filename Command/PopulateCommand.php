@@ -1,18 +1,27 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Command;
 
 use FOS\ElasticaBundle\Event\IndexPopulateEvent;
 use FOS\ElasticaBundle\Event\TypePopulateEvent;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use FOS\ElasticaBundle\Index\IndexManager;
-use FOS\ElasticaBundle\Provider\ProviderRegistry;
 use FOS\ElasticaBundle\Index\Resetter;
+use FOS\ElasticaBundle\Provider\ProviderRegistry;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
 /**
@@ -66,7 +75,7 @@ class PopulateCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
@@ -85,7 +94,7 @@ class PopulateCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -95,11 +104,11 @@ class PopulateCommand extends ContainerAwareCommand
         $delete = !$input->getOption('no-delete');
 
         $options = array(
-            'delete'        => $delete,
-            'reset'         => $reset,
+            'delete' => $delete,
+            'reset' => $reset,
             'ignore_errors' => $input->getOption('ignore-errors'),
-            'offset'        => $input->getOption('offset'),
-            'sleep'         => $input->getOption('sleep')
+            'offset' => $input->getOption('offset'),
+            'sleep' => $input->getOption('sleep'),
         );
 
         if ($input->getOption('batch-size')) {
@@ -138,7 +147,7 @@ class PopulateCommand extends ContainerAwareCommand
      *
      * @param OutputInterface $output
      * @param string          $index
-     * @param boolean         $reset
+     * @param bool            $reset
      * @param array           $options
      */
     private function populateIndex(OutputInterface $output, $index, $reset, $options)
@@ -167,7 +176,7 @@ class PopulateCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @param string          $index
      * @param string          $type
-     * @param boolean         $reset
+     * @param bool            $reset
      * @param array           $options
      */
     private function populateIndexType(OutputInterface $output, $index, $type, $reset, $options)

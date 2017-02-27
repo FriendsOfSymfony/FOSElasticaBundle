@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Subscriber;
 
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
@@ -72,11 +81,11 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
     }
 
-    protected function getSort($sortField, array $options = [])
+    protected function getSort($sortField, array $options = array())
     {
-        $sort = [
+        $sort = array(
             'order' => $this->getSortDirection($sortField, $options),
-        ];
+        );
 
         if (isset($options['sortNestedPath'])) {
             $path = is_callable($options['sortNestedPath']) ?
@@ -99,7 +108,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         return $sort;
     }
 
-    protected function getSortDirection($sortField, array $options = [])
+    protected function getSortDirection($sortField, array $options = array())
     {
         $dir = 'asc';
         $sortDirection = $this->request->get($options['sortDirectionParameterName']);

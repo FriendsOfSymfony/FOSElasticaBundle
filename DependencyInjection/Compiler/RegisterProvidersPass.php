@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class RegisterProvidersPass implements CompilerPassInterface
 {
@@ -36,11 +45,11 @@ class RegisterProvidersPass implements CompilerPassInterface
             $providersByPriority[$priority][$id] = $attributes;
         }
 
-        if (!empty($providersByPriority)){
+        if (!empty($providersByPriority)) {
             krsort($providersByPriority);
             $providersByPriority = call_user_func_array('array_merge', $providersByPriority);
         }
-            
+
         foreach ($providersByPriority as $providerId => $tags) {
             $index = $type = null;
             $class = $container->getDefinition($providerId)->getClass();
@@ -67,7 +76,7 @@ class RegisterProvidersPass implements CompilerPassInterface
      *
      * @param string $class
      *
-     * @return boolean
+     * @return bool
      */
     private function isProviderImplementation($class)
     {

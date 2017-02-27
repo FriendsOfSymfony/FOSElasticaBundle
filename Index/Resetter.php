@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Index;
 
-use Elastica\Index;
 use Elastica\Exception\ResponseException;
+use Elastica\Index;
 use Elastica\Type\Mapping;
 use FOS\ElasticaBundle\Configuration\ConfigManager;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
@@ -150,10 +159,10 @@ class Resetter
     }
 
     /**
-     * Switching aliases
+     * Switching aliases.
      *
      * @param string $indexName
-     * @param bool   $delete Delete or close index
+     * @param bool   $delete    Delete or close index
      *
      * @throws \FOS\ElasticaBundle\Exception\AliasIsIndexException
      */

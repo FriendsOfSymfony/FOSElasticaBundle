@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Resetter\DependencyInjection;
 
 use FOS\ElasticaBundle\DependencyInjection\Configuration;
@@ -68,12 +77,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $configuration['clients']);
         $this->assertCount(1, $configuration['clients']['default']['connections']);
         $this->assertCount(0, $configuration['clients']['default']['connections'][0]['headers']);
-        $this->assertEquals(5, $configuration['clients']['default']['connections'][0]['retryOnConflict']);
+        $this->assertSame(5, $configuration['clients']['default']['connections'][0]['retryOnConflict']);
 
         $this->assertCount(2, $configuration['clients']['clustered']['connections']);
-        $this->assertEquals('http://es2:9200/', $configuration['clients']['clustered']['connections'][1]['url']);
+        $this->assertSame('http://es2:9200/', $configuration['clients']['clustered']['connections'][1]['url']);
         $this->assertCount(1, $configuration['clients']['clustered']['connections'][1]['headers']);
-        $this->assertEquals('Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==', $configuration['clients']['clustered']['connections'][0]['headers'][0]);
+        $this->assertSame('Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==', $configuration['clients']['clustered']['connections'][0]['headers'][0]);
     }
 
     public function testLogging()
@@ -100,10 +109,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(4, $configuration['clients']);
 
-        $this->assertEquals('fos_elastica.logger', $configuration['clients']['logging_enabled']['connections'][0]['logger']);
+        $this->assertSame('fos_elastica.logger', $configuration['clients']['logging_enabled']['connections'][0]['logger']);
         $this->assertFalse($configuration['clients']['logging_disabled']['connections'][0]['logger']);
-        $this->assertEquals('fos_elastica.logger', $configuration['clients']['logging_not_mentioned']['connections'][0]['logger']);
-        $this->assertEquals('custom.service', $configuration['clients']['logging_custom']['connections'][0]['logger']);
+        $this->assertSame('fos_elastica.logger', $configuration['clients']['logging_not_mentioned']['connections'][0]['logger']);
+        $this->assertSame('custom.service', $configuration['clients']['logging_custom']['connections'][0]['logger']);
     }
 
     public function testSlashIsAddedAtTheEndOfServerUrl()
@@ -115,7 +124,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         );
         $configuration = $this->getConfigs($config);
 
-        $this->assertEquals('http://www.github.com/', $configuration['clients']['default']['connections'][0]['url']);
+        $this->assertSame('http://www.github.com/', $configuration['clients']['default']['connections'][0]['url']);
     }
 
     public function testTypeConfig()
@@ -273,19 +282,19 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     {
         $configuration = $this->getConfigs(array(
             'clients' => array(
-                'simple_timeout'       => array(
-                    'url'    => 'http://localhost:9200',
+                'simple_timeout' => array(
+                    'url' => 'http://localhost:9200',
                     'timeout' => 123,
                 ),
-                'connect_timeout'      => array(
-                    'url'    => 'http://localhost:9200',
+                'connect_timeout' => array(
+                    'url' => 'http://localhost:9200',
                     'connectTimeout' => 234,
                 ),
             ),
         ));
 
-        $this->assertEquals(123, $configuration['clients']['simple_timeout']['connections'][0]['timeout']);
-        $this->assertEquals(234, $configuration['clients']['connect_timeout']['connections'][0]['connectTimeout']);
+        $this->assertSame(123, $configuration['clients']['simple_timeout']['connections'][0]['timeout']);
+        $this->assertSame(234, $configuration['clients']['connect_timeout']['connections'][0]['connectTimeout']);
     }
 
     public function testAWSConfig()
@@ -293,18 +302,18 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $configuration = $this->getConfigs(array(
             'clients' => array(
                 'default' => array(
-                    'aws_access_key_id'     => 'AWS_KEY',
+                    'aws_access_key_id' => 'AWS_KEY',
                     'aws_secret_access_key' => 'AWS_SECRET',
-                    'aws_region'            => 'AWS_REGION',
-                    'aws_session_token'     => 'AWS_SESSION_TOKEN',
+                    'aws_region' => 'AWS_REGION',
+                    'aws_session_token' => 'AWS_SESSION_TOKEN',
                 ),
             ),
         ));
 
         $connection = $configuration['clients']['default']['connections'][0];
-        $this->assertEquals('AWS_KEY', $connection['aws_access_key_id']);
-        $this->assertEquals('AWS_SECRET', $connection['aws_secret_access_key']);
-        $this->assertEquals('AWS_REGION', $connection['aws_region']);
-        $this->assertEquals('AWS_SESSION_TOKEN', $connection['aws_session_token']);
+        $this->assertSame('AWS_KEY', $connection['aws_access_key_id']);
+        $this->assertSame('AWS_SECRET', $connection['aws_secret_access_key']);
+        $this->assertSame('AWS_REGION', $connection['aws_region']);
+        $this->assertSame('AWS_SESSION_TOKEN', $connection['aws_session_token']);
     }
 }

@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Paginator;
 
-use Elastica\SearchableInterface;
 use Elastica\Query;
 use Elastica\ResultSet;
+use Elastica\SearchableInterface;
 use InvalidArgumentException;
 
 /**
@@ -28,7 +37,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     private $options;
 
     /**
-     * @var integer the number of hits
+     * @var int the number of hits
      */
     private $totalHits;
 
@@ -47,15 +56,15 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     public function __construct(SearchableInterface $searchable, Query $query, array $options = array())
     {
         $this->searchable = $searchable;
-        $this->query      = $query;
-        $this->options    = $options;
+        $this->query = $query;
+        $this->options = $options;
     }
 
     /**
      * Returns the paginated results.
      *
-     * @param integer $offset
-     * @param integer $itemCountPerPage
+     * @param int $offset
+     * @param int $itemCountPerPage
      *
      * @throws \InvalidArgumentException
      *
@@ -63,10 +72,10 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     protected function getElasticaResults($offset, $itemCountPerPage)
     {
-        $offset = (integer) $offset;
-        $itemCountPerPage = (integer) $itemCountPerPage;
+        $offset = (int) $offset;
+        $itemCountPerPage = (int) $itemCountPerPage;
         $size = $this->query->hasParam('size')
-            ? (integer) $this->query->getParam('size')
+            ? (int) $this->query->getParam('size')
             : null;
 
         if (null !== $size && $size < $offset + $itemCountPerPage) {
@@ -108,12 +117,12 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      */
     public function getTotalHits($genuineTotal = false)
     {
-        if (! isset($this->totalHits)) {
+        if (!isset($this->totalHits)) {
             $this->totalHits = $this->searchable->count($this->query);
         }
 
         return $this->query->hasParam('size') && !$genuineTotal
-            ? min($this->totalHits, (integer) $this->query->getParam('size'))
+            ? min($this->totalHits, (int) $this->query->getParam('size'))
             : $this->totalHits;
     }
 

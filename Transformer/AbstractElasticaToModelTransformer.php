@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -36,8 +45,9 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
      * Returns a sorting closure to be used with usort() to put retrieved objects
      * back in the order that they were returned by ElasticSearch.
      *
-     * @param array $idPos
+     * @param array  $idPos
      * @param string $identifierPath
+     *
      * @return callable
      */
     protected function getSortingClosure(array $idPos, $identifierPath)

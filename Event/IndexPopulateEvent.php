@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -39,20 +48,20 @@ class IndexPopulateEvent extends IndexEvent
     private $options;
 
     /**
-     * @param string  $index
-     * @param boolean $reset
-     * @param array   $options
+     * @param string $index
+     * @param bool   $reset
+     * @param array  $options
      */
     public function __construct($index, $reset, $options)
     {
         parent::__construct($index);
 
-        $this->reset   = $reset;
+        $this->reset = $reset;
         $this->options = $options;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isReset()
     {
@@ -68,7 +77,7 @@ class IndexPopulateEvent extends IndexEvent
     }
 
     /**
-     * @param boolean $reset
+     * @param bool $reset
      */
     public function setReset($reset)
     {

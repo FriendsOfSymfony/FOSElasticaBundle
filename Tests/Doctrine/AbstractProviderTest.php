@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
 use Elastica\Bulk\ResponseSet;
@@ -286,7 +295,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param boolean $setSliceFetcher Whether or not to set the slice fetcher.
+     * @param bool $setSliceFetcher Whether or not to set the slice fetcher
      *
      * @return \FOS\ElasticaBundle\Doctrine\AbstractProvider|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -298,7 +307,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             $this->objectClass,
             $this->options,
             $this->managerRegistry,
-            $setSliceFetcher ? $this->sliceFetcher : null
+            $setSliceFetcher ? $this->sliceFetcher : null,
         ));
     }
 
@@ -309,7 +318,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMockBuilder('Elastica\Exception\Bulk\ResponseException')
             ->setConstructorArgs(array(
-                new ResponseSet(new Response(array()), array()))
+                new ResponseSet(new Response(array()), array()), )
             )
             ->getMock();
     }

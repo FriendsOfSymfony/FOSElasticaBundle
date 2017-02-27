@@ -1,15 +1,24 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Finder;
 
 use Elastica\Document;
-use FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter;
-use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
-use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
-use Pagerfanta\Pagerfanta;
-use Elastica\SearchableInterface;
 use Elastica\Query;
+use Elastica\SearchableInterface;
+use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
+use FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter;
+use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
+use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use Pagerfanta\Pagerfanta;
 
 /**
  * Finds elastica documents and map them to persisted objects.
@@ -25,7 +34,7 @@ class TransformedFinder implements PaginatedFinderInterface
      */
     public function __construct(SearchableInterface $searchable, ElasticaToModelTransformerInterface $transformer)
     {
-        $this->searchable  = $searchable;
+        $this->searchable = $searchable;
         $this->transformer = $transformer;
     }
 
@@ -49,9 +58,9 @@ class TransformedFinder implements PaginatedFinderInterface
     /**
      * Find documents similar to one with passed id.
      *
-     * @param integer $id
-     * @param array   $params
-     * @param array   $query
+     * @param int   $id
+     * @param array $params
+     * @param array $query
      *
      * @return array of model objects
      **/

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
@@ -79,7 +88,7 @@ class Listener
     ) {
         $this->config = array_merge(array(
             'identifier' => 'id',
-            'defer' => false
+            'defer' => false,
         ), $config);
         $this->indexable = $indexable;
         $this->objectPersister = $objectPersister;
@@ -166,7 +175,7 @@ class Listener
      */
     private function persistScheduled()
     {
-        if($this->shouldPersist()) {
+        if ($this->shouldPersist()) {
             if (count($this->scheduledForInsertion)) {
                 $this->objectPersister->insertMany($this->scheduledForInsertion);
                 $this->scheduledForInsertion = array();
@@ -191,7 +200,7 @@ class Listener
      *
      * @deprecated This method should only be called in applications that depend
      *             on the behaviour that entities are indexed regardless of if a
-     *             flush is successful.
+     *             flush is successful
      */
     public function preFlush()
     {
@@ -215,7 +224,7 @@ class Listener
     private function scheduleForDeletion($object)
     {
         if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
-            $this->scheduledForDeletion[] = (string)$identifierValue;
+            $this->scheduledForDeletion[] = (string) $identifierValue;
         }
     }
 

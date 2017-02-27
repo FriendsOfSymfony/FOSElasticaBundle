@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Logger;
 
 use Psr\Log\AbstractLogger;
@@ -26,7 +35,7 @@ class ElasticaLogger extends AbstractLogger
     protected $queries = array();
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $debug;
 
@@ -34,7 +43,7 @@ class ElasticaLogger extends AbstractLogger
      * Constructor.
      *
      * @param LoggerInterface|null $logger The Symfony logger
-     * @param boolean              $debug
+     * @param bool                 $debug
      */
     public function __construct(LoggerInterface $logger = null, $debug = false)
     {
@@ -45,12 +54,12 @@ class ElasticaLogger extends AbstractLogger
     /**
      * Logs a query.
      *
-     * @param string $path Path to call
-     * @param string $method Rest method to use (GET, POST, DELETE, PUT)
-     * @param array  $data Arguments
-     * @param float  $queryTime Execution time (in seconds)
+     * @param string $path       Path to call
+     * @param string $method     Rest method to use (GET, POST, DELETE, PUT)
+     * @param array  $data       Arguments
+     * @param float  $queryTime  Execution time (in seconds)
      * @param array  $connection Host, port, transport, and headers of the query
-     * @param array  $query Arguments
+     * @param array  $query      Arguments
      * @param int    $engineTime
      * @param int    $itemCount
      */
@@ -69,12 +78,12 @@ class ElasticaLogger extends AbstractLogger
                 'connection' => $connection,
                 'queryString' => $query,
                 'itemCount' => $itemCount,
-                'backtrace' => $e->getTraceAsString()
+                'backtrace' => $e->getTraceAsString(),
             );
         }
 
         if (null !== $this->logger) {
-            $message = sprintf("%s (%s) %0.2f ms", $path, $method, $executionMS);
+            $message = sprintf('%s (%s) %0.2f ms', $path, $method, $executionMS);
             $this->logger->info($message, (array) $data);
         }
     }
@@ -82,7 +91,7 @@ class ElasticaLogger extends AbstractLogger
     /**
      * Returns the number of queries that have been logged.
      *
-     * @return integer The number of queries logged
+     * @return int The number of queries logged
      */
     public function getNbQueries()
     {

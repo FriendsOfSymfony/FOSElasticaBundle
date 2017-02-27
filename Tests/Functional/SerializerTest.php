@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -33,7 +42,7 @@ class SerializerTest extends WebTestCase
     }
 
     /**
-     * Tests that the serialize_null configuration attribute works
+     * Tests that the serialize_null configuration attribute works.
      */
     public function testWithNullValues()
     {
@@ -58,7 +67,7 @@ class SerializerTest extends WebTestCase
         $enabledNullType = $container->get('fos_elastica.index.index.type_serialize_null_enabled');
         $documentData = $enabledNullType->getDocument(1)->getData();
         $this->assertArrayHasKey('field1', $documentData);
-        $this->assertEquals($documentData['field1'], null);
+        $this->assertSame($documentData['field1'], null);
     }
 
     public function testUnmappedType()

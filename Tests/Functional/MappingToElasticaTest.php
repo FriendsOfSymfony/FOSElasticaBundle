@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -31,11 +40,11 @@ class MappingToElasticaTest extends WebTestCase
 
         $type = $this->getType($client, 'type');
         $mapping = $type->getMapping();
-        $this->assertEquals('parent', $mapping['type']['_parent']['type']);
+        $this->assertSame('parent', $mapping['type']['_parent']['type']);
 
-        $this->assertEquals('strict', $mapping['type']['dynamic']);
+        $this->assertSame('strict', $mapping['type']['dynamic']);
         $this->assertArrayHasKey('dynamic', $mapping['type']['properties']['dynamic_allowed']);
-        $this->assertEquals('true', $mapping['type']['properties']['dynamic_allowed']['dynamic']);
+        $this->assertSame('true', $mapping['type']['properties']['dynamic_allowed']['dynamic']);
     }
 
     public function testResetType()
@@ -50,7 +59,7 @@ class MappingToElasticaTest extends WebTestCase
         $this->assertNotEmpty($mapping, 'Mapping was populated');
         $this->assertFalse($mapping['type']['date_detection']);
         $this->assertTrue($mapping['type']['numeric_detection']);
-        $this->assertEquals(array('yyyy-MM-dd'), $mapping['type']['dynamic_date_formats']);
+        $this->assertSame(array('yyyy-MM-dd'), $mapping['type']['dynamic_date_formats']);
     }
 
     public function testORMResetIndexAddsMappings()

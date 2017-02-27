@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -92,8 +101,9 @@ class AliasProcessor
      * Builds an ElasticSearch request to rename or create an alias.
      *
      * @param string|null $aliasedIndex
-     * @param string $aliasName
-     * @param string $newIndexName
+     * @param string      $aliasName
+     * @param string      $newIndexName
+     *
      * @return array
      */
     private function buildAliasUpdateRequest($aliasedIndex, $aliasName, $newIndexName)
@@ -117,8 +127,8 @@ class AliasProcessor
     /**
      * Cleans up an index when we encounter a failure to rename the alias.
      *
-     * @param Client $client
-     * @param string $indexName
+     * @param Client     $client
+     * @param string     $indexName
      * @param \Exception $renameAliasException
      */
     private function cleanupRenameFailure(Client $client, $indexName, \Exception $renameAliasException)
@@ -150,7 +160,7 @@ class AliasProcessor
     private function deleteIndex(Client $client, $indexName)
     {
         try {
-            $path = sprintf("%s", $indexName);
+            $path = sprintf('%s', $indexName);
             $client->request($path, Request::DELETE);
         } catch (ExceptionInterface $deleteOldIndexException) {
             throw new \RuntimeException(sprintf(
@@ -162,7 +172,7 @@ class AliasProcessor
     }
 
     /**
-     * Close an index
+     * Close an index.
      *
      * @param Client $client
      * @param string $indexName
@@ -170,7 +180,7 @@ class AliasProcessor
     private function closeIndex(Client $client, $indexName)
     {
         try {
-            $path = sprintf("%s/_close", $indexName);
+            $path = sprintf('%s/_close', $indexName);
             $client->request($path, Request::POST);
         } catch (ExceptionInterface $e) {
             throw new \RuntimeException(

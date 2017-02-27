@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\DataCollector;
 
 use FOS\ElasticaBundle\DataCollector\ElasticaDataCollector;
@@ -34,7 +43,7 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 
         $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
         $elasticaDataCollector->collect($requestMock, $responseMock);
-        $this->assertEquals($totalQueries, $elasticaDataCollector->getQueryCount());
+        $this->assertSame($totalQueries, $elasticaDataCollector->getQueryCount());
     }
 
     public function testCorrectQueriesReturned()
@@ -62,7 +71,7 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 
         $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
         $elasticaDataCollector->collect($requestMock, $responseMock);
-        $this->assertEquals($queries, $elasticaDataCollector->getQueries());
+        $this->assertSame($queries, $elasticaDataCollector->getQueries());
     }
 
     public function testCorrectQueriesTime()
@@ -84,10 +93,10 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 
         $queries = array(array(
             'engineMS' => 15,
-            'executionMS' => 10
+            'executionMS' => 10,
         ), array(
             'engineMS' => 25,
-            'executionMS' => 20
+            'executionMS' => 20,
         ));
 
         $loggerMock->expects($this->once())
@@ -96,7 +105,7 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 
         $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
         $elasticaDataCollector->collect($requestMock, $responseMock);
-        $this->assertEquals(40, $elasticaDataCollector->getTime());
+        $this->assertSame(40, $elasticaDataCollector->getTime());
     }
 
     public function testName()
@@ -107,6 +116,6 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 
         $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
 
-        $this->assertEquals('elastica', $elasticaDataCollector->getName());
+        $this->assertSame('elastica', $elasticaDataCollector->getName());
     }
 }

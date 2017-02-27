@@ -1,9 +1,17 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Transformer;
 
 use FOS\ElasticaBundle\HybridResult;
-use Elastica\Document;
 
 /**
  * Holds a collection of transformers for an index wide transformation.
@@ -88,7 +96,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
         $objects = $this->transform($elasticaObjects);
 
         $result = array();
-        for ($i = 0, $j = count($elasticaObjects); $i < $j; $i++) {
+        for ($i = 0, $j = count($elasticaObjects); $i < $j; ++$i) {
             $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
         }
 

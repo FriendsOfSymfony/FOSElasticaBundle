@@ -1,15 +1,24 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\DependencyInjection;
 
+use InvalidArgumentException;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Config\FileLocator;
-use InvalidArgumentException;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class FOSElasticaExtension extends Extension
 {
@@ -511,7 +520,7 @@ class FOSElasticaExtension extends Extension
         $listenerConfig = array(
             'identifier' => $typeConfig['identifier'],
             'indexName' => $indexName,
-            'typeName' => $typeName
+            'typeName' => $typeName,
         );
 
         $tagName = null;
@@ -610,7 +619,7 @@ class FOSElasticaExtension extends Extension
         }
 
         $indexTypeName = "$indexName/$typeName";
-        $arguments = [$indexTypeName, new Reference($finderId)];
+        $arguments = array($indexTypeName, new Reference($finderId));
         if (isset($typeConfig['repository'])) {
             $arguments[] = $typeConfig['repository'];
         }
@@ -620,7 +629,7 @@ class FOSElasticaExtension extends Extension
 
         $managerId = sprintf('fos_elastica.manager.%s', $typeConfig['driver']);
         $container->getDefinition($managerId)
-            ->addMethodCall('addEntity', [$typeConfig['model'], $indexTypeName]);
+            ->addMethodCall('addEntity', array($typeConfig['model'], $indexTypeName));
 
         return $finderId;
     }

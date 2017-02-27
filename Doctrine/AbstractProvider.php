@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -7,7 +16,6 @@ use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractProvider extends BaseAbstractProvider
 {
@@ -50,7 +58,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
      *
      * @param object $queryBuilder
      *
-     * @return integer
+     * @return int
      */
     abstract protected function countObjects($queryBuilder);
 
@@ -58,7 +66,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
      * Creates the query builder, which will be used to fetch objects to index.
      *
      * @param string $method
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return object
      */
@@ -67,16 +75,16 @@ abstract class AbstractProvider extends BaseAbstractProvider
     /**
      * Fetches a slice of objects using the query builder.
      *
-     * @param object  $queryBuilder
-     * @param integer $limit
-     * @param integer $offset
+     * @param object $queryBuilder
+     * @param int    $limit
+     * @param int    $offset
      *
      * @return array
      */
     abstract protected function fetchSlice($queryBuilder, $limit, $offset);
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function doPopulate($options, \Closure $loggerClosure = null)
     {
@@ -124,7 +132,7 @@ abstract class AbstractProvider extends BaseAbstractProvider
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configureOptions()
     {
@@ -132,11 +140,11 @@ abstract class AbstractProvider extends BaseAbstractProvider
 
         $this->resolver->setDefaults(array(
             'clear_object_manager' => true,
-            'debug_logging'        => false,
-            'ignore_errors'        => false,
-            'offset'               => 0,
+            'debug_logging' => false,
+            'ignore_errors' => false,
+            'offset' => 0,
             'query_builder_method' => 'createQueryBuilder',
-            'sleep'                => 0
+            'sleep' => 0,
         ));
     }
 

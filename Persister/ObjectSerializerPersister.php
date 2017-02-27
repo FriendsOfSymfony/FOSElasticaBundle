@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Persister;
 
 use Elastica\Document;
@@ -18,10 +27,10 @@ class ObjectSerializerPersister extends ObjectPersister
     protected $serializer;
 
     /**
-     * @param Type $type
+     * @param Type                                $type
      * @param ModelToElasticaTransformerInterface $transformer
-     * @param string $objectClass
-     * @param callable $serializer
+     * @param string                              $objectClass
+     * @param callable                            $serializer
      */
     public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, $serializer)
     {

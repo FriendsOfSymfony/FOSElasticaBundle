@@ -1,12 +1,18 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Index;
 
-use Elastica\Exception\ResponseException;
 use Elastica\Request;
-use Elastica\Response;
 use Elastica\Type;
-use Elastica\Type\Mapping;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\TypeConfig;
 use FOS\ElasticaBundle\Elastica\Index;
@@ -41,7 +47,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
 
         $this->dispatcherExpects(array(
             array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
-            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent'))
+            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
         ));
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -61,7 +67,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
 
         $this->dispatcherExpects(array(
             array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
-            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent'))
+            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
         ));
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -77,12 +83,12 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     public function testResetIndexWithDifferentName()
     {
         $indexConfig = new IndexConfig('index1', array(), array(
-            'elasticSearchName' => 'notIndex1'
+            'elasticSearchName' => 'notIndex1',
         ));
         $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects(array(
             array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
-            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent'))
+            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
         ));
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -99,12 +105,12 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     {
         $indexConfig = new IndexConfig('index1', array(), array(
             'elasticSearchName' => 'notIndex1',
-            'useAlias' => true
+            'useAlias' => true,
         ));
         $index = $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects(array(
             array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
-            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent'))
+            array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
         ));
 
         $this->aliasProcessor->expects($this->once())
@@ -129,7 +135,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $this->configManager->expects($this->once())
             ->method('getIndexConfiguration')
             ->with('nonExistant')
-            ->will($this->throwException(new \InvalidArgumentException));
+            ->will($this->throwException(new \InvalidArgumentException()));
 
         $this->indexManager->expects($this->never())
             ->method('getIndex');
@@ -147,7 +153,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             array(IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
             array(IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')),
             array(TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent')),
-            array(TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent'))
+            array(TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent')),
         ));
 
         $this->elasticaClient->expects($this->exactly(3))
@@ -168,10 +174,10 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
                 'analyzer' => array(
                     'test_analyzer' => array(
                         'type' => 'standard',
-                        'tokenizer' => 'standard'
-                    )
-                )
-            )
+                        'tokenizer' => 'standard',
+                    ),
+                ),
+            ),
         );
         $typeConfig = new TypeConfig('type', array(), array());
         $indexConfig = new IndexConfig('index', array(), array('settings' => $settingsValue));
@@ -196,7 +202,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $this->configManager->expects($this->once())
             ->method('getTypeConfiguration')
             ->with('index', 'nonExistant')
-            ->will($this->throwException(new \InvalidArgumentException));
+            ->will($this->throwException(new \InvalidArgumentException()));
 
         $this->indexManager->expects($this->never())
             ->method('getIndex');

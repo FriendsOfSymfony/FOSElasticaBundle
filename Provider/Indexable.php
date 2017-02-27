@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -124,7 +133,7 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
      * Processes a string expression into an Expression.
      *
      * @param string $type
-     * @param mixed $object
+     * @param mixed  $object
      * @param string $callback
      *
      * @return Expression
@@ -139,7 +148,7 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
         try {
             $callback = new Expression($callback);
             $expression->compile($callback, array(
-                'object', $this->getExpressionVar($object)
+                'object', $this->getExpressionVar($object),
             ));
 
             return $callback;
@@ -206,7 +215,7 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
      * it begins with an @.
      *
      * @param string $type
-     * @param array $callback
+     * @param array  $callback
      *
      * @return array
      */
