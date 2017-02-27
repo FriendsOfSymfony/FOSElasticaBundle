@@ -8,6 +8,6 @@ in 5.0 versions.
  * Add `ruflin/elastica` 5.x support.
  * Removed PHP 5.6 support.
  * Removed Symfony <= 3.0 support.
- * Removed `sortIgnoreUnmapped` support for Paginator. `ignore_unmapped` is not supported in ES 5.0 anymore.
- * Removed `ttl` and `timestamp` support in configuration. These attributes are not supported in ES 5.0 anymore.
+ * Removed `sortIgnoreUnmapped` support for Paginator as `ignore_unmapped`.
+ * Removed `ttl` and `timestamp` config options.
  * Removed deprecated config options `servers`, `mappings` and `is_indexable_callback`.
