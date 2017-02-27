@@ -7,6 +7,7 @@ in 5.0 versions.
 * 5.0.0 (2017-xx-xx)
  * Add `ruflin/elastica` 5.x support.
  * Add asnychronous index update option.
+ * Add ability to close an index.
  * Removed PHP 5.6 support.
  * Removed Symfony <= 3.0 support.
  * Removed `sortIgnoreUnmapped` support for Paginator as `ignore_unmapped`.
