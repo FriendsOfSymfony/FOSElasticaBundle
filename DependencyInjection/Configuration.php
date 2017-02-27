@@ -232,7 +232,6 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getPropertiesNode())
                 ->append($this->getDynamicTemplateNode())
                 ->append($this->getSourceNode())
-                ->append($this->getBoostNode())
                 ->append($this->getRoutingNode())
                 ->append($this->getParentNode())
                 ->append($this->getAllNode())
@@ -327,24 +326,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('compress')->end()
                 ->scalarNode('compress_threshold')->end()
                 ->scalarNode('enabled')->defaultTrue()->end()
-            ->end()
-        ;
-
-        return $node;
-    }
-
-    /**
-     * Returns the array node used for "_boost".
-     */
-    protected function getBoostNode()
-    {
-        $builder = new TreeBuilder();
-        $node = $builder->root('_boost');
-
-        $node
-            ->children()
-                ->scalarNode('name')->end()
-                ->scalarNode('null_value')->end()
             ->end()
         ;
 
