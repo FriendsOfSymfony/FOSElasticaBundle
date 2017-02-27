@@ -55,6 +55,7 @@ class PopulateCommand extends ContainerAwareCommand
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to repopulate')
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
             ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
+            ->addOption('no-delete', null, InputOption::VALUE_NONE, 'Do not delete index after populate')
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
@@ -91,11 +92,16 @@ class PopulateCommand extends ContainerAwareCommand
         $index = $input->getOption('index');
         $type = $input->getOption('type');
         $reset = !$input->getOption('no-reset');
+        $delete = !$input->getOption('no-delete');
+
         $options = array(
+            'delete'        => $delete,
+            'reset'         => $reset,
             'ignore_errors' => $input->getOption('ignore-errors'),
-            'offset' => $input->getOption('offset'),
-            'sleep' => $input->getOption('sleep')
+            'offset'        => $input->getOption('offset'),
+            'sleep'         => $input->getOption('sleep')
         );
+
         if ($input->getOption('batch-size')) {
             $options['batch_size'] = (int) $input->getOption('batch-size');
         }
@@ -181,7 +187,7 @@ class PopulateCommand extends ContainerAwareCommand
 
         $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
 
-        $this->refreshIndex($output, $index, false);
+        $this->refreshIndex($output, $index);
     }
 
     /**
@@ -189,14 +195,9 @@ class PopulateCommand extends ContainerAwareCommand
      *
      * @param OutputInterface $output
      * @param string          $index
-     * @param bool            $postPopulate
      */
-    private function refreshIndex(OutputInterface $output, $index, $postPopulate = true)
+    private function refreshIndex(OutputInterface $output, $index)
     {
-        if ($postPopulate) {
-            $this->resetter->postPopulate($index);
-        }
-
         $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
         $this->indexManager->getIndex($index)->refresh();
     }

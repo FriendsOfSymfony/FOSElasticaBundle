@@ -74,4 +74,29 @@ class IndexPopulateEvent extends IndexEvent
     {
         $this->reset = $reset;
     }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     *
+     * @throws \InvalidArgumentException if option does not exist
+     */
+    public function getOption($name)
+    {
+        if (!isset($this->options[$name])) {
+            throw new \InvalidArgumentException(sprintf('The "%s" option does not exist.', $name));
+        }
+
+        return $this->options[$name];
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function setOption($name, $value)
+    {
+        $this->options[$name] = $value;
+    }
 }
