@@ -17,3 +17,4 @@ in 4.0 versions.
  * Removed deprecated `Client` class.
  * Removed deprecated `IndexManager` class.
  * Removed deprecated `DynamicIndex` class.
+ * Removed `Search` annotations as they cannot be used anymore.
