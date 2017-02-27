@@ -17,6 +17,7 @@ use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber;
 use Knp\Component\Pager\Event\ItemsEvent;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,10 +37,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldDoNothingIfSortParamIsEmpty()
     {
-        $request = new Request();
-
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest($request);
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request()));
 
         $adapter = $this->getAdapterMock();
         $adapter->expects($this->never())
@@ -86,8 +84,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function testShouldSort(array $expected, Request $request)
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest($request);
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack($request));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -115,8 +112,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function testShouldThrowIfFieldIsNotWhitelisted()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(array('ord' => 'owner')));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(array('ord' => 'owner'))));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -140,8 +136,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldAddNestedPath()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(array('ord' => 'owner.name')));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(array('ord' => 'owner.name'))));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -171,8 +166,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldInvokeCallableNestedPath()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(array('ord' => 'owner.name')));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(array('ord' => 'owner.name'))));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -206,8 +200,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldAddNestedFilter()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(array('ord' => 'owner.name')));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(array('ord' => 'owner.name'))));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -248,8 +241,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldInvokeNestedFilterCallable()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(array('ord' => 'owner.name')));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(array('ord' => 'owner.name'))));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -290,5 +282,16 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
                 'match_all' => new \stdClass(),
             ),
         ), $query->toArray());
+    }
+
+    private function getRequestStack(Request $request = null)
+    {
+        $stack = new RequestStack();
+
+        if ($request) {
+            $stack->push($request);
+        }
+
+        return $stack;
     }
 }
