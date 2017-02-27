@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Transformer\ModelToElasticaIdentifierTransformer;
 
 use FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer;
@@ -26,22 +35,22 @@ class ModelToElasticaIdentifierTransformerTest extends \PHPUnit_Framework_TestCa
     public function testGetDocumentWithIdentifierOnly()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array());
-        $data        = $document->getData();
+        $document = $transformer->transform(new POPO(), array());
+        $data = $document->getData();
 
         $this->assertInstanceOf('Elastica\Document', $document);
-        $this->assertEquals(123, $document->getId());
+        $this->assertSame(123, $document->getId());
         $this->assertCount(0, $data);
     }
 
     public function testGetDocumentWithIdentifierOnlyWithFields()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array('name' => array()));
-        $data        = $document->getData();
+        $document = $transformer->transform(new POPO(), array('name' => array()));
+        $data = $document->getData();
 
         $this->assertInstanceOf('Elastica\Document', $document);
-        $this->assertEquals(123, $document->getId());
+        $this->assertSame(123, $document->getId());
         $this->assertCount(0, $data);
     }
 

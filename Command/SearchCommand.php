@@ -1,14 +1,23 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Elastica\Query;
 use Elastica\Result;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Searches a type.
@@ -42,7 +51,7 @@ class SearchCommand extends ContainerAwareCommand
         $indexName = $input->getOption('index');
         /** @var $index \Elastica\Index */
         $index = $this->getContainer()->get('fos_elastica.index_manager')->getIndex($indexName ? $indexName : null);
-        $type  = $index->getType($input->getArgument('type'));
+        $type = $index->getType($input->getArgument('type'));
         $query = Query::create($input->getArgument('query'));
         $query->setSize($input->getOption('limit'));
         if ($input->getOption('explain')) {

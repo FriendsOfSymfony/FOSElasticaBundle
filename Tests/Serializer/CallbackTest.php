@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Serializer;
 
 use FOS\ElasticaBundle\Serializer\Callback;
@@ -31,7 +40,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(
             'RuntimeException',
             'Setting serialization groups requires using "JMS\Serializer\Serializer" or '
-                . '"Symfony\Component\Serializer\Serializer"'
+                .'"Symfony\Component\Serializer\Serializer"'
         );
 
         $callback->setGroups(array('foo'));

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Provider;
 
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
@@ -42,7 +51,7 @@ class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
             'bar/b' => 'provider.bar.b',
         );
 
-        $this->assertEquals($allProviders, $this->registry->getAllProviders());
+        $this->assertSame($allProviders, $this->registry->getAllProviders());
     }
 
     public function testGetIndexProviders()
@@ -58,8 +67,8 @@ class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
             'b' => 'provider.bar.b',
         );
 
-        $this->assertEquals($fooProviders, $this->registry->getIndexProviders('foo'));
-        $this->assertEquals($barProviders, $this->registry->getIndexProviders('bar'));
+        $this->assertSame($fooProviders, $this->registry->getIndexProviders('foo'));
+        $this->assertSame($barProviders, $this->registry->getIndexProviders('bar'));
     }
 
     /**
@@ -72,11 +81,11 @@ class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetProvider()
     {
-        $this->assertEquals('provider.foo.a', $this->registry->getProvider('foo', 'a'));
-        $this->assertEquals('provider.foo.b', $this->registry->getProvider('foo', 'b'));
-        $this->assertEquals('provider.foo.c', $this->registry->getProvider('foo', 'c'));
-        $this->assertEquals('provider.bar.a', $this->registry->getProvider('bar', 'a'));
-        $this->assertEquals('provider.bar.b', $this->registry->getProvider('bar', 'b'));
+        $this->assertSame('provider.foo.a', $this->registry->getProvider('foo', 'a'));
+        $this->assertSame('provider.foo.b', $this->registry->getProvider('foo', 'b'));
+        $this->assertSame('provider.foo.c', $this->registry->getProvider('foo', 'c'));
+        $this->assertSame('provider.bar.a', $this->registry->getProvider('bar', 'a'));
+        $this->assertSame('provider.bar.b', $this->registry->getProvider('bar', 'b'));
     }
 
     /**

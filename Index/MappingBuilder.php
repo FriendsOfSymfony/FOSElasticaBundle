@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -16,13 +25,6 @@ use FOS\ElasticaBundle\Configuration\TypeConfig;
 
 class MappingBuilder
 {
-    /**
-     * Skip adding default information to certain fields.
-     *
-     * @var array
-     */
-    private $skipTypes = array('completion');
-
     /**
      * Builds mappings for an entire index.
      *
@@ -117,16 +119,13 @@ class MappingBuilder
             unset($property['property_path']);
 
             if (!isset($property['type'])) {
-                $property['type'] = 'string';
+                $property['type'] = 'text';
             }
-            if ($property['type'] == 'multi_field' && isset($property['fields'])) {
+            if (isset($property['fields'])) {
                 $this->fixProperties($property['fields']);
             }
             if (isset($property['properties'])) {
                 $this->fixProperties($property['properties']);
-            }
-            if (in_array($property['type'], $this->skipTypes)) {
-                continue;
             }
         }
     }

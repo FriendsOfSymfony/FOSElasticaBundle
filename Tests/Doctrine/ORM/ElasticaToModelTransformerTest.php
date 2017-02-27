@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Doctrine\ORM;
 
 use FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer;
@@ -81,7 +90,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Checks that the 'hints' parameter is used on the created query
+     * Checks that the 'hints' parameter is used on the created query.
      */
     public function testUsesHintsConfigurationIfGiven()
     {
@@ -109,8 +118,8 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 
         $transformer = new ElasticaToModelTransformer($this->registry, $this->objectClass, array(
             'hints' => array(
-                array('name' => 'customHintName', 'value' => 'Custom\Hint\Class')
-            )
+                array('name' => 'customHintName', 'value' => 'Custom\Hint\Class'),
+            ),
         ));
 
         $class = new \ReflectionClass('FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer');

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -26,8 +35,9 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getSetRootNameData
+     *
      * @param string $name
-     * @param array $configArray
+     * @param array  $configArray
      * @param string $resultStartsWith
      */
     public function testSetRootName($name, $configArray, $resultStartsWith)
@@ -55,7 +65,7 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
         $client->expects($this->at(1))
             ->method('request')
             ->with('_aliases', 'POST', array('actions' => array(
-                array('add' => array('index' => 'unique_name', 'alias' => 'name'))
+                array('add' => array('index' => 'unique_name', 'alias' => 'name')),
             )));
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
@@ -70,13 +80,13 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
             ->method('request')
             ->with('_aliases', 'GET')
             ->willReturn(new Response(array(
-                'old_unique_name' => array('aliases' => array('name'))
+                'old_unique_name' => array('aliases' => array('name')),
             )));
         $client->expects($this->at(1))
             ->method('request')
             ->with('_aliases', 'POST', array('actions' => array(
                 array('remove' => array('index' => 'old_unique_name', 'alias' => 'name')),
-                array('add' => array('index' => 'unique_name', 'alias' => 'name'))
+                array('add' => array('index' => 'unique_name', 'alias' => 'name')),
             )));
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
@@ -95,7 +105,7 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
             ->with('_aliases', 'GET')
             ->willReturn(new Response(array(
                 'old_unique_name' => array('aliases' => array('name')),
-                'another_old_unique_name' => array('aliases' => array('name'))
+                'another_old_unique_name' => array('aliases' => array('name')),
             )));
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
@@ -152,7 +162,7 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
             ->method('request')
             ->with('_aliases', 'POST', array('actions' => array(
                 array('remove' => array('index' => 'old_unique_name', 'alias' => 'name')),
-                array('add' => array('index' => 'unique_name', 'alias' => 'name'))
+                array('add' => array('index' => 'unique_name', 'alias' => 'name')),
             )));
         $client->expects($this->at(2))
             ->method('request')
@@ -176,7 +186,7 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
             ->method('request')
             ->with('_aliases', 'POST', array('actions' => array(
                 array('remove' => array('index' => 'old_unique_name', 'alias' => 'name')),
-                array('add' => array('index' => 'unique_name', 'alias' => 'name'))
+                array('add' => array('index' => 'unique_name', 'alias' => 'name')),
             )))
             ->will($this->throwException(new ResponseException(new Request(''), new Response(''))));
         $client->expects($this->at(2))
@@ -192,7 +202,7 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('name', array(), 'name_'),
-            array('name', array('elasticSearchName' => 'notname'), 'notname_')
+            array('name', array('elasticSearchName' => 'notname'), 'notname_'),
         );
     }
 

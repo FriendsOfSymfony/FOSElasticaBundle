@@ -9,12 +9,12 @@ fos_elastica:
         app:
             types:
                 article:
-                    mappings:
+                    properties:
                         title: ~
                         desc: ~
                     # ....
                 news:
-                    mappings:
+                    properties:
                         title: ~
                         desc: ~
                     # ....

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Elastica;
 
 use Elastica\Client as BaseClient;
@@ -99,7 +108,6 @@ class Client extends BaseClient
         if (!$this->_logger or !$this->_logger instanceof ElasticaLogger) {
             return;
         }
-
 
         $connection = $this->getLastRequest()->getConnection();
 

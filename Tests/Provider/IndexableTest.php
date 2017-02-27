@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -12,7 +21,6 @@
 namespace FOS\ElasticaBundle\Tests\Provider;
 
 use FOS\ElasticaBundle\Provider\Indexable;
-use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class IndexableTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,7 +28,8 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
 
     public function testIndexableUnknown()
     {
-        $indexable = new Indexable(array(), $this->container);
+        $indexable = new Indexable(array());
+        $indexable->setContainer($this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
         $this->assertTrue($index);
@@ -33,10 +42,11 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     {
         $indexable = new Indexable(array(
             'index/type' => $callback,
-        ), $this->container);
+        ));
+        $indexable->setContainer($this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
-        $this->assertEquals($return, $index);
+        $this->assertSame($return, $index);
     }
 
     /**
@@ -47,7 +57,8 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     {
         $indexable = new Indexable(array(
             'index/type' => $callback,
-        ), $this->container);
+        ));
+        $indexable->setContainer($this->container);
         $indexable->isObjectIndexable('index', 'type', new Entity());
     }
 
@@ -69,12 +80,14 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
             array(array(new IndexableDecider(), 'isIndexable'), true),
             array(array('@indexableService', 'isIndexable'), true),
             array(array('@indexableService'), true),
-            array(function (Entity $entity) { return $entity->maybeIndex(); }, true),
+            array(function (Entity $entity) {
+                return $entity->maybeIndex();
+            }, true),
             array('entity.maybeIndex()', true),
             array('!object.isIndexable() && entity.property == "abc"', true),
             array('entity.property != "abc"', false),
             array('["array", "values"]', true),
-            array('[]', false)
+            array('[]', false),
         );
     }
 

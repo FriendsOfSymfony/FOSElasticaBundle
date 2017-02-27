@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Provider;
 
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
@@ -58,7 +67,7 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
@@ -85,7 +94,7 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * Perform actual population.
      *
-     * @param array $options
+     * @param array    $options
      * @param \Closure $loggerClosure
      */
     abstract protected function doPopulate($options, \Closure $loggerClosure = null);
@@ -106,6 +115,7 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $this->resolver->setDefaults(array(
             'reset' => true,
+            'delete' => true,
             'batch_size' => 100,
             'skip_indexable_check' => false,
         ));
@@ -116,12 +126,12 @@ abstract class AbstractProvider implements ProviderInterface
         ));
     }
 
-
     /**
      * Filters objects away if they are not indexable.
      *
      * @param array $options
      * @param array $objects
+     *
      * @return array
      */
     protected function filterObjects(array $options, array $objects)

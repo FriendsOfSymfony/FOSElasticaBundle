@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Transformer\ModelToElasticaAutoTransformer;
 
 use FOS\ElasticaBundle\Event\TransformEvent;
@@ -21,8 +30,8 @@ class POPO
 
     public function __construct()
     {
-        $this->date         = new \DateTime('1979-05-05');
-        $this->file         = new \SplFileInfo(__DIR__.'/../fixtures/attachment.odt');
+        $this->date = new \DateTime('1979-05-05');
+        $this->file = new \SplFileInfo(__DIR__.'/../fixtures/attachment.odt');
         $this->fileContents = file_get_contents(__DIR__.'/../fixtures/attachment.odt');
     }
 
@@ -55,8 +64,8 @@ class POPO
     public function getMultiArray()
     {
         return array(
-            'key1'  => 'value1',
-            'key2'  => array('value2', false, 123, 8.9, new \DateTime('1978-09-07')),
+            'key1' => 'value1',
+            'key2' => array('value2', false, 123, 8.9, new \DateTime('1978-09-07')),
         );
     }
 
@@ -159,11 +168,11 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
             ->withConsecutive(
                 array(
                     TransformEvent::PRE_TRANSFORM,
-                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent')
+                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent'),
                 ),
                 array(
                     TransformEvent::POST_TRANSFORM,
-                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent')
+                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent'),
                 )
             );
 
@@ -182,63 +191,63 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $document = $transformer->transform(new POPO(), array('realName' => array('property_path' => 'name')));
         $this->assertInstanceOf('Elastica\Document', $document);
         $this->assertTrue($document->has('realName'));
-        $this->assertEquals('someName', $document->get('realName'));
+        $this->assertSame('someName', $document->get('realName'));
     }
 
     public function testThatCanTransformObject()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array('name' => array()));
-        $data        = $document->getData();
+        $document = $transformer->transform(new POPO(), array('name' => array()));
+        $data = $document->getData();
 
         $this->assertInstanceOf('Elastica\Document', $document);
-        $this->assertEquals(123, $document->getId());
-        $this->assertEquals('someName', $data['name']);
+        $this->assertSame(123, $document->getId());
+        $this->assertSame('someName', $data['name']);
     }
 
     public function testThatCanTransformObjectWithCorrectTypes()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(
+        $document = $transformer->transform(
             new POPO(), array(
-                             'name'      => array(),
-                             'float'     => array(),
-                             'bool'      => array(),
-                             'date'      => array(),
+                             'name' => array(),
+                             'float' => array(),
+                             'bool' => array(),
+                             'date' => array(),
                              'falseBool' => array(),
                         )
         );
-        $data        = $document->getData();
+        $data = $document->getData();
 
         $this->assertInstanceOf('Elastica\Document', $document);
-        $this->assertEquals(123, $document->getId());
-        $this->assertEquals('someName', $data['name']);
-        $this->assertEquals(7.2, $data['float']);
-        $this->assertEquals(true, $data['bool']);
-        $this->assertEquals(false, $data['falseBool']);
+        $this->assertSame(123, $document->getId());
+        $this->assertSame('someName', $data['name']);
+        $this->assertSame(7.2, $data['float']);
+        $this->assertSame(true, $data['bool']);
+        $this->assertSame(false, $data['falseBool']);
         $expectedDate = new \DateTime('1979-05-05');
-        $this->assertEquals($expectedDate->format('c'), $data['date']);
+        $this->assertSame($expectedDate->format('c'), $data['date']);
     }
 
     public function testThatCanTransformObjectWithIteratorValue()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array('iterator' => array()));
-        $data        = $document->getData();
+        $document = $transformer->transform(new POPO(), array('iterator' => array()));
+        $data = $document->getData();
 
-        $this->assertEquals(array('value1'), $data['iterator']);
+        $this->assertSame(array('value1'), $data['iterator']);
     }
 
     public function testThatCanTransformObjectWithArrayValue()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array('array' => array()));
-        $data        = $document->getData();
+        $document = $transformer->transform(new POPO(), array('array' => array()));
+        $data = $document->getData();
 
-        $this->assertEquals(
+        $this->assertSame(
             array(
-                 'key1'  => 'value1',
-                 'key2'  => 'value2',
+                 'key1' => 'value1',
+                 'key2' => 'value2',
             ), $data['array']
         );
     }
@@ -246,15 +255,15 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatCanTransformObjectWithMultiDimensionalArrayValue()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array('multiArray' => array()));
-        $data        = $document->getData();
+        $document = $transformer->transform(new POPO(), array('multiArray' => array()));
+        $data = $document->getData();
 
         $expectedDate = new \DateTime('1978-09-07');
 
-        $this->assertEquals(
+        $this->assertSame(
             array(
-                 'key1'  => 'value1',
-                 'key2'  => array('value2', false, 123, 8.9, $expectedDate->format('c')),
+                 'key1' => 'value1',
+                 'key2' => array('value2', false, 123, 8.9, $expectedDate->format('c')),
             ), $data['multiArray']
         );
     }
@@ -262,14 +271,14 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testThatNullValuesAreNotFilteredOut()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array('nullValue' => array()));
-        $data        = $document->getData();
+        $document = $transformer->transform(new POPO(), array('nullValue' => array()));
+        $data = $document->getData();
 
         $this->assertTrue(array_key_exists('nullValue', $data));
     }
 
     /**
-     * @expectedException Symfony\Component\PropertyAccess\Exception\RuntimeException
+     * @expectedException \Symfony\Component\PropertyAccess\Exception\RuntimeException
      */
     public function testThatCannotTransformObjectWhenGetterDoesNotExistForPrivateMethod()
     {
@@ -280,19 +289,19 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testFileAddedForAttachmentMapping()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array('file' => array('type' => 'attachment')));
-        $data        = $document->getData();
+        $document = $transformer->transform(new POPO(), array('file' => array('type' => 'attachment')));
+        $data = $document->getData();
 
-        $this->assertEquals(base64_encode(file_get_contents(__DIR__.'/../fixtures/attachment.odt')), $data['file']);
+        $this->assertSame(base64_encode(file_get_contents(__DIR__.'/../fixtures/attachment.odt')), $data['file']);
     }
 
     public function testFileContentsAddedForAttachmentMapping()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array('fileContents' => array('type' => 'attachment')));
-        $data        = $document->getData();
+        $document = $transformer->transform(new POPO(), array('fileContents' => array('type' => 'attachment')));
+        $data = $document->getData();
 
-        $this->assertEquals(
+        $this->assertSame(
             base64_encode(file_get_contents(__DIR__.'/../fixtures/attachment.odt')), $data['fileContents']
         );
     }
@@ -300,17 +309,17 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testNestedMapping()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
             'sub' => array(
                 'type' => 'nested',
                 'properties' => array('foo' => array()),
             ),
         ));
-        $data        = $document->getData();
+        $data = $document->getData();
 
         $this->assertTrue(array_key_exists('sub', $data));
         $this->assertInternalType('array', $data['sub']);
-        $this->assertEquals(array(
+        $this->assertSame(array(
              array('foo' => 'foo'),
              array('foo' => 'bar'),
            ), $data['sub']);
@@ -319,17 +328,17 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function tesObjectMapping()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
                 'sub' => array(
                     'type' => 'object',
                     'properties' => array('bar'),
                     ),
                 ));
-        $data        = $document->getData();
+        $data = $document->getData();
 
         $this->assertTrue(array_key_exists('sub', $data));
         $this->assertInternalType('array', $data['sub']);
-        $this->assertEquals(array(
+        $this->assertSame(array(
              array('bar' => 'foo'),
              array('bar' => 'bar'),
            ), $data['sub']);
@@ -338,16 +347,16 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testObjectDoesNotRequireProperties()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
                 'obj' => array(
                     'type' => 'object',
                     ),
                 ));
-        $data        = $document->getData();
+        $data = $document->getData();
 
         $this->assertTrue(array_key_exists('obj', $data));
         $this->assertInternalType('array', $data['obj']);
-        $this->assertEquals(array(
+        $this->assertSame(array(
              'foo' => 'foo',
              'bar' => 'foo',
              'id' => 1,
@@ -357,40 +366,40 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testObjectsMappingOfAtLeastOneAutoMappedObjectAndAtLeastOneManuallyMappedObject()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(
+        $document = $transformer->transform(
             new POPO(),
             array(
-                'obj'          => array('type' => 'object', 'properties' => array()),
+                'obj' => array('type' => 'object', 'properties' => array()),
                 'nestedObject' => array(
-                    'type'       => 'object',
+                    'type' => 'object',
                     'properties' => array(
                         'key1sub1' => array(
-                            'type'       => 'string',
+                            'type' => 'text',
                             'properties' => array(),
                         ),
                         'key1sub2' => array(
-                            'type'       => 'string',
+                            'type' => 'text',
                             'properties' => array(),
                         ),
                     ),
                 ),
             )
         );
-        $data        = $document->getData();
+        $data = $document->getData();
 
         $this->assertTrue(array_key_exists('obj', $data));
         $this->assertTrue(array_key_exists('nestedObject', $data));
         $this->assertInternalType('array', $data['obj']);
         $this->assertInternalType('array', $data['nestedObject']);
-        $this->assertEquals(
+        $this->assertSame(
             array(
                 'foo' => 'foo',
                 'bar' => 'foo',
-                'id'  => 1,
+                'id' => 1,
             ),
             $data['obj']
         );
-        $this->assertEquals(
+        $this->assertSame(
             array(
                 'key1sub1' => 'value1sub1',
                 'key1sub2' => 'value1sub2',
@@ -402,82 +411,82 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testParentMapping()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
             '_parent' => array('type' => 'upper', 'property' => 'upper', 'identifier' => 'id'),
         ));
 
-        $this->assertEquals('parent', $document->getParent());
+        $this->assertSame('parent', $document->getParent());
     }
 
     public function testParentMappingWithCustomIdentifier()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
             '_parent' => array('type' => 'upper', 'property' => 'upper', 'identifier' => 'name'),
         ));
 
-        $this->assertEquals('a random name', $document->getParent());
+        $this->assertSame('a random name', $document->getParent());
     }
 
     public function testParentMappingWithNullProperty()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
             '_parent' => array('type' => 'upper', 'property' => null, 'identifier' => 'id'),
         ));
 
-        $this->assertEquals('parent', $document->getParent());
+        $this->assertSame('parent', $document->getParent());
     }
 
     public function testParentMappingWithCustomProperty()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
             '_parent' => array('type' => 'upper', 'property' => 'upperAlias', 'identifier' => 'id'),
         ));
 
-        $this->assertEquals('parent', $document->getParent());
+        $this->assertSame('parent', $document->getParent());
     }
 
     public function testThatMappedObjectsDontNeedAnIdentifierField()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
             'objWithoutIdentifier' => array(
                 'type' => 'object',
                 'properties' => array(
                     'foo' => array(),
-                    'bar' => array()
-                )
+                    'bar' => array(),
+                ),
             ),
         ));
-        $data        = $document->getData();
+        $data = $document->getData();
 
         $this->assertTrue(array_key_exists('objWithoutIdentifier', $data));
         $this->assertInternalType('array', $data['objWithoutIdentifier']);
-        $this->assertEquals(array(
+        $this->assertSame(array(
             'foo' => 'foo',
-            'bar' => 'foo'
+            'bar' => 'foo',
         ), $data['objWithoutIdentifier']);
     }
 
     public function testThatNestedObjectsDontNeedAnIdentifierField()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
             'subWithoutIdentifier' => array(
                 'type' => 'nested',
                 'properties' => array(
                     'foo' => array(),
-                    'bar' => array()
+                    'bar' => array(),
                 ),
             ),
         ));
-        $data        = $document->getData();
+        $data = $document->getData();
 
         $this->assertTrue(array_key_exists('subWithoutIdentifier', $data));
         $this->assertInternalType('array', $data['subWithoutIdentifier']);
-        $this->assertEquals(array(
+        $this->assertSame(array(
             array('foo' => 'foo', 'bar' => 'foo'),
             array('foo' => 'bar', 'bar' => 'bar'),
         ), $data['subWithoutIdentifier']);
@@ -486,28 +495,28 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
     public function testNestedTransformHandlesSingleObjects()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
             'upper' => array(
                 'type' => 'nested',
-                'properties' => array('name' => null)
-            )
+                'properties' => array('name' => null),
+            ),
         ));
 
         $data = $document->getData();
-        $this->assertEquals('a random name', $data['upper']['name']);
+        $this->assertSame('a random name', $data['upper']['name']);
     }
 
     public function testNestedTransformReturnsAnEmptyArrayForNullValues()
     {
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform(new POPO(), array(
+        $document = $transformer->transform(new POPO(), array(
             'nullValue' => array(
                 'type' => 'nested',
                 'properties' => array(
                     'foo' => array(),
-                    'bar' => array()
+                    'bar' => array(),
                 ),
-            )
+            ),
         ));
 
         $data = $document->getData();
@@ -525,10 +534,10 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $object->unmappedValue = $value;
 
         $transformer = $this->getTransformer();
-        $document    = $transformer->transform($object, array('unmappedValue' => array('property' => 'unmappedValue')));
+        $document = $transformer->transform($object, array('unmappedValue' => array('property' => 'unmappedValue')));
 
         $data = $document->getData();
-        $this->assertEquals('bar', $data['unmappedValue']);
+        $this->assertSame('bar', $data['unmappedValue']);
     }
 
     /**

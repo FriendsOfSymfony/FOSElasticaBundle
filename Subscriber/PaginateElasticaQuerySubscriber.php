@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Subscriber;
 
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
@@ -12,20 +21,16 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {
     /**
-     * @var Request
+     * @var RequestStack
      */
-    private $request;
+    private $requestStack;
 
     /**
-     * @param RequestStack|Request $requestStack
+     * @param RequestStack $requestStack
      */
-    public function setRequest($requestStack)
+    public function __construct(RequestStack $requestStack)
     {
-        if ($requestStack instanceof Request) {
-            $this->request = $requestStack;
-        } elseif ($requestStack instanceof RequestStack) {
-            $this->request = $requestStack->getMasterRequest();
-        }
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -59,35 +64,73 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     protected function setSorting(ItemsEvent $event)
     {
         $options = $event->options;
-        $sortField = $this->request->get($options['sortFieldParameterName']);
+        $sortField = $this->getRequest()->get($options['sortFieldParameterName']);
 
         if (!$sortField && isset($options['defaultSortFieldName'])) {
             $sortField = $options['defaultSortFieldName'];
         }
 
         if (!empty($sortField)) {
-            // determine sort direction
-            $dir = 'asc';
-            $sortDirection = $this->request->get($options['sortDirectionParameterName']);
-
-            if (!$sortDirection && isset($options['defaultSortDirection'])) {
-                $sortDirection = $options['defaultSortDirection'];
-            }
-
-            if ('desc' === strtolower($sortDirection)) {
-                $dir = 'desc';
-            }
-
-            // check if the requested sort field is in the sort whitelist
-            if (isset($options['sortFieldWhitelist']) && !in_array($sortField, $options['sortFieldWhitelist'])) {
-                throw new \UnexpectedValueException(sprintf('Cannot sort by: [%s] this field is not in whitelist', $sortField));
-            }
-
-            // set sort on active query
             $event->target->getQuery()->setSort(array(
-                $sortField => array('order' => $dir, 'ignore_unmapped' => true),
+                $sortField => $this->getSort($sortField, $options),
             ));
         }
+    }
+
+    protected function getSort($sortField, array $options = array())
+    {
+        $sort = array(
+            'order' => $this->getSortDirection($sortField, $options),
+        );
+
+        if (isset($options['sortNestedPath'])) {
+            $path = is_callable($options['sortNestedPath']) ?
+                $options['sortNestedPath']($sortField) : $options['sortNestedPath'];
+
+            if (!empty($path)) {
+                $sort['nested_path'] = $path;
+            }
+        }
+
+        if (isset($options['sortNestedFilter'])) {
+            $filter = is_callable($options['sortNestedFilter']) ?
+                $options['sortNestedFilter']($sortField) : $options['sortNestedFilter'];
+
+            if (!empty($filter)) {
+                $sort['nested_filter'] = $filter;
+            }
+        }
+
+        return $sort;
+    }
+
+    protected function getSortDirection($sortField, array $options = array())
+    {
+        $dir = 'asc';
+        $sortDirection = $this->getRequest()->get($options['sortDirectionParameterName']);
+
+        if (empty($sortDirection) && isset($options['defaultSortDirection'])) {
+            $sortDirection = $options['defaultSortDirection'];
+        }
+
+        if ('desc' === strtolower($sortDirection)) {
+            $dir = 'desc';
+        }
+
+        // check if the requested sort field is in the sort whitelist
+        if (isset($options['sortFieldWhitelist']) && !in_array($sortField, $options['sortFieldWhitelist'])) {
+            throw new \UnexpectedValueException(sprintf('Cannot sort by: [%s] this field is not in whitelist', $sortField));
+        }
+
+        return $dir;
+    }
+
+    /**
+     * @return Request|null
+     */
+    private function getRequest()
+    {
+        return $this->requestStack->getCurrentRequest();
     }
 
     /**

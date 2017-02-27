@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -34,9 +43,9 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      * @var array
      */
     protected $options = array(
-        'hints'        => array(),
-        'hydrate'        => true,
-        'identifier'     => 'id',
+        'hints' => array(),
+        'hydrate' => true,
+        'identifier' => 'id',
         'ignore_missing' => false,
         'query_builder_method' => 'createQueryBuilder',
     );
@@ -50,9 +59,9 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      */
     public function __construct(ManagerRegistry $registry, $objectClass, array $options = array())
     {
-        $this->registry    = $registry;
+        $this->registry = $registry;
         $this->objectClass = $objectClass;
-        $this->options     = array_merge($this->options, $options);
+        $this->options = array_merge($this->options, $options);
     }
 
     /**
@@ -87,8 +96,8 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         $objectsCnt = count($objects);
         $elasticaObjectsCnt = count($elasticaObjects);
         if (!$this->options['ignore_missing'] && $objectsCnt < $elasticaObjectsCnt) {
-            throw new \RuntimeException(sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%d). IDs: %s', $objectsCnt, $elasticaObjectsCnt, join(', ', $ids)));
-        };
+            throw new \RuntimeException(sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%d). IDs: %s', $objectsCnt, $elasticaObjectsCnt, implode(', ', $ids)));
+        }
 
         $propertyAccessor = $this->propertyAccessor;
         $identifier = $this->options['identifier'];
@@ -105,13 +114,13 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
             $objects,
             function ($a, $b) use ($idPos, $identifier, $propertyAccessor) {
                 if ($this->options['hydrate']) {
-                    return $idPos[(string)$propertyAccessor->getValue(
+                    return $idPos[(string) $propertyAccessor->getValue(
                         $a,
                         $identifier
-                    )] > $idPos[(string)$propertyAccessor->getValue($b, $identifier)];
-                } else {
-                    return $idPos[$a[$identifier]] > $idPos[$b[$identifier]];
+                    )] > $idPos[(string) $propertyAccessor->getValue($b, $identifier)];
                 }
+
+                return $idPos[$a[$identifier]] > $idPos[$b[$identifier]];
             }
         );
 
@@ -141,7 +150,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getIdentifierField()
     {
@@ -151,8 +160,8 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
     /**
      * Fetches objects by theses identifier values.
      *
-     * @param array   $identifierValues ids values
-     * @param Boolean $hydrate          whether or not to hydrate the objects, false returns arrays
+     * @param array $identifierValues ids values
+     * @param bool  $hydrate          whether or not to hydrate the objects, false returns arrays
      *
      * @return array of objects or arrays
      */

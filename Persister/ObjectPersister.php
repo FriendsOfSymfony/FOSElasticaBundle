@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Persister;
 
-use Psr\Log\LoggerInterface;
-use Elastica\Exception\BulkException;
-use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use Elastica\Type;
 use Elastica\Document;
+use Elastica\Exception\BulkException;
+use Elastica\Type;
+use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Inserts, replaces and deletes single documents in an elastica type
@@ -30,10 +39,10 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields)
     {
-        $this->type            = $type;
-        $this->transformer     = $transformer;
-        $this->objectClass     = $objectClass;
-        $this->fields          = $fields;
+        $this->type = $type;
+        $this->transformer = $transformer;
+        $this->objectClass = $objectClass;
+        $this->fields = $fields;
     }
 
     /**
@@ -61,7 +70,7 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     private function log(BulkException $e)
     {
-        if (! $this->logger) {
+        if (!$this->logger) {
             throw $e;
         }
 

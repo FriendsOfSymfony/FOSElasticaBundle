@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Index;
 
 use FOS\ElasticaBundle\Index\IndexManager;
@@ -32,14 +41,14 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAllIndexes()
     {
-        $this->assertEquals($this->indexes, $this->indexManager->getAllIndexes());
+        $this->assertSame($this->indexes, $this->indexManager->getAllIndexes());
     }
 
     public function testGetIndex()
     {
-        $this->assertEquals($this->indexes['index1'], $this->indexManager->getIndex('index1'));
-        $this->assertEquals($this->indexes['index2'], $this->indexManager->getIndex('index2'));
-        $this->assertEquals($this->indexes['index3'], $this->indexManager->getIndex('index3'));
+        $this->assertSame($this->indexes['index1'], $this->indexManager->getIndex('index1'));
+        $this->assertSame($this->indexes['index2'], $this->indexManager->getIndex('index2'));
+        $this->assertSame($this->indexes['index3'], $this->indexManager->getIndex('index3'));
     }
 
     /**
@@ -52,7 +61,7 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDefaultIndex()
     {
-        $this->assertEquals('index2', $this->indexManager->getIndex()->getName());
-        $this->assertEquals('index2', $this->indexManager->getDefaultIndex()->getName());
+        $this->assertSame('index2', $this->indexManager->getIndex()->getName());
+        $this->assertSame('index2', $this->indexManager->getDefaultIndex()->getName());
     }
 }

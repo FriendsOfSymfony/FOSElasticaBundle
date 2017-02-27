@@ -1,14 +1,24 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\DependencyInjection;
 
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use InvalidArgumentException;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Config\FileLocator;
-use InvalidArgumentException;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class FOSElasticaExtension extends Extension
 {
@@ -46,7 +56,7 @@ class FOSElasticaExtension extends Extension
             return;
         }
 
-        foreach (array('config', 'index', 'persister', 'provider', 'source', 'transformer') as $basename) {
+        foreach (array('config', 'index', 'persister', 'provider', 'source', 'transformer', 'event_listener') as $basename) {
             $loader->load(sprintf('%s.xml', $basename));
         }
 
@@ -232,13 +242,10 @@ class FOSElasticaExtension extends Extension
                 'dynamic_templates',
                 'properties',
                 '_all',
-                '_boost',
                 '_id',
                 '_parent',
                 '_routing',
                 '_source',
-                '_timestamp',
-                '_ttl',
             ) as $field) {
                 if (isset($type[$field])) {
                     $typeConfig['mapping'][$field] = $type[$field];
@@ -503,14 +510,14 @@ class FOSElasticaExtension extends Extension
         $listenerId = sprintf('fos_elastica.listener.%s.%s', $indexName, $typeName);
         $listenerDef = new DefinitionDecorator($abstractListenerId);
         $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
-        $listenerDef->replaceArgument(2, array(
-            'identifier' => $typeConfig['identifier'],
-            'indexName' => $indexName,
-            'typeName' => $typeName,
-        ));
         $listenerDef->replaceArgument(3, $typeConfig['listener']['logger'] ?
             new Reference($typeConfig['listener']['logger']) :
             null
+        );
+        $listenerConfig = array(
+            'identifier' => $typeConfig['identifier'],
+            'indexName' => $indexName,
+            'typeName' => $typeName,
         );
 
         $tagName = null;
@@ -525,6 +532,17 @@ class FOSElasticaExtension extends Extension
                 $tagName = 'doctrine_mongodb.odm.event_listener';
                 break;
         }
+
+        if ($typeConfig['listener']['defer']) {
+            $listenerDef->setPublic(true);
+            $listenerDef->addTag(
+                'kernel.event_listener',
+                array('event' => 'kernel.terminate', 'method' => 'onKernelTerminate')
+            );
+            $listenerConfig['defer'] = true;
+        }
+
+        $listenerDef->replaceArgument(2, $listenerConfig);
 
         if (null !== $tagName) {
             foreach ($this->getDoctrineEvents($typeConfig) as $event) {
@@ -598,7 +616,7 @@ class FOSElasticaExtension extends Extension
         }
 
         $indexTypeName = "$indexName/$typeName";
-        $arguments = [$indexTypeName, new Reference($finderId)];
+        $arguments = array($indexTypeName, new Reference($finderId));
         if (isset($typeConfig['repository'])) {
             $arguments[] = $typeConfig['repository'];
         }
@@ -608,7 +626,7 @@ class FOSElasticaExtension extends Extension
 
         $managerId = sprintf('fos_elastica.manager.%s', $typeConfig['driver']);
         $container->getDefinition($managerId)
-            ->addMethodCall('addEntity', [$typeConfig['model'], $indexTypeName]);
+            ->addMethodCall('addEntity', array($typeConfig['model'], $indexTypeName));
 
         return $finderId;
     }
@@ -658,8 +676,7 @@ class FOSElasticaExtension extends Extension
         $serializer = $container->getDefinition('fos_elastica.serializer_callback_prototype');
         $serializer->setClass($config['callback_class']);
 
-        $callbackClassImplementedInterfaces = class_implements($config['callback_class']);
-        if (isset($callbackClassImplementedInterfaces['Symfony\Component\DependencyInjection\ContainerAwareInterface'])) {
+        if (is_subclass_of($config['callback_class'], ContainerAwareInterface::class)) {
             $serializer->addMethodCall('setContainer', array(new Reference('service_container')));
         }
     }

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Transformer;
 
 use Elastica\Document;
@@ -45,7 +54,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $this->collectionSetup();
 
         $objectClasses = $this->collection->getObjectClass();
-        $this->assertEquals(array(
+        $this->assertSame(array(
             'type1' => 'FOS\ElasticaBundle\Tests\Transformer\POPO',
             'type2' => 'FOS\ElasticaBundle\Tests\Transformer\POPO2',
         ), $objectClasses);
@@ -72,7 +81,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
 
         $results = $this->collection->transform(array($document1, $document2));
 
-        $this->assertEquals(array(
+        $this->assertSame(array(
             $result1,
             $result2,
         ), $results);
@@ -94,7 +103,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
 
         $results = $this->collection->transform(array($document1, $document2));
 
-        $this->assertEquals(array(
+        $this->assertSame(array(
             $result1,
             $result2,
         ), $results);
@@ -120,7 +129,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
 
         $results = $this->collection->transform(array($document1, $document2));
 
-        $this->assertEquals(array(
+        $this->assertSame(array(
             $result1,
             $result2,
         ), $results);
@@ -136,7 +145,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $this->collectionSetup();
         $identifiers = $this->collection->getIdentifierField();
         $this->assertInternalType('array', $identifiers);
-        $this->assertEquals(array('type1' => 'id', 'type2' => 'id'), $identifiers);
+        $this->assertSame(array('type1' => 'id', 'type2' => 'id'), $identifiers);
     }
 
     public function elasticaResults()
@@ -173,8 +182,8 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $this->assertContainsOnlyInstancesOf('FOS\ElasticaBundle\HybridResult', $hybridResults);
 
         $hybridResult = array_pop($hybridResults);
-        $this->assertEquals($result, $hybridResult->getResult());
-        $this->assertEquals($transformedObject, $hybridResult->getTransformed());
+        $this->assertSame($result, $hybridResult->getResult());
+        $this->assertSame($transformedObject, $hybridResult->getTransformed());
     }
 }
 

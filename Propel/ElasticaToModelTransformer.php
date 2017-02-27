@@ -1,12 +1,19 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Propel;
 
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\AbstractElasticaToModelTransformer;
-use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Maps Elastica documents with Propel objects.
@@ -31,7 +38,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * @var array
      */
     protected $options = array(
-        'hydrate'    => true,
+        'hydrate' => true,
         'identifier' => 'id',
     );
 
@@ -69,7 +76,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             throw new \RuntimeException('Cannot find corresponding Propel objects for all Elastica results.');
         }
 
-        $_objects = [];
+        $_objects = array();
         foreach ($objects as $object) {
             if ($objects instanceof HighlightableModelInterface) {
                 $object->setElasticHighlights($highlights[$object->getId()]);
@@ -89,7 +96,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
         $objects = $this->transform($elasticaObjects);
 
         $result = array();
-        for ($i = 0, $j = count($elasticaObjects); $i < $j; $i++) {
+        for ($i = 0, $j = count($elasticaObjects); $i < $j; ++$i) {
             $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
         }
 
@@ -118,8 +125,8 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * If $hydrate is false, the returned array elements will be arrays.
      * Otherwise, the results will be hydrated to instances of the model class.
      *
-     * @param array   $identifierValues Identifier values
-     * @param boolean $hydrate          Whether or not to hydrate the results
+     * @param array $identifierValues Identifier values
+     * @param bool  $hydrate          Whether or not to hydrate the results
      *
      * @return array
      */
@@ -131,7 +138,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
 
         $query = $this->createQuery($this->objectClass, $this->options['identifier'], $identifierValues);
 
-        if (! $hydrate) {
+        if (!$hydrate) {
             return $query->toArray();
         }
 
@@ -149,7 +156,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      */
     protected function createQuery($class, $identifierField, array $identifierValues)
     {
-        $queryClass   = $class.'Query';
+        $queryClass = $class.'Query';
         $filterMethod = 'filterBy'.$this->camelize($identifierField);
 
         return $queryClass::create()->$filterMethod($identifierValues);
@@ -164,6 +171,6 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      */
     private function camelize($str)
     {
-        return ucfirst(str_replace(" ", "", ucwords(strtr($str, "_-", "  "))));
+        return ucfirst(str_replace(' ', '', ucwords(strtr($str, '_-', '  '))));
     }
 }

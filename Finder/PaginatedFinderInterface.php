@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Finder;
 
+use Elastica\Query;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use Pagerfanta\Pagerfanta;
-use Elastica\Query;
 
 interface PaginatedFinderInterface extends FinderInterface
 {

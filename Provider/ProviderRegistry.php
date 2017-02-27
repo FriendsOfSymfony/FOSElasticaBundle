@@ -1,20 +1,26 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Provider;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * References persistence providers for each index and type.
  */
 class ProviderRegistry implements ContainerAwareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-    
+    use ContainerAwareTrait;
+
     /** @var array */
     private $providers = array();
 
@@ -97,13 +103,5 @@ class ProviderRegistry implements ContainerAwareInterface
         }
 
         return $this->container->get($this->providers[$index][$type]);
-    }
-
-    /**
-     * @see Symfony\Component\DependencyInjection\ContainerAwareInterface::setContainer()
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }
