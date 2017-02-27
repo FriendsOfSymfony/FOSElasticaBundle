@@ -8,15 +8,15 @@ in 4.0 versions.
 
  * Add `ruflin/Elastica` 3.x support.
  * Add new repository manager.
- * Allow additional parameters to `AbstractProvider::queryBuilder`.
- * Removed PHP 5.3 and 5.4 support.
+ * Dropped PHP 5.3 and 5.4 support.
  * Removed Symfony < 2.7 support.
- * Removed faceted search support.
- * Removed `AbstractProvider::isObjectIndexable`.
- * Removed `AbstractProvider::getMemoryUsage`.
- * Removed deprecated `Resetter` class.
- * Removed deprecated `Client` class.
- * Removed deprecated `IndexManager` class.
- * Removed deprecated `DynamicIndex` class.
- * Removed deprecated `immediate` configuration option.
- * Removed `Search` annotations as they cannot be used anymore.
+ * [BC break] Allow additional parameters to `AbstractProvider::queryBuilder`.
+ * [BC break] Removed faceted search support.
+ * [BC break] Removed `AbstractProvider::isObjectIndexable`.
+ * [BC break] Removed `AbstractProvider::getMemoryUsage`.
+ * [BC break] Removed deprecated `Resetter` class.
+ * [BC break] Removed deprecated `Client` class.
+ * [BC break] Removed deprecated `IndexManager` class.
+ * [BC break] Removed deprecated `DynamicIndex` class.
+ * [BC break] Removed deprecated `immediate` configuration option.
+ * [BC break] Removed `Search` annotations as they cannot be used anymore.
