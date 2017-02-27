@@ -126,10 +126,10 @@ class TransformedFinder implements PaginatedFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function createRawPaginatorAdapter($query)
+    public function createRawPaginatorAdapter($query, $options = array())
     {
         $query = Query::create($query);
 
-        return new RawPaginatorAdapter($this->searchable, $query);
+        return new RawPaginatorAdapter($this->searchable, $query, $options);
     }
 }

@@ -50,8 +50,9 @@ interface PaginatedFinderInterface extends FinderInterface
      * Creates a raw paginator adapter for this query.
      *
      * @param mixed $query
+     * @param array $options
      *
      * @return PaginatorAdapterInterface
      */
-    public function createRawPaginatorAdapter($query);
+    public function createRawPaginatorAdapter($query, $options = array());
 }
