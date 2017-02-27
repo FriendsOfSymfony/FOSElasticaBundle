@@ -28,6 +28,23 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $listener->postFlush($eventArgs);
     }
 
+    public function testPersistDeferred()
+    {
+        $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', 'type', $entity, true);
+
+        $listener = $this->createListener($persister, $indexable, array('indexName' => 'index', 'typeName' => 'type', 'defer' => true));
+        $listener->postPersist($eventArgs);
+
+        $this->assertEquals($entity, current($listener->scheduledForInsertion));
+
+        $persister->expects($this->never())->method('insertMany');
+
+        $listener->postFlush($eventArgs);
+    }
+
     public function testNonIndexableObjectNotInsertedOnPersist()
     {
         $entity = new Listener\Entity(1);
@@ -167,6 +184,26 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
             ->with(array($entity->identifier));
 
         $listener->postFlush($eventArgs);
+    }
+
+    public function testShouldPersistOnKernelTerminateIfAsyncIsTrue()
+    {
+        $entity = new Listener\Entity(1);
+        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $indexable = $this->getMockIndexable(null, null, null);
+        $listener = $this->createListener(
+            $persister,
+            $indexable,
+            array('identifier' => 'identifier', 'indexName' => 'index', 'typeName' => 'type', 'async' => true, 'defer' => true)
+        );
+        $scheduledForInsertion = array('data');
+        $refListener = new \ReflectionObject($listener);
+        $refScheduledForInsertion = $refListener->getProperty('scheduledForInsertion');
+        $refScheduledForInsertion->setAccessible(true);
+        $refScheduledForInsertion->setValue($listener, $scheduledForInsertion);
+        $persister->expects($this->once())->method('insertMany')->with($scheduledForInsertion);
+
+        $listener->onKernelTerminate();
     }
 
     abstract protected function getLifecycleEventArgsClass();

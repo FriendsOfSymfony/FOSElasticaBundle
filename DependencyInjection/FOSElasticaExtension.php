@@ -504,16 +504,16 @@ class FOSElasticaExtension extends Extension
         $listenerId = sprintf('fos_elastica.listener.%s.%s', $indexName, $typeName);
         $listenerDef = new DefinitionDecorator($abstractListenerId);
         $listenerDef->replaceArgument(0, new Reference($objectPersisterId));
-        $listenerDef->replaceArgument(2, array(
-            'identifier' => $typeConfig['identifier'],
-            'indexName' => $indexName,
-            'typeName' => $typeName,
-        ));
         $listenerDef->replaceArgument(3, $typeConfig['listener']['logger'] ?
             new Reference($typeConfig['listener']['logger']) :
             null
         );
-
+        $listenerConfig = array(
+            'identifier' => $typeConfig['identifier'],
+            'indexName' => $indexName,
+            'typeName' => $typeName
+        );
+        
         $tagName = null;
         switch ($typeConfig['driver']) {
             case 'orm':
@@ -526,6 +526,18 @@ class FOSElasticaExtension extends Extension
                 $tagName = 'doctrine_mongodb.odm.event_listener';
                 break;
         }
+
+        if($typeConfig['listener']['async']) {
+            $listenerDef->setPublic(true);
+            $listenerDef->addTag(
+                'kernel.event_listener',
+                array('event' => 'kernel.terminate', 'method' => 'onKernelTerminate')
+            );
+            $listenerConfig['async'] = true;
+            $listenerConfig['defer'] = true;
+        }
+
+        $listenerDef->replaceArgument(2, $listenerConfig);
 
         if (null !== $tagName) {
             foreach ($this->getDoctrineEvents($typeConfig) as $event) {
