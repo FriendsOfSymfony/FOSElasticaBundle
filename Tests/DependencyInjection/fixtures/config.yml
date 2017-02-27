@@ -7,13 +7,13 @@ fos_elastica:
             client: default
             types:
                 parent_field:
-                    mappings:
+                    properties:
                         text: ~
                     persistence:
                         driver: orm
                         model: foo_model
                 child_field:
-                    mappings:
+                    properties:
                         text: ~
                     persistence:
                         driver: orm

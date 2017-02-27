@@ -139,7 +139,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                     ),
                     'types' => array(
                         'test' => array(
-                            'mappings' => array(
+                            'properties' => array(
                                 'title' => array(),
                                 'published' => array('type' => 'datetime'),
                                 'body' => null,
@@ -151,7 +151,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                             ),
                         ),
                         'test2' => array(
-                            'mappings' => array(
+                            'properties' => array(
                                 'title' => null,
                                 'children' => array(
                                     'type' => 'nested',
@@ -176,30 +176,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertTrue(empty($configuration['clients']['default']['connections'][0]['url']));
-    }
-
-    public function testMappingsRenamedToProperties()
-    {
-        $configuration = $this->getConfigs(array(
-                'clients' => array(
-                    'default' => array('url' => 'http://localhost:9200'),
-                ),
-                'indexes' => array(
-                    'test' => array(
-                        'types' => array(
-                            'test' => array(
-                                'mappings' => array(
-                                    'title' => array(),
-                                    'published' => array('type' => 'datetime'),
-                                    'body' => null,
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ));
-
-        $this->assertCount(3, $configuration['indexes']['test']['types']['test']['properties']);
     }
 
     public function testUnconfiguredType()

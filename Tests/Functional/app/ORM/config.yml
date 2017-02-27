@@ -46,7 +46,7 @@ fos_elastica:
                         listener:
                             indexable_callback: [ "@indexable_service", 'isIndexable' ]
                 type3:
-                    mappings:
+                    properties:
                         field1: ~
                     persistence:
                         driver: orm
@@ -56,7 +56,7 @@ fos_elastica:
                         listener:
                             indexable_callback: 'isntIndexable'
                 type4:
-                    mappings:
+                    properties:
                         field1: ~
                     persistence:
                         driver: orm
