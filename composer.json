@@ -17,6 +17,9 @@
         "symfony/console": "~2.7|~3.0",
         "symfony/form": "~2.7|~3.0",
         "symfony/property-access": "~2.7|~3.0",
+        "symfony/asset": "~2.7|~3.0",
+        "symfony/templating": "~2.7|~3.0",
+        "symfony/translation": "~2.7|~3.0",
         "psr/log": "~1.0",
         "ruflin/elastica": "3.2.*"
     },
