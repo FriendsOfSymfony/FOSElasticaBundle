@@ -60,14 +60,13 @@ Converting Attachments
 -----------------------------
 
 This is an example of indexing documents in the required base64 encoding. You will need to specify the upload directory of all
- the attachments under the method getUploadDir(). The method getContent() contains the functionality to convert the file to
-  base64.
+ the attachments under the method getUploadDir().
 
 ```php
 public function getContent()
 {
     //Upload directory set at /web/uploads/library
-    return base64_encode(file_get_contents($this->getUploadRootDir() . '/' . $this->filename, 'r'));
+    return file_get_contents($this->getUploadRootDir() . '/' . $this->filename, 'r');
 }
 
 protected function getUploadRootDir()
