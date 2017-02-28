@@ -5,17 +5,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="fos_elastica.client.class">FOS\ElasticaBundle\Elastica\Client</parameter>
-        <parameter key="fos_elastica.logger.class">FOS\ElasticaBundle\Logger\ElasticaLogger</parameter>
-        <parameter key="fos_elastica.data_collector.class">FOS\ElasticaBundle\DataCollector\ElasticaDataCollector</parameter>
-        <parameter key="fos_elastica.mapping_builder.class">FOS\ElasticaBundle\Index\MappingBuilder</parameter>
-        <parameter key="fos_elastica.property_accessor.class">Symfony\Component\PropertyAccess\PropertyAccessor</parameter>
         <parameter key="fos_elastica.property_accessor.magicCall">false</parameter>
         <parameter key="fos_elastica.property_accessor.throwExceptionOnInvalidIndex">false</parameter>
     </parameters>
 
     <services>
-        <service id="fos_elastica.client_prototype" class="%fos_elastica.client.class%" abstract="true">
+        <service id="fos_elastica.client_prototype" class="FOS\ElasticaBundle\Elastica\Client" abstract="true">
             <argument type="collection" /> <!-- configuration -->
             <argument /> <!-- callback -->
 
@@ -28,7 +23,7 @@
             <argument type="collection" /> <!-- collection of SourceInterface services -->
         </service>
 
-        <service id="fos_elastica.data_collector" class="%fos_elastica.data_collector.class%">
+        <service id="fos_elastica.data_collector" class="FOS\ElasticaBundle\DataCollector\ElasticaDataCollector">
             <tag name="data_collector" template="FOSElasticaBundle:Collector:elastica" id="elastica" />
             <argument type="service" id="fos_elastica.logger" />
         </service>
@@ -38,15 +33,15 @@
             <argument type="service" id="request_stack" />
         </service>
 
-        <service id="fos_elastica.logger" class="%fos_elastica.logger.class%">
+        <service id="fos_elastica.logger" class="FOS\ElasticaBundle\Logger\ElasticaLogger">
             <argument type="service" id="logger" on-invalid="null" />
             <argument>%kernel.debug%</argument>
             <tag name="monolog.logger" channel="elastica" />
         </service>
 
-        <service id="fos_elastica.mapping_builder" class="%fos_elastica.mapping_builder.class%" />
+        <service id="fos_elastica.mapping_builder" class="FOS\ElasticaBundle\Index\MappingBuilder" />
 
-        <service id="fos_elastica.property_accessor" class="%fos_elastica.property_accessor.class%">
+        <service id="fos_elastica.property_accessor" class="Symfony\Component\PropertyAccess\PropertyAccessor">
             <argument>%fos_elastica.property_accessor.magicCall%</argument>
             <argument>%fos_elastica.property_accessor.throwExceptionOnInvalidIndex%</argument>
         </service>
