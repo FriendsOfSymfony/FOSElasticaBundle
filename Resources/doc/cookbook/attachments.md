@@ -21,7 +21,7 @@ fos_elastica:
         app:
             types:
                 user:
-                    mappings:
+                    properties:
                         id: ~
                         content:
                             type: attachment
