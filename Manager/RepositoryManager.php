@@ -21,7 +21,7 @@ class RepositoryManager implements RepositoryManagerInterface
     private $types;
 
     /**
-     * @var Repository[]
+     * @var array
      */
     private $repositories;
 
