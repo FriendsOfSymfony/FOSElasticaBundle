@@ -20,7 +20,7 @@
         </service>
 
         <service id="fos_elastica.manager.propel" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
-            <argument type="service" id="annotation_reader"/>
+            <argument type="service" id="fos_elastica.repository_manager" />
         </service>
     </services>
 </container>
