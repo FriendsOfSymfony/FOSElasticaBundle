@@ -221,7 +221,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
         );
 
         $subscriber->items($event);
-        $this->assertSame(array(
+        $this->assertEquals(array(
             'sort' => array(
                 'owner.name' => array(
                     'order' => 'asc',
@@ -266,7 +266,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
         );
 
         $subscriber->items($event);
-        $this->assertSame(array(
+        $this->assertEquals(array(
             'sort' => array(
                 'owner.name' => array(
                     'order' => 'asc',
