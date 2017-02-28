@@ -27,7 +27,6 @@ return Symfony\CS\Config\Config::create()
         'ordered_class_elements',
         'ordered_use',
         'php_unit_construct',
-        'php_unit_strict',
         '-phpdoc_no_empty_return',
     ))
     ->setUsingCache(true)
