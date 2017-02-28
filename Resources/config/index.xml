@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="fos_elastica.alias_processor.class">FOS\ElasticaBundle\Index\AliasProcessor</parameter>
         <parameter key="fos_elastica.finder.class">FOS\ElasticaBundle\Finder\TransformedFinder</parameter>
+        <parameter key="fos_elastica.finder.raw.class">FOS\ElasticaBundle\Finder\RawFinder</parameter>
         <parameter key="fos_elastica.index.class">FOS\ElasticaBundle\Elastica\Index</parameter>
         <parameter key="fos_elastica.indexable.class">FOS\ElasticaBundle\Provider\Indexable</parameter>
         <parameter key="fos_elastica.index_manager.class">FOS\ElasticaBundle\Index\IndexManager</parameter>
@@ -51,6 +52,12 @@
 
         <!-- Abstract definition for all finders. -->
         <service id="fos_elastica.finder" class="%fos_elastica.finder.class%" public="true" abstract="true">
+            <argument /> <!-- searchable -->
+            <argument /> <!-- transformer -->
+        </service>
+
+        <!-- Abstract definition for all raw finders. -->
+        <service id="fos_elastica.finder.raw" class="%fos_elastica.finder.raw.class%" public="true" abstract="true">
             <argument /> <!-- searchable -->
             <argument /> <!-- transformer -->
         </service>
