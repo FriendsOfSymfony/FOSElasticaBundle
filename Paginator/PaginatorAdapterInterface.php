@@ -27,4 +27,11 @@ interface PaginatorAdapterInterface
      * @return mixed
      */
     public function getAggregations();
+
+    /**
+     * Returns Suggests.
+     *
+     * @return mixed
+     */
+    public function getSuggests();
 }
