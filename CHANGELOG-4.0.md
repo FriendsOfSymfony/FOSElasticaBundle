@@ -8,6 +8,7 @@ in 4.0 versions.
 
  * Add `ruflin/Elastica` 3.x support.
  * Add new repository manager.
+ * Add support for `DateTimeInterface` in `ModelToElasticaAutoTransformer`.
  * Dropped PHP 5.3 and 5.4 support.
  * Removed Symfony < 2.7 support.
  * [BC break] Allow additional parameters to `AbstractProvider::queryBuilder`.
