@@ -11,6 +11,7 @@ in 4.0 versions.
  * Dropped PHP 5.3 and 5.4 support.
  * Removed Symfony < 2.7 support.
  * [BC break] Allow additional parameters to `AbstractProvider::queryBuilder`.
+ * [BC break] Added `PaginatorAdapterInterface::getSuggests`.
  * [BC break] Removed faceted search support.
  * [BC break] Removed `AbstractProvider::isObjectIndexable`.
  * [BC break] Removed `AbstractProvider::getMemoryUsage`.
