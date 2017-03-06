@@ -7,3 +7,4 @@ Elastica has been updated to version 5.1. Please consider [their changelog for a
 ### API Changes
   * Removed `sortIgnoreUnmapped` support for Paginator. `ignore_unmapped` is not supported in ES 5.0 anymore.
   * Removed `ttl` and `timestamp` support in configuration. These attributes are not supported in ES 5.0 anymore.
+  * Removed `TransformedFinder::moreLikeThis`.
