@@ -72,29 +72,6 @@ class TransformedFinderTest extends \PHPUnit_Framework_TestCase
         $finder->findHybrid($query, $limit);
     }
 
-    public function testMoreLikeThisTransformsSearchResultsFromIndex()
-    {
-        $searchable = $this
-            ->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->setMethods(array('moreLikeThis'))
-            ->getMock();
-
-        $searchable->expects($this->once())
-            ->method('moreLikeThis')
-            ->with($this->isInstanceOf('Elastica\Document'), $this->isType('array'), $this->isType('array'))
-            ->will($this->returnValue($this->createMockResultSet()));
-
-        $transformer = $this->createMockTransformer('transform');
-
-        $finder = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->setConstructorArgs(array($searchable, $transformer))
-            ->setMethods(array('search'))
-            ->getMock();
-
-        $finder->moreLikeThis(1);
-    }
-
     public function testSearchMethodCreatesAQueryAndReturnsResultsFromSearchableDependency()
     {
         $searchable = $this->getMockBuilder('Elastica\SearchableInterface')->getMock();
