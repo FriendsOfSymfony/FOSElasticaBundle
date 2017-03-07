@@ -33,46 +33,46 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     {
         $configuration = new Configuration(true);
 
-        return $this->processor->processConfiguration($configuration, array($configArray));
+        return $this->processor->processConfiguration($configuration, [$configArray]);
     }
 
     public function testUnconfiguredConfiguration()
     {
-        $configuration = $this->getConfigs(array());
+        $configuration = $this->getConfigs([]);
 
-        $this->assertSame(array(
-            'clients' => array(),
-            'indexes' => array(),
+        $this->assertSame([
+            'clients' => [],
+            'indexes' => [],
             'default_manager' => 'orm',
-        ), $configuration);
+        ], $configuration);
     }
 
     public function testClientConfiguration()
     {
-        $configuration = $this->getConfigs(array(
-            'clients' => array(
-                'default' => array(
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'default' => [
                     'url' => 'http://localhost:9200',
                     'retryOnConflict' => 5,
-                ),
-                'clustered' => array(
-                    'connections' => array(
-                        array(
+                ],
+                'clustered' => [
+                    'connections' => [
+                        [
                             'url' => 'http://es1:9200',
-                            'headers' => array(
+                            'headers' => [
                                 'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==',
-                            ),
-                        ),
-                        array(
+                            ],
+                        ],
+                        [
                             'url' => 'http://es2:9200',
-                            'headers' => array(
+                            'headers' => [
                                 'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ));
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
 
         $this->assertCount(2, $configuration['clients']);
         $this->assertCount(1, $configuration['clients']['default']['connections']);
@@ -87,25 +87,25 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     public function testLogging()
     {
-        $configuration = $this->getConfigs(array(
-            'clients' => array(
-                'logging_enabled' => array(
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'logging_enabled' => [
                     'url' => 'http://localhost:9200',
                     'logger' => true,
-                ),
-                'logging_disabled' => array(
+                ],
+                'logging_disabled' => [
                     'url' => 'http://localhost:9200',
                     'logger' => false,
-                ),
-                'logging_not_mentioned' => array(
+                ],
+                'logging_not_mentioned' => [
                     'url' => 'http://localhost:9200',
-                ),
-                'logging_custom' => array(
+                ],
+                'logging_custom' => [
                     'url' => 'http://localhost:9200',
                     'logger' => 'custom.service',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         $this->assertCount(4, $configuration['clients']);
 
@@ -117,11 +117,11 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     public function testSlashIsAddedAtTheEndOfServerUrl()
     {
-        $config = array(
-            'clients' => array(
-                'default' => array('url' => 'http://www.github.com'),
-            ),
-        );
+        $config = [
+            'clients' => [
+                'default' => ['url' => 'http://www.github.com'],
+            ],
+        ];
         $configuration = $this->getConfigs($config);
 
         $this->assertSame('http://www.github.com/', $configuration['clients']['default']['connections'][0]['url']);
@@ -129,139 +129,139 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     public function testTypeConfig()
     {
-        $this->getConfigs(array(
-            'clients' => array(
-                'default' => array('url' => 'http://localhost:9200'),
-            ),
-            'indexes' => array(
-                'test' => array(
-                    'type_prototype' => array(
+        $this->getConfigs([
+            'clients' => [
+                'default' => ['url' => 'http://localhost:9200'],
+            ],
+            'indexes' => [
+                'test' => [
+                    'type_prototype' => [
                         'analyzer' => 'custom_analyzer',
-                        'persistence' => array(
+                        'persistence' => [
                             'identifier' => 'ID',
-                        ),
-                        'serializer' => array(
-                            'groups' => array('Search'),
+                        ],
+                        'serializer' => [
+                            'groups' => ['Search'],
                             'version' => 1,
                             'serialize_null' => false,
-                        ),
-                    ),
-                    'types' => array(
-                        'test' => array(
-                            'properties' => array(
-                                'title' => array(),
-                                'published' => array('type' => 'datetime'),
+                        ],
+                    ],
+                    'types' => [
+                        'test' => [
+                            'properties' => [
+                                'title' => [],
+                                'published' => ['type' => 'datetime'],
                                 'body' => null,
-                            ),
-                            'persistence' => array(
-                                'listener' => array(
+                            ],
+                            'persistence' => [
+                                'listener' => [
                                     'logger' => true,
-                                ),
-                            ),
-                        ),
-                        'test2' => array(
-                            'properties' => array(
+                                ],
+                            ],
+                        ],
+                        'test2' => [
+                            'properties' => [
                                 'title' => null,
-                                'children' => array(
+                                'children' => [
                                     'type' => 'nested',
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ));
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
     }
 
     public function testClientConfigurationNoUrl()
     {
-        $configuration = $this->getConfigs(array(
-            'clients' => array(
-                'default' => array(
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'default' => [
                     'host' => 'localhost',
                     'port' => 9200,
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         $this->assertTrue(empty($configuration['clients']['default']['connections'][0]['url']));
     }
 
     public function testUnconfiguredType()
     {
-        $configuration = $this->getConfigs(array(
-                'clients' => array(
-                    'default' => array('url' => 'http://localhost:9200'),
-                ),
-                'indexes' => array(
-                    'test' => array(
-                        'types' => array(
+        $configuration = $this->getConfigs([
+                'clients' => [
+                    'default' => ['url' => 'http://localhost:9200'],
+                ],
+                'indexes' => [
+                    'test' => [
+                        'types' => [
                             'test' => null,
-                        ),
-                    ),
-                ),
-            ));
+                        ],
+                    ],
+                ],
+            ]);
 
         $this->assertArrayHasKey('properties', $configuration['indexes']['test']['types']['test']);
     }
 
     public function testNestedProperties()
     {
-        $this->getConfigs(array(
-            'clients' => array(
-                'default' => array('url' => 'http://localhost:9200'),
-            ),
-            'indexes' => array(
-                'test' => array(
-                    'types' => array(
-                        'user' => array(
-                            'properties' => array(
-                                'field1' => array(),
-                            ),
-                            'persistence' => array(),
-                        ),
-                        'user_profile' => array(
-                            '_parent' => array(
+        $this->getConfigs([
+            'clients' => [
+                'default' => ['url' => 'http://localhost:9200'],
+            ],
+            'indexes' => [
+                'test' => [
+                    'types' => [
+                        'user' => [
+                            'properties' => [
+                                'field1' => [],
+                            ],
+                            'persistence' => [],
+                        ],
+                        'user_profile' => [
+                            '_parent' => [
                                 'type' => 'user',
-                            ),
-                            'properties' => array(
-                                'field1' => array(),
-                                'field2' => array(
+                            ],
+                            'properties' => [
+                                'field1' => [],
+                                'field2' => [
                                     'type' => 'nested',
-                                    'properties' => array(
-                                        'nested_field1' => array(
+                                    'properties' => [
+                                        'nested_field1' => [
                                             'type' => 'integer',
-                                        ),
-                                        'nested_field2' => array(
+                                        ],
+                                        'nested_field2' => [
                                             'type' => 'object',
-                                            'properties' => array(
-                                                'id' => array(
+                                            'properties' => [
+                                                'id' => [
                                                     'type' => 'integer',
-                                                ),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ));
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
     }
 
     public function testCompressionConfig()
     {
-        $configuration = $this->getConfigs(array(
-            'clients' => array(
-                'compression_enabled' => array(
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'compression_enabled' => [
                     'compression' => true,
-                ),
-                'compression_disabled' => array(
+                ],
+                'compression_disabled' => [
                     'compression' => false,
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         $this->assertTrue($configuration['clients']['compression_enabled']['connections'][0]['compression']);
         $this->assertFalse($configuration['clients']['compression_disabled']['connections'][0]['compression']);
@@ -269,29 +269,29 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     public function testCompressionDefaultConfig()
     {
-        $configuration = $this->getConfigs(array(
-            'clients' => array(
-                'default' => array(),
-            ),
-        ));
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'default' => [],
+            ],
+        ]);
 
         $this->assertFalse($configuration['clients']['default']['connections'][0]['compression']);
     }
 
     public function testTimeoutConfig()
     {
-        $configuration = $this->getConfigs(array(
-            'clients' => array(
-                'simple_timeout' => array(
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'simple_timeout' => [
                     'url' => 'http://localhost:9200',
                     'timeout' => 123,
-                ),
-                'connect_timeout' => array(
+                ],
+                'connect_timeout' => [
                     'url' => 'http://localhost:9200',
                     'connectTimeout' => 234,
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         $this->assertSame(123, $configuration['clients']['simple_timeout']['connections'][0]['timeout']);
         $this->assertSame(234, $configuration['clients']['connect_timeout']['connections'][0]['connectTimeout']);
@@ -299,16 +299,16 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     public function testAWSConfig()
     {
-        $configuration = $this->getConfigs(array(
-            'clients' => array(
-                'default' => array(
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'default' => [
                     'aws_access_key_id' => 'AWS_KEY',
                     'aws_secret_access_key' => 'AWS_SECRET',
                     'aws_region' => 'AWS_REGION',
                     'aws_session_token' => 'AWS_SESSION_TOKEN',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         $connection = $configuration['clients']['default']['connections'][0];
         $this->assertSame('AWS_KEY', $connection['aws_access_key_id']);

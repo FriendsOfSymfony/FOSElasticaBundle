@@ -34,12 +34,12 @@ class MappingBuilder
      */
     public function buildIndexMapping(IndexConfig $indexConfig)
     {
-        $typeMappings = array();
+        $typeMappings = [];
         foreach ($indexConfig->getTypes() as $typeConfig) {
             $typeMappings[$typeConfig->getName()] = $this->buildTypeMapping($typeConfig);
         }
 
-        $mapping = array();
+        $mapping = [];
         if (!empty($typeMappings)) {
             $mapping['mappings'] = $typeMappings;
         }

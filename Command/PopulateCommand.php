@@ -103,13 +103,13 @@ class PopulateCommand extends ContainerAwareCommand
         $reset = !$input->getOption('no-reset');
         $delete = !$input->getOption('no-delete');
 
-        $options = array(
+        $options = [
             'delete' => $delete,
             'reset' => $reset,
             'ignore_errors' => $input->getOption('ignore-errors'),
             'offset' => $input->getOption('offset'),
             'sleep' => $input->getOption('sleep'),
-        );
+        ];
 
         if ($input->getOption('batch-size')) {
             $options['batch_size'] = (int) $input->getOption('batch-size');

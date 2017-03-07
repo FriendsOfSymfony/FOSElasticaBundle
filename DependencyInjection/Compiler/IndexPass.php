@@ -35,7 +35,7 @@ class IndexPass implements CompilerPassInterface
             return;
         }
 
-        $indexes = array();
+        $indexes = [];
         foreach ($container->findTaggedServiceIds('fos_elastica.index') as $id => $tags) {
             foreach ($tags as $tag) {
                 $indexes[$tag['name']] = new Reference($id);

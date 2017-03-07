@@ -47,10 +47,10 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
         $method = $class->getMethod('findByIdentifiers');
         $method->setAccessible(true);
 
-        $method->invokeArgs($transformer, array(
-            array('c8f23994-d897-4c77-bcc3-bc6910e52a34', 'f1083287-a67e-480e-a426-e8427d00eae4'),
+        $method->invokeArgs($transformer, [
+            ['c8f23994-d897-4c77-bcc3-bc6910e52a34', 'f1083287-a67e-480e-a426-e8427d00eae4'],
             $this->objectClass,
-        ));
+        ]);
     }
 
     protected function setUp()
@@ -76,7 +76,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 
         $this->repository = $this
             ->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')
-            ->setMethods(array(
+            ->setMethods([
                 'customQueryBuilderCreator',
                 'createQueryBuilder',
                 'find',
@@ -84,7 +84,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
                 'findBy',
                 'findOneBy',
                 'getClassName',
-            ))->getMock();
+            ])->getMock();
 
         $this->manager->expects($this->any())
             ->method('getRepository')

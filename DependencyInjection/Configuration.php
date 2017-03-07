@@ -22,7 +22,7 @@ class Configuration implements ConfigurationInterface
      *
      * @var array
      */
-    private $supportedDrivers = array('orm', 'mongodb', 'propel', 'phpcr');
+    private $supportedDrivers = ['orm', 'mongodb', 'propel', 'phpcr'];
 
     /**
      * If the kernel is running in debug mode.
@@ -59,7 +59,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('default_manager')->defaultValue('orm')->end()
                 ->arrayNode('serializer')
-                    ->treatNullLike(array())
+                    ->treatNullLike([])
                     ->children()
                         ->scalarNode('callback_class')->defaultValue('FOS\ElasticaBundle\Serializer\Callback')->end()
                         ->scalarNode('serializer')->defaultValue('serializer')->end()
@@ -101,9 +101,9 @@ class Configuration implements ConfigurationInterface
                             return is_array($v) && !array_key_exists('connections', $v);
                         })
                         ->then(function ($v) {
-                            return array(
-                                'connections' => array($v),
-                            );
+                            return [
+                                'connections' => [$v],
+                            ];
                         })
                         ->end()
                         ->children()
@@ -191,7 +191,7 @@ class Configuration implements ConfigurationInterface
                                     ->append($this->getSerializerNode())
                                 ->end()
                             ->end()
-                            ->variableNode('settings')->defaultValue(array())->end()
+                            ->variableNode('settings')->defaultValue([])->end()
                         ->end()
                         ->append($this->getTypesNode())
                     ->end()
@@ -211,7 +211,7 @@ class Configuration implements ConfigurationInterface
         $node
             ->useAttributeAsKey('name')
             ->prototype('array')
-                ->treatNullLike(array())
+                ->treatNullLike([])
                 ->beforeNormalization()
                 ->ifNull()
                     ->thenEmptyArray()
@@ -223,7 +223,7 @@ class Configuration implements ConfigurationInterface
                     return isset($v['dynamic_templates']);
                 })
                 ->then(function ($v) {
-                    $dt = array();
+                    $dt = [];
                     foreach ($v['dynamic_templates'] as $key => $type) {
                         if (is_int($key)) {
                             $dt[] = $type;
@@ -271,7 +271,7 @@ class Configuration implements ConfigurationInterface
         $node
             ->useAttributeAsKey('name')
             ->prototype('variable')
-                ->treatNullLike(array());
+                ->treatNullLike([]);
 
         return $node;
     }
@@ -296,7 +296,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('match_pattern')->end()
                         ->arrayNode('mapping')
                             ->prototype('variable')
-                                ->treatNullLike(array())
+                                ->treatNullLike([])
                             ->end()
                         ->end()
                     ->end()
@@ -524,7 +524,7 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->arrayNode('groups')
-                    ->treatNullLike(array())
+                    ->treatNullLike([])
                     ->prototype('scalar')->end()
                 ->end()
                 ->scalarNode('version')->end()

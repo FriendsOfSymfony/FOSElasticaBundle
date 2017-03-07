@@ -108,18 +108,18 @@ class AliasProcessor
      */
     private function buildAliasUpdateRequest($aliasedIndex, $aliasName, $newIndexName)
     {
-        $aliasUpdateRequest = array('actions' => array());
+        $aliasUpdateRequest = ['actions' => []];
         if (null !== $aliasedIndex) {
             // if the alias is set - add an action to remove it
-            $aliasUpdateRequest['actions'][] = array(
-                'remove' => array('index' => $aliasedIndex, 'alias' => $aliasName),
-            );
+            $aliasUpdateRequest['actions'][] = [
+                'remove' => ['index' => $aliasedIndex, 'alias' => $aliasName],
+            ];
         }
 
         // add an action to point the alias to the new index
-        $aliasUpdateRequest['actions'][] = array(
-            'add' => array('index' => $newIndexName, 'alias' => $aliasName),
-        );
+        $aliasUpdateRequest['actions'][] = [
+            'add' => ['index' => $newIndexName, 'alias' => $aliasName],
+        ];
 
         return $aliasUpdateRequest;
     }
@@ -209,7 +209,7 @@ class AliasProcessor
     private function getAliasedIndex(Client $client, $aliasName)
     {
         $aliasesInfo = $client->request('_aliases', 'GET')->getData();
-        $aliasedIndexes = array();
+        $aliasedIndexes = [];
 
         foreach ($aliasesInfo as $indexName => $indexInfo) {
             if ($indexName === $aliasName) {

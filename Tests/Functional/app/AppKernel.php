@@ -96,12 +96,12 @@ class AppKernel extends Kernel
 
     public function serialize()
     {
-        return serialize(array($this->testCase, $this->rootConfig, $this->getEnvironment(), $this->isDebug()));
+        return serialize([$this->testCase, $this->rootConfig, $this->getEnvironment(), $this->isDebug()]);
     }
 
     public function unserialize($str)
     {
-        call_user_func_array(array($this, '__construct'), unserialize($str));
+        call_user_func_array([$this, '__construct'], unserialize($str));
     }
 
     protected function getKernelParameters()

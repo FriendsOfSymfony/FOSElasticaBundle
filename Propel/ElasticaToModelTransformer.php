@@ -37,10 +37,10 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      *
      * @var array
      */
-    protected $options = array(
+    protected $options = [
         'hydrate' => true,
         'identifier' => 'id',
-    );
+    ];
 
     /**
      * Constructor.
@@ -48,7 +48,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      * @param string $objectClass
      * @param array  $options
      */
-    public function __construct($objectClass, array $options = array())
+    public function __construct($objectClass, array $options = [])
     {
         $this->objectClass = $objectClass;
         $this->options = array_merge($this->options, $options);
@@ -64,7 +64,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      */
     public function transform(array $elasticaObjects)
     {
-        $ids = $highlights = array();
+        $ids = $highlights = [];
         foreach ($elasticaObjects as $elasticaObject) {
             $ids[] = $elasticaObject->getId();
             $highlights[$elasticaObject->getId()] = $elasticaObject->getHighlights();
@@ -76,7 +76,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             throw new \RuntimeException('Cannot find corresponding Propel objects for all Elastica results.');
         }
 
-        $_objects = array();
+        $_objects = [];
         foreach ($objects as $object) {
             if ($objects instanceof HighlightableModelInterface) {
                 $object->setElasticHighlights($highlights[$object->getId()]);
@@ -95,7 +95,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
     {
         $objects = $this->transform($elasticaObjects);
 
-        $result = array();
+        $result = [];
         for ($i = 0, $j = count($elasticaObjects); $i < $j; ++$i) {
             $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
         }
@@ -133,7 +133,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
     protected function findByIdentifiers(array $identifierValues, $hydrate)
     {
         if (empty($identifierValues)) {
-            return array();
+            return [];
         }
 
         $query = $this->createQuery($this->objectClass, $this->options['identifier'], $identifierValues);

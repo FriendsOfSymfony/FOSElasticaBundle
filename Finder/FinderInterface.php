@@ -22,5 +22,5 @@ interface FinderInterface
      *
      * @return array results
      */
-    public function find($query, $limit = null, $options = array());
+    public function find($query, $limit = null, $options = []);
 }

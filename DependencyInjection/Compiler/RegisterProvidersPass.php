@@ -22,7 +22,7 @@ class RegisterProvidersPass implements CompilerPassInterface
      *
      * @var array
      */
-    private $implementations = array();
+    private $implementations = [];
 
     /**
      * @see Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface::process()
@@ -39,7 +39,7 @@ class RegisterProvidersPass implements CompilerPassInterface
         $registry = $container->getDefinition('fos_elastica.provider_registry');
         $providers = $container->findTaggedServiceIds('fos_elastica.provider');
 
-        $providersByPriority = array();
+        $providersByPriority = [];
         foreach ($providers as $id => $attributes) {
             $priority = isset($attributes[0]['priority']) ? $attributes[0]['priority'] : 0;
             $providersByPriority[$priority][$id] = $attributes;
@@ -67,7 +67,7 @@ class RegisterProvidersPass implements CompilerPassInterface
                 $type = $tag['type'];
             }
 
-            $registry->addMethodCall('addProvider', array($index, $type, $providerId));
+            $registry->addMethodCall('addProvider', [$index, $type, $providerId]);
         }
     }
 

@@ -50,14 +50,14 @@ class ContainerSource implements SourceInterface
      */
     public function getConfiguration()
     {
-        $indexes = array();
+        $indexes = [];
         foreach ($this->configArray as $config) {
             $types = $this->getTypes($config);
-            $index = new IndexConfig($config['name'], $types, array(
+            $index = new IndexConfig($config['name'], $types, [
                 'elasticSearchName' => $config['elasticsearch_name'],
                 'settings' => $config['settings'],
                 'useAlias' => $config['use_alias'],
-            ));
+            ]);
 
             $indexes[$config['name']] = $index;
         }
@@ -74,7 +74,7 @@ class ContainerSource implements SourceInterface
      */
     protected function getTypes($config)
     {
-        $types = array();
+        $types = [];
 
         if (isset($config['types'])) {
             foreach ($config['types'] as $typeConfig) {

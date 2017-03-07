@@ -15,7 +15,7 @@ use FOS\ElasticaBundle\Index\IndexManager;
 
 class IndexManagerTest extends \PHPUnit_Framework_TestCase
 {
-    private $indexes = array();
+    private $indexes = [];
 
     /**
      * @var IndexManager
@@ -24,7 +24,7 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        foreach (array('index1', 'index2', 'index3') as $indexName) {
+        foreach (['index1', 'index2', 'index3'] as $indexName) {
             $index = $this->getMockBuilder('FOS\\ElasticaBundle\\Elastica\\Index')
                 ->disableOriginalConstructor()
                 ->getMock();

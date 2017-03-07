@@ -71,13 +71,13 @@ class Provider extends AbstractProvider
     {
         parent::configureOptions();
 
-        $this->resolver->setDefaults(array(
+        $this->resolver->setDefaults([
             'clear_object_manager' => true,
             'debug_logging' => false,
             'ignore_errors' => false,
             'offset' => 0,
             'query_builder_method' => 'createQueryBuilder',
             'sleep' => 0,
-        ));
+        ]);
     }
 }

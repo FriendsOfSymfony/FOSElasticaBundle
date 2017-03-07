@@ -29,7 +29,7 @@ class ConfigurationManagerTest extends WebTestCase
 {
     public function testContainerSource()
     {
-        $client = $this->createClient(array('test_case' => 'Basic'));
+        $client = $this->createClient(['test_case' => 'Basic']);
         $manager = $this->getManager($client);
 
         $index = $manager->getIndexConfiguration('index');

@@ -14,9 +14,9 @@ use FOS\ElasticaBundle\FOSElasticaBundle;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 
-return array(
+return [
     new FrameworkBundle(),
     new FOSElasticaBundle(),
     new DoctrineBundle(),
     new JMSSerializerBundle(),
-);
+];

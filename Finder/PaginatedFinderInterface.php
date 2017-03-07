@@ -25,7 +25,7 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return Pagerfanta paginated results
      */
-    public function findPaginated($query, $options = array());
+    public function findPaginated($query, $options = []);
 
     /**
      * Creates a paginator adapter for this query.
@@ -35,7 +35,7 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return PaginatorAdapterInterface
      */
-    public function createPaginatorAdapter($query, $options = array());
+    public function createPaginatorAdapter($query, $options = []);
 
     /**
      * Creates a hybrid paginator adapter for this query.
@@ -54,5 +54,5 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return PaginatorAdapterInterface
      */
-    public function createRawPaginatorAdapter($query, $options = array());
+    public function createRawPaginatorAdapter($query, $options = []);
 }

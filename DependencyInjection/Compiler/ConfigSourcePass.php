@@ -35,7 +35,7 @@ class ConfigSourcePass implements CompilerPassInterface
             return;
         }
 
-        $sources = array();
+        $sources = [];
         foreach (array_keys($container->findTaggedServiceIds('fos_elastica.config_source')) as $id) {
             $sources[] = new Reference($id);
         }

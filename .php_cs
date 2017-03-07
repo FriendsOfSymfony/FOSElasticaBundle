@@ -20,7 +20,7 @@ return Symfony\CS\Config\Config::create()
     ->fixers(array(
         'combine_consecutive_unsets',
         'header_comment',
-        'long_array_syntax',
+        'short_array_syntax',
         'newline_after_open_tag',
         'no_php4_constructor',
         'no_useless_else',

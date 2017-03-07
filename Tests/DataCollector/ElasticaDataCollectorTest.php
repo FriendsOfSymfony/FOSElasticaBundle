@@ -63,7 +63,7 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $queries = array('testQueries');
+        $queries = ['testQueries'];
 
         $loggerMock->expects($this->once())
             ->method('getQueries')
@@ -91,13 +91,13 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $queries = array(array(
+        $queries = [[
             'engineMS' => 15,
             'executionMS' => 10,
-        ), array(
+        ], [
             'engineMS' => 25,
             'executionMS' => 20,
-        ));
+        ]];
 
         $loggerMock->expects($this->once())
             ->method('getQueries')

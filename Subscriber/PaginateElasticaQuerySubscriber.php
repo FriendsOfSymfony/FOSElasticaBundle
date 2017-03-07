@@ -71,17 +71,17 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
 
         if (!empty($sortField)) {
-            $event->target->getQuery()->setSort(array(
+            $event->target->getQuery()->setSort([
                 $sortField => $this->getSort($sortField, $options),
-            ));
+            ]);
         }
     }
 
-    protected function getSort($sortField, array $options = array())
+    protected function getSort($sortField, array $options = [])
     {
-        $sort = array(
+        $sort = [
             'order' => $this->getSortDirection($sortField, $options),
-        );
+        ];
 
         if (isset($options['sortNestedPath'])) {
             $path = is_callable($options['sortNestedPath']) ?
@@ -104,7 +104,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         return $sort;
     }
 
-    protected function getSortDirection($sortField, array $options = array())
+    protected function getSortDirection($sortField, array $options = [])
     {
         $dir = 'asc';
         $sortDirection = $this->getRequest()->get($options['sortDirectionParameterName']);
@@ -138,8 +138,8 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            'knp_pager.items' => array('items', 1),
-        );
+        return [
+            'knp_pager.items' => ['items', 1],
+        ];
     }
 }

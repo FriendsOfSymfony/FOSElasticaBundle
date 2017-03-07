@@ -44,7 +44,7 @@ class SliceFetcher implements SliceFetcherInterface
 
         return $queryBuilder
             ->limit($limit)
-            ->sort(array('_id' => 'asc'))
+            ->sort(['_id' => 'asc'])
             ->getQuery()
             ->execute()
             ->toArray()

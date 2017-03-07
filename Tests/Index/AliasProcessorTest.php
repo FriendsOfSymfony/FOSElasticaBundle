@@ -42,7 +42,7 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetRootName($name, $configArray, $resultStartsWith)
     {
-        $indexConfig = new IndexConfig($name, array(), $configArray);
+        $indexConfig = new IndexConfig($name, [], $configArray);
         $index = $this->getMockBuilder('FOS\\ElasticaBundle\\Elastica\\Index')
             ->disableOriginalConstructor()
             ->getMock();
@@ -55,39 +55,39 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testSwitchAliasNoAliasSet()
     {
-        $indexConfig = new IndexConfig('name', array(), array());
+        $indexConfig = new IndexConfig('name', [], []);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
             ->method('request')
             ->with('_aliases', 'GET')
-            ->willReturn(new Response(array()));
+            ->willReturn(new Response([]));
         $client->expects($this->at(1))
             ->method('request')
-            ->with('_aliases', 'POST', array('actions' => array(
-                array('add' => array('index' => 'unique_name', 'alias' => 'name')),
-            )));
+            ->with('_aliases', 'POST', ['actions' => [
+                ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+            ]]);
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
 
     public function testSwitchAliasExistingAliasSet()
     {
-        $indexConfig = new IndexConfig('name', array(), array());
+        $indexConfig = new IndexConfig('name', [], []);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
             ->method('request')
             ->with('_aliases', 'GET')
-            ->willReturn(new Response(array(
-                'old_unique_name' => array('aliases' => array('name')),
-            )));
+            ->willReturn(new Response([
+                'old_unique_name' => ['aliases' => ['name']],
+            ]));
         $client->expects($this->at(1))
             ->method('request')
-            ->with('_aliases', 'POST', array('actions' => array(
-                array('remove' => array('index' => 'old_unique_name', 'alias' => 'name')),
-                array('add' => array('index' => 'unique_name', 'alias' => 'name')),
-            )));
+            ->with('_aliases', 'POST', ['actions' => [
+                ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+            ]]);
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
@@ -97,16 +97,16 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSwitchAliasThrowsWhenMoreThanOneExists()
     {
-        $indexConfig = new IndexConfig('name', array(), array());
+        $indexConfig = new IndexConfig('name', [], []);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
             ->method('request')
             ->with('_aliases', 'GET')
-            ->willReturn(new Response(array(
-                'old_unique_name' => array('aliases' => array('name')),
-                'another_old_unique_name' => array('aliases' => array('name')),
-            )));
+            ->willReturn(new Response([
+                'old_unique_name' => ['aliases' => ['name']],
+                'another_old_unique_name' => ['aliases' => ['name']],
+            ]));
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
@@ -116,30 +116,30 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSwitchAliasThrowsWhenAliasIsAnIndex()
     {
-        $indexConfig = new IndexConfig('name', array(), array());
+        $indexConfig = new IndexConfig('name', [], []);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
             ->method('request')
             ->with('_aliases', 'GET')
-            ->willReturn(new Response(array(
-                'name' => array(),
-            )));
+            ->willReturn(new Response([
+                'name' => [],
+            ]));
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
 
     public function testSwitchAliasDeletesIndexCollisionIfForced()
     {
-        $indexConfig = new IndexConfig('name', array(), array());
+        $indexConfig = new IndexConfig('name', [], []);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
             ->method('request')
             ->with('_aliases', 'GET')
-            ->willReturn(new Response(array(
-                'name' => array(),
-            )));
+            ->willReturn(new Response([
+                'name' => [],
+            ]));
         $client->expects($this->at(1))
             ->method('request')
             ->with('name', 'DELETE');
@@ -149,21 +149,21 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testSwitchAliasDeletesOldIndex()
     {
-        $indexConfig = new IndexConfig('name', array(), array());
+        $indexConfig = new IndexConfig('name', [], []);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
             ->method('request')
             ->with('_aliases', 'GET')
-            ->willReturn(new Response(array(
-                'old_unique_name' => array('aliases' => array('name')),
-            )));
+            ->willReturn(new Response([
+                'old_unique_name' => ['aliases' => ['name']],
+            ]));
         $client->expects($this->at(1))
             ->method('request')
-            ->with('_aliases', 'POST', array('actions' => array(
-                array('remove' => array('index' => 'old_unique_name', 'alias' => 'name')),
-                array('add' => array('index' => 'unique_name', 'alias' => 'name')),
-            )));
+            ->with('_aliases', 'POST', ['actions' => [
+                ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+            ]]);
         $client->expects($this->at(2))
             ->method('request')
             ->with('old_unique_name', 'DELETE');
@@ -173,21 +173,21 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testSwitchAliasCleansUpOnRenameFailure()
     {
-        $indexConfig = new IndexConfig('name', array(), array());
+        $indexConfig = new IndexConfig('name', [], []);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
             ->method('request')
             ->with('_aliases', 'GET')
-            ->willReturn(new Response(array(
-                'old_unique_name' => array('aliases' => array('name')),
-            )));
+            ->willReturn(new Response([
+                'old_unique_name' => ['aliases' => ['name']],
+            ]));
         $client->expects($this->at(1))
             ->method('request')
-            ->with('_aliases', 'POST', array('actions' => array(
-                array('remove' => array('index' => 'old_unique_name', 'alias' => 'name')),
-                array('add' => array('index' => 'unique_name', 'alias' => 'name')),
-            )))
+            ->with('_aliases', 'POST', ['actions' => [
+                ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+            ]])
             ->will($this->throwException(new ResponseException(new Request(''), new Response(''))));
         $client->expects($this->at(2))
             ->method('request')
@@ -200,10 +200,10 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function getSetRootNameData()
     {
-        return array(
-            array('name', array(), 'name_'),
-            array('name', array('elasticSearchName' => 'notname'), 'notname_'),
-        );
+        return [
+            ['name', [], 'name_'],
+            ['name', ['elasticSearchName' => 'notname'], 'notname_'],
+        ];
     }
 
     protected function setUp()
@@ -228,6 +228,6 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
             ->method('getName')
             ->willReturn($name);
 
-        return array($index, $client);
+        return [$index, $client];
     }
 }

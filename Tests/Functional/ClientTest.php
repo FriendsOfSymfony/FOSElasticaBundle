@@ -27,7 +27,7 @@ class ClientTest extends WebTestCase
 {
     public function testContainerSource()
     {
-        $client = $this->createClient(array('test_case' => 'Basic'));
+        $client = $this->createClient(['test_case' => 'Basic']);
 
         $es = $client->getContainer()->get('fos_elastica.client.default');
         $this->assertInstanceOf('Elastica\\Connection\\Strategy\\RoundRobin', $es->getConnectionStrategy());

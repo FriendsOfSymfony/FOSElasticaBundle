@@ -21,7 +21,7 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
      * @var \FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerCollection
      */
     protected $collection;
-    protected $transformers = array();
+    protected $transformers = [];
 
     protected function collectionSetup()
     {
@@ -43,10 +43,10 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
             ->method('getIdentifierField')
             ->will($this->returnValue('id'));
 
-        $this->collection = new ElasticaToModelTransformerCollection($this->transformers = array(
+        $this->collection = new ElasticaToModelTransformerCollection($this->transformers = [
             'type1' => $transformer1,
             'type2' => $transformer2,
-        ));
+        ]);
     }
 
     public function testGetObjectClass()
@@ -54,59 +54,59 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $this->collectionSetup();
 
         $objectClasses = $this->collection->getObjectClass();
-        $this->assertSame(array(
+        $this->assertSame([
             'type1' => 'FOS\ElasticaBundle\Tests\Transformer\POPO',
             'type2' => 'FOS\ElasticaBundle\Tests\Transformer\POPO2',
-        ), $objectClasses);
+        ], $objectClasses);
     }
 
     public function testTransformDelegatesToTransformers()
     {
         $this->collectionSetup();
 
-        $document1 = new Document(123, array('data' => 'lots of data'), 'type1');
-        $document2 = new Document(124, array('data' => 'not so much data'), 'type2');
+        $document1 = new Document(123, ['data' => 'lots of data'], 'type1');
+        $document2 = new Document(124, ['data' => 'not so much data'], 'type2');
         $result1 = new POPO(123, 'lots of data');
         $result2 = new POPO2(124, 'not so much data');
 
         $this->transformers['type1']->expects($this->once())
             ->method('transform')
-            ->with(array($document1))
-            ->will($this->returnValue(array($result1)));
+            ->with([$document1])
+            ->will($this->returnValue([$result1]));
 
         $this->transformers['type2']->expects($this->once())
             ->method('transform')
-            ->with(array($document2))
-            ->will($this->returnValue(array($result2)));
+            ->with([$document2])
+            ->will($this->returnValue([$result2]));
 
-        $results = $this->collection->transform(array($document1, $document2));
+        $results = $this->collection->transform([$document1, $document2]);
 
-        $this->assertSame(array(
+        $this->assertSame([
             $result1,
             $result2,
-        ), $results);
+        ], $results);
     }
 
     public function testTransformOrder()
     {
         $this->collectionSetup();
 
-        $document1 = new Document(123, array('data' => 'lots of data'), 'type1');
-        $document2 = new Document(124, array('data' => 'not so much data'), 'type1');
+        $document1 = new Document(123, ['data' => 'lots of data'], 'type1');
+        $document2 = new Document(124, ['data' => 'not so much data'], 'type1');
         $result1 = new POPO(123, 'lots of data');
         $result2 = new POPO2(124, 'not so much data');
 
         $this->transformers['type1']->expects($this->once())
          ->method('transform')
-         ->with(array($document1, $document2))
-         ->will($this->returnValue(array($result1, $result2)));
+         ->with([$document1, $document2])
+         ->will($this->returnValue([$result1, $result2]));
 
-        $results = $this->collection->transform(array($document1, $document2));
+        $results = $this->collection->transform([$document1, $document2]);
 
-        $this->assertSame(array(
+        $this->assertSame([
             $result1,
             $result2,
-        ), $results);
+        ], $results);
     }
 
     public function testTransformOrderWithIdAsObject()
@@ -117,27 +117,27 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $id2 = 'lo';
         $idObject1 = new IDObject($id1);
         $idObject2 = new IDObject($id2);
-        $document1 = new Document($idObject1, array('data' => 'lots of data'), 'type1');
-        $document2 = new Document($idObject2, array('data' => 'not so much data'), 'type1');
+        $document1 = new Document($idObject1, ['data' => 'lots of data'], 'type1');
+        $document2 = new Document($idObject2, ['data' => 'not so much data'], 'type1');
         $result1 = new POPO($idObject1, 'lots of data');
         $result2 = new POPO2($idObject2, 'not so much data');
 
         $this->transformers['type1']->expects($this->once())
          ->method('transform')
-         ->with(array($document1, $document2))
-         ->will($this->returnValue(array($result1, $result2)));
+         ->with([$document1, $document2])
+         ->will($this->returnValue([$result1, $result2]));
 
-        $results = $this->collection->transform(array($document1, $document2));
+        $results = $this->collection->transform([$document1, $document2]);
 
-        $this->assertSame(array(
+        $this->assertSame([
             $result1,
             $result2,
-        ), $results);
+        ], $results);
     }
 
     public function testGetIdentifierFieldReturnsAMapOfIdentifiers()
     {
-        $collection = new ElasticaToModelTransformerCollection(array());
+        $collection = new ElasticaToModelTransformerCollection([]);
         $identifiers = $collection->getIdentifierField();
         $this->assertInternalType('array', $identifiers);
         $this->assertEmpty($identifiers);
@@ -145,19 +145,19 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $this->collectionSetup();
         $identifiers = $this->collection->getIdentifierField();
         $this->assertInternalType('array', $identifiers);
-        $this->assertSame(array('type1' => 'id', 'type2' => 'id'), $identifiers);
+        $this->assertSame(['type1' => 'id', 'type2' => 'id'], $identifiers);
     }
 
     public function elasticaResults()
     {
-        $result = new Result(array('_id' => 123, '_type' => 'type1'));
-        $transformedObject = new POPO(123, array());
+        $result = new Result(['_id' => 123, '_type' => 'type1']);
+        $transformedObject = new POPO(123, []);
 
-        return array(
-            array(
+        return [
+            [
                 $result, $transformedObject,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -171,11 +171,11 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $transformer
             ->expects($this->any())
             ->method('transform')
-            ->will($this->returnValue(array($transformedObject)));
+            ->will($this->returnValue([$transformedObject]));
 
-        $collection = new ElasticaToModelTransformerCollection(array('type1' => $transformer));
+        $collection = new ElasticaToModelTransformerCollection(['type1' => $transformer]);
 
-        $hybridResults = $collection->hybridTransform(array($result));
+        $hybridResults = $collection->hybridTransform([$result]);
 
         $this->assertInternalType('array', $hybridResults);
         $this->assertNotEmpty($hybridResults);

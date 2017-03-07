@@ -27,7 +27,7 @@ class Index extends BaseIndex
      *
      * @var array
      */
-    private $typeCache = array();
+    private $typeCache = [];
 
     /**
      * Returns the original name of the index if the index has been renamed for reindexing

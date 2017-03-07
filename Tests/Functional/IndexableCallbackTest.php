@@ -34,7 +34,7 @@ class IndexableCallbackTest extends WebTestCase
      */
     public function testIndexableCallback()
     {
-        $client = $this->createClient(array('test_case' => 'ORM'));
+        $client = $this->createClient(['test_case' => 'ORM']);
 
         /** @var \FOS\ElasticaBundle\Provider\Indexable $in */
         $in = $client->getContainer()->get('fos_elastica.indexable');

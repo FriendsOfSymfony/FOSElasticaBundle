@@ -70,7 +70,7 @@ class IndexConfig
     {
         $this->elasticSearchName = isset($config['elasticSearchName']) ? $config['elasticSearchName'] : $name;
         $this->name = $name;
-        $this->settings = isset($config['settings']) ? $config['settings'] : array();
+        $this->settings = isset($config['settings']) ? $config['settings'] : [];
         $this->types = $types;
         $this->useAlias = isset($config['useAlias']) ? $config['useAlias'] : false;
     }

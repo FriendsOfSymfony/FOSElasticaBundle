@@ -15,7 +15,7 @@ class PersistenceRepositoryTest extends WebTestCase
 {
     public function testRepositoryShouldBeSetCorrectly()
     {
-        $client = $this->createClient(array('test_case' => 'ORM'));
+        $client = $this->createClient(['test_case' => 'ORM']);
 
         $repository = $client->getContainer()->get('fos_elastica.manager.orm')
             ->getRepository('FOS\ElasticaBundle\Tests\Functional\TypeObject');

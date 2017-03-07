@@ -40,7 +40,7 @@ class ProgressClosureBuilder
     public function build(OutputInterface $output, $action, $index, $type, $offset)
     {
         if (!class_exists('Symfony\Component\Console\Helper\ProgressBar') ||
-            !is_callable(array('Symfony\Component\Console\Helper\ProgressBar', 'getProgress'))) {
+            !is_callable(['Symfony\Component\Console\Helper\ProgressBar', 'getProgress'])) {
             return $this->buildLegacy($output, $action, $index, $type, $offset);
         }
 

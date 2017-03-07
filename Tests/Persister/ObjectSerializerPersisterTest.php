@@ -47,7 +47,7 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->once())->method('serialize');
 
-        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'));
+        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', [$serializerMock, 'serialize']);
         $objectPersister->replaceOne(new POPO());
     }
 
@@ -67,7 +67,7 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->once())->method('serialize');
 
-        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'));
+        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', [$serializerMock, 'serialize']);
         $objectPersister->insertOne(new POPO());
     }
 
@@ -87,7 +87,7 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->once())->method('serialize');
 
-        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'));
+        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', [$serializerMock, 'serialize']);
         $objectPersister->deleteOne(new POPO());
     }
 
@@ -111,8 +111,8 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
         $serializerMock->expects($this->exactly(2))->method('serialize');
 
-        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', array($serializerMock, 'serialize'));
-        $objectPersister->insertMany(array(new POPO(), new POPO()));
+        $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', [$serializerMock, 'serialize']);
+        $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 
     /**

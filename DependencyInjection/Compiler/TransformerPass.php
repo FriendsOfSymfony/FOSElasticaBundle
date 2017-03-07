@@ -32,7 +32,7 @@ class TransformerPass implements CompilerPassInterface
             return;
         }
 
-        $transformers = array();
+        $transformers = [];
 
         foreach ($container->findTaggedServiceIds('fos_elastica.elastica_to_model_transformer') as $id => $tags) {
             foreach ($tags as $tag) {

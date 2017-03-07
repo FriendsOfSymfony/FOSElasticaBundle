@@ -18,7 +18,7 @@ class HybridResultTest extends \PHPUnit_Framework_TestCase
 {
     public function testTransformedResultDefaultsToNull()
     {
-        $result = new Result(array());
+        $result = new Result([]);
 
         $hybridResult = new HybridResult($result);
 

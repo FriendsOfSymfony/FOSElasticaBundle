@@ -42,7 +42,7 @@ class TypeConfig
      * @param array  $mapping
      * @param array  $config
      */
-    public function __construct($name, array $mapping, array $config = array())
+    public function __construct($name, array $mapping, array $config = [])
     {
         $this->config = $config;
         $this->mapping = $mapping;

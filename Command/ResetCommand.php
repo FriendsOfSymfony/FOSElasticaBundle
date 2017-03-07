@@ -75,7 +75,7 @@ class ResetCommand extends ContainerAwareCommand
         } else {
             $indexes = null === $index
                 ? array_keys($this->indexManager->getAllIndexes())
-                : array($index)
+                : [$index]
             ;
 
             foreach ($indexes as $index) {

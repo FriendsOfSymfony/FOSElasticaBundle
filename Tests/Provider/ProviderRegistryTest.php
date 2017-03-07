@@ -43,29 +43,29 @@ class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAllProviders()
     {
-        $allProviders = array(
+        $allProviders = [
             'foo/a' => 'provider.foo.a',
             'foo/b' => 'provider.foo.b',
             'foo/c' => 'provider.foo.c',
             'bar/a' => 'provider.bar.a',
             'bar/b' => 'provider.bar.b',
-        );
+        ];
 
         $this->assertSame($allProviders, $this->registry->getAllProviders());
     }
 
     public function testGetIndexProviders()
     {
-        $fooProviders = array(
+        $fooProviders = [
             'a' => 'provider.foo.a',
             'b' => 'provider.foo.b',
             'c' => 'provider.foo.c',
-        );
+        ];
 
-        $barProviders = array(
+        $barProviders = [
             'a' => 'provider.bar.a',
             'b' => 'provider.bar.b',
-        );
+        ];
 
         $this->assertSame($fooProviders, $this->registry->getIndexProviders('foo'));
         $this->assertSame($barProviders, $this->registry->getIndexProviders('bar'));

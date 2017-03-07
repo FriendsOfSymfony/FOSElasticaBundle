@@ -26,10 +26,10 @@ use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 class RepositoryManager implements RepositoryManagerInterface
 {
     /** @var array */
-    protected $entities = array();
+    protected $entities = [];
 
     /** @var array */
-    protected $repositories = array();
+    protected $repositories = [];
 
     /** @var ManagerRegistry */
     protected $managerRegistry;

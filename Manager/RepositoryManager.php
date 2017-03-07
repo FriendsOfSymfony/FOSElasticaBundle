@@ -35,16 +35,16 @@ class RepositoryManager implements RepositoryManagerInterface
 
     public function __construct()
     {
-        $this->types = array();
-        $this->repositories = array();
+        $this->types = [];
+        $this->repositories = [];
     }
 
     public function addType($indexTypeName, FinderInterface $finder, $repositoryName = null)
     {
-        $this->types[$indexTypeName] = array(
+        $this->types[$indexTypeName] = [
             'finder' => $finder,
             'repositoryName' => $repositoryName,
-        );
+        ];
     }
 
     /**

@@ -34,7 +34,7 @@ class ObjectSerializerPersister extends ObjectPersister
      */
     public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, $serializer)
     {
-        parent::__construct($type, $transformer, $objectClass, array());
+        parent::__construct($type, $transformer, $objectClass, []);
 
         $this->serializer = $serializer;
     }
@@ -49,7 +49,7 @@ class ObjectSerializerPersister extends ObjectPersister
      */
     public function transformToElasticaDocument($object)
     {
-        $document = $this->transformer->transform($object, array());
+        $document = $this->transformer->transform($object, []);
 
         $data = call_user_func($this->serializer, $object);
         $document->setData($data);

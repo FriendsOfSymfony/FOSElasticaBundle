@@ -39,7 +39,7 @@ class Repository
      *
      * @return array
      */
-    public function find($query, $limit = null, $options = array())
+    public function find($query, $limit = null, $options = [])
     {
         return $this->finder->find($query, $limit, $options);
     }
@@ -51,7 +51,7 @@ class Repository
      *
      * @return mixed
      */
-    public function findHybrid($query, $limit = null, $options = array())
+    public function findHybrid($query, $limit = null, $options = [])
     {
         return $this->finder->findHybrid($query, $limit, $options);
     }
@@ -62,7 +62,7 @@ class Repository
      *
      * @return \Pagerfanta\Pagerfanta
      */
-    public function findPaginated($query, $options = array())
+    public function findPaginated($query, $options = [])
     {
         return $this->finder->findPaginated($query, $options);
     }
@@ -73,7 +73,7 @@ class Repository
      *
      * @return Paginator\PaginatorAdapterInterface
      */
-    public function createPaginatorAdapter($query, $options = array())
+    public function createPaginatorAdapter($query, $options = [])
     {
         return $this->finder->createPaginatorAdapter($query, $options);
     }

@@ -31,5 +31,5 @@ interface ProviderInterface
      *
      * @return
      */
-    public function populate(\Closure $loggerClosure = null, array $options = array());
+    public function populate(\Closure $loggerClosure = null, array $options = []);
 }

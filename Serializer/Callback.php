@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class Callback
 {
     protected $serializer;
-    protected $groups = array();
+    protected $groups = [];
     protected $version;
     protected $serializeNull;
 
@@ -76,7 +76,7 @@ class Callback
      */
     public function serialize($object)
     {
-        $context = $this->serializer instanceof JMSSerializer ? SerializationContext::create()->enableMaxDepthChecks() : array();
+        $context = $this->serializer instanceof JMSSerializer ? SerializationContext::create()->enableMaxDepthChecks() : [];
 
         if (!empty($this->groups)) {
             if ($context instanceof SerializationContext) {

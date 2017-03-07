@@ -28,7 +28,7 @@ class ConfigManager implements ManagerInterface
     /**
      * @var IndexConfig[]
      */
-    private $indexes = array();
+    private $indexes = [];
 
     /**
      * @param Source\SourceInterface[] $sources

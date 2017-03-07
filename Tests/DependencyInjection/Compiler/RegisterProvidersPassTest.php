@@ -27,17 +27,17 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
         $container->setDefinition('fos_elastica.provider_registry', $registryDefinition);
         $container->setAlias('fos_elastica.index', 'fos_elastica.index.foo');
 
-        $container->setDefinition('provider.foo.a', $this->createProviderDefinition(array('type' => 'a')));
-        $container->setDefinition('provider.foo.b', $this->createProviderDefinition(array('index' => 'foo', 'type' => 'b')));
-        $container->setDefinition('provider.bar.a', $this->createProviderDefinition(array('index' => 'bar', 'type' => 'a')));
+        $container->setDefinition('provider.foo.a', $this->createProviderDefinition(['type' => 'a']));
+        $container->setDefinition('provider.foo.b', $this->createProviderDefinition(['index' => 'foo', 'type' => 'b']));
+        $container->setDefinition('provider.bar.a', $this->createProviderDefinition(['index' => 'bar', 'type' => 'a']));
 
         $pass->process($container);
 
         $calls = $registryDefinition->getMethodCalls();
 
-        $this->assertSame(array('addProvider', array('foo', 'a', 'provider.foo.a')), $calls[0]);
-        $this->assertSame(array('addProvider', array('foo', 'b', 'provider.foo.b')), $calls[1]);
-        $this->assertSame(array('addProvider', array('bar', 'a', 'provider.bar.a')), $calls[2]);
+        $this->assertSame(['addProvider', ['foo', 'a', 'provider.foo.a']], $calls[0]);
+        $this->assertSame(['addProvider', ['foo', 'b', 'provider.foo.b']], $calls[1]);
+        $this->assertSame(['addProvider', ['bar', 'a', 'provider.bar.a']], $calls[2]);
     }
 
     /**
@@ -75,7 +75,7 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
         $pass->process($container);
     }
 
-    private function createProviderDefinition(array $attributes = array())
+    private function createProviderDefinition(array $attributes = [])
     {
         $provider = $this->getMockBuilder('FOS\ElasticaBundle\Provider\ProviderInterface')->getMock();
 

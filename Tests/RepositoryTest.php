@@ -41,7 +41,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $testQuery = 'Test Query';
 
-        $finderMock = $this->getFinderMock($testQuery, array(), 'findPaginated');
+        $finderMock = $this->getFinderMock($testQuery, [], 'findPaginated');
         $repository = new Repository($finderMock);
         $repository->findPaginated($testQuery);
     }
@@ -50,7 +50,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $testQuery = 'Test Query';
 
-        $finderMock = $this->getFinderMock($testQuery, array(), 'createPaginatorAdapter');
+        $finderMock = $this->getFinderMock($testQuery, [], 'createPaginatorAdapter');
         $repository = new Repository($finderMock);
         $repository->createPaginatorAdapter($testQuery);
     }

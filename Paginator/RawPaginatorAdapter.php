@@ -58,7 +58,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * @param Query               $query      the query to search
      * @param array               $options
      */
-    public function __construct(SearchableInterface $searchable, Query $query, array $options = array())
+    public function __construct(SearchableInterface $searchable, Query $query, array $options = [])
     {
         $this->searchable = $searchable;
         $this->query = $query;
