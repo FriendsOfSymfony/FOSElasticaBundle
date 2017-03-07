@@ -20,3 +20,4 @@ in 4.0 versions.
  * [BC break] Removed deprecated `DynamicIndex` class.
  * [BC break] Removed deprecated `immediate` configuration option.
  * [BC break] Removed `Search` annotations as they cannot be used anymore.
+ * [BC break] Removed `ignore_unmapped` support for Paginator.
