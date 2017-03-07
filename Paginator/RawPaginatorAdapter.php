@@ -47,6 +47,11 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     private $aggregations;
 
     /**
+     * @var array for the suggesters
+     */
+    private $suggests;
+
+    /**
      * @see PaginatorAdapterInterface::__construct
      *
      * @param SearchableInterface $searchable the object to search in
@@ -92,8 +97,8 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
 
         $resultSet = $this->searchable->search($query, $this->options);
         $this->totalHits = $resultSet->getTotalHits();
-
         $this->aggregations = $resultSet->getAggregations();
+        $this->suggests = $resultSet->getSuggests();
 
         return $resultSet;
     }
@@ -136,6 +141,18 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         }
 
         return $this->aggregations;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSuggests()
+    {
+        if (!isset($this->suggests)) {
+            $this->suggests = $this->searchable->search($this->query)->getSuggests();
+        }
+
+        return $this->suggests;
     }
 
     /**

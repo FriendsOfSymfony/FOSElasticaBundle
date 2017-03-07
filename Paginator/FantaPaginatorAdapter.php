@@ -48,6 +48,18 @@ class FantaPaginatorAdapter implements AdapterInterface
     }
 
     /**
+     * Returns Suggestions.
+     *
+     * @return mixed
+     *
+     * @api
+     */
+    public function getSuggests()
+    {
+        return $this->adapter->getSuggests();
+    }
+
+    /**
      * Returns a slice of the results.
      *
      * @param int $offset The offset

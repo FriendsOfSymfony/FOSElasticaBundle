@@ -58,4 +58,16 @@ class RawPartialResults implements PartialResultsInterface
 
         return;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSuggests()
+    {
+        if ($this->resultSet->hasSuggests()) {
+            return $this->resultSet->getSuggests();
+        }
+
+        return;
+    }
 }
