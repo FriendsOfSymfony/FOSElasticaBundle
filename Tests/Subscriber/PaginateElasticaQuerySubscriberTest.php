@@ -51,7 +51,6 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
         $expected = [
             'createdAt' => [
                 'order' => 'asc',
-                'ignore_unmapped' => true
             ]
         ];
         $tests[] = [$expected, new Request()];
@@ -59,7 +58,6 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
         $expected = [
             'name' => [
                 'order' => 'desc',
-                'ignore_unmapped' => true
             ]
         ];
         $tests[] = [$expected, new Request(['ord' => 'name', 'az' => 'desc'])];
@@ -67,7 +65,6 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
         $expected = [
             'updatedAt' => [
                 'order' => 'asc',
-                'ignore_unmapped' => true
             ]
         ];
         $tests[] = [$expected, new Request(['ord' => 'updatedAt', 'az' => 'invalid'])];
@@ -158,7 +155,6 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             'owner.name' => [
                 'order' => 'asc',
-                'ignore_unmapped' => true,
                 'nested_path' => 'owner',
             ]
         ], $query->getParam('sort'));
@@ -193,7 +189,6 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             'owner.name' => [
                 'order' => 'asc',
-                'ignore_unmapped' => true,
                 'nested_path' => 'owner',
             ]
         ], $query->getParam('sort'));
@@ -227,7 +222,6 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
             'sort' => [
                 'owner.name' => [
                     'order' => 'asc',
-                    'ignore_unmapped' => true,
                     'nested_path' => 'owner',
                     'nested_filter' => [
                         'term' => [
@@ -273,7 +267,6 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
             'sort' => [
                 'owner.name' => [
                     'order' => 'asc',
-                    'ignore_unmapped' => true,
                     'nested_path' => 'owner',
                     'nested_filter' => [
                         'term' => [
