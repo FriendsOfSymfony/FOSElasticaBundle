@@ -60,7 +60,7 @@ class RawPartialResults implements PartialResultsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSuggests()
     {

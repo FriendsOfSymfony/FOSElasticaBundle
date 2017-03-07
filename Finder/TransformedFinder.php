@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Finder;
 
-use Elastica\Document;
 use Elastica\Query;
 use Elastica\SearchableInterface;
 use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
