@@ -26,7 +26,14 @@ use Pagerfanta\Pagerfanta;
  */
 class TransformedFinder implements PaginatedFinderInterface
 {
+    /**
+     * @var SearchableInterface
+     */
     protected $searchable;
+
+    /**
+     * @var ElasticaToModelTransformerInterface
+     */
     protected $transformer;
 
     /**
@@ -49,6 +56,13 @@ class TransformedFinder implements PaginatedFinderInterface
         return $this->transformer->transform($results);
     }
 
+    /**
+     * @param $query
+     * @param null|int $limit
+     * @param array    $options
+     *
+     * @return array
+     */
     public function findHybrid($query, $limit = null, $options = array())
     {
         $results = $this->search($query, $limit, $options);
