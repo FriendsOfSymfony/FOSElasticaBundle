@@ -17,6 +17,7 @@ Cookbook Entries
 * [Custom Repositories](cookbook/custom-repositories.md)
 * [Pre Transform Event](cookbook/pre-transform-event.md)
 * [HTTP Headers for Elastica](cookbook/elastica-client-http-headers.md)
+* [HTTP Auth for Elastica](cookbook/http-auth-for-elastica.md)
 * Performance - [Logging](cookbook/logging.md) - [Compression](cookbook/compression.md)
 * [Manual Providers](cookbook/manual-provider.md)
 * [Clustering - Multiple Connections](cookbook/multiple-connections.md)
