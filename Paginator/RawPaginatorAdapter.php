@@ -121,6 +121,8 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * hits.total value from the search results instead of just returning
      * the requested size.
      *
+     * It does not match with the interface
+     *
      * @param boolean $genuineTotal
      *
      * @return integer The number of results.
