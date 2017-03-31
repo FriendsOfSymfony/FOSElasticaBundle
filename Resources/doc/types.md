@@ -9,7 +9,7 @@ to be used for data retrieval from the underlying model.
 
 ```yaml
                 user:
-                    mappings:
+                    properties:
                         username:
                             property_path: indexableUsername
                         firstName:
@@ -56,7 +56,7 @@ Dynamic templates
 Dynamic templates allow to define mapping templates that will be
 applied when dynamic introduction of fields / objects happens.
 
-[Documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-root-object-type.html#_dynamic_templates)
+[Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic-templates.html)
 
 ```yaml
 fos_elastica:
@@ -71,12 +71,11 @@ fos_elastica:
                                 type: float
                         my_template_2:
                             match: *
-                            match_mapping_type: string
+                            match_mapping_type: text
                             mapping:
-                                type: string
-                                index: not_analyzed
-                    mappings:
-                        username: { type: string }
+                                type: keyword
+                    properties:
+                        username: { type: text }
 ```
 
 Nested objects in FOSElasticaBundle
@@ -90,7 +89,7 @@ fos_elastica:
         app:
             types:
                 post:
-                    mappings:
+                    properties:
                         date: { boost: 5 }
                         title: { boost: 3 }
                         content: ~
@@ -116,7 +115,7 @@ fos_elastica:
         app:
             types:
                 comment:
-                    mappings:
+                    properties:
                         date: { boost: 5 }
                         content: ~
                     _parent:
@@ -139,12 +138,12 @@ to store a document that should have a parent but does not specify it.
 Date format example
 -------------------
 
-If you want to specify a [date format](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-date-format.html):
+If you want to specify a [date format](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html):
 
 ```yaml
                 user:
-                    mappings:
-                        username: { type: string }
+                    properties:
+                        username: { type: text }
                         lastlogin: { type: date, format: basic_date_time }
                         birthday: { type: date, format: "yyyy-MM-dd" }
 ```
@@ -159,8 +158,8 @@ the [dynamic](https://www.elastic.co/guide/en/elasticsearch/reference/current/dy
 ```yaml
                 user:
                     dynamic: strict
-                    mappings:
-                        username: { type: string }
+                    properties:
+                        username: { type: text }
                         addresses: { type: object, dynamic: true }
 ```
 
@@ -190,7 +189,7 @@ analyzer, you could write:
                                 max_gram: 5
             types:
                 blog:
-                    mappings:
+                    properties:
                         title: { boost: 8, analyzer: my_analyzer }
 ```
 
@@ -281,7 +280,7 @@ persistence configuration.
 
 ### Turning on the persistence backend logger in production
 
-FOSElasticaBundle will turn of your persistence backend's logging configuration by default
+FOSElasticaBundle will turn off your persistence backend's logging configuration by default
 when Symfony2 is not in debug mode. You can force FOSElasticaBundle to always disable
 logging by setting debug_logging to false, to leave logging alone by setting it to true,
 or leave it set to its default value which will mirror %kernel.debug%.
@@ -325,19 +324,17 @@ You can also choose to only listen for some of the events:
 
 > **Propel** doesn't support this feature yet.
 
-Flushing Method
----------------
+### Asnychronous index update
 
-FOSElasticaBundle, since 3.0.0 performs its indexing in the postFlush Doctrine event
-instead of prePersist and preUpdate which means that indexing will only occur when there
-has been a successful flush. This new default makes more sense but in the instance where
-you want to perform indexing before the flush is confirmed you may set the `immediate`
-option on a type persistence configuration to `true`.
+You can also tell ElasticaBundle to update the indexes after Symfony response has returned.
+This is useful when you want your responses to return quickly and not be slowed down by round
+trips to your Elasticsearch instance. All updates to Elasticsearch will be batched up and
+only fire after the `kernel.terminate` event.
 
 ```yaml
                     persistence:
                         listener:
-                            immediate: true
+                            defer: true
 ```
 
 Logging Errors

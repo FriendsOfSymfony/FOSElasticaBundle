@@ -1,33 +1,50 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Manager;
 
-use Doctrine\Common\Annotations\Reader;
 use FOS\ElasticaBundle\Finder\FinderInterface;
+use FOS\ElasticaBundle\Repository;
 use RuntimeException;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  *
  * Allows retrieval of basic or custom repository for mapped Doctrine
- * entities/documents.
+ * entities/documents
  */
 class RepositoryManager implements RepositoryManagerInterface
 {
-    protected $entities = array();
-    protected $repositories = array();
-    protected $reader;
+    /**
+     * @var array
+     */
+    private $types;
 
-    public function __construct(Reader $reader)
+    /**
+     * @var array
+     */
+    private $repositories;
+
+    public function __construct()
     {
-        $this->reader = $reader;
+        $this->types = [];
+        $this->repositories = [];
     }
 
-    public function addEntity($entityName, FinderInterface $finder, $repositoryName = null)
+    public function addType($indexTypeName, FinderInterface $finder, $repositoryName = null)
     {
-        $this->entities[$entityName] = array();
-        $this->entities[$entityName]['finder'] = $finder;
-        $this->entities[$entityName]['repositoryName'] = $repositoryName;
+        $this->types[$indexTypeName] = [
+            'finder' => $finder,
+            'repositoryName' => $repositoryName,
+        ];
     }
 
     /**
@@ -35,50 +52,52 @@ class RepositoryManager implements RepositoryManagerInterface
      *
      * Returns custom repository if one specified otherwise
      * returns a basic repository.
+     *
+     * @param string $typeName
+     *
+     * @return Repository
      */
-    public function getRepository($entityName)
+    public function getRepository($typeName)
     {
-        if (isset($this->repositories[$entityName])) {
-            return $this->repositories[$entityName];
+        if (isset($this->repositories[$typeName])) {
+            return $this->repositories[$typeName];
         }
 
-        if (!isset($this->entities[$entityName])) {
-            throw new RuntimeException(sprintf('No search finder configured for %s', $entityName));
+        if (!isset($this->types[$typeName])) {
+            throw new RuntimeException(sprintf('No search finder configured for %s', $typeName));
         }
 
-        $repository = $this->createRepository($entityName);
-        $this->repositories[$entityName] = $repository;
+        $repository = $this->createRepository($typeName);
+        $this->repositories[$typeName] = $repository;
 
         return $repository;
     }
 
-    protected function getRepositoryName($entityName)
+    /**
+     * @param $typeName
+     *
+     * @return string
+     */
+    protected function getRepositoryName($typeName)
     {
-        if (isset($this->entities[$entityName]['repositoryName'])) {
-            return $this->entities[$entityName]['repositoryName'];
-        }
-
-        $refClass   = new \ReflectionClass($entityName);
-        $annotation = $this->reader->getClassAnnotation($refClass, 'FOS\\ElasticaBundle\\Annotation\\Search');
-        if ($annotation) {
-            $this->entities[$entityName]['repositoryName']
-                = $annotation->repositoryClass;
-
-            return $annotation->repositoryClass;
+        if (isset($this->types[$typeName]['repositoryName'])) {
+            return $this->types[$typeName]['repositoryName'];
         }
 
         return 'FOS\ElasticaBundle\Repository';
     }
 
     /**
-     * @param string $entityName
+     * @param $typeName
+     *
+     * @return mixed
      */
-    private function createRepository($entityName)
+    private function createRepository($typeName)
     {
-        if (!class_exists($repositoryName = $this->getRepositoryName($entityName))) {
-            throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $entityName));
+        if (!class_exists($repositoryName = $this->getRepositoryName($typeName))) {
+            throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $typeName));
         }
 
-        return new $repositoryName($this->entities[$entityName]['finder']);
+        return new $repositoryName($this->types[$typeName]['finder']);
     }
 }

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -20,7 +29,14 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class TypeResetEvent extends IndexEvent
 {
+    /**
+     * @Event("FOS\ElasticaBundle\Event\TypeResetEvent")
+     */
     const PRE_TYPE_RESET = 'elastica.index.type_pre_reset';
+
+    /**
+     * @Event("FOS\ElasticaBundle\Event\TypeResetEvent")
+     */
     const POST_TYPE_RESET = 'elastica.index.type_post_reset';
 
     /**

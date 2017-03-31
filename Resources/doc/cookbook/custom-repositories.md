@@ -32,8 +32,8 @@ fos_elastica:
             client: default
             types:
                 user:
-                    mappings:
-                        # your mappings
+                    properties:
+                        # your properties
                     persistence:
                         driver: orm
                         model: Application\UserBundle\Entity\User
@@ -53,24 +53,4 @@ $repository = $repositoryManager->getRepository('UserBundle:User');
 
 /** var array of Acme\UserBundle\Entity\User */
 $users = $repository->findWithCustomQuery('bob');
-```
-
-Alternatively you can specify the custom repository using an annotation in the entity:
-
-```php
-<?php
-
-namespace Application\UserBundle\Entity;
-
-use FOS\ElasticaBundle\Annotation\Search;
-
-/**
- * @Search(repositoryClass="Acme\ElasticaBundle\SearchRepository\UserRepository")
- */
-class User
-{
-
-   //---
-
-}
 ```

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Provider;
 
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
@@ -15,7 +24,7 @@ class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $this->container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
 
         // Mock ContainerInterface::get() to return the service ID
         $this->container->expects($this->any())
@@ -34,32 +43,32 @@ class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAllProviders()
     {
-        $allProviders = array(
+        $allProviders = [
             'foo/a' => 'provider.foo.a',
             'foo/b' => 'provider.foo.b',
             'foo/c' => 'provider.foo.c',
             'bar/a' => 'provider.bar.a',
             'bar/b' => 'provider.bar.b',
-        );
+        ];
 
-        $this->assertEquals($allProviders, $this->registry->getAllProviders());
+        $this->assertSame($allProviders, $this->registry->getAllProviders());
     }
 
     public function testGetIndexProviders()
     {
-        $fooProviders = array(
+        $fooProviders = [
             'a' => 'provider.foo.a',
             'b' => 'provider.foo.b',
             'c' => 'provider.foo.c',
-        );
+        ];
 
-        $barProviders = array(
+        $barProviders = [
             'a' => 'provider.bar.a',
             'b' => 'provider.bar.b',
-        );
+        ];
 
-        $this->assertEquals($fooProviders, $this->registry->getIndexProviders('foo'));
-        $this->assertEquals($barProviders, $this->registry->getIndexProviders('bar'));
+        $this->assertSame($fooProviders, $this->registry->getIndexProviders('foo'));
+        $this->assertSame($barProviders, $this->registry->getIndexProviders('bar'));
     }
 
     /**
@@ -72,11 +81,11 @@ class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetProvider()
     {
-        $this->assertEquals('provider.foo.a', $this->registry->getProvider('foo', 'a'));
-        $this->assertEquals('provider.foo.b', $this->registry->getProvider('foo', 'b'));
-        $this->assertEquals('provider.foo.c', $this->registry->getProvider('foo', 'c'));
-        $this->assertEquals('provider.bar.a', $this->registry->getProvider('bar', 'a'));
-        $this->assertEquals('provider.bar.b', $this->registry->getProvider('bar', 'b'));
+        $this->assertSame('provider.foo.a', $this->registry->getProvider('foo', 'a'));
+        $this->assertSame('provider.foo.b', $this->registry->getProvider('foo', 'b'));
+        $this->assertSame('provider.foo.c', $this->registry->getProvider('foo', 'c'));
+        $this->assertSame('provider.bar.a', $this->registry->getProvider('bar', 'a'));
+        $this->assertSame('provider.bar.b', $this->registry->getProvider('bar', 'b'));
     }
 
     /**

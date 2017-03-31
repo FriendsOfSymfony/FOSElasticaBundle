@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Doctrine\ORM;
 
 use Doctrine\ORM\QueryBuilder;
@@ -46,7 +55,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function countObjects($queryBuilder)
     {
@@ -71,7 +80,7 @@ class Provider extends AbstractProvider
     /**
      * This method should remain in sync with SliceFetcher::fetch until it is deprecated and removed.
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function fetchSlice($queryBuilder, $limit, $offset)
     {
@@ -105,14 +114,16 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function createQueryBuilder($method)
+    protected function createQueryBuilder($method, array $arguments = [])
     {
-        return $this->managerRegistry
+        $repository = $this->managerRegistry
             ->getManagerForClass($this->objectClass)
-            ->getRepository($this->objectClass)
-            // ORM query builders require an alias argument
-            ->{$method}(static::ENTITY_ALIAS);
+            ->getRepository($this->objectClass);
+        // ORM query builders require an alias argument
+        $arguments = [static::ENTITY_ALIAS] + $arguments;
+
+        return call_user_func_array([$repository, $method], $arguments);
     }
 }

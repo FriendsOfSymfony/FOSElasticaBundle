@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -18,7 +27,14 @@ namespace FOS\ElasticaBundle\Event;
  */
 class IndexResetEvent extends IndexEvent
 {
+    /**
+     * @Event("FOS\ElasticaBundle\Event\IndexResetEvent")
+     */
     const PRE_INDEX_RESET = 'elastica.index.pre_reset';
+
+    /**
+     * @Event("FOS\ElasticaBundle\Event\IndexResetEvent")
+     */
     const POST_INDEX_RESET = 'elastica.index.post_reset';
 
     /**
@@ -45,7 +61,7 @@ class IndexResetEvent extends IndexEvent
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isForce()
     {
@@ -53,7 +69,7 @@ class IndexResetEvent extends IndexEvent
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isPopulating()
     {
@@ -61,7 +77,7 @@ class IndexResetEvent extends IndexEvent
     }
 
     /**
-     * @param boolean $force
+     * @param bool $force
      */
     public function setForce($force)
     {

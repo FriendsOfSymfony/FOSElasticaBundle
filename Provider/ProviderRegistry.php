@@ -1,20 +1,28 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Provider;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * References persistence providers for each index and type.
  */
 class ProviderRegistry implements ContainerAwareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-    private $providers = array();
+    use ContainerAwareTrait;
+
+    /** @var array */
+    private $providers = [];
 
     /**
      * Registers a provider for the specified index and type.
@@ -26,7 +34,7 @@ class ProviderRegistry implements ContainerAwareInterface
     public function addProvider($index, $type, $providerId)
     {
         if (!isset($this->providers[$index])) {
-            $this->providers[$index] = array();
+            $this->providers[$index] = [];
         }
 
         $this->providers[$index][$type] = $providerId;
@@ -41,7 +49,7 @@ class ProviderRegistry implements ContainerAwareInterface
      */
     public function getAllProviders()
     {
-        $providers = array();
+        $providers = [];
 
         foreach ($this->providers as $index => $indexProviders) {
             foreach ($indexProviders as $type => $providerId) {
@@ -69,7 +77,7 @@ class ProviderRegistry implements ContainerAwareInterface
             throw new \InvalidArgumentException(sprintf('No providers were registered for index "%s".', $index));
         }
 
-        $providers = array();
+        $providers = [];
 
         foreach ($this->providers[$index] as $type => $providerId) {
             $providers[$type] = $this->container->get($providerId);
@@ -95,13 +103,5 @@ class ProviderRegistry implements ContainerAwareInterface
         }
 
         return $this->container->get($this->providers[$index][$type]);
-    }
-
-    /**
-     * @see Symfony\Component\DependencyInjection\ContainerAwareInterface::setContainer()
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }

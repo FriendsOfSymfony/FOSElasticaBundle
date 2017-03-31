@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -26,6 +35,9 @@ class ContainerSource implements SourceInterface
      */
     private $configArray;
 
+    /**
+     * @param array $configArray
+     */
     public function __construct(array $configArray)
     {
         $this->configArray = $configArray;
@@ -38,14 +50,14 @@ class ContainerSource implements SourceInterface
      */
     public function getConfiguration()
     {
-        $indexes = array();
+        $indexes = [];
         foreach ($this->configArray as $config) {
             $types = $this->getTypes($config);
-            $index = new IndexConfig($config['name'], $types, array(
+            $index = new IndexConfig($config['name'], $types, [
                 'elasticSearchName' => $config['elasticsearch_name'],
                 'settings' => $config['settings'],
                 'useAlias' => $config['use_alias'],
-            ));
+            ]);
 
             $indexes[$config['name']] = $index;
         }
@@ -62,7 +74,7 @@ class ContainerSource implements SourceInterface
      */
     protected function getTypes($config)
     {
-        $types = array();
+        $types = [];
 
         if (isset($config['types'])) {
             foreach ($config['types'] as $typeConfig) {

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Finder;
 
 interface FinderInterface
@@ -13,5 +22,5 @@ interface FinderInterface
      *
      * @return array results
      */
-    public function find($query, $limit = null, $options = array());
+    public function find($query, $limit = null, $options = []);
 }

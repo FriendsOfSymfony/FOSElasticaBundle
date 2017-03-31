@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\ObjectPersister;
 
 use FOS\ElasticaBundle\Persister\ObjectPersister;
@@ -8,7 +17,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class POPO
 {
-    public $id   = 123;
+    public $id = 123;
 
     public function getId()
     {
@@ -42,7 +51,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->once())
             ->method('updateDocuments');
 
-        $fields = array('name' => array());
+        $fields = ['name' => []];
 
         $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->replaceOne(new POPO());
@@ -64,7 +73,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocument');
 
-        $fields = array('name' => array());
+        $fields = ['name' => []];
 
         $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->replaceOne(new POPO());
@@ -83,7 +92,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->once())
             ->method('addDocuments');
 
-        $fields = array('name' => array());
+        $fields = ['name' => []];
 
         $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertOne(new POPO());
@@ -105,7 +114,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocument');
 
-        $fields = array('name' => array());
+        $fields = ['name' => []];
 
         $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertOne(new POPO());
@@ -124,7 +133,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocument');
 
-        $fields = array('name' => array());
+        $fields = ['name' => []];
 
         $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->deleteOne(new POPO());
@@ -146,7 +155,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocument');
 
-        $fields = array('name' => array());
+        $fields = ['name' => []];
 
         $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
         $objectPersister->deleteOne(new POPO());
@@ -167,10 +176,10 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->once())
             ->method('addDocuments');
 
-        $fields = array('name' => array());
+        $fields = ['name' => []];
 
         $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
-        $objectPersister->insertMany(array(new POPO(), new POPO()));
+        $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 
     /**
@@ -191,10 +200,10 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->never())
             ->method('addDocuments');
 
-        $fields = array('name' => array());
+        $fields = ['name' => []];
 
         $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
-        $objectPersister->insertMany(array(new POPO(), new POPO()));
+        $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 
     /**

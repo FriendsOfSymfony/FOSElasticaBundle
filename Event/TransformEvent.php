@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -15,7 +24,14 @@ use Symfony\Component\EventDispatcher\Event;
 
 class TransformEvent extends Event
 {
+    /**
+     * @Event("FOS\ElasticaBundle\Event\TransformEvent")
+     */
     const PRE_TRANSFORM = 'fos_elastica.pre_transform';
+
+    /**
+     * @Event("FOS\ElasticaBundle\Event\TransformEvent")
+     */
     const POST_TRANSFORM = 'fos_elastica.post_transform';
 
     /**

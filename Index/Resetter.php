@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Index;
 
-use Elastica\Index;
 use Elastica\Exception\ResponseException;
+use Elastica\Index;
 use Elastica\Type\Mapping;
-use FOS\ElasticaBundle\Configuration\ConfigManager;
+use FOS\ElasticaBundle\Configuration\ManagerInterface;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -21,7 +30,7 @@ class Resetter
     private $aliasProcessor;
 
     /***
-     * @var ConfigManager
+     * @var ManagerInterface
      */
     private $configManager;
 
@@ -41,14 +50,14 @@ class Resetter
     private $mappingBuilder;
 
     /**
-     * @param ConfigManager            $configManager
+     * @param ManagerInterface         $configManager
      * @param IndexManager             $indexManager
      * @param AliasProcessor           $aliasProcessor
      * @param MappingBuilder           $mappingBuilder
      * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
-        ConfigManager $configManager,
+        ManagerInterface $configManager,
         IndexManager $indexManager,
         AliasProcessor $aliasProcessor,
         MappingBuilder $mappingBuilder,
@@ -89,12 +98,12 @@ class Resetter
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
         $index = $this->indexManager->getIndex($indexName);
 
-        $event = new IndexResetEvent($indexName, $populating, $force);
-        $this->dispatcher->dispatch(IndexResetEvent::PRE_INDEX_RESET, $event);
-
         if ($indexConfig->isUseAlias()) {
             $this->aliasProcessor->setRootName($indexConfig, $index);
         }
+
+        $event = new IndexResetEvent($indexName, $populating, $force);
+        $this->dispatcher->dispatch(IndexResetEvent::PRE_INDEX_RESET, $event);
 
         $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
         $index->create($mapping, true);
@@ -118,18 +127,14 @@ class Resetter
     public function resetIndexType($indexName, $typeName)
     {
         $typeConfig = $this->configManager->getTypeConfiguration($indexName, $typeName);
-        $type = $this->indexManager->getIndex($indexName)->getType($typeName);
+
+        $this->resetIndex($indexName, true);
+
+        $index = $this->indexManager->getIndex($indexName);
+        $type = $index->getType($typeName);
 
         $event = new TypeResetEvent($indexName, $typeName);
         $this->dispatcher->dispatch(TypeResetEvent::PRE_TYPE_RESET, $event);
-
-        try {
-            $type->delete();
-        } catch (ResponseException $e) {
-            if (strpos($e->getMessage(), 'TypeMissingException') === false) {
-                throw $e;
-            }
-        }
 
         $mapping = new Mapping();
         foreach ($this->mappingBuilder->buildTypeMapping($typeConfig) as $name => $field) {
@@ -145,14 +150,29 @@ class Resetter
      * A command run when a population has finished.
      *
      * @param string $indexName
+     *
+     * @deprecated
      */
     public function postPopulate($indexName)
+    {
+        $this->switchIndexAlias($indexName);
+    }
+
+    /**
+     * Switching aliases.
+     *
+     * @param string $indexName
+     * @param bool   $delete    Delete or close index
+     *
+     * @throws \FOS\ElasticaBundle\Exception\AliasIsIndexException
+     */
+    public function switchIndexAlias($indexName, $delete = true)
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
 
         if ($indexConfig->isUseAlias()) {
             $index = $this->indexManager->getIndex($indexName);
-            $this->aliasProcessor->switchIndexAlias($indexConfig, $index);
+            $this->aliasProcessor->switchIndexAlias($indexConfig, $index, false, $delete);
         }
     }
 }

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -19,7 +28,7 @@ class ConfigManager implements ManagerInterface
     /**
      * @var IndexConfig[]
      */
-    private $indexes = array();
+    private $indexes = [];
 
     /**
      * @param Source\SourceInterface[] $sources
@@ -31,6 +40,11 @@ class ConfigManager implements ManagerInterface
         }
     }
 
+    /**
+     * @param string $indexName
+     *
+     * @return IndexConfig
+     */
     public function getIndexConfiguration($indexName)
     {
         if (!$this->hasIndexConfiguration($indexName)) {
@@ -40,11 +54,17 @@ class ConfigManager implements ManagerInterface
         return $this->indexes[$indexName];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getIndexNames()
     {
         return array_keys($this->indexes);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTypeConfiguration($indexName, $typeName)
     {
         $index = $this->getIndexConfiguration($indexName);
@@ -57,6 +77,11 @@ class ConfigManager implements ManagerInterface
         return $type;
     }
 
+    /**
+     * @param string $indexName
+     *
+     * @return bool
+     */
     public function hasIndexConfiguration($indexName)
     {
         return isset($this->indexes[$indexName]);

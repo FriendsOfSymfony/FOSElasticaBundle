@@ -7,7 +7,7 @@ fos_elastica:
             client: default
             types:
                 driverless:
-                    mappings:
+                    properties:
                         text: ~
                     persistence:
                         elastica_to_model_transformer:

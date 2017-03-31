@@ -42,8 +42,11 @@ class UserProvider implements ProviderInterface
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
+        $batchSize = 1;
+        $totalObjects = 1;
+
         if ($loggerClosure) {
-            $loggerClosure('Indexing users');
+            $loggerClosure($batchSize, $totalObjects, 'Indexing users');
         }
 
         $document = new Document();

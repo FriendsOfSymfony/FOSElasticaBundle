@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Resetter;
 
 use FOS\ElasticaBundle\FOSElasticaBundle;
@@ -9,7 +18,8 @@ class FOSElasticaBundleTest extends \PHPUnit_Framework_TestCase
     public function testCompilerPassesAreRegistered()
     {
         $container = $this
-            ->getMock('Symfony\Component\DependencyInjection\ContainerBuilder');
+            ->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')
+            ->getMock();
 
         $container
             ->expects($this->atLeastOnce())

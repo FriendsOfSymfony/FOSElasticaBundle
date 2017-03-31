@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Elastica;
 
 use Elastica\Client as BaseClient;
@@ -20,7 +29,7 @@ class Client extends BaseClient
      *
      * @var array
      */
-    private $indexCache = array();
+    private $indexCache = [];
 
     /**
      * Symfony's debugging Stopwatch.
@@ -37,20 +46,19 @@ class Client extends BaseClient
      *
      * @return \Elastica\Response
      */
-    public function request($path, $method = Request::GET, $data = array(), array $query = array())
+    public function request($path, $method = Request::GET, $data = [], array $query = [])
     {
         if ($this->stopwatch) {
             $this->stopwatch->start('es_request', 'fos_elastica');
         }
 
-        $start = microtime(true);
         $response = parent::request($path, $method, $data, $query);
         $responseData = $response->getData();
 
         if (isset($responseData['took']) && isset($responseData['hits'])) {
-            $this->logQuery($path, $method, $data, $query, $start, $response->getEngineTime(), $responseData['hits']['total']);
+            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']);
         } else {
-            $this->logQuery($path, $method, $data, $query, $start, 0, 0);
+            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), 0, 0);
         }
 
         if ($this->stopwatch) {
@@ -60,6 +68,11 @@ class Client extends BaseClient
         return $response;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return Index|mixed
+     */
     public function getIndex($name)
     {
         if (isset($this->indexCache[$name])) {
@@ -86,24 +99,27 @@ class Client extends BaseClient
      * @param string $method
      * @param array  $data
      * @param array  $query
-     * @param int    $start
+     * @param int    $queryTime
+     * @param int    $engineMS
+     * @param int    $itemCount
      */
-    private function logQuery($path, $method, $data, array $query, $start, $engineMS = 0, $itemCount = 0)
+    private function logQuery($path, $method, $data, array $query, $queryTime, $engineMS = 0, $itemCount = 0)
     {
         if (!$this->_logger or !$this->_logger instanceof ElasticaLogger) {
             return;
         }
 
-        $time = microtime(true) - $start;
         $connection = $this->getLastRequest()->getConnection();
 
-        $connection_array = array(
+        $connectionArray = [
             'host' => $connection->getHost(),
             'port' => $connection->getPort(),
             'transport' => $connection->getTransport(),
-            'headers' => $connection->hasConfig('headers') ? $connection->getConfig('headers') : array(),
-        );
+            'headers' => $connection->hasConfig('headers') ? $connection->getConfig('headers') : [],
+        ];
 
-        $this->_logger->logQuery($path, $method, $data, $time, $connection_array, $query, $engineMS, $itemCount);
+        /** @var ElasticaLogger $logger */
+        $logger = $this->_logger;
+        $logger->logQuery($path, $method, $data, $queryTime, $connectionArray, $query, $engineMS, $itemCount);
     }
 }

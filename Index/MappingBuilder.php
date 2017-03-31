@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -17,13 +26,6 @@ use FOS\ElasticaBundle\Configuration\TypeConfig;
 class MappingBuilder
 {
     /**
-     * Skip adding default information to certain fields.
-     *
-     * @var array
-     */
-    private $skipTypes = array('completion');
-
-    /**
      * Builds mappings for an entire index.
      *
      * @param IndexConfig $indexConfig
@@ -32,12 +34,12 @@ class MappingBuilder
      */
     public function buildIndexMapping(IndexConfig $indexConfig)
     {
-        $typeMappings = array();
+        $typeMappings = [];
         foreach ($indexConfig->getTypes() as $typeConfig) {
             $typeMappings[$typeConfig->getName()] = $this->buildTypeMapping($typeConfig);
         }
 
-        $mapping = array();
+        $mapping = [];
         if (!empty($typeMappings)) {
             $mapping['mappings'] = $typeMappings;
         }
@@ -74,12 +76,8 @@ class MappingBuilder
             $mapping['numeric_detection'] = $typeConfig->getNumericDetection();
         }
 
-        if ($typeConfig->getIndexAnalyzer()) {
-            $mapping['index_analyzer'] = $typeConfig->getIndexAnalyzer();
-        }
-
-        if ($typeConfig->getSearchAnalyzer()) {
-            $mapping['search_analyzer'] = $typeConfig->getSearchAnalyzer();
+        if ($typeConfig->getAnalyzer()) {
+            $mapping['analyzer'] = $typeConfig->getAnalyzer();
         }
 
         if ($typeConfig->getDynamic() !== null) {
@@ -99,9 +97,11 @@ class MappingBuilder
             $mapping['_meta']['model'] = $typeConfig->getModel();
         }
 
+        unset($mapping['_parent']['identifier'], $mapping['_parent']['property']);
+
         if (empty($mapping)) {
             // Empty mapping, we want it encoded as a {} instead of a []
-            $mapping = new \stdClass();
+            $mapping = new \ArrayObject();
         }
 
         return $mapping;
@@ -119,16 +119,13 @@ class MappingBuilder
             unset($property['property_path']);
 
             if (!isset($property['type'])) {
-                $property['type'] = 'string';
+                $property['type'] = 'text';
             }
-            if ($property['type'] == 'multi_field' && isset($property['fields'])) {
+            if (isset($property['fields'])) {
                 $this->fixProperties($property['fields']);
             }
             if (isset($property['properties'])) {
                 $this->fixProperties($property['properties']);
-            }
-            if (in_array($property['type'], $this->skipTypes)) {
-                continue;
             }
         }
     }

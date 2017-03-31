@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -18,7 +27,14 @@ namespace FOS\ElasticaBundle\Event;
  */
 class IndexPopulateEvent extends IndexEvent
 {
+    /**
+     * @Event("FOS\ElasticaBundle\Event\IndexPopulateEvent")
+     */
     const PRE_INDEX_POPULATE = 'elastica.index.index_pre_populate';
+
+    /**
+     * @Event("FOS\ElasticaBundle\Event\IndexPopulateEvent")
+     */
     const POST_INDEX_POPULATE = 'elastica.index.index_post_populate';
 
     /**
@@ -32,20 +48,20 @@ class IndexPopulateEvent extends IndexEvent
     private $options;
 
     /**
-     * @param string  $index
-     * @param boolean $reset
-     * @param array   $options
+     * @param string $index
+     * @param bool   $reset
+     * @param array  $options
      */
     public function __construct($index, $reset, $options)
     {
         parent::__construct($index);
 
-        $this->reset   = $reset;
+        $this->reset = $reset;
         $this->options = $options;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isReset()
     {
@@ -61,10 +77,35 @@ class IndexPopulateEvent extends IndexEvent
     }
 
     /**
-     * @param boolean $reset
+     * @param bool $reset
      */
     public function setReset($reset)
     {
         $this->reset = $reset;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     *
+     * @throws \InvalidArgumentException if option does not exist
+     */
+    public function getOption($name)
+    {
+        if (!isset($this->options[$name])) {
+            throw new \InvalidArgumentException(sprintf('The "%s" option does not exist.', $name));
+        }
+
+        return $this->options[$name];
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function setOption($name, $value)
+    {
+        $this->options[$name] = $value;
     }
 }

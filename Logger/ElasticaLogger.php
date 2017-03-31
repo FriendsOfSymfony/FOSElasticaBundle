@@ -1,7 +1,17 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Logger;
 
+use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -12,7 +22,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author Gordon Franke <info@nevalon.de>
  */
-class ElasticaLogger implements LoggerInterface
+class ElasticaLogger extends AbstractLogger
 {
     /**
      * @var LoggerInterface
@@ -22,10 +32,10 @@ class ElasticaLogger implements LoggerInterface
     /**
      * @var array
      */
-    protected $queries = array();
+    protected $queries = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $debug;
 
@@ -33,7 +43,7 @@ class ElasticaLogger implements LoggerInterface
      * Constructor.
      *
      * @param LoggerInterface|null $logger The Symfony logger
-     * @param boolean              $debug
+     * @param bool                 $debug
      */
     public function __construct(LoggerInterface $logger = null, $debug = false)
     {
@@ -47,27 +57,33 @@ class ElasticaLogger implements LoggerInterface
      * @param string $path       Path to call
      * @param string $method     Rest method to use (GET, POST, DELETE, PUT)
      * @param array  $data       Arguments
-     * @param float  $time       Execution time
+     * @param float  $queryTime  Execution time (in seconds)
      * @param array  $connection Host, port, transport, and headers of the query
      * @param array  $query      Arguments
+     * @param int    $engineTime
+     * @param int    $itemCount
      */
-    public function logQuery($path, $method, $data, $time, $connection = array(), $query = array(), $engineTime = 0, $itemCount = 0)
+    public function logQuery($path, $method, $data, $queryTime, $connection = [], $query = [], $engineTime = 0, $itemCount = 0)
     {
+        $executionMS = $queryTime * 1000;
+
         if ($this->debug) {
-            $this->queries[] = array(
+            $e = new \Exception();
+            $this->queries[] = [
                 'path' => $path,
                 'method' => $method,
                 'data' => $data,
-                'executionMS' => $time,
+                'executionMS' => $executionMS,
                 'engineMS' => $engineTime,
                 'connection' => $connection,
                 'queryString' => $query,
                 'itemCount' => $itemCount,
-            );
+                'backtrace' => $e->getTraceAsString(),
+            ];
         }
 
         if (null !== $this->logger) {
-            $message = sprintf("%s (%s) %0.2f ms", $path, $method, $time * 1000);
+            $message = sprintf('%s (%s) %0.2f ms', $path, $method, $executionMS);
             $this->logger->info($message, (array) $data);
         }
     }
@@ -75,7 +91,7 @@ class ElasticaLogger implements LoggerInterface
     /**
      * Returns the number of queries that have been logged.
      *
-     * @return integer The number of queries logged
+     * @return int The number of queries logged
      */
     public function getNbQueries()
     {
@@ -95,71 +111,7 @@ class ElasticaLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function emergency($message, array $context = array())
-    {
-        return $this->logger->emergency($message, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function alert($message, array $context = array())
-    {
-        return $this->logger->alert($message, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function critical($message, array $context = array())
-    {
-        return $this->logger->critical($message, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function error($message, array $context = array())
-    {
-        return $this->logger->error($message, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function warning($message, array $context = array())
-    {
-        return $this->logger->warning($message, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function notice($message, array $context = array())
-    {
-        return $this->logger->notice($message, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function info($message, array $context = array())
-    {
-        return $this->logger->info($message, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function debug($message, array $context = array())
-    {
-        return $this->logger->debug($message, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         return $this->logger->log($level, $message, $context);
     }

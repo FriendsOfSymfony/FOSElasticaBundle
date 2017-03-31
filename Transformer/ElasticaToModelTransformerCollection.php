@@ -1,9 +1,17 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Transformer;
 
 use FOS\ElasticaBundle\HybridResult;
-use Elastica\Document;
 
 /**
  * Holds a collection of transformers for an index wide transformation.
@@ -15,13 +23,19 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
     /**
      * @var ElasticaToModelTransformerInterface[]
      */
-    protected $transformers = array();
+    protected $transformers = [];
 
+    /**
+     * @param array $transformers
+     */
     public function __construct(array $transformers)
     {
         $this->transformers = $transformers;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getObjectClass()
     {
         return array_map(function (ElasticaToModelTransformerInterface $transformer) {
@@ -40,18 +54,16 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
     }
 
     /**
-     * @param Document[] $elasticaObjects
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function transform(array $elasticaObjects)
     {
-        $sorted = array();
+        $sorted = [];
         foreach ($elasticaObjects as $object) {
             $sorted[$object->getType()][] = $object;
         }
 
-        $transformed = array();
+        $transformed = [];
         foreach ($sorted as $type => $objects) {
             $transformedObjects = $this->transformers[$type]->transform($objects);
             $identifierGetter = 'get'.ucfirst($this->transformers[$type]->getIdentifierField());
@@ -66,22 +78,25 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
             );
         }
 
-        $result = array();
+        $result = [];
         foreach ($elasticaObjects as $object) {
-            if (array_key_exists($object->getId(), $transformed[$object->getType()])) {
-                $result[] = $transformed[$object->getType()][$object->getId()];
+            if (array_key_exists((string) $object->getId(), $transformed[$object->getType()])) {
+                $result[] = $transformed[$object->getType()][(string) $object->getId()];
             }
         }
 
         return $result;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hybridTransform(array $elasticaObjects)
     {
         $objects = $this->transform($elasticaObjects);
 
-        $result = array();
-        for ($i = 0, $j = count($elasticaObjects); $i < $j; $i++) {
+        $result = [];
+        for ($i = 0, $j = count($elasticaObjects); $i < $j; ++$i) {
             $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
         }
 

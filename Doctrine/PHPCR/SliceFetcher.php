@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Doctrine\PHPCR;
 
 use Doctrine\ODM\PHPCR\Query\Builder\QueryBuilder;
-use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 use FOS\ElasticaBundle\Doctrine\SliceFetcherInterface;
+use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 
 /**
  * Fetches a slice of objects.

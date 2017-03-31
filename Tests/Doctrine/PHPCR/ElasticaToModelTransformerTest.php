@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Doctrine\PHPCR;
 
 use FOS\ElasticaBundle\Doctrine\PHPCR\ElasticaToModelTransformer;
@@ -26,9 +35,6 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
      */
     protected $objectClass = 'stdClass';
 
-    /**
-     *
-     */
     public function testTransformUsesFindByIdentifier()
     {
         $this->registry->expects($this->any())
@@ -41,10 +47,10 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
         $method = $class->getMethod('findByIdentifiers');
         $method->setAccessible(true);
 
-        $method->invokeArgs($transformer, array(
-            array('c8f23994-d897-4c77-bcc3-bc6910e52a34', 'f1083287-a67e-480e-a426-e8427d00eae4'),
-            $this->objectClass
-        ));
+        $method->invokeArgs($transformer, [
+            ['c8f23994-d897-4c77-bcc3-bc6910e52a34', 'f1083287-a67e-480e-a426-e8427d00eae4'],
+            $this->objectClass,
+        ]);
     }
 
     protected function setUp()
@@ -68,15 +74,17 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             ->method('getManager')
             ->will($this->returnValue($this->manager));
 
-        $this->repository = $this->getMock('Doctrine\Common\Persistence\ObjectRepository', array(
-            'customQueryBuilderCreator',
-            'createQueryBuilder',
-            'find',
-            'findAll',
-            'findBy',
-            'findOneBy',
-            'getClassName'
-        ));
+        $this->repository = $this
+            ->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')
+            ->setMethods([
+                'customQueryBuilderCreator',
+                'createQueryBuilder',
+                'find',
+                'findAll',
+                'findBy',
+                'findOneBy',
+                'getClassName',
+            ])->getMock();
 
         $this->manager->expects($this->any())
             ->method('getRepository')

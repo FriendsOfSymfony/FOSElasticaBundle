@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Persister;
 
-use Psr\Log\LoggerInterface;
-use Elastica\Exception\BulkException;
-use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use Elastica\Type;
 use Elastica\Document;
+use Elastica\Exception\BulkException;
+use Elastica\Type;
+use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Inserts, replaces and deletes single documents in an elastica type
@@ -22,20 +31,22 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $fields;
     protected $logger;
 
+    /**
+     * @param Type                                $type
+     * @param ModelToElasticaTransformerInterface $transformer
+     * @param string                              $objectClass
+     * @param array                               $fields
+     */
     public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields)
     {
-        $this->type            = $type;
-        $this->transformer     = $transformer;
-        $this->objectClass     = $objectClass;
-        $this->fields          = $fields;
+        $this->type = $type;
+        $this->transformer = $transformer;
+        $this->objectClass = $objectClass;
+        $this->fields = $fields;
     }
 
     /**
-     * If the ObjectPersister handles a given object.
-     *
-     * @param object $object
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function handlesObject($object)
     {
@@ -59,7 +70,7 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     private function log(BulkException $e)
     {
-        if (! $this->logger) {
+        if (!$this->logger) {
             throw $e;
         }
 
@@ -67,55 +78,43 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Insert one object into the type
-     * The object will be transformed to an elastica document.
-     *
-     * @param object $object
+     * {@inheritdoc}
      */
     public function insertOne($object)
     {
-        $this->insertMany(array($object));
+        $this->insertMany([$object]);
     }
 
     /**
-     * Replaces one object in the type.
-     *
-     * @param object $object
-     **/
+     * {@inheritdoc}
+     */
     public function replaceOne($object)
     {
-        $this->replaceMany(array($object));
+        $this->replaceMany([$object]);
     }
 
     /**
-     * Deletes one object in the type.
-     *
-     * @param object $object
-     **/
+     * {@inheritdoc}
+     */
     public function deleteOne($object)
     {
-        $this->deleteMany(array($object));
+        $this->deleteMany([$object]);
     }
 
     /**
-     * Deletes one object in the type by id.
-     *
-     * @param mixed $id
-     **/
+     * {@inheritdoc}
+     */
     public function deleteById($id)
     {
-        $this->deleteManyByIdentifiers(array($id));
+        $this->deleteManyByIdentifiers([$id]);
     }
 
     /**
-     * Bulk insert an array of objects in the type for the given method.
-     *
-     * @param array $objects array of domain model objects
-     * @param string Method to call
+     * {@inheritdoc}
      */
     public function insertMany(array $objects)
     {
-        $documents = array();
+        $documents = [];
         foreach ($objects as $object) {
             $documents[] = $this->transformToElasticaDocument($object);
         }
@@ -127,13 +126,11 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk update an array of objects in the type.  Create document if it does not already exist.
-     *
-     * @param array $objects array of domain model objects
+     * {@inheritdoc}
      */
     public function replaceMany(array $objects)
     {
-        $documents = array();
+        $documents = [];
         foreach ($objects as $object) {
             $document = $this->transformToElasticaDocument($object);
             $document->setDocAsUpsert(true);
@@ -148,13 +145,11 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk deletes an array of objects in the type.
-     *
-     * @param array $objects array of domain model objects
+     * {@inheritdoc}
      */
     public function deleteMany(array $objects)
     {
-        $documents = array();
+        $documents = [];
         foreach ($objects as $object) {
             $documents[] = $this->transformToElasticaDocument($object);
         }
@@ -166,9 +161,7 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Bulk deletes records from an array of identifiers.
-     *
-     * @param array $identifiers array of domain model object identifiers
+     * {@inheritdoc}
      */
     public function deleteManyByIdentifiers(array $identifiers)
     {
