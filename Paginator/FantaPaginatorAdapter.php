@@ -23,7 +23,7 @@ class FantaPaginatorAdapter implements AdapterInterface
      */
     public function getNbResults()
     {
-        return $this->adapter->getTotalHits();
+        return $this->adapter->getTotalHits(true);
     }
 
     /**
