@@ -76,7 +76,8 @@ class PopulateListener
 ```
 
 Note : for Elasticsearch v2.1 and above, you will need to "manually" call `_forcemerge` :
-```
+
+```php
 ...
     public function postIndexPopulate(IndexPopulateEvent $event)
     {
