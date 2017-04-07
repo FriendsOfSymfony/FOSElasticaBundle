@@ -17,7 +17,7 @@ curl -XPUT localhost:9200/test/_settings -d '{
 ```
 
 Then, once bulk indexing is done, settings can be updated (back to default)
- 
+
 ```bash
 curl -XPUT localhost:9200/test/_settings -d '{
     "index" : {
@@ -31,9 +31,9 @@ And _forcemerge should be called:
 curl -XPOST 'http://localhost:9200/test/_forcemerge?max_num_segments=5'
 ```
 
-Everything seems to be straightforward, but you'll how this can be achieved with FOSElasticaBundle? 
+Everything seems to be straightforward, but you'll how this can be achieved with FOSElasticaBundle?
 For this purpose `PRE_INDEX_POPULATE`, `POST_INDEX_POPULATE`, `PRE_TYPE_POPULATE` and `POST_TYPE_POPULATE` were introduced, they allow you to monitor and hook into the process.
- 
+
 Now let's implement `PopulateListener` by creating `AppBundle\EventListener\PopulateListener`:
 
 ```php
@@ -57,14 +57,14 @@ class PopulateListener
     {
         $this->indexManager    = $indexManager;
     }
-    
+
     public function preIndexPopulate(IndexPopulateEvent $event)
     {
         $index = $this->indexManager->getIndex($event->getIndex());
         $settings = $index->getSettings();
         $settings->setRefreshInterval(-1);
     }
-    
+
     public function postIndexPopulate(IndexPopulateEvent $event)
     {
         $index = $this->indexManager->getIndex($event->getIndex());
@@ -73,6 +73,18 @@ class PopulateListener
         $settings->setRefreshInterval('1s');
     }
 }
+```
+
+Note : for Elasticsearch v2.1 and above, you will need to "manually" call `_forcemerge` :
+```
+...
+    public function postIndexPopulate(IndexPopulateEvent $event)
+    {
+        $index = $this->indexManager->getIndex($event->getIndex());
+        $index->getClient()->request('_forcemerge', 'POST', ['max_num_segments' => 5]);
+        $index->getSettings()->setRefreshInterval(Settings::DEFAULT_REFRESH_INTERVAL);
+    }
+...
 ```
 
 Declare your listener and register event(s):
