@@ -310,16 +310,18 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Returns the array node used for "_id".
+     * Returns the array node used for "_all"
      */
-    protected function getIdNode()
+    protected function getAllNode()
     {
         $builder = new TreeBuilder();
-        $node = $builder->root('_id');
+        $node = $builder->root('_all');
 
         $node
             ->children()
-            ->scalarNode('path')->end()
+            ->scalarNode('enabled')->defaultValue(true)->end()
+			->scalarNode('index_analyzer')->end()
+            ->scalarNode('search_analyzer')->end()
             ->end()
         ;
 
