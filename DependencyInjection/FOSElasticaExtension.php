@@ -120,6 +120,7 @@ class FOSElasticaExtension extends Extension
             if (false !== $logger) {
                 $clientDef->addMethodCall('setLogger', [new Reference($logger)]);
             }
+            $clientDef->addTag('fos_elastica.client');
 
             $clientDef->addTag('fos_elastica.client');
 
