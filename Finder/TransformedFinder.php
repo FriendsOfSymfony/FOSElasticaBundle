@@ -50,9 +50,7 @@ class TransformedFinder implements PaginatedFinderInterface
      */
     public function find($query, $limit = null, $options = [])
     {
-        $results = $this->search($query, $limit, $options);
-
-        return $this->transformer->transform($results);
+        return $results = $this->search($query, $limit, $options);
     }
 
     /**
