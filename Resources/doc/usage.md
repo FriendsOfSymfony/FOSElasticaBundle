@@ -131,7 +131,7 @@ any entity relations that are required on the page that will be displaying the r
 ```yaml
             user:
                 persistence:
-                    elastica_to_model_transformer:
+                    provider:
                         query_builder_method: createSearchQueryBuilder
 ```
 
