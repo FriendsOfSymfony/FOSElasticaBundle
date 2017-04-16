@@ -124,6 +124,9 @@ class MappingBuilder
             if (isset($property['fields'])) {
                 $this->fixProperties($property['fields']);
             }
+            if ($property['type'] == 'multi_field' && isset($property['fields'])) {
+                $this->fixProperties($property['fields']);
+            }
             if (isset($property['properties'])) {
                 $this->fixProperties($property['properties']);
             }
