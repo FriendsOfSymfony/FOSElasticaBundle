@@ -85,6 +85,11 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             $_objects[] = $object;
         }
 
+        // Sort objects in the order of their IDs
+        $idPos = array_flip($ids);
+        $identifier = $this->options['identifier'];
+        usort($_objects, $this->getSortingClosure($idPos, $identifier));
+
         return $_objects;
     }
 
