@@ -71,4 +71,13 @@ class FantaPaginatorAdapter implements AdapterInterface
     {
         return $this->adapter->getResults($offset, $length)->toArray();
     }
+
+    /**
+     * Return maxScore
+     * @return float
+     */
+    public function getMaxScore()
+    {
+        return $this->adapter->getMaxScore();
+    }
 }
