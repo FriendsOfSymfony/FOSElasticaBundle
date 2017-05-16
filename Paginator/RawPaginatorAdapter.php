@@ -173,7 +173,6 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         return $this->maxScore;
     }
 
-
     /**
      * Returns the Query.
      *
