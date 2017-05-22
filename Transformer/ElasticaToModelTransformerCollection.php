@@ -97,7 +97,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
 
         $result = [];
         for ($i = 0, $j = count($elasticaObjects); $i < $j; ++$i) {
-            if (! isset($objects[$i])) {
+            if (!isset($objects[$i])) {
                 continue;
             }
             $result[] = new HybridResult($elasticaObjects[$i], $objects[$i]);
