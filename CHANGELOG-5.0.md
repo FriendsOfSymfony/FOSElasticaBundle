@@ -10,6 +10,7 @@ in 5.0 versions.
 * Add asnychronous index update option.
 * Add ability to close an index.
 * Add support for HTTP authentication.
+* Fix undefined index when `ignore_missing` is active.
 * Dropped PHP 5.5 support.
 * Removed Symfony 3.0 support.
 * Removed all `fos_elastica.*.class` parameters. Overwrite or decorate the service instead if you
