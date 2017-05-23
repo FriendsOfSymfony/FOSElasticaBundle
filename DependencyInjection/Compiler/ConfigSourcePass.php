@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -18,7 +27,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class ConfigSourcePass implements CompilerPassInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
@@ -26,7 +35,7 @@ class ConfigSourcePass implements CompilerPassInterface
             return;
         }
 
-        $sources = array();
+        $sources = [];
         foreach (array_keys($container->findTaggedServiceIds('fos_elastica.config_source')) as $id) {
             $sources[] = new Reference($id);
         }

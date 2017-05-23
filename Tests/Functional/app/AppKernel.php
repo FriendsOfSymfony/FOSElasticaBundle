@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the FOSElasticaBundle package.
  *
- * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -96,12 +96,12 @@ class AppKernel extends Kernel
 
     public function serialize()
     {
-        return serialize(array($this->testCase, $this->rootConfig, $this->getEnvironment(), $this->isDebug()));
+        return serialize([$this->testCase, $this->rootConfig, $this->getEnvironment(), $this->isDebug()]);
     }
 
     public function unserialize($str)
     {
-        call_user_func_array(array($this, '__construct'), unserialize($str));
+        call_user_func_array([$this, '__construct'], unserialize($str));
     }
 
     protected function getKernelParameters()

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -18,7 +27,7 @@ class ClientTest extends WebTestCase
 {
     public function testContainerSource()
     {
-        $client = $this->createClient(array('test_case' => 'Basic'));
+        $client = $this->createClient(['test_case' => 'Basic']);
 
         $es = $client->getContainer()->get('fos_elastica.client.default');
         $this->assertInstanceOf('Elastica\\Connection\\Strategy\\RoundRobin', $es->getConnectionStrategy());

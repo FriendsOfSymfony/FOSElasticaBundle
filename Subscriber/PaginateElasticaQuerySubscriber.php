@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Subscriber;
 
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
@@ -12,20 +21,16 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {
     /**
-     * @var Request
+     * @var RequestStack
      */
-    private $request;
+    private $requestStack;
 
     /**
-     * @param RequestStack|Request $requestStack
+     * @param RequestStack $requestStack
      */
-    public function setRequest($requestStack)
+    public function __construct(RequestStack $requestStack)
     {
-        if ($requestStack instanceof Request) {
-            $this->request = $requestStack;
-        } elseif ($requestStack instanceof RequestStack) {
-            $this->request = $requestStack->getMasterRequest();
-        }
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -59,25 +64,23 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     protected function setSorting(ItemsEvent $event)
     {
         $options = $event->options;
-        $sortField = $this->request->get($options['sortFieldParameterName']);
+        $sortField = $this->getRequest()->get($options['sortFieldParameterName']);
 
         if (!$sortField && isset($options['defaultSortFieldName'])) {
             $sortField = $options['defaultSortFieldName'];
         }
 
         if (!empty($sortField)) {
-            $event->target->getQuery()->setSort(array(
+            $event->target->getQuery()->setSort([
                 $sortField => $this->getSort($sortField, $options),
-            ));
+            ]);
         }
     }
 
     protected function getSort($sortField, array $options = [])
     {
-        $ignoreUnmapped = isset($options['sortIgnoreUnmapped']) ? $options['sortIgnoreUnmapped'] : true;
         $sort = [
             'order' => $this->getSortDirection($sortField, $options),
-            'ignore_unmapped' => $ignoreUnmapped,
         ];
 
         if (isset($options['sortNestedPath'])) {
@@ -104,7 +107,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     protected function getSortDirection($sortField, array $options = [])
     {
         $dir = 'asc';
-        $sortDirection = $this->request->get($options['sortDirectionParameterName']);
+        $sortDirection = $this->getRequest()->get($options['sortDirectionParameterName']);
 
         if (empty($sortDirection) && isset($options['defaultSortDirection'])) {
             $sortDirection = $options['defaultSortDirection'];
@@ -123,12 +126,20 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     }
 
     /**
+     * @return Request|null
+     */
+    private function getRequest()
+    {
+        return $this->requestStack->getCurrentRequest();
+    }
+
+    /**
      * @return array
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            'knp_pager.items' => array('items', 1),
-        );
+        return [
+            'knp_pager.items' => ['items', 1],
+        ];
     }
 }

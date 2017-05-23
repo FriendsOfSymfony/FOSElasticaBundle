@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -12,7 +21,6 @@
 namespace FOS\ElasticaBundle\Tests\Provider;
 
 use FOS\ElasticaBundle\Provider\Indexable;
-use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class IndexableTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,7 +28,7 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
 
     public function testIndexableUnknown()
     {
-        $indexable = new Indexable(array());
+        $indexable = new Indexable([]);
         $indexable->setContainer($this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
@@ -32,13 +40,13 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidIndexableCallbacks($callback, $return)
     {
-        $indexable = new Indexable(array(
+        $indexable = new Indexable([
             'index/type' => $callback,
-        ));
+        ]);
         $indexable->setContainer($this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
-        $this->assertEquals($return, $index);
+        $this->assertSame($return, $index);
     }
 
     /**
@@ -47,38 +55,40 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidIsIndexableCallbacks($callback)
     {
-        $indexable = new Indexable(array(
+        $indexable = new Indexable([
             'index/type' => $callback,
-        ));
+        ]);
         $indexable->setContainer($this->container);
         $indexable->isObjectIndexable('index', 'type', new Entity());
     }
 
     public function provideInvalidIsIndexableCallbacks()
     {
-        return array(
-            array('nonexistentEntityMethod'),
-            array(array('@indexableService', 'internalMethod')),
-            array(array(new IndexableDecider(), 'internalMethod')),
-            array(42),
-            array('entity.getIsIndexable() && nonexistentEntityFunction()'),
-        );
+        return [
+            ['nonexistentEntityMethod'],
+            [['@indexableService', 'internalMethod']],
+            [[new IndexableDecider(), 'internalMethod']],
+            [42],
+            ['entity.getIsIndexable() && nonexistentEntityFunction()'],
+        ];
     }
 
     public function provideIsIndexableCallbacks()
     {
-        return array(
-            array('isIndexable', false),
-            array(array(new IndexableDecider(), 'isIndexable'), true),
-            array(array('@indexableService', 'isIndexable'), true),
-            array(array('@indexableService'), true),
-            array(function (Entity $entity) { return $entity->maybeIndex(); }, true),
-            array('entity.maybeIndex()', true),
-            array('!object.isIndexable() && entity.property == "abc"', true),
-            array('entity.property != "abc"', false),
-            array('["array", "values"]', true),
-            array('[]', false)
-        );
+        return [
+            ['isIndexable', false],
+            [[new IndexableDecider(), 'isIndexable'], true],
+            [['@indexableService', 'isIndexable'], true],
+            [['@indexableService'], true],
+            [function (Entity $entity) {
+                return $entity->maybeIndex();
+            }, true],
+            ['entity.maybeIndex()', true],
+            ['!object.isIndexable() && entity.property == "abc"', true],
+            ['entity.property != "abc"', false],
+            ['["array", "values"]', true],
+            ['[]', false],
+        ];
     }
 
     protected function setUp()

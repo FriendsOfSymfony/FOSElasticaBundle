@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Elastica;
 
 use Elastica\Client as BaseClient;
@@ -20,7 +29,7 @@ class Client extends BaseClient
      *
      * @var array
      */
-    private $indexCache = array();
+    private $indexCache = [];
 
     /**
      * Symfony's debugging Stopwatch.
@@ -37,7 +46,7 @@ class Client extends BaseClient
      *
      * @return \Elastica\Response
      */
-    public function request($path, $method = Request::GET, $data = array(), array $query = array())
+    public function request($path, $method = Request::GET, $data = [], array $query = [])
     {
         if ($this->stopwatch) {
             $this->stopwatch->start('es_request', 'fos_elastica');
@@ -100,15 +109,14 @@ class Client extends BaseClient
             return;
         }
 
-
         $connection = $this->getLastRequest()->getConnection();
 
-        $connectionArray = array(
+        $connectionArray = [
             'host' => $connection->getHost(),
             'port' => $connection->getPort(),
             'transport' => $connection->getTransport(),
-            'headers' => $connection->hasConfig('headers') ? $connection->getConfig('headers') : array(),
-        );
+            'headers' => $connection->hasConfig('headers') ? $connection->getConfig('headers') : [],
+        ];
 
         /** @var ElasticaLogger $logger */
         $logger = $this->_logger;

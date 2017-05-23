@@ -4,19 +4,11 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="fos_elastica.slice_fetcher.phpcr.class">FOS\ElasticaBundle\Doctrine\PHPCR\SliceFetcher</parameter>
-        <parameter key="fos_elastica.provider.prototype.phpcr.class">FOS\ElasticaBundle\Doctrine\PHPCR\Provider</parameter>
-        <parameter key="fos_elastica.listener.prototype.phpcr.class">FOS\ElasticaBundle\Doctrine\Listener</parameter>
-        <parameter key="fos_elastica.elastica_to_model_transformer.prototype.phpcr.class">FOS\ElasticaBundle\Doctrine\PHPCR\ElasticaToModelTransformer</parameter>
-        <parameter key="fos_elastica.manager.phpcr.class">FOS\ElasticaBundle\Doctrine\RepositoryManager</parameter>
-    </parameters>
-
     <services>
-        <service id="fos_elastica.slice_fetcher.phpcr" class="%fos_elastica.slice_fetcher.phpcr.class%">
+        <service id="fos_elastica.slice_fetcher.phpcr" class="FOS\ElasticaBundle\Doctrine\PHPCR\SliceFetcher">
         </service>
 
-        <service id="fos_elastica.provider.prototype.phpcr" class="%fos_elastica.provider.prototype.phpcr.class%" public="true" abstract="true">
+        <service id="fos_elastica.provider.prototype.phpcr" class="FOS\ElasticaBundle\Doctrine\PHPCR\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument /> <!-- model -->
@@ -25,14 +17,14 @@
             <argument type="service" id="fos_elastica.slice_fetcher.phpcr" /> <!-- slice fetcher -->
         </service>
 
-        <service id="fos_elastica.listener.prototype.phpcr" class="%fos_elastica.listener.prototype.phpcr.class%" public="false" abstract="true">
+        <service id="fos_elastica.listener.prototype.phpcr" class="FOS\ElasticaBundle\Doctrine\Listener" public="false" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument type="collection" /> <!-- configuration -->
             <argument>null</argument> <!-- logger -->
         </service>
 
-        <service id="fos_elastica.elastica_to_model_transformer.prototype.phpcr" class="%fos_elastica.elastica_to_model_transformer.prototype.phpcr.class%" public="false" abstract="true">
+        <service id="fos_elastica.elastica_to_model_transformer.prototype.phpcr" class="FOS\ElasticaBundle\Doctrine\PHPCR\ElasticaToModelTransformer" public="false" abstract="true">
             <argument type="service" id="doctrine_phpcr" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
@@ -41,9 +33,9 @@
             </call>
         </service>
 
-        <service id="fos_elastica.manager.phpcr" class="%fos_elastica.manager.phpcr.class%">
+        <service id="fos_elastica.manager.phpcr" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
             <argument type="service" id="doctrine_phpcr" />
-            <argument type="service" id="annotation_reader" />
+            <argument type="service" id="fos_elastica.repository_manager" />
         </service>
     </services>
 </container>

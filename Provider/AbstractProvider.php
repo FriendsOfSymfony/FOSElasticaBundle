@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Provider;
 
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
@@ -47,7 +56,7 @@ abstract class AbstractProvider implements ProviderInterface
         ObjectPersisterInterface $objectPersister,
         IndexableInterface $indexable,
         $objectClass,
-        array $baseOptions = array()
+        array $baseOptions = []
     ) {
         $this->baseOptions = $baseOptions;
         $this->indexable = $indexable;
@@ -58,9 +67,9 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function populate(\Closure $loggerClosure = null, array $options = array())
+    public function populate(\Closure $loggerClosure = null, array $options = [])
     {
         $options = $this->resolveOptions($options);
 
@@ -85,7 +94,7 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * Perform actual population.
      *
-     * @param array $options
+     * @param array    $options
      * @param \Closure $loggerClosure
      */
     abstract protected function doPopulate($options, \Closure $loggerClosure = null);
@@ -104,24 +113,25 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected function configureOptions()
     {
-        $this->resolver->setDefaults(array(
+        $this->resolver->setDefaults([
             'reset' => true,
+            'delete' => true,
             'batch_size' => 100,
             'skip_indexable_check' => false,
-        ));
+        ]);
 
-        $this->resolver->setRequired(array(
+        $this->resolver->setRequired([
             'indexName',
             'typeName',
-        ));
+        ]);
     }
-
 
     /**
      * Filters objects away if they are not indexable.
      *
      * @param array $options
      * @param array $objects
+     *
      * @return array
      */
     protected function filterObjects(array $options, array $objects)
@@ -133,7 +143,7 @@ abstract class AbstractProvider implements ProviderInterface
         $index = $options['indexName'];
         $type = $options['typeName'];
 
-        $return = array();
+        $return = [];
         foreach ($objects as $object) {
             if (!$this->indexable->isObjectIndexable($index, $type, $object)) {
                 continue;

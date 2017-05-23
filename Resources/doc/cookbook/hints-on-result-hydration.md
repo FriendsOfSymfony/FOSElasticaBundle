@@ -1,7 +1,7 @@
 Hints on result hydration
 ===============
 
-When using Doctrine as your persistance driver, you may configure FOSElasticaBundle to use
+When using Doctrine as your persistence driver, you may configure FOSElasticaBundle to use
 [query hints](http://doctrine-orm.readthedocs.org/en/latest/reference/dql-doctrine-query-language.html#query-hints) when hydrating your objects.
 
 To configure FOSElasticaBundle to use hints when hydrating objects, add an entry

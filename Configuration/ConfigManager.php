@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -19,7 +28,7 @@ class ConfigManager implements ManagerInterface
     /**
      * @var IndexConfig[]
      */
-    private $indexes = array();
+    private $indexes = [];
 
     /**
      * @param Source\SourceInterface[] $sources

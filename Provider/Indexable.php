@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -28,7 +37,7 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
      *
      * @var array
      */
-    private $callbacks = array();
+    private $callbacks = [];
 
     /**
      * An instance of ExpressionLanguage.
@@ -42,7 +51,7 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
      *
      * @var array
      */
-    private $initialisedCallbacks = array();
+    private $initialisedCallbacks = [];
 
     /**
      * PropertyAccessor instance.
@@ -78,14 +87,14 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
         }
 
         if ($callback instanceof Expression) {
-            return (bool) $this->getExpressionLanguage()->evaluate($callback, array(
+            return (bool) $this->getExpressionLanguage()->evaluate($callback, [
                 'object' => $object,
                 $this->getExpressionVar($object) => $object,
-            ));
+            ]);
         }
 
         return is_string($callback)
-            ? call_user_func(array($object, $callback))
+            ? call_user_func([$object, $callback])
             : call_user_func($callback, $object);
     }
 
@@ -105,7 +114,7 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
 
         $callback = $this->callbacks[$type];
 
-        if (is_callable($callback) or is_callable(array($object, $callback))) {
+        if (is_callable($callback) or is_callable([$object, $callback])) {
             return $callback;
         }
 
@@ -124,7 +133,7 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
      * Processes a string expression into an Expression.
      *
      * @param string $type
-     * @param mixed $object
+     * @param mixed  $object
      * @param string $callback
      *
      * @return Expression
@@ -138,9 +147,9 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
 
         try {
             $callback = new Expression($callback);
-            $expression->compile($callback, array(
-                'object', $this->getExpressionVar($object)
-            ));
+            $expression->compile($callback, [
+                'object', $this->getExpressionVar($object),
+            ]);
 
             return $callback;
         } catch (SyntaxError $e) {
@@ -206,17 +215,17 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
      * it begins with an @.
      *
      * @param string $type
-     * @param array $callback
+     * @param array  $callback
      *
      * @return array
      */
     private function processArrayToCallback($type, array $callback)
     {
-        list($class, $method) = $callback + array(null, '__invoke');
+        list($class, $method) = $callback + [null, '__invoke'];
 
         if (strpos($class, '@') === 0) {
             $service = $this->container->get(substr($class, 1));
-            $callback = array($service, $method);
+            $callback = [$service, $method];
 
             if (!is_callable($callback)) {
                 throw new \InvalidArgumentException(sprintf(

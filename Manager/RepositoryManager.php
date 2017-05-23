@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Manager;
 
-use Doctrine\Common\Annotations\Reader;
 use FOS\ElasticaBundle\Finder\FinderInterface;
 use FOS\ElasticaBundle\Repository;
 use RuntimeException;
@@ -11,7 +19,7 @@ use RuntimeException;
  * @author Richard Miller <info@limethinking.co.uk>
  *
  * Allows retrieval of basic or custom repository for mapped Doctrine
- * entities/documents.
+ * entities/documents
  */
 class RepositoryManager implements RepositoryManagerInterface
 {
@@ -21,7 +29,7 @@ class RepositoryManager implements RepositoryManagerInterface
     private $types;
 
     /**
-     * @var Repository[]
+     * @var array
      */
     private $repositories;
 
@@ -35,7 +43,7 @@ class RepositoryManager implements RepositoryManagerInterface
     {
         $this->types[$indexTypeName] = [
             'finder' => $finder,
-            'repositoryName' => $repositoryName
+            'repositoryName' => $repositoryName,
         ];
     }
 

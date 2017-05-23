@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Index;
 
-use Elastica\Index;
 use Elastica\Exception\ResponseException;
+use Elastica\Index;
 use Elastica\Type\Mapping;
-use FOS\ElasticaBundle\Configuration\ConfigManager;
+use FOS\ElasticaBundle\Configuration\ManagerInterface;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -21,7 +30,7 @@ class Resetter
     private $aliasProcessor;
 
     /***
-     * @var ConfigManager
+     * @var ManagerInterface
      */
     private $configManager;
 
@@ -41,14 +50,14 @@ class Resetter
     private $mappingBuilder;
 
     /**
-     * @param ConfigManager            $configManager
+     * @param ManagerInterface         $configManager
      * @param IndexManager             $indexManager
      * @param AliasProcessor           $aliasProcessor
      * @param MappingBuilder           $mappingBuilder
      * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
-        ConfigManager $configManager,
+        ManagerInterface $configManager,
         IndexManager $indexManager,
         AliasProcessor $aliasProcessor,
         MappingBuilder $mappingBuilder,
@@ -127,13 +136,6 @@ class Resetter
         $event = new TypeResetEvent($indexName, $typeName);
         $this->dispatcher->dispatch(TypeResetEvent::PRE_TYPE_RESET, $event);
 
-        if (!empty($settings)) {
-            unset($settings['number_of_shards']);
-            $index->close();
-            $index->setSettings($settings);
-            $index->open();
-        }
-
         $mapping = new Mapping();
         foreach ($this->mappingBuilder->buildTypeMapping($typeConfig) as $name => $field) {
             $mapping->setParam($name, $field);
@@ -148,14 +150,29 @@ class Resetter
      * A command run when a population has finished.
      *
      * @param string $indexName
+     *
+     * @deprecated
      */
     public function postPopulate($indexName)
+    {
+        $this->switchIndexAlias($indexName);
+    }
+
+    /**
+     * Switching aliases.
+     *
+     * @param string $indexName
+     * @param bool   $delete    Delete or close index
+     *
+     * @throws \FOS\ElasticaBundle\Exception\AliasIsIndexException
+     */
+    public function switchIndexAlias($indexName, $delete = true)
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
 
         if ($indexConfig->isUseAlias()) {
             $index = $this->indexManager->getIndex($indexName);
-            $this->aliasProcessor->switchIndexAlias($indexConfig, $index);
+            $this->aliasProcessor->switchIndexAlias($indexConfig, $index, false, $delete);
         }
     }
 }

@@ -32,8 +32,8 @@ fos_elastica:
             client: default
             types:
                 user:
-                    mappings:
-                        # your mappings
+                    properties:
+                        # your properties
                     persistence:
                         driver: orm
                         model: Application\UserBundle\Entity\User

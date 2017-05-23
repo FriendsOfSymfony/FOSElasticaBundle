@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Subscriber;
 
 use Elastica\Query;
@@ -8,6 +17,7 @@ use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber;
 use Knp\Component\Pager\Event\ItemsEvent;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,10 +37,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldDoNothingIfSortParamIsEmpty()
     {
-        $request = new Request();
-
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest($request);
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request()));
 
         $adapter = $this->getAdapterMock();
         $adapter->expects($this->never())
@@ -51,24 +58,21 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
         $expected = [
             'createdAt' => [
                 'order' => 'asc',
-                'ignore_unmapped' => true
-            ]
+            ],
         ];
         $tests[] = [$expected, new Request()];
 
         $expected = [
             'name' => [
                 'order' => 'desc',
-                'ignore_unmapped' => true
-            ]
+            ],
         ];
         $tests[] = [$expected, new Request(['ord' => 'name', 'az' => 'desc'])];
 
         $expected = [
             'updatedAt' => [
                 'order' => 'asc',
-                'ignore_unmapped' => true
-            ]
+            ],
         ];
         $tests[] = [$expected, new Request(['ord' => 'updatedAt', 'az' => 'invalid'])];
 
@@ -80,8 +84,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function testShouldSort(array $expected, Request $request)
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest($request);
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack($request));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -101,7 +104,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 
         $subscriber->items($event);
 
-        $this->assertEquals($expected, $query->getParam('sort'));
+        $this->assertSame($expected, $query->getParam('sort'));
     }
 
     /**
@@ -109,8 +112,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function testShouldThrowIfFieldIsNotWhitelisted()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(['ord' => 'owner']));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner'])));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -134,8 +136,7 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldAddNestedPath()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(['ord' => 'owner.name']));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner.name'])));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -155,19 +156,17 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
         ];
 
         $subscriber->items($event);
-        $this->assertEquals([
+        $this->assertSame([
             'owner.name' => [
                 'order' => 'asc',
-                'ignore_unmapped' => true,
                 'nested_path' => 'owner',
-            ]
+            ],
         ], $query->getParam('sort'));
     }
 
     public function testShouldInvokeCallableNestedPath()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(['ord' => 'owner.name']));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner.name'])));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -184,25 +183,24 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
             'sortFieldParameterName' => 'ord',
             'sortDirectionParameterName' => 'az',
             'sortNestedPath' => function ($sortField) {
-                $this->assertEquals('owner.name', $sortField);
+                $this->assertSame('owner.name', $sortField);
+
                 return 'owner';
             },
         ];
 
         $subscriber->items($event);
-        $this->assertEquals([
+        $this->assertSame([
             'owner.name' => [
                 'order' => 'asc',
-                'ignore_unmapped' => true,
                 'nested_path' => 'owner',
-            ]
+            ],
         ], $query->getParam('sort'));
     }
 
     public function testShouldAddNestedFilter()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(['ord' => 'owner.name']));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner.name'])));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -227,25 +225,23 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
             'sort' => [
                 'owner.name' => [
                     'order' => 'asc',
-                    'ignore_unmapped' => true,
                     'nested_path' => 'owner',
                     'nested_filter' => [
                         'term' => [
-                            'enabled' => ['value' => true]
-                        ]
-                    ]
-                ]
+                            'enabled' => ['value' => true],
+                        ],
+                    ],
+                ],
             ],
             'query' => [
-                'match_all' => new \stdClass()
-            ]
+                'match_all' => new \stdClass(),
+            ],
         ], $query->toArray());
     }
 
     public function testShouldInvokeNestedFilterCallable()
     {
-        $subscriber = new PaginateElasticaQuerySubscriber();
-        $subscriber->setRequest(new Request(['ord' => 'owner.name']));
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner.name'])));
 
         $query = new Query();
         $adapter = $this->getAdapterMock();
@@ -263,7 +259,8 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
             'sortDirectionParameterName' => 'az',
             'sortNestedPath' => 'owner',
             'sortNestedFilter' => function ($sortField) {
-                $this->assertEquals('owner.name', $sortField);
+                $this->assertSame('owner.name', $sortField);
+
                 return new Query\Term(['enabled' => ['value' => true]]);
             },
         ];
@@ -273,18 +270,28 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
             'sort' => [
                 'owner.name' => [
                     'order' => 'asc',
-                    'ignore_unmapped' => true,
                     'nested_path' => 'owner',
                     'nested_filter' => [
                         'term' => [
-                            'enabled' => ['value' => true]
-                        ]
-                    ]
-                ]
+                            'enabled' => ['value' => true],
+                        ],
+                    ],
+                ],
             ],
             'query' => [
-                'match_all' => new \stdClass()
-            ]
+                'match_all' => new \stdClass(),
+            ],
         ], $query->toArray());
+    }
+
+    private function getRequestStack(Request $request = null)
+    {
+        $stack = new RequestStack();
+
+        if ($request) {
+            $stack->push($request);
+        }
+
+        return $stack;
     }
 }
