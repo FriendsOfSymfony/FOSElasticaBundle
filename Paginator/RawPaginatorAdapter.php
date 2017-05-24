@@ -52,6 +52,11 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     private $suggests;
 
     /**
+     * @var float
+     */
+    private $maxScore;
+
+    /**
      * @see PaginatorAdapterInterface::__construct
      *
      * @param SearchableInterface $searchable the object to search in
@@ -99,6 +104,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         $this->totalHits = $resultSet->getTotalHits();
         $this->aggregations = $resultSet->getAggregations();
         $this->suggests = $resultSet->getSuggests();
+        $this->maxScore = $resultSet->getMaxScore();
 
         return $resultSet;
     }
@@ -153,6 +159,18 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         }
 
         return $this->suggests;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMaxScore()
+    {
+        if (!isset($this->maxScore)) {
+            $this->maxScore = $this->searchable->search($this->query)->getMaxScore();
+        }
+
+        return $this->maxScore;
     }
 
     /**
