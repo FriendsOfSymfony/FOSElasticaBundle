@@ -15,7 +15,7 @@ in 5.0 versions.
 * Removed Symfony 3.0 support.
 * Removed all `fos_elastica.*.class` parameters. Overwrite or decorate the service instead if you
    need to change the definition.
-* Add `PaginatorAdapterInterface::getMaxScore`.   
 * [BC break] Removed `_boost`, `ttl` and `timestamp` config options.
 * [BC break] Removed deprecated config options `servers`, `mappings` and `is_indexable_callback`.
 * [BC break] Add `PaginatedFinderInterface::createRawPaginatorAdapter`.
+* [BC break] Add `PaginatorAdapterInterface::getMaxScore`.

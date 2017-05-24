@@ -45,7 +45,8 @@ interface PaginatorAdapterInterface
     public function getSuggests();
 
     /**
-     * Retun max score
+     * Returns the max score.
+     *
      * @return float
      */
     public function getMaxScore();

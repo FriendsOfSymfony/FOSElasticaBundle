@@ -73,8 +73,7 @@ class FantaPaginatorAdapter implements AdapterInterface
     }
 
     /**
-     * Return maxScore
-     * @return float
+     * {@inheritdoc}
      */
     public function getMaxScore()
     {
