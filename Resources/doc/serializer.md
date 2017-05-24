@@ -32,7 +32,7 @@ Second way is create alias for `serializer` in this way:
 #app/config/services.yml
 services:
     serializer:
-        alias: serializer
+        alias: jms_serializer
 ```
 
 B) Set up each defined type to support serialization
