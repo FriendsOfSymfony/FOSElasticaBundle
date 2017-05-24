@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * This file is part of the FOSElasticaBundle project.
  *
@@ -61,7 +70,7 @@ class IndexConfig
     {
         $this->elasticSearchName = isset($config['elasticSearchName']) ? $config['elasticSearchName'] : $name;
         $this->name = $name;
-        $this->settings = isset($config['settings']) ? $config['settings'] : array();
+        $this->settings = isset($config['settings']) ? $config['settings'] : [];
         $this->types = $types;
         $this->useAlias = isset($config['useAlias']) ? $config['useAlias'] : false;
     }
@@ -115,7 +124,7 @@ class IndexConfig
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isUseAlias()
     {

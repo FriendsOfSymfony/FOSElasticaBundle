@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class RegisterProvidersPass implements CompilerPassInterface
 {
@@ -13,7 +22,7 @@ class RegisterProvidersPass implements CompilerPassInterface
      *
      * @var array
      */
-    private $implementations = array();
+    private $implementations = [];
 
     /**
      * @see Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface::process()
@@ -30,17 +39,17 @@ class RegisterProvidersPass implements CompilerPassInterface
         $registry = $container->getDefinition('fos_elastica.provider_registry');
         $providers = $container->findTaggedServiceIds('fos_elastica.provider');
 
-        $providersByPriority = array();
+        $providersByPriority = [];
         foreach ($providers as $id => $attributes) {
             $priority = isset($attributes[0]['priority']) ? $attributes[0]['priority'] : 0;
             $providersByPriority[$priority][$id] = $attributes;
         }
 
-        if (!empty($providersByPriority)){
+        if (!empty($providersByPriority)) {
             krsort($providersByPriority);
             $providersByPriority = call_user_func_array('array_merge', $providersByPriority);
         }
-            
+
         foreach ($providersByPriority as $providerId => $tags) {
             $index = $type = null;
             $class = $container->getDefinition($providerId)->getClass();
@@ -58,7 +67,7 @@ class RegisterProvidersPass implements CompilerPassInterface
                 $type = $tag['type'];
             }
 
-            $registry->addMethodCall('addProvider', array($index, $type, $providerId));
+            $registry->addMethodCall('addProvider', [$index, $type, $providerId]);
         }
     }
 
@@ -67,7 +76,7 @@ class RegisterProvidersPass implements CompilerPassInterface
      *
      * @param string $class
      *
-     * @return boolean
+     * @return bool
      */
     private function isProviderImplementation($class)
     {

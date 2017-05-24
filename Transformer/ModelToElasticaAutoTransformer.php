@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Transformer;
 
+use Elastica\Document;
 use FOS\ElasticaBundle\Event\TransformEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Elastica\Document;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -24,9 +33,9 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      *
      * @var array
      */
-    protected $options = array(
+    protected $options = [
         'identifier' => 'id',
-    );
+    ];
 
     /**
      * PropertyAccessor instance.
@@ -41,7 +50,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * @param array                    $options
      * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(array $options = array(), EventDispatcherInterface $dispatcher = null)
+    public function __construct(array $options = [], EventDispatcherInterface $dispatcher = null)
     {
         $this->options = array_merge($this->options, $options);
         $this->dispatcher = $dispatcher;
@@ -67,7 +76,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      **/
     public function transform($object, array $fields)
     {
-        $identifier = (string) $this->propertyAccessor->getValue($object, $this->options['identifier']);
+        $identifier = $this->propertyAccessor->getValue($object, $this->options['identifier']);
         $document = $this->transformObjectToDocument($object, $fields, $identifier);
 
         return $document;
@@ -84,7 +93,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     protected function transformNested($objects, array $fields)
     {
         if (is_array($objects) || $objects instanceof \Traversable || $objects instanceof \ArrayAccess) {
-            $documents = array();
+            $documents = [];
             foreach ($objects as $object) {
                 $document = $this->transformObjectToDocument($object, $fields);
                 $documents[] = $document->getData();
@@ -97,7 +106,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             return $document->getData();
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -128,11 +137,12 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     }
 
     /**
-     * Transforms the given object to an elastica document
+     * Transforms the given object to an elastica document.
      *
-     * @param object $object the object to convert
-     * @param array  $fields the keys we want to have in the returned array
+     * @param object $object     the object to convert
+     * @param array  $fields     the keys we want to have in the returned array
      * @param string $identifier the identifier for the new document
+     *
      * @return Document
      */
     protected function transformObjectToDocument($object, array $fields, $identifier = '')
@@ -164,7 +174,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             $value = $this->propertyAccessor->getValue($object, $path);
 
             if (isset($mapping['type']) && in_array(
-                    $mapping['type'], array('nested', 'object')
+                    $mapping['type'], ['nested', 'object']
                 ) && isset($mapping['properties']) && !empty($mapping['properties'])
             ) {
                 /* $value is a nested document or object. Transform $value into

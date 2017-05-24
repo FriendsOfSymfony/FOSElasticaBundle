@@ -97,7 +97,7 @@ fos_elastica:
         app:
             types:
                 user:
-                    mappings:
+                    properties:
                         username: ~
                         firstName: ~
                         lastName: ~
@@ -115,7 +115,7 @@ Below is an example for the Doctrine ORM.
 
 ```yaml
                 user:
-                    mappings:
+                    properties:
                         username: ~
                         firstName: ~
                         lastName: ~

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Finder;
 
 use Elastica\Query;
@@ -14,7 +23,7 @@ class TransformedFinderTest extends \PHPUnit_Framework_TestCase
         $transformer
             ->expects($this->once())
             ->method($transformMethod)
-            ->with(array());
+            ->with([]);
 
         return $transformer;
     }
@@ -24,15 +33,15 @@ class TransformedFinderTest extends \PHPUnit_Framework_TestCase
         $searchable = $this->getMockBuilder('Elastica\SearchableInterface')->getMock();
 
         $finder = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->setConstructorArgs(array($searchable, $transformer))
-            ->setMethods(array('search'))
+            ->setConstructorArgs([$searchable, $transformer])
+            ->setMethods(['search'])
             ->getMock();
 
         $finder
             ->expects($this->once())
             ->method('search')
             ->with($query, $limit)
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
         return $finder;
     }
@@ -42,10 +51,10 @@ class TransformedFinderTest extends \PHPUnit_Framework_TestCase
         $resultSet = $this
             ->getMockBuilder('Elastica\ResultSet')
             ->disableOriginalConstructor()
-            ->setMethods(array('getResults'))
+            ->setMethods(['getResults'])
             ->getMock();
 
-        $resultSet->expects($this->once())->method('getResults')->will($this->returnValue(array()));
+        $resultSet->expects($this->once())->method('getResults')->will($this->returnValue([]));
 
         return $resultSet;
     }

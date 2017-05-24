@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Index;
 
 use FOS\ElasticaBundle\Configuration\TypeConfig;
@@ -19,26 +28,26 @@ class MappingBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testMappingBuilderStoreProperty()
     {
-        $typeConfig = new TypeConfig('typename', array(
-            'properties' => array(
-                'storeless' => array(
-                    'type' => 'string'
-                ),
-                'stored' => array(
-                    'type' => 'string',
-                    'store' => true
-                ),
-                'unstored' => array(
-                    'type' => 'string',
-                    'store' => false
-                ),
-            ),
-            '_parent' => array(
+        $typeConfig = new TypeConfig('typename', [
+            'properties' => [
+                'storeless' => [
+                    'type' => 'text',
+                ],
+                'stored' => [
+                    'type' => 'text',
+                    'store' => true,
+                ],
+                'unstored' => [
+                    'type' => 'text',
+                    'store' => false,
+                ],
+            ],
+            '_parent' => [
                 'type' => 'parent_type',
                 'identifier' => 'name',
-                'property' => 'parent_property'
-            )
-        ));
+                'property' => 'parent_property',
+            ],
+        ]);
 
         $mapping = $this->builder->buildTypeMapping($typeConfig);
 
@@ -52,5 +61,4 @@ class MappingBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('identifier', $mapping['_parent']);
         $this->assertArrayNotHasKey('property', $mapping['_parent']);
     }
-
 }

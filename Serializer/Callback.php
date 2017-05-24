@@ -1,15 +1,24 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Serializer;
 
 use JMS\Serializer\SerializationContext;
-use Symfony\Component\Serializer\SerializerInterface;
 use JMS\Serializer\SerializerInterface as JMSSerializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class Callback
 {
     protected $serializer;
-    protected $groups = array();
+    protected $groups = [];
     protected $version;
     protected $serializeNull;
 
@@ -67,7 +76,7 @@ class Callback
      */
     public function serialize($object)
     {
-        $context = $this->serializer instanceof JMSSerializer ? SerializationContext::create()->enableMaxDepthChecks() : array();
+        $context = $this->serializer instanceof JMSSerializer ? SerializationContext::create()->enableMaxDepthChecks() : [];
 
         if (!empty($this->groups)) {
             if ($context instanceof SerializationContext) {
@@ -82,7 +91,7 @@ class Callback
         }
 
         if (!is_array($context)) {
-          $context->setSerializeNull($this->serializeNull);
+            $context->setSerializeNull($this->serializeNull);
         }
 
         return $this->serializer->serialize($object, 'json', $context);

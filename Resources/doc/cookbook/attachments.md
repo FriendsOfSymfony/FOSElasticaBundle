@@ -21,7 +21,7 @@ fos_elastica:
         app:
             types:
                 user:
-                    mappings:
+                    properties:
                         id: ~
                         content:
                             type: attachment
@@ -48,7 +48,7 @@ $keywordQuery->setQuery("$term~");
 $keywordQuery->setDefaultOperator('AND');
 
 $query = new Query($keywordQuery);
-$query->setFields(array("id", "..."));
+$query->setSource(array("id", "..."));
 $query->setHighlight(array(
     'fields' => array(
         'content' => new \stdClass()

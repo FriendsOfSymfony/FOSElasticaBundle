@@ -4,19 +4,11 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="fos_elastica.slice_fetcher.orm.class">FOS\ElasticaBundle\Doctrine\ORM\SliceFetcher</parameter>
-        <parameter key="fos_elastica.provider.prototype.orm.class">FOS\ElasticaBundle\Doctrine\ORM\Provider</parameter>
-        <parameter key="fos_elastica.listener.prototype.orm.class">FOS\ElasticaBundle\Doctrine\Listener</parameter>
-        <parameter key="fos_elastica.elastica_to_model_transformer.prototype.orm.class">FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer</parameter>
-        <parameter key="fos_elastica.manager.orm.class">FOS\ElasticaBundle\Doctrine\RepositoryManager</parameter>
-    </parameters>
-
     <services>
-        <service id="fos_elastica.slice_fetcher.orm" class="%fos_elastica.slice_fetcher.orm.class%">
+        <service id="fos_elastica.slice_fetcher.orm" class="FOS\ElasticaBundle\Doctrine\ORM\SliceFetcher">
         </service>
 
-        <service id="fos_elastica.provider.prototype.orm" class="%fos_elastica.provider.prototype.orm.class%" public="true" abstract="true">
+        <service id="fos_elastica.provider.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\Provider" public="true" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument /> <!-- model -->
@@ -25,14 +17,14 @@
             <argument type="service" id="fos_elastica.slice_fetcher.orm" /> <!-- slice fetcher -->
         </service>
 
-        <service id="fos_elastica.listener.prototype.orm" class="%fos_elastica.listener.prototype.orm.class%" public="false" abstract="true">
+        <service id="fos_elastica.listener.prototype.orm" class="FOS\ElasticaBundle\Doctrine\Listener" public="false" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument type="collection" /> <!-- configuration -->
             <argument>null</argument> <!-- logger -->
         </service>
 
-        <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="%fos_elastica.elastica_to_model_transformer.prototype.orm.class%" public="false" abstract="true">
+        <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" public="false" abstract="true">
             <argument type="service" id="doctrine" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
@@ -41,7 +33,7 @@
             </call>
         </service>
 
-        <service id="fos_elastica.manager.orm" class="%fos_elastica.manager.orm.class%">
+        <service id="fos_elastica.manager.orm" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
             <argument type="service" id="doctrine" />
             <argument type="service" id="fos_elastica.repository_manager" />
         </service>

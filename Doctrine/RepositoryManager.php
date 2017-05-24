@@ -1,29 +1,36 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Finder\FinderInterface;
-use FOS\ElasticaBundle\Manager\RepositoryManager as BaseManager;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  *
  * Allows retrieval of basic or custom repository for mapped Doctrine
- * entities/documents.
+ * entities/documents
  *
  * @deprecated
  */
 class RepositoryManager implements RepositoryManagerInterface
 {
     /** @var array */
-    protected $entities = array();
-    
+    protected $entities = [];
+
     /** @var array */
-    protected $repositories = array();
-    
+    protected $repositories = [];
+
     /** @var ManagerRegistry */
     protected $managerRegistry;
 
@@ -33,7 +40,7 @@ class RepositoryManager implements RepositoryManagerInterface
     private $repositoryManager;
 
     /**
-     * @param ManagerRegistry $managerRegistry
+     * @param ManagerRegistry            $managerRegistry
      * @param RepositoryManagerInterface $repositoryManager
      */
     public function __construct(ManagerRegistry $managerRegistry, RepositoryManagerInterface $repositoryManager)
@@ -43,7 +50,7 @@ class RepositoryManager implements RepositoryManagerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addType($indexTypeName, FinderInterface $finder, $repositoryName = null)
     {

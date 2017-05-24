@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -13,7 +22,7 @@ class Configuration implements ConfigurationInterface
      *
      * @var array
      */
-    private $supportedDrivers = array('orm', 'mongodb', 'propel', 'phpcr');
+    private $supportedDrivers = ['orm', 'mongodb', 'propel', 'phpcr'];
 
     /**
      * If the kernel is running in debug mode.
@@ -50,7 +59,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('default_manager')->defaultValue('orm')->end()
                 ->arrayNode('serializer')
-                    ->treatNullLike(array())
+                    ->treatNullLike([])
                     ->children()
                         ->scalarNode('callback_class')->defaultValue('FOS\ElasticaBundle\Serializer\Callback')->end()
                         ->scalarNode('serializer')->defaultValue('serializer')->end()
@@ -74,19 +83,11 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('id')
                     ->prototype('array')
                         ->performNoDeepMerging()
-                        // BC - Renaming 'servers' node to 'connections'
-                        ->beforeNormalization()
-                        ->ifTrue(function ($v) { return isset($v['servers']); })
-                        ->then(function ($v) {
-                            $v['connections'] = $v['servers'];
-                            unset($v['servers']);
-
-                            return $v;
-                        })
-                        ->end()
                         // Elastica names its properties with camel case, support both
                         ->beforeNormalization()
-                        ->ifTrue(function ($v) { return isset($v['connection_strategy']); })
+                        ->ifTrue(function ($v) {
+                            return isset($v['connection_strategy']);
+                        })
                         ->then(function ($v) {
                             $v['connectionStrategy'] = $v['connection_strategy'];
                             unset($v['connection_strategy']);
@@ -96,11 +97,13 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         // If there is no connections array key defined, assume a single connection.
                         ->beforeNormalization()
-                        ->ifTrue(function ($v) { return is_array($v) && !array_key_exists('connections', $v); })
+                        ->ifTrue(function ($v) {
+                            return is_array($v) && !array_key_exists('connections', $v);
+                        })
                         ->then(function ($v) {
-                            return array(
-                                'connections' => array($v),
-                            );
+                            return [
+                                'connections' => [$v],
+                            ];
                         })
                         ->end()
                         ->children()
@@ -111,10 +114,16 @@ class Configuration implements ConfigurationInterface
                                     ->children()
                                         ->scalarNode('url')
                                             ->validate()
-                                                ->ifTrue(function ($url) { return $url && substr($url, -1) !== '/'; })
-                                                ->then(function ($url) { return $url.'/'; })
+                                                ->ifTrue(function ($url) {
+                                                    return $url && substr($url, -1) !== '/';
+                                                })
+                                                ->then(function ($url) {
+                                                    return $url.'/';
+                                                })
                                             ->end()
                                         ->end()
+                                        ->scalarNode('username')->end()
+                                        ->scalarNode('password')->end()
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
                                         ->scalarNode('proxy')->end()
@@ -131,6 +140,10 @@ class Configuration implements ConfigurationInterface
                                         ->arrayNode('headers')
                                             ->useAttributeAsKey('name')
                                             ->prototype('scalar')->end()
+                                        ->end()
+                                        ->arrayNode('curl')
+                                            ->useAttributeAsKey(CURLOPT_SSL_VERIFYPEER)
+                                            ->prototype('boolean')->end()
                                         ->end()
                                         ->scalarNode('transport')->end()
                                         ->scalarNode('timeout')->end()
@@ -180,7 +193,7 @@ class Configuration implements ConfigurationInterface
                                     ->append($this->getSerializerNode())
                                 ->end()
                             ->end()
-                            ->variableNode('settings')->defaultValue(array())->end()
+                            ->variableNode('settings')->defaultValue([])->end()
                         ->end()
                         ->append($this->getTypesNode())
                     ->end()
@@ -200,51 +213,19 @@ class Configuration implements ConfigurationInterface
         $node
             ->useAttributeAsKey('name')
             ->prototype('array')
-                ->treatNullLike(array())
+                ->treatNullLike([])
                 ->beforeNormalization()
                 ->ifNull()
-                ->thenEmptyArray()
-                ->end()
-                // BC - Renaming 'mappings' node to 'properties'
-                ->beforeNormalization()
-                ->ifTrue(function ($v) { return array_key_exists('mappings', $v); })
-                ->then(function ($v) {
-                    $v['properties'] = $v['mappings'];
-                    unset($v['mappings']);
-
-                    return $v;
-                })
-                ->end()
-                // BC - Support the old is_indexable_callback property
-                ->beforeNormalization()
-                ->ifTrue(function ($v) {
-                    return isset($v['persistence']) &&
-                        isset($v['persistence']['listener']) &&
-                        isset($v['persistence']['listener']['is_indexable_callback']);
-                })
-                ->then(function ($v) {
-                    $callback = $v['persistence']['listener']['is_indexable_callback'];
-
-                    if (is_array($callback)) {
-                        list($class) = $callback + array(null);
-
-                        if ($class[0] !== '@' && is_string($class) && !class_exists($class)) {
-                            $callback[0] = '@'.$class;
-                        }
-                    }
-
-                    $v['indexable_callback'] = $callback;
-                    unset($v['persistence']['listener']['is_indexable_callback']);
-
-                    return $v;
-                })
+                    ->thenEmptyArray()
                 ->end()
                 // Support multiple dynamic_template formats to match the old bundle style
                 // and the way ElasticSearch expects them
                 ->beforeNormalization()
-                ->ifTrue(function ($v) { return isset($v['dynamic_templates']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['dynamic_templates']);
+                })
                 ->then(function ($v) {
-                    $dt = array();
+                    $dt = [];
                     foreach ($v['dynamic_templates'] as $key => $type) {
                         if (is_int($key)) {
                             $dt[] = $type;
@@ -272,12 +253,9 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getPropertiesNode())
                 ->append($this->getDynamicTemplateNode())
                 ->append($this->getSourceNode())
-                ->append($this->getBoostNode())
                 ->append($this->getRoutingNode())
                 ->append($this->getParentNode())
                 ->append($this->getAllNode())
-                ->append($this->getTimestampNode())
-                ->append($this->getTtlNode())
             ->end()
         ;
 
@@ -295,7 +273,7 @@ class Configuration implements ConfigurationInterface
         $node
             ->useAttributeAsKey('name')
             ->prototype('variable')
-                ->treatNullLike(array());
+                ->treatNullLike([]);
 
         return $node;
     }
@@ -320,7 +298,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('match_pattern')->end()
                         ->arrayNode('mapping')
                             ->prototype('variable')
-                                ->treatNullLike(array())
+                                ->treatNullLike([])
                             ->end()
                         ->end()
                     ->end()
@@ -369,24 +347,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('compress')->end()
                 ->scalarNode('compress_threshold')->end()
                 ->scalarNode('enabled')->defaultTrue()->end()
-            ->end()
-        ;
-
-        return $node;
-    }
-
-    /**
-     * Returns the array node used for "_boost".
-     */
-    protected function getBoostNode()
-    {
-        $builder = new TreeBuilder();
-        $node = $builder->root('_boost');
-
-        $node
-            ->children()
-                ->scalarNode('name')->end()
-                ->scalarNode('null_value')->end()
             ->end()
         ;
 
@@ -449,47 +409,6 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Returns the array node used for "_timestamp".
-     */
-    protected function getTimestampNode()
-    {
-        $builder = new TreeBuilder();
-        $node = $builder->root('_timestamp');
-
-        $node
-            ->children()
-            ->scalarNode('enabled')->defaultValue(true)->end()
-            ->scalarNode('path')->end()
-            ->scalarNode('format')->end()
-            ->scalarNode('store')->end()
-            ->scalarNode('index')->end()
-            ->end()
-        ;
-
-        return $node;
-    }
-
-    /**
-     * Returns the array node used for "_ttl".
-     */
-    protected function getTtlNode()
-    {
-        $builder = new TreeBuilder();
-        $node = $builder->root('_ttl');
-
-        $node
-            ->children()
-            ->scalarNode('enabled')->defaultValue(true)->end()
-            ->scalarNode('default')->end()
-            ->scalarNode('store')->end()
-            ->scalarNode('index')->end()
-            ->end()
-        ;
-
-        return $node;
-    }
-
-    /**
      * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
      */
     protected function getPersistenceNode()
@@ -499,11 +418,17 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->validate()
-                ->ifTrue(function ($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']);
+                })
                     ->thenInvalid('Propel doesn\'t support listeners')
-                ->ifTrue(function ($v) { return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']);
+                })
                     ->thenInvalid('Propel doesn\'t support the "repository" parameter')
-                ->ifTrue(function($v) { return isset($v['driver']) && 'orm' !== $v['driver'] && !empty($v['elastica_to_model_transformer']['hints']); })
+                ->ifTrue(function ($v) {
+                    return isset($v['driver']) && 'orm' !== $v['driver'] && !empty($v['elastica_to_model_transformer']['hints']);
+                })
                     ->thenInvalid('Hints are only supported by the "orm" driver')
             ->end()
             ->children()
@@ -537,6 +462,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('update')->defaultTrue()->end()
                         ->scalarNode('delete')->defaultTrue()->end()
                         ->scalarNode('flush')->defaultTrue()->end()
+                        ->booleanNode('defer')->defaultFalse()->end()
                         ->scalarNode('logger')
                             ->defaultFalse()
                             ->treatNullLike('fos_elastica.logger')
@@ -600,7 +526,7 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->arrayNode('groups')
-                    ->treatNullLike(array())
+                    ->treatNullLike([])
                     ->prototype('scalar')->end()
                 ->end()
                 ->scalarNode('version')->end()

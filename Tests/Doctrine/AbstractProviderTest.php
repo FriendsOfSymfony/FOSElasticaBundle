@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
 use Elastica\Bulk\ResponseSet;
@@ -18,7 +27,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->objectClass = 'objectClass';
-        $this->options = array('debug_logging' => true, 'indexName' => 'index', 'typeName' => 'type');
+        $this->options = ['debug_logging' => true, 'indexName' => 'index', 'typeName' => 'type'];
 
         $this->objectPersister = $this->getMockObjectPersister();
         $this->managerRegistry = $this->getMockManagerRegistry();
@@ -58,14 +67,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ->with('index', 'type', $this->anything())
             ->will($this->returnValue(true));
 
-        $previousSlice = array();
+        $previousSlice = [];
 
         foreach ($objectsByIteration as $i => $objects) {
             $offset = $objects[0] - 1;
 
             $this->sliceFetcher->expects($this->at($i))
                 ->method('fetch')
-                ->with($queryBuilder, $batchSize, $offset, $previousSlice, array('id'))
+                ->with($queryBuilder, $batchSize, $offset, $previousSlice, ['id'])
                 ->will($this->returnValue($objects));
 
             $this->objectManager->expects($this->at($i))
@@ -127,24 +136,24 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function providePopulateIterations()
     {
-        return array(
-            array(
+        return [
+            [
                 100,
-                array(range(1, 100)),
+                [range(1, 100)],
                 100,
-            ),
-            array(
+            ],
+            [
                 105,
-                array(range(1, 50), range(51, 100), range(101, 105)),
+                [range(1, 50), range(51, 100), range(101, 105)],
                 50,
-            ),
-        );
+            ],
+        ];
     }
 
     public function testPopulateShouldNotClearObjectManager()
     {
         $nbObjects = 1;
-        $objects = array(1);
+        $objects = [1];
         $this->options['clear_object_manager'] = false;
 
         $provider = $this->getMockAbstractProvider();
@@ -171,7 +180,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     public function testPopulateShouldClearObjectManagerForFilteredBatch()
     {
         $nbObjects = 1;
-        $objects = array(1);
+        $objects = [1];
 
         $provider = $this->getMockAbstractProvider(true);
 
@@ -197,7 +206,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     public function testPopulateInvokesLoggerClosure()
     {
         $nbObjects = 1;
-        $objects = array(1);
+        $objects = [1];
 
         $provider = $this->getMockAbstractProvider();
 
@@ -229,7 +238,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     public function testPopulateNotStopOnError()
     {
         $nbObjects = 1;
-        $objects = array(1);
+        $objects = [1];
 
         $provider = $this->getMockAbstractProvider();
 
@@ -252,13 +261,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Elastica\Exception\Bulk\ResponseException');
 
-        $provider->populate(null, array('ignore_errors' => false));
+        $provider->populate(null, ['ignore_errors' => false]);
     }
 
     public function testPopulateRunsIndexCallable()
     {
         $nbObjects = 2;
-        $objects = array(1, 2);
+        $objects = [1, 2];
 
         $provider = $this->getMockAbstractProvider();
         $provider->expects($this->any())
@@ -280,26 +289,26 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->objectPersister->expects($this->once())
             ->method('insertMany')
-            ->with(array(2));
+            ->with([2]);
 
         $provider->populate();
     }
 
     /**
-     * @param boolean $setSliceFetcher Whether or not to set the slice fetcher.
+     * @param bool $setSliceFetcher Whether or not to set the slice fetcher
      *
      * @return \FOS\ElasticaBundle\Doctrine\AbstractProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getMockAbstractProvider($setSliceFetcher = true)
     {
-        return $this->getMockForAbstractClass('FOS\ElasticaBundle\Doctrine\AbstractProvider', array(
+        return $this->getMockForAbstractClass('FOS\ElasticaBundle\Doctrine\AbstractProvider', [
             $this->objectPersister,
             $this->indexable,
             $this->objectClass,
             $this->options,
             $this->managerRegistry,
-            $setSliceFetcher ? $this->sliceFetcher : null
-        ));
+            $setSliceFetcher ? $this->sliceFetcher : null,
+        ]);
     }
 
     /**
@@ -308,8 +317,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     private function getMockBulkResponseException()
     {
         return $this->getMockBuilder('Elastica\Exception\Bulk\ResponseException')
-            ->setConstructorArgs(array(
-                new ResponseSet(new Response(array()), array()))
+            ->setConstructorArgs([
+                new ResponseSet(new Response([]), []), ]
             )
             ->getMock();
     }
@@ -335,7 +344,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $mock->expects($this->any())
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(array('id')));
+            ->will($this->returnValue(['id']));
 
         return $mock;
     }
