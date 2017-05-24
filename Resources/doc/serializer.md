@@ -19,6 +19,22 @@ fos_elastica:
     serializer: ~
 ```
 
+Note: With JMSSerialzier >=2.0.0 you have to set `jms_serializer` in configuration:
+```yaml
+#app/config/config.yml
+fos_elastica:
+    serializer:
+        serializer: jms_serializer
+```
+
+Second way is create alias for `serializer` in this way:
+```yaml
+#app/config/services.yml
+services:
+    serializer:
+        alias: jms_serializer
+```
+
 B) Set up each defined type to support serialization
 ----------------------------------------------------
 
