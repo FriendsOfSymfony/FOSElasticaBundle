@@ -28,7 +28,7 @@
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/phpcr-bundle": "^1.2",
         "jackalope/jackalope-doctrine-dbal": "^1.1",
-        "jms/serializer-bundle": "^1.1",
+        "jms/serializer-bundle": "^2.0",
         "phpunit/phpunit": "^4.8 || ^5.0",
         "propel/propel1": "1.6.*",
         "pagerfanta/pagerfanta": "^1.0",
