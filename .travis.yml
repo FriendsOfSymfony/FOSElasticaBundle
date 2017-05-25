@@ -40,9 +40,6 @@ before_script:
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.clover
 
-services:
-  - elasticsearch
-
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
