@@ -73,6 +73,7 @@ class Provider extends AbstractProvider
             ->select($qb->expr()->count($rootAliases[0]))
             // Remove ordering for efficiency; it doesn't affect the count
             ->resetDQLPart('orderBy')
+            ->resetDQLPart('groupBy')
             ->getQuery()
             ->getSingleScalarResult();
     }
