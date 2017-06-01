@@ -70,7 +70,7 @@ class Provider extends AbstractProvider
         $rootAliases = $queryBuilder->getRootAliases();
 
         return $qb
-            ->select($qb->expr()->count($rootAliases[0]))
+            ->select($qb->expr()->countDistinct($rootAliases[0]))
             // Remove ordering for efficiency; it doesn't affect the count
             ->resetDQLPart('orderBy')
             ->getQuery()
