@@ -124,6 +124,9 @@ class MappingBuilder
             if (isset($property['fields'])) {
                 $this->fixProperties($property['fields']);
             }
+            if ($property['store'] == "unset") {
+                unset($property['store']);
+            }
             if (isset($property['properties'])) {
                 $this->fixProperties($property['properties']);
             }
