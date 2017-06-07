@@ -38,7 +38,7 @@
         "symfony/expression-language" : "~2.4|~3.0",
         "symfony/twig-bundle": "~2.3|~3.0",
         "symfony/serializer": "~2.3|~3.0",
-        "symfony/validator": "~2.3|~3.1"
+        "symfony/validator": "~2.3|~3.0"
     },
     "autoload": {
         "psr-4": { "FOS\\ElasticaBundle\\": "" }
