@@ -51,11 +51,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
-            ->method('request')
-            ->withConsecutive(
-                ['index1/', 'DELETE'],
-                ['index1/', 'PUT', [], []]
-            );
+            ->method('requestEndpoint');
 
         $this->resetter->resetAllIndexes();
     }
@@ -71,11 +67,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
-            ->method('request')
-            ->withConsecutive(
-                ['index1/', 'DELETE'],
-                ['index1/', 'PUT', [], []]
-            );
+            ->method('requestEndpoint');
 
         $this->resetter->resetIndex('index1');
     }
@@ -92,11 +84,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
-            ->method('request')
-            ->withConsecutive(
-                ['index1/', 'DELETE'],
-                ['index1/', 'PUT', [], []]
-            );
+            ->method('requestEndpoint');
 
         $this->resetter->resetIndex('index1');
     }
@@ -118,11 +106,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             ->with($indexConfig, $index, false);
 
         $this->elasticaClient->expects($this->exactly(2))
-            ->method('request')
-            ->withConsecutive(
-                ['index1/', 'DELETE'],
-                ['index1/', 'PUT', [], []]
-            );
+            ->method('requestEndpoint');
 
         $this->resetter->resetIndex('index1');
     }
@@ -157,12 +141,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->elasticaClient->expects($this->exactly(3))
-            ->method('request')
-            ->withConsecutive(
-                ['index/', 'DELETE'],
-                ['index/', 'PUT', [], []],
-                ['index/type/_mapping', 'PUT', ['type' => []], []]
-            );
+            ->method('requestEndpoint');
 
         $this->resetter->resetIndexType('index', 'type');
     }
@@ -184,12 +163,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $this->mockType('type', 'index', $typeConfig, $indexConfig);
 
         $this->elasticaClient->expects($this->exactly(3))
-            ->method('request')
-            ->withConsecutive(
-                ['index/', 'DELETE'],
-                ['index/', 'PUT', [], []],
-                ['index/type/_mapping', 'PUT', ['type' => []], []]
-            );
+            ->method('requestEndpoint');
 
         $this->resetter->resetIndexType('index', 'type');
     }
