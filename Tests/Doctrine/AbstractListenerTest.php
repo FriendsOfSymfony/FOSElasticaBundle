@@ -212,7 +212,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
         $refScheduledForInsertion->setValue($listener, $scheduledForInsertion);
         $persister->expects($this->once())->method('insertMany')->with($scheduledForInsertion);
 
-        $listener->onKernelTerminate();
+        $listener->onTerminate();
     }
 
     abstract protected function getLifecycleEventArgsClass();

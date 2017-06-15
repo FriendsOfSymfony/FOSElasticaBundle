@@ -537,7 +537,11 @@ class FOSElasticaExtension extends Extension
             $listenerDef->setPublic(true);
             $listenerDef->addTag(
                 'kernel.event_listener',
-                ['event' => 'kernel.terminate', 'method' => 'onKernelTerminate']
+                ['event' => 'kernel.terminate', 'method' => 'onTerminate']
+            );
+            $listenerDef->addTag(
+                'kernel.event_listener',
+                ['event' => 'console.terminate', 'method' => 'onTerminate']
             );
             $listenerConfig['defer'] = true;
         }

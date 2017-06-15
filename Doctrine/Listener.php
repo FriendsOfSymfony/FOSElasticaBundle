@@ -100,10 +100,10 @@ class Listener
     }
 
     /**
-     * Handler for the "kernel.terminate" Symfony event. This event is subscribed to if the listener is configured to
-     * persist asynchronously.
+     * Handler for the "kernel.terminate" and "console.terminate" Symfony events.
+     * These event are subscribed to if the listener is configured to persist asynchronously.
      */
-    public function onKernelTerminate()
+    public function onTerminate()
     {
         if ($this->config['defer']) {
             $this->config['defer'] = false;
