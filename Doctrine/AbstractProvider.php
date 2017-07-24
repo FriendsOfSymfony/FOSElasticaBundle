@@ -91,11 +91,17 @@ abstract class AbstractProvider extends BaseAbstractProvider
         $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
 
         $queryBuilder = $this->createQueryBuilder($options['query_builder_method']);
-        $nbObjects = $this->countObjects($queryBuilder);
+        $limit = $nbObjects = $this->countObjects($queryBuilder);
+        if ($options['limit'] && ($nbObjects - $options['offset']) > $options['limit']) {
+            $limit = $options['limit'] + $options['offset'];
+        }
         $offset = $options['offset'];
+        if ($options['limit'] && $options['limit'] < $options['batch_size']) {
+            $options['batch_size'] = $options['limit'];
+        }
 
         $objects = [];
-        for (; $offset < $nbObjects; $offset += $options['batch_size']) {
+        for (; $offset < $limit; $offset += $options['batch_size']) {
             $sliceSize = $options['batch_size'];
             try {
                 $objects = $this->getSlice($queryBuilder, $options['batch_size'], $offset, $objects);
