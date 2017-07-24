@@ -45,9 +45,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider providePopulateIterations
      */
-    public function testPopulateIterations($nbObjects, $objectsByIteration, $batchSize)
+    public function testPopulateIterations($nbObjects, $objectsByIteration, $batchSize, $limit)
     {
         $this->options['batch_size'] = $batchSize;
+        $this->options['limit'] = $limit;
 
         $provider = $this->getMockAbstractProvider();
 
@@ -92,9 +93,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider providePopulateIterations
      */
-    public function testPopulateIterationsWithoutSliceFetcher($nbObjects, $objectsByIteration, $batchSize)
+    public function testPopulateIterationsWithoutSliceFetcher($nbObjects, $objectsByIteration, $batchSize, $limit)
     {
         $this->options['batch_size'] = $batchSize;
+        $this->options['limit'] = $limit;
 
         $provider = $this->getMockAbstractProvider(false);
 
@@ -141,11 +143,25 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                 100,
                 [range(1, 100)],
                 100,
+                null
             ],
             [
                 105,
                 [range(1, 50), range(51, 100), range(101, 105)],
                 50,
+                null
+            ],
+            [
+                105,
+                [range(1, 50), range(51, 100)],
+                50,
+                100
+            ],
+            [
+                95,
+                [range(1, 50), range(51, 95)],
+                50,
+                100
             ],
         ];
     }
