@@ -4,9 +4,10 @@ CHANGELOG for 3.2.x
 This changelog references the relevant changes (bug and security fixes) done
 in 3.2 versions.
 
-### 3.2.4 (2017-xx-xx)
+### 3.2.4 (2017-08-10)
 
 * Fixed Propel object sorting
+* Fixed the profiler icon for IE
 
 ### 3.2.3 (2017-03-30)
 
