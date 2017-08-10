@@ -4,6 +4,11 @@ CHANGELOG for 4.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 4.0 versions.
 
+### 4.0.1 (2017-08-10)
+
+* Fixed Propel object sorting
+* Fixed the profiler icon for IE
+
 ### 4.0.0 (2017-03-30)
 
 * Add `ruflin/Elastica` 3.x support.
