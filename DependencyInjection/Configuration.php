@@ -131,6 +131,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('aws_secret_access_key')->end()
                                         ->scalarNode('aws_region')->end()
                                         ->scalarNode('aws_session_token')->end()
+                                        ->booleanNode('ssl')->defaultValue(false)->end()
                                         ->scalarNode('logger')
                                             ->defaultValue($this->debug ? 'fos_elastica.logger' : false)
                                             ->treatNullLike('fos_elastica.logger')
