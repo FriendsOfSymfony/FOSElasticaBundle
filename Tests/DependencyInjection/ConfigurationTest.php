@@ -306,6 +306,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                     'aws_secret_access_key' => 'AWS_SECRET',
                     'aws_region' => 'AWS_REGION',
                     'aws_session_token' => 'AWS_SESSION_TOKEN',
+                    'ssl' => true
                 ],
             ],
         ]);
@@ -315,5 +316,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('AWS_SECRET', $connection['aws_secret_access_key']);
         $this->assertSame('AWS_REGION', $connection['aws_region']);
         $this->assertSame('AWS_SESSION_TOKEN', $connection['aws_session_token']);
+        $this->assertTrue($connection['ssl']);
     }
 }
