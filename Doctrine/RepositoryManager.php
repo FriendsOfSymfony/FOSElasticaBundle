@@ -20,8 +20,6 @@ use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
  *
  * Allows retrieval of basic or custom repository for mapped Doctrine
  * entities/documents
- *
- * @deprecated
  */
 class RepositoryManager implements RepositoryManagerInterface
 {
