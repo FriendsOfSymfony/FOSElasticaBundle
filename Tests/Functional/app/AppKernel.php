@@ -36,6 +36,7 @@ while ($dir !== $lastDir) {
 }
 
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -91,6 +92,16 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
+        $loader->load(function (ContainerBuilder $container) {
+            if (!$container->hasParameter('fos_elastica.host')
+                && isset($_SERVER['SYMFONY__FOS_ELASTICA__HOST'])) {
+                $container->setParameter('fos_elastica.host', $_SERVER['SYMFONY__FOS_ELASTICA__HOST']);
+            }
+            if (!$container->hasParameter('fos_elastica.port')
+                && isset($_SERVER['SYMFONY__FOS_ELASTICA__PORT'])) {
+                $container->setParameter('fos_elastica.port', $_SERVER['SYMFONY__FOS_ELASTICA__PORT']);
+            }
+        });
         $loader->load($this->rootConfig);
     }
 
