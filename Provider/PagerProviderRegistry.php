@@ -1,37 +1,35 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Provider;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @deprecated since 4.1 will be removed in 5.x. Use PagerProviderRegistry instead
- * 
  * References persistence providers for each index and type.
  */
-class ProviderRegistry implements ContainerAwareInterface
+class PagerProviderRegistry implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
-    
+
     /** @var array */
-    private $providers = array();
+    private $providers = [];
 
     /**
-     * Registers a provider for the specified index and type.
-     *
-     * @param string $index
-     * @param string $type
-     * @param string $providerId
+     * @param array $providers
      */
-    public function addProvider($index, $type, $providerId)
+    public function __construct(array $providers)
     {
-        if (!isset($this->providers[$index])) {
-            $this->providers[$index] = array();
-        }
-
-        $this->providers[$index][$type] = $providerId;
+        $this->providers = $providers;
     }
 
     /**
@@ -39,11 +37,11 @@ class ProviderRegistry implements ContainerAwareInterface
      *
      * Providers will be indexed by "index/type" strings in the returned array.
      *
-     * @return array of ProviderInterface instances
+     * @return PagerProviderInterface[]
      */
     public function getAllProviders()
     {
-        $providers = array();
+        $providers = [];
 
         foreach ($this->providers as $index => $indexProviders) {
             foreach ($indexProviders as $type => $providerId) {
@@ -61,7 +59,7 @@ class ProviderRegistry implements ContainerAwareInterface
      *
      * @param string $index
      *
-     * @return ProviderInterface[]
+     * @return PagerProviderInterface[]|
      *
      * @throws \InvalidArgumentException if no providers were registered for the index
      */
@@ -71,10 +69,9 @@ class ProviderRegistry implements ContainerAwareInterface
             throw new \InvalidArgumentException(sprintf('No providers were registered for index "%s".', $index));
         }
 
-        $providers = array();
-
+        $providers = [];
         foreach ($this->providers[$index] as $type => $providerId) {
-            $providers[$type] = $this->container->get($providerId);
+            $providers[$type] = $this->getProvider($index, $type);
         }
 
         return $providers;
@@ -86,7 +83,7 @@ class ProviderRegistry implements ContainerAwareInterface
      * @param string $index
      * @param string $type
      *
-     * @return ProviderInterface
+     * @return PagerProviderInterface
      *
      * @throws \InvalidArgumentException if no provider was registered for the index and type
      */

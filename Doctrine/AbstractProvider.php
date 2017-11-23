@@ -9,6 +9,11 @@ use FOS\ElasticaBundle\Provider\AbstractProvider as BaseAbstractProvider;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+@trigger_error(sprintf('The %s class is deprecated since version 4.1 and will be removed in 5.0.', AbstractProvider::class), E_USER_DEPRECATED);
+
+/**
+ * @deprecated since 4.1 will be removed in 5.x.
+ */
 abstract class AbstractProvider extends BaseAbstractProvider
 {
     /**

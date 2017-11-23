@@ -13,6 +13,12 @@
     </parameters>
 
     <services>
+        <service id="fos_elastica.pager_provider.prototype.phpcr" class="FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider" public="true" abstract="true">
+            <argument type="service" id="doctrine" /> <!-- manager registry -->
+            <argument /> <!-- model -->
+            <argument type="collection" /> <!-- options -->
+        </service>
+
         <service id="fos_elastica.slice_fetcher.phpcr" class="%fos_elastica.slice_fetcher.phpcr.class%">
         </service>
 

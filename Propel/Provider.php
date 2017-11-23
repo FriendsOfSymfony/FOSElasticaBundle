@@ -5,6 +5,8 @@ namespace FOS\ElasticaBundle\Propel;
 use FOS\ElasticaBundle\Provider\AbstractProvider;
 
 /**
+ * @deprecated since 4.1 will be removed in 5.x. Use PagerProvider instead
+ * 
  * Propel provider.
  *
  * @author William Durand <william.durand1@gmail.com>

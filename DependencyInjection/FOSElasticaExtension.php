@@ -2,6 +2,7 @@
 
 namespace FOS\ElasticaBundle\DependencyInjection;
 
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -9,7 +10,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Config\FileLocator;
-use InvalidArgumentException;
 
 class FOSElasticaExtension extends Extension
 {
@@ -72,6 +72,7 @@ class FOSElasticaExtension extends Extension
 
         $this->loadIndexes($config['indexes'], $container);
         $container->setAlias('fos_elastica.index', sprintf('fos_elastica.index.%s', $config['default_index']));
+        $container->setParameter('fos_elastica.default_index', $config['default_index']);
 
         $container->getDefinition('fos_elastica.config_source.container')->replaceArgument(0, $this->indexConfigs);
 
@@ -321,6 +322,14 @@ class FOSElasticaExtension extends Extension
 
         if (isset($typeConfig['provider'])) {
             $this->loadTypeProvider($typeConfig, $container, $objectPersisterId, $indexName, $typeName);
+
+            if (isset($typeConfig['provider']['pager_provider'])) {
+                if (!class_exists(Pagerfanta::class)) {
+                    throw new \InvalidArgumentException('A pager provider needs "pagerfanta/pagerfanta:^1"  to be installed.');
+                }
+
+                $this->loadTypePagerProvider($typeConfig, $container, $indexName, $typeName);
+            }
         }
         if (isset($typeConfig['finder'])) {
             $this->loadTypeFinder($typeConfig, $container, $elasticaToModelTransformerId, $typeRef, $indexName, $typeName);
@@ -440,6 +449,8 @@ class FOSElasticaExtension extends Extension
             $serviceDef->replaceArgument($i, $argument);
         }
 
+        $serviceDef->addTag('fos_elastica.persister', ['index' => $indexName, 'type' => $typeName]);
+
         $container->setDefinition($serviceId, $serviceDef);
 
         return $serviceId;
@@ -452,7 +463,7 @@ class FOSElasticaExtension extends Extension
      * @param ContainerBuilder $container
      * @param string           $objectPersisterId
      * @param string           $indexName
-     * @param string           $typeName
+     * @param string           $typpeName
      *
      * @return string
      */
@@ -475,6 +486,66 @@ class FOSElasticaExtension extends Extension
             'indexName' => $indexName,
             'typeName' => $typeName,
         )));
+        $container->setDefinition($providerId, $providerDef);
+
+        return $providerId;
+    }
+
+    /**
+     * Loads a pager provider for a type.
+     *
+     * @param array            $typeConfig
+     * @param ContainerBuilder $container
+     * @param string           $indexName
+     * @param string           $typeName
+     *
+     * @return string
+     */
+    private function loadTypePagerProvider(array $typeConfig, ContainerBuilder $container, $indexName, $typeName)
+    {
+        if (isset($typeConfig['provider']['service'])) {
+            return $typeConfig['provider']['service'];
+        }
+
+        $baseConfig = $typeConfig['provider'];
+        unset($baseConfig['service']);
+
+        $driver = $typeConfig['driver'];
+
+        switch ($driver) {
+            case 'orm':
+                $providerDef = new DefinitionDecorator('fos_elastica.pager_provider.prototype.'.$driver);
+                $providerDef->replaceArgument(1, $typeConfig['model']);
+                $providerDef->replaceArgument(2, $baseConfig);
+
+                break;
+            case 'mongodb':
+                $providerDef = new DefinitionDecorator('fos_elastica.pager_provider.prototype.'.$driver);
+                $providerDef->replaceArgument(1, $typeConfig['model']);
+                $providerDef->replaceArgument(2, $baseConfig);
+
+                break;
+            case 'phpcr':
+                $providerDef = new DefinitionDecorator('fos_elastica.pager_provider.prototype.'.$driver);
+                $providerDef->replaceArgument(1, $typeConfig['model']);
+                $providerDef->replaceArgument(2, $baseConfig);
+
+                break;
+            case 'propel':
+                $providerDef = new DefinitionDecorator('fos_elastica.pager_provider.prototype.'.$driver);
+                $providerDef->replaceArgument(1, $baseConfig);
+
+                break;
+            default:
+                throw new \LogicException(sprintf('The pager provider for driver "%s" does not exist.', $driver));
+        }
+
+        /* Note: provider services may conflict with "prototype.driver", if the
+         * index and type names were "prototype" and a driver, respectively.
+         */
+        $providerId = sprintf('fos_elastica.pager_provider.%s.%s', $indexName, $typeName);
+        $providerDef->addTag('fos_elastica.pager_provider', ['index' => $indexName, 'type' => $typeName]);
+
         $container->setDefinition($providerId, $providerDef);
 
         return $providerId;
@@ -554,7 +625,7 @@ class FOSElasticaExtension extends Extension
                 $eventsClass = '\Doctrine\ODM\MongoDB\Events';
                 break;
             default:
-                throw new InvalidArgumentException(sprintf('Cannot determine events for driver "%s"', $typeConfig['driver']));
+                throw new \InvalidArgumentException(sprintf('Cannot determine events for driver "%s"', $typeConfig['driver']));
         }
 
         $events = array();
@@ -699,7 +770,7 @@ class FOSElasticaExtension extends Extension
     private function getClient($clientName)
     {
         if (!array_key_exists($clientName, $this->clients)) {
-            throw new InvalidArgumentException(sprintf('The elastica client with name "%s" is not defined', $clientName));
+            throw new \InvalidArgumentException(sprintf('The elastica client with name "%s" is not defined', $clientName));
         }
 
         return $this->clients[$clientName]['reference'];

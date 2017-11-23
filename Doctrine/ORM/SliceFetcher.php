@@ -6,7 +6,11 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 use FOS\ElasticaBundle\Doctrine\SliceFetcherInterface;
 
+@trigger_error(sprintf('The %s class is deprecated since version 4.1 and will be removed in 5.0.', SliceFetcher::class), E_USER_DEPRECATED);
+
 /**
+ * @deprecated since 4.1 will be removed in 5.x.
+ * 
  * Fetches a slice of objects.
  *
  * @author Thomas Prelot <tprelot@gmail.com>

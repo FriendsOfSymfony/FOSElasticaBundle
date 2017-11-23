@@ -6,6 +6,11 @@ use Doctrine\ODM\MongoDB\Query\Builder;
 use FOS\ElasticaBundle\Doctrine\AbstractProvider;
 use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
 
+@trigger_error(sprintf('The %s class is deprecated since version 4.1 and will be removed in 5.0.', Provider::class), E_USER_DEPRECATED);
+
+/**
+ * @deprecated since 4.1 will be removed in 5.x. Use PagerProvider instead 
+ */
 class Provider extends AbstractProvider
 {
     /**

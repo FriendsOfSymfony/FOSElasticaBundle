@@ -10,6 +10,17 @@
     </parameters>
 
     <services>
+        <service id="fos_elastica.pager_persister" class="FOS\ElasticaBundle\Persister\PagerPersister">
+            <argument type="service" id="fos_elastica.indexable" />
+            <argument type="service" id="fos_elastica.persister_registry" />
+        </service>
+
+        <service id="fos_elastica.persister_registry" class="FOS\ElasticaBundle\Persister\PersisterRegistry">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+
         <service id="fos_elastica.object_persister" class="%fos_elastica.object_persister.class%" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
