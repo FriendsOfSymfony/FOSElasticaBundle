@@ -306,7 +306,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                     'aws_secret_access_key' => 'AWS_SECRET',
                     'aws_region' => 'AWS_REGION',
                     'aws_session_token' => 'AWS_SESSION_TOKEN',
-                    'ssl' => true
+                    'ssl' => true,
                 ],
             ],
         ]);

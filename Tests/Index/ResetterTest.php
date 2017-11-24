@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\Index;
 
-use Elastica\Request;
 use Elastica\Type;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\TypeConfig;
