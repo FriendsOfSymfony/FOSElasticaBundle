@@ -27,7 +27,7 @@ install:
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
   - /tmp/elasticsearch/bin/elasticsearch-plugin install -b mapper-attachments
   - /tmp/elasticsearch/bin/elasticsearch --daemonize -Epath.data=/tmp
-  - sleep 10 && curl http://127.0.0.1:9200
+  - .travis/wait-for-elasticsearch.sh
 
 before_script:
   - phpenv config-add travis.php.ini
