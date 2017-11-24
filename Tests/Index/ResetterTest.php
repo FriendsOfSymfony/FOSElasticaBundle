@@ -17,7 +17,6 @@ use FOS\ElasticaBundle\Configuration\TypeConfig;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
-use FOS\ElasticaBundle\Index\AliasProcessor;
 use FOS\ElasticaBundle\Index\Resetter;
 
 class ResetterTest extends \PHPUnit_Framework_TestCase

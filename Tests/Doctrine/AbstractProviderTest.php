@@ -381,6 +381,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 interface ObjectManager
 {
     public function clear();
+
     public function getClassMetadata();
+
     public function getIdentifierFieldNames();
 }

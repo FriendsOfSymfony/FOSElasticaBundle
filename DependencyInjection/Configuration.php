@@ -115,7 +115,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('url')
                                             ->validate()
                                                 ->ifTrue(function ($url) {
-                                                    return $url && substr($url, -1) !== '/';
+                                                    return $url && '/' !== substr($url, -1);
                                                 })
                                                 ->then(function ($url) {
                                                     return $url.'/';

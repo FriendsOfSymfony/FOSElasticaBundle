@@ -223,8 +223,8 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(123, $document->getId());
         $this->assertSame('someName', $data['name']);
         $this->assertSame(7.2, $data['float']);
-        $this->assertSame(true, $data['bool']);
-        $this->assertSame(false, $data['falseBool']);
+        $this->assertTrue($data['bool']);
+        $this->assertFalse($data['falseBool']);
         $expectedDate = new \DateTime('1979-05-05');
         $this->assertSame($expectedDate->format('c'), $data['date']);
     }

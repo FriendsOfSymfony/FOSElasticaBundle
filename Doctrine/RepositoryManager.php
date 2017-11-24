@@ -70,7 +70,7 @@ class RepositoryManager implements RepositoryManagerInterface
     public function getRepository($entityName)
     {
         $realEntityName = $entityName;
-        if (strpos($entityName, ':') !== false) {
+        if (false !== strpos($entityName, ':')) {
             list($namespaceAlias, $simpleClassName) = explode(':', $entityName);
             $realEntityName = $this->managerRegistry->getAliasNamespace($namespaceAlias).'\\'.$simpleClassName;
         }
