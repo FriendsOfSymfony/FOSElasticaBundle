@@ -14,8 +14,6 @@ matrix:
       env: ES_VERSION=5.2.1
     - php: 7.1
       env: ES_VERSION=5.2.1
-    - php: hhvm
-      env: ES_VERSION=5.2.1
     - php: 5.6
       env: COMPOSER_FLAGS="--prefer-lowest --prefer-stable" ES_VERSION=5.2.1
     - php: 5.6
