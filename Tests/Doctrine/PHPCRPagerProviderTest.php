@@ -9,7 +9,6 @@ use Doctrine\ODM\PHPCR\Query\Builder;
 use FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
-use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
 use Pagerfanta\Adapter\DoctrineODMPhpcrAdapter;
 
 class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
