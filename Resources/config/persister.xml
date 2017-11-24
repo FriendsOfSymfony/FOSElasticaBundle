@@ -16,6 +16,7 @@
         </service>
 
         <service id="fos_elastica.persister_registry" class="FOS\ElasticaBundle\Persister\PersisterRegistry">
+            <argument type="collection"></argument>
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>

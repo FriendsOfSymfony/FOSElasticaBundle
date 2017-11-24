@@ -18,25 +18,28 @@ class PersisterRegistry implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    /** @var array */
+    /** 
+     * @var array 
+     */
     private $persisters = [];
 
     /**
-     * @param string $index
-     * @param string $type
-     * @param string $persisterId
+     * @param array $persisters
      */
-    public function addPersister($index, $type, $persisterId)
+    public function __construct(array $persisters)
     {
-        if (!isset($this->persisters[$index])) {
-            $this->persisters[$index] = [];
-        }
-
-        $this->persisters[$index][$type] = $persisterId;
+        $this->persisters = $persisters;
     }
 
     /**
+     * Gets the persister for an index and type.
+     *
+     * @param string $index
+     * @param string $type
+     *
      * @return ObjectPersisterInterface
+     *
+     * @throws \InvalidArgumentException if no persister was registered for the index and type
      */
     public function getPersister($index, $type)
     {
