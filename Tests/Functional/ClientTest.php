@@ -25,20 +25,6 @@ namespace FOS\ElasticaBundle\Tests\Functional;
  */
 class ClientTest extends WebTestCase
 {
-    public function testContainerSource()
-    {
-        $client = $this->createClient(['test_case' => 'Basic']);
-
-        $es = $client->getContainer()->get('fos_elastica.client.default');
-        $this->assertInstanceOf('Elastica\\Connection\\Strategy\\RoundRobin', $es->getConnectionStrategy());
-
-        $es = $client->getContainer()->get('fos_elastica.client.second_server');
-        $this->assertInstanceOf('Elastica\\Connection\\Strategy\\RoundRobin', $es->getConnectionStrategy());
-
-        $es = $client->getContainer()->get('fos_elastica.client.third');
-        $this->assertInstanceOf('Elastica\\Connection\\Strategy\\Simple', $es->getConnectionStrategy());
-    }
-
     protected function setUp()
     {
         parent::setUp();
@@ -51,5 +37,19 @@ class ClientTest extends WebTestCase
         parent::tearDown();
 
         $this->deleteTmpDir('Basic');
+    }
+
+    public function testContainerSource()
+    {
+        $client = $this->createClient(['test_case' => 'Basic']);
+
+        $es = $client->getContainer()->get('fos_elastica.client.default');
+        $this->assertInstanceOf('Elastica\\Connection\\Strategy\\RoundRobin', $es->getConnectionStrategy());
+
+        $es = $client->getContainer()->get('fos_elastica.client.second_server');
+        $this->assertInstanceOf('Elastica\\Connection\\Strategy\\RoundRobin', $es->getConnectionStrategy());
+
+        $es = $client->getContainer()->get('fos_elastica.client.third');
+        $this->assertInstanceOf('Elastica\\Connection\\Strategy\\Simple', $es->getConnectionStrategy());
     }
 }

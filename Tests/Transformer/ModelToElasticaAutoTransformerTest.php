@@ -19,7 +19,6 @@ class POPO
 {
     public $id = 123;
     public $name = 'someName';
-    private $desc = 'desc';
     public $float = 7.2;
     public $bool = true;
     public $falseBool = false;
@@ -27,6 +26,7 @@ class POPO
     public $nullValue;
     public $file;
     public $fileContents;
+    private $desc = 'desc';
 
     public function __construct()
     {

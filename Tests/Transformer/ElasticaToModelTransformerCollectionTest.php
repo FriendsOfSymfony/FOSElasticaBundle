@@ -23,32 +23,6 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
     protected $collection;
     protected $transformers = [];
 
-    protected function collectionSetup()
-    {
-        $transformer1 = $this->getMockBuilder('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface')->getMock();
-        $transformer1->expects($this->any())
-            ->method('getObjectClass')
-            ->will($this->returnValue('FOS\ElasticaBundle\Tests\Transformer\POPO'));
-
-        $transformer1->expects($this->any())
-            ->method('getIdentifierField')
-            ->will($this->returnValue('id'));
-
-        $transformer2 = $this->getMockBuilder('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface')->getMock();
-        $transformer2->expects($this->any())
-            ->method('getObjectClass')
-            ->will($this->returnValue('FOS\ElasticaBundle\Tests\Transformer\POPO2'));
-
-        $transformer2->expects($this->any())
-            ->method('getIdentifierField')
-            ->will($this->returnValue('id'));
-
-        $this->collection = new ElasticaToModelTransformerCollection($this->transformers = [
-            'type1' => $transformer1,
-            'type2' => $transformer2,
-        ]);
-    }
-
     public function testGetObjectClass()
     {
         $this->collectionSetup();
@@ -184,6 +158,32 @@ class ElasticaToModelTransformerCollectionTest extends \PHPUnit_Framework_TestCa
         $hybridResult = array_pop($hybridResults);
         $this->assertSame($result, $hybridResult->getResult());
         $this->assertSame($transformedObject, $hybridResult->getTransformed());
+    }
+
+    protected function collectionSetup()
+    {
+        $transformer1 = $this->getMockBuilder('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface')->getMock();
+        $transformer1->expects($this->any())
+            ->method('getObjectClass')
+            ->will($this->returnValue('FOS\ElasticaBundle\Tests\Transformer\POPO'));
+
+        $transformer1->expects($this->any())
+            ->method('getIdentifierField')
+            ->will($this->returnValue('id'));
+
+        $transformer2 = $this->getMockBuilder('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface')->getMock();
+        $transformer2->expects($this->any())
+            ->method('getObjectClass')
+            ->will($this->returnValue('FOS\ElasticaBundle\Tests\Transformer\POPO2'));
+
+        $transformer2->expects($this->any())
+            ->method('getIdentifierField')
+            ->will($this->returnValue('id'));
+
+        $this->collection = new ElasticaToModelTransformerCollection($this->transformers = [
+            'type1' => $transformer1,
+            'type2' => $transformer2,
+        ]);
     }
 }
 

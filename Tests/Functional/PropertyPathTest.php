@@ -27,6 +27,20 @@ use Elastica\Query\Match;
  */
 class PropertyPathTest extends WebTestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->deleteTmpDir('Basic');
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->deleteTmpDir('Basic');
+    }
+
     public function testContainerSource()
     {
         $client = $this->createClient(['test_case' => 'ORM']);
@@ -45,19 +59,5 @@ class PropertyPathTest extends WebTestCase
         $search = $index->createSearch($query);
 
         $this->assertSame(1, $search->count());
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('Basic');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('Basic');
     }
 }

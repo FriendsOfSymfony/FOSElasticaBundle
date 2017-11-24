@@ -35,6 +35,39 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
      */
     protected $objectClass = 'stdClass';
 
+    protected function setUp()
+    {
+        $this->registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->manager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->registry->expects($this->any())
+            ->method('getManagerForClass')
+            ->with($this->objectClass)
+            ->will($this->returnValue($this->manager));
+
+        $this->repository = $this
+            ->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')
+            ->setMethods([
+                'customQueryBuilderCreator',
+                'createQueryBuilder',
+                'find',
+                'findAll',
+                'findBy',
+                'findOneBy',
+                'getClassName',
+            ])->getMock();
+
+        $this->manager->expects($this->any())
+            ->method('getRepository')
+            ->with($this->objectClass)
+            ->will($this->returnValue($this->repository));
+    }
+
     /**
      * Tests that the Transformer uses the query_builder_method configuration option
      * allowing configuration of createQueryBuilder call.
@@ -127,38 +160,5 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
 
         $method->invokeArgs($transformer, [[1, 2, 3], /* $hydrate */true]);
-    }
-
-    protected function setUp()
-    {
-        $this->registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->manager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->registry->expects($this->any())
-            ->method('getManagerForClass')
-            ->with($this->objectClass)
-            ->will($this->returnValue($this->manager));
-
-        $this->repository = $this
-            ->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')
-            ->setMethods([
-                'customQueryBuilderCreator',
-                'createQueryBuilder',
-                'find',
-                'findAll',
-                'findBy',
-                'findOneBy',
-                'getClassName',
-            ])->getMock();
-
-        $this->manager->expects($this->any())
-            ->method('getRepository')
-            ->with($this->objectClass)
-            ->will($this->returnValue($this->repository));
     }
 }

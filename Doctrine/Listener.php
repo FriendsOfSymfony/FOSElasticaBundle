@@ -26,20 +26,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class Listener
 {
     /**
-     * Object persister.
-     *
-     * @var ObjectPersisterInterface
-     */
-    protected $objectPersister;
-
-    /**
-     * Configuration for the listener.
-     *
-     * @var array
-     */
-    private $config;
-
-    /**
      * Objects scheduled for insertion.
      *
      * @var array
@@ -59,6 +45,12 @@ class Listener
      * @var array
      */
     public $scheduledForDeletion = [];
+    /**
+     * Object persister.
+     *
+     * @var ObjectPersisterInterface
+     */
+    protected $objectPersister;
 
     /**
      * PropertyAccessor instance.
@@ -66,6 +58,13 @@ class Listener
      * @var PropertyAccessorInterface
      */
     protected $propertyAccessor;
+
+    /**
+     * Configuration for the listener.
+     *
+     * @var array
+     */
+    private $config;
 
     /**
      * @var IndexableInterface
@@ -160,6 +159,31 @@ class Listener
     }
 
     /**
+     * Iterate through scheduled actions before flushing to emulate 2.x behavior.
+     * Note that the ElasticSearch index will fall out of sync with the source
+     * data in the event of a crash during flush.
+     *
+     * This method is only called in legacy configurations of the listener.
+     *
+     * @deprecated This method should only be called in applications that depend
+     *             on the behaviour that entities are indexed regardless of if a
+     *             flush is successful
+     */
+    public function preFlush()
+    {
+        $this->persistScheduled();
+    }
+
+    /**
+     * Iterating through scheduled actions *after* flushing ensures that the
+     * ElasticSearch index will be affected only if the query is successful.
+     */
+    public function postFlush()
+    {
+        $this->persistScheduled();
+    }
+
+    /**
      * Determines whether or not it is okay to persist now.
      *
      * @return bool
@@ -189,31 +213,6 @@ class Listener
                 $this->scheduledForDeletion = [];
             }
         }
-    }
-
-    /**
-     * Iterate through scheduled actions before flushing to emulate 2.x behavior.
-     * Note that the ElasticSearch index will fall out of sync with the source
-     * data in the event of a crash during flush.
-     *
-     * This method is only called in legacy configurations of the listener.
-     *
-     * @deprecated This method should only be called in applications that depend
-     *             on the behaviour that entities are indexed regardless of if a
-     *             flush is successful
-     */
-    public function preFlush()
-    {
-        $this->persistScheduled();
-    }
-
-    /**
-     * Iterating through scheduled actions *after* flushing ensures that the
-     * ElasticSearch index will be affected only if the query is successful.
-     */
-    public function postFlush()
-    {
-        $this->persistScheduled();
     }
 
     /**

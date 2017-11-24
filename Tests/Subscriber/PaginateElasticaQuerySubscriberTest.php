@@ -21,20 +21,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 {
-    protected function getAdapterMock()
-    {
-        return $this->getMockBuilder(RawPaginatorAdapter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    protected function getResultSetMock()
-    {
-        return $this->getMockBuilder(PartialResultsInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
     public function testShouldDoNothingIfSortParamIsEmpty()
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request()));
@@ -282,6 +268,20 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
                 'match_all' => new \stdClass(),
             ],
         ], $query->toArray());
+    }
+
+    protected function getAdapterMock()
+    {
+        return $this->getMockBuilder(RawPaginatorAdapter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    protected function getResultSetMock()
+    {
+        return $this->getMockBuilder(PartialResultsInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     private function getRequestStack(Request $request = null)

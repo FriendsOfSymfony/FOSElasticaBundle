@@ -25,6 +25,20 @@ namespace FOS\ElasticaBundle\Tests\Functional;
  */
 class SerializerTest extends WebTestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->deleteTmpDir('Serializer');
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->deleteTmpDir('Serializer');
+    }
+
     public function testMappingIteratorToArrayField()
     {
         $client = $this->createClient(['test_case' => 'Serializer']);
@@ -75,19 +89,5 @@ class SerializerTest extends WebTestCase
         $client = $this->createClient(['test_case' => 'Serializer']);
         $resetter = $client->getContainer()->get('fos_elastica.resetter');
         $resetter->resetIndex('index');
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('Serializer');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('Serializer');
     }
 }

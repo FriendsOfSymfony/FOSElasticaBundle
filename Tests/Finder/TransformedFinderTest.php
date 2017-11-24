@@ -16,49 +16,6 @@ use FOS\ElasticaBundle\Finder\TransformedFinder;
 
 class TransformedFinderTest extends \PHPUnit_Framework_TestCase
 {
-    private function createMockTransformer($transformMethod)
-    {
-        $transformer = $this->getMockBuilder('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface')->getMock();
-
-        $transformer
-            ->expects($this->once())
-            ->method($transformMethod)
-            ->with([]);
-
-        return $transformer;
-    }
-
-    private function createMockFinderForSearch($transformer, $query, $limit)
-    {
-        $searchable = $this->getMockBuilder('Elastica\SearchableInterface')->getMock();
-
-        $finder = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->setConstructorArgs([$searchable, $transformer])
-            ->setMethods(['search'])
-            ->getMock();
-
-        $finder
-            ->expects($this->once())
-            ->method('search')
-            ->with($query, $limit)
-            ->will($this->returnValue([]));
-
-        return $finder;
-    }
-
-    private function createMockResultSet()
-    {
-        $resultSet = $this
-            ->getMockBuilder('Elastica\ResultSet')
-            ->disableOriginalConstructor()
-            ->setMethods(['getResults'])
-            ->getMock();
-
-        $resultSet->expects($this->once())->method('getResults')->will($this->returnValue([]));
-
-        return $resultSet;
-    }
-
     public function testFindMethodTransformsSearchResults()
     {
         $transformer = $this->createMockTransformer('transform');
@@ -131,5 +88,48 @@ class TransformedFinderTest extends \PHPUnit_Framework_TestCase
         $finder = new TransformedFinder($searchable, $transformer);
 
         $this->assertInstanceOf('FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter', $finder->createHybridPaginatorAdapter(''));
+    }
+
+    private function createMockTransformer($transformMethod)
+    {
+        $transformer = $this->getMockBuilder('FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface')->getMock();
+
+        $transformer
+            ->expects($this->once())
+            ->method($transformMethod)
+            ->with([]);
+
+        return $transformer;
+    }
+
+    private function createMockFinderForSearch($transformer, $query, $limit)
+    {
+        $searchable = $this->getMockBuilder('Elastica\SearchableInterface')->getMock();
+
+        $finder = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
+            ->setConstructorArgs([$searchable, $transformer])
+            ->setMethods(['search'])
+            ->getMock();
+
+        $finder
+            ->expects($this->once())
+            ->method('search')
+            ->with($query, $limit)
+            ->will($this->returnValue([]));
+
+        return $finder;
+    }
+
+    private function createMockResultSet()
+    {
+        $resultSet = $this
+            ->getMockBuilder('Elastica\ResultSet')
+            ->disableOriginalConstructor()
+            ->setMethods(['getResults'])
+            ->getMock();
+
+        $resultSet->expects($this->once())->method('getResults')->will($this->returnValue([]));
+
+        return $resultSet;
     }
 }

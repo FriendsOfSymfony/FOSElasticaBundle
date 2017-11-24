@@ -33,6 +33,11 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
      */
     private $processor;
 
+    protected function setUp()
+    {
+        $this->processor = new AliasProcessor();
+    }
+
     /**
      * @dataProvider getSetRootNameData
      *
@@ -204,11 +209,6 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
             ['name', [], 'name_'],
             ['name', ['elasticSearchName' => 'notname'], 'notname_'],
         ];
-    }
-
-    protected function setUp()
-    {
-        $this->processor = new AliasProcessor();
     }
 
     private function getMockedIndex($name)

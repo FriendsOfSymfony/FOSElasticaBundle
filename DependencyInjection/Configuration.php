@@ -72,136 +72,34 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Adds the configuration for the "clients" key.
+     * Returns the array node used for "dynamic_templates".
      */
-    private function addClientsSection(ArrayNodeDefinition $rootNode)
+    public function getDynamicTemplateNode()
     {
-        $rootNode
-            ->fixXmlConfig('client')
-            ->children()
-                ->arrayNode('clients')
-                    ->useAttributeAsKey('id')
-                    ->prototype('array')
-                        ->performNoDeepMerging()
-                        // Elastica names its properties with camel case, support both
-                        ->beforeNormalization()
-                        ->ifTrue(function ($v) {
-                            return isset($v['connection_strategy']);
-                        })
-                        ->then(function ($v) {
-                            $v['connectionStrategy'] = $v['connection_strategy'];
-                            unset($v['connection_strategy']);
+        $builder = new TreeBuilder();
+        $node = $builder->root('dynamic_templates');
 
-                            return $v;
-                        })
-                        ->end()
-                        // If there is no connections array key defined, assume a single connection.
-                        ->beforeNormalization()
-                        ->ifTrue(function ($v) {
-                            return is_array($v) && !array_key_exists('connections', $v);
-                        })
-                        ->then(function ($v) {
-                            return [
-                                'connections' => [$v],
-                            ];
-                        })
-                        ->end()
-                        ->children()
-                            ->arrayNode('connections')
-                                ->requiresAtLeastOneElement()
-                                ->prototype('array')
-                                    ->fixXmlConfig('header')
-                                    ->children()
-                                        ->scalarNode('url')
-                                            ->validate()
-                                                ->ifTrue(function ($url) {
-                                                    return $url && '/' !== substr($url, -1);
-                                                })
-                                                ->then(function ($url) {
-                                                    return $url.'/';
-                                                })
-                                            ->end()
-                                        ->end()
-                                        ->scalarNode('username')->end()
-                                        ->scalarNode('password')->end()
-                                        ->scalarNode('host')->end()
-                                        ->scalarNode('port')->end()
-                                        ->scalarNode('proxy')->end()
-                                        ->scalarNode('aws_access_key_id')->end()
-                                        ->scalarNode('aws_secret_access_key')->end()
-                                        ->scalarNode('aws_region')->end()
-                                        ->scalarNode('aws_session_token')->end()
-                                        ->booleanNode('ssl')->defaultValue(false)->end()
-                                        ->scalarNode('logger')
-                                            ->defaultValue($this->debug ? 'fos_elastica.logger' : false)
-                                            ->treatNullLike('fos_elastica.logger')
-                                            ->treatTrueLike('fos_elastica.logger')
-                                        ->end()
-                                        ->booleanNode('compression')->defaultValue(false)->end()
-                                        ->arrayNode('headers')
-                                            ->normalizeKeys(false)
-                                            ->useAttributeAsKey('name')
-                                            ->prototype('scalar')->end()
-                                        ->end()
-                                        ->arrayNode('curl')
-                                            ->useAttributeAsKey(CURLOPT_SSL_VERIFYPEER)
-                                            ->prototype('boolean')->end()
-                                        ->end()
-                                        ->scalarNode('transport')->end()
-                                        ->scalarNode('timeout')->end()
-                                        ->scalarNode('connectTimeout')->end()
-                                        ->scalarNode('retryOnConflict')
-                                            ->defaultValue(0)
-                                        ->end()
-                                    ->end()
-                                ->end()
+        $node
+            ->prototype('array')
+                ->prototype('array')
+                    ->children()
+                        ->scalarNode('match')->end()
+                        ->scalarNode('unmatch')->end()
+                        ->scalarNode('match_mapping_type')->end()
+                        ->scalarNode('path_match')->end()
+                        ->scalarNode('path_unmatch')->end()
+                        ->scalarNode('match_pattern')->end()
+                        ->arrayNode('mapping')
+                            ->prototype('variable')
+                                ->treatNullLike([])
                             ->end()
-                            ->scalarNode('timeout')->end()
-                            ->scalarNode('connectTimeout')->end()
-                            ->scalarNode('headers')->end()
-                            ->scalarNode('connectionStrategy')->defaultValue('Simple')->end()
                         ->end()
                     ->end()
                 ->end()
             ->end()
         ;
-    }
 
-    /**
-     * Adds the configuration for the "indexes" key.
-     */
-    private function addIndexesSection(ArrayNodeDefinition $rootNode)
-    {
-        $rootNode
-            ->fixXmlConfig('index')
-            ->children()
-                ->arrayNode('indexes')
-                    ->useAttributeAsKey('name')
-                    ->prototype('array')
-                        ->children()
-                            ->scalarNode('index_name')
-                                ->info('Defaults to the name of the index, but can be modified if the index name is different in ElasticSearch')
-                            ->end()
-                            ->booleanNode('use_alias')->defaultValue(false)->end()
-                            ->scalarNode('client')->end()
-                            ->scalarNode('finder')
-                                ->treatNullLike(true)
-                                ->defaultFalse()
-                            ->end()
-                            ->arrayNode('type_prototype')
-                                ->children()
-                                    ->scalarNode('analyzer')->end()
-                                    ->append($this->getPersistenceNode())
-                                    ->append($this->getSerializerNode())
-                                ->end()
-                            ->end()
-                            ->variableNode('settings')->defaultValue([])->end()
-                        ->end()
-                        ->append($this->getTypesNode())
-                    ->end()
-                ->end()
-            ->end()
-        ;
+        return $node;
     }
 
     /**
@@ -276,37 +174,6 @@ class Configuration implements ConfigurationInterface
             ->useAttributeAsKey('name')
             ->prototype('variable')
                 ->treatNullLike([]);
-
-        return $node;
-    }
-
-    /**
-     * Returns the array node used for "dynamic_templates".
-     */
-    public function getDynamicTemplateNode()
-    {
-        $builder = new TreeBuilder();
-        $node = $builder->root('dynamic_templates');
-
-        $node
-            ->prototype('array')
-                ->prototype('array')
-                    ->children()
-                        ->scalarNode('match')->end()
-                        ->scalarNode('unmatch')->end()
-                        ->scalarNode('match_mapping_type')->end()
-                        ->scalarNode('path_match')->end()
-                        ->scalarNode('path_unmatch')->end()
-                        ->scalarNode('match_pattern')->end()
-                        ->arrayNode('mapping')
-                            ->prototype('variable')
-                                ->treatNullLike([])
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end()
-        ;
 
         return $node;
     }
@@ -538,5 +405,138 @@ class Configuration implements ConfigurationInterface
             ->end();
 
         return $node;
+    }
+
+    /**
+     * Adds the configuration for the "clients" key.
+     */
+    private function addClientsSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->fixXmlConfig('client')
+            ->children()
+                ->arrayNode('clients')
+                    ->useAttributeAsKey('id')
+                    ->prototype('array')
+                        ->performNoDeepMerging()
+                        // Elastica names its properties with camel case, support both
+                        ->beforeNormalization()
+                        ->ifTrue(function ($v) {
+                            return isset($v['connection_strategy']);
+                        })
+                        ->then(function ($v) {
+                            $v['connectionStrategy'] = $v['connection_strategy'];
+                            unset($v['connection_strategy']);
+
+                            return $v;
+                        })
+                        ->end()
+                        // If there is no connections array key defined, assume a single connection.
+                        ->beforeNormalization()
+                        ->ifTrue(function ($v) {
+                            return is_array($v) && !array_key_exists('connections', $v);
+                        })
+                        ->then(function ($v) {
+                            return [
+                                'connections' => [$v],
+                            ];
+                        })
+                        ->end()
+                        ->children()
+                            ->arrayNode('connections')
+                                ->requiresAtLeastOneElement()
+                                ->prototype('array')
+                                    ->fixXmlConfig('header')
+                                    ->children()
+                                        ->scalarNode('url')
+                                            ->validate()
+                                                ->ifTrue(function ($url) {
+                                                    return $url && '/' !== substr($url, -1);
+                                                })
+                                                ->then(function ($url) {
+                                                    return $url.'/';
+                                                })
+                                            ->end()
+                                        ->end()
+                                        ->scalarNode('username')->end()
+                                        ->scalarNode('password')->end()
+                                        ->scalarNode('host')->end()
+                                        ->scalarNode('port')->end()
+                                        ->scalarNode('proxy')->end()
+                                        ->scalarNode('aws_access_key_id')->end()
+                                        ->scalarNode('aws_secret_access_key')->end()
+                                        ->scalarNode('aws_region')->end()
+                                        ->scalarNode('aws_session_token')->end()
+                                        ->booleanNode('ssl')->defaultValue(false)->end()
+                                        ->scalarNode('logger')
+                                            ->defaultValue($this->debug ? 'fos_elastica.logger' : false)
+                                            ->treatNullLike('fos_elastica.logger')
+                                            ->treatTrueLike('fos_elastica.logger')
+                                        ->end()
+                                        ->booleanNode('compression')->defaultValue(false)->end()
+                                        ->arrayNode('headers')
+                                            ->normalizeKeys(false)
+                                            ->useAttributeAsKey('name')
+                                            ->prototype('scalar')->end()
+                                        ->end()
+                                        ->arrayNode('curl')
+                                            ->useAttributeAsKey(CURLOPT_SSL_VERIFYPEER)
+                                            ->prototype('boolean')->end()
+                                        ->end()
+                                        ->scalarNode('transport')->end()
+                                        ->scalarNode('timeout')->end()
+                                        ->scalarNode('connectTimeout')->end()
+                                        ->scalarNode('retryOnConflict')
+                                            ->defaultValue(0)
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                            ->scalarNode('timeout')->end()
+                            ->scalarNode('connectTimeout')->end()
+                            ->scalarNode('headers')->end()
+                            ->scalarNode('connectionStrategy')->defaultValue('Simple')->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    /**
+     * Adds the configuration for the "indexes" key.
+     */
+    private function addIndexesSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->fixXmlConfig('index')
+            ->children()
+                ->arrayNode('indexes')
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('index_name')
+                                ->info('Defaults to the name of the index, but can be modified if the index name is different in ElasticSearch')
+                            ->end()
+                            ->booleanNode('use_alias')->defaultValue(false)->end()
+                            ->scalarNode('client')->end()
+                            ->scalarNode('finder')
+                                ->treatNullLike(true)
+                                ->defaultFalse()
+                            ->end()
+                            ->arrayNode('type_prototype')
+                                ->children()
+                                    ->scalarNode('analyzer')->end()
+                                    ->append($this->getPersistenceNode())
+                                    ->append($this->getSerializerNode())
+                                ->end()
+                            ->end()
+                            ->variableNode('settings')->defaultValue([])->end()
+                        ->end()
+                        ->append($this->getTypesNode())
+                    ->end()
+                ->end()
+            ->end()
+        ;
     }
 }

@@ -57,6 +57,16 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     }
 
     /**
+     * @return array
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            'knp_pager.items' => ['items', 1],
+        ];
+    }
+
+    /**
      * Adds knp paging sort to query.
      *
      * @param ItemsEvent $event
@@ -131,15 +141,5 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     private function getRequest()
     {
         return $this->requestStack->getCurrentRequest();
-    }
-
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            'knp_pager.items' => ['items', 1],
-        ];
     }
 }
