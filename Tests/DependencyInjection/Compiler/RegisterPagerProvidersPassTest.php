@@ -3,7 +3,6 @@
 namespace FOS\ElasticaBundle\Tests\DependencyInjection\Compiler;
 
 use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterPagerProvidersPass;
-use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterProvidersPass;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -111,7 +110,7 @@ class RegisterPagerProvidersPassTest extends \PHPUnit_Framework_TestCase
         $container->setDefinition('a_foo_provider', $provider);
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Elastica provider "a_foo_provider" with class "stdClass" must implement ProviderInterface.');
+        $this->expectExceptionMessage('Elastica provider "a_foo_provider" with class "stdClass" must implement "FOS\ElasticaBundle\Provider\PagerProviderInterface".');
 
         $pass->process($container);
     }

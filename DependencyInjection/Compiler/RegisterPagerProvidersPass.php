@@ -75,9 +75,10 @@ class RegisterPagerProvidersPass implements CompilerPassInterface
 
         if (!$rc->implementsInterface(PagerProviderInterface::class)) {
             throw new \InvalidArgumentException(sprintf(
-                'Elastica provider "%s" with class "%s" must implement ProviderInterface.',
+                'Elastica provider "%s" with class "%s" must implement "%s".',
                 $providerId,
-                $providerClass
+                $providerClass,
+                PagerProviderInterface::class
             ));
         }
     }
