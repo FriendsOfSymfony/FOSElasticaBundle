@@ -1,38 +1,41 @@
 language: php
 
+sudo: false
+
 cache:
     directories:
         - $HOME/.composer/cache
 
-addons:
-  apt:
-    sources:
-      - elasticsearch-2.x
-    packages:
-      elasticsearch
-
-php:
-  - 5.5
-  - 5.6
-  - 7.0
-  - 7.1
-  - hhvm
-
 matrix:
   include:
     - php: 5.5
-      env: COMPOSER_FLAGS="--prefer-lowest --prefer-stable"
+      env: ES_VERSION=2.3.3
     - php: 5.6
-      env: SYMFONY_VERSION='2.8.*'
+      env: ES_VERSION=2.3.3
+    - php: 7.0
+      env: ES_VERSION=2.3.3
     - php: 7.1
-      env: SYMFONY_VERSION='2.8.*'
+      env: ES_VERSION=2.3.3
+    - php: hhvm
+      env: ES_VERSION=2.3.3
+    - php: 5.5
+      env: COMPOSER_FLAGS="--prefer-lowest --prefer-stable" ES_VERSION=2.3.3
+    - php: 5.6
+      env: SYMFONY_VERSION='2.8.*' ES_VERSION=2.3.3
+    - php: 7.1
+      env: SYMFONY_VERSION='2.8.*' ES_VERSION=2.3.3
   allow_failures:
     - php: hhvm
   fast_finish: true
 
+install:
+  - mkdir /tmp/elasticsearch
+  - wget -O - https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/${ES_VERSION}/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
+  - /tmp/elasticsearch/bin/plugin install -b mapper-attachments
+  - /tmp/elasticsearch/bin/elasticsearch --daemonize --path.data /tmp
+  - sleep 10 && curl http://127.0.0.1:9200
+
 before_script:
-  - sudo /usr/share/elasticsearch/bin/plugin install -b mapper-attachments
-  - sudo service elasticsearch restart
   - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then phpenv config-add travis.php.ini; fi;
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "5.5" || "$TRAVIS_PHP_VERSION" = "5.6" ]; then echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.0" ]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
@@ -42,9 +45,6 @@ before_script:
 
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.clover
-
-services:
-  - elasticsearch
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
