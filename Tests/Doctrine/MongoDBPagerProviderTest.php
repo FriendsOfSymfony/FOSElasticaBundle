@@ -9,10 +9,9 @@ use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
-class MongoDBPagerProviderTest extends TestCase
+class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {

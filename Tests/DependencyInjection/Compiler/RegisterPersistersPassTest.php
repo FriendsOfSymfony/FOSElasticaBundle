@@ -5,12 +5,11 @@ namespace FOS\ElasticaBundle\Tests\DependencyInjection\Compiler;
 use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterPersistersPass;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\PersisterRegistry;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class RegisterPersistersPassTest extends TestCase
+class RegisterPersistersPassTest extends \PHPUnit_Framework_TestCase
 {
     public function testShouldImplementCompilerPassInterface()
     {
@@ -74,8 +73,7 @@ class RegisterPersistersPassTest extends TestCase
 
         $container->setDefinition('a_persister', $this->createPersisterDefinition([]));
 
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Elastica persister "a_persister" must specify the "type" attribute.');
+        $this->setExpectedException(\InvalidArgumentException::class, 'Elastica persister "a_persister" must specify the "type" attribute.');
 
         $pass->process($container);
     }
@@ -91,8 +89,7 @@ class RegisterPersistersPassTest extends TestCase
         $container->setDefinition('a_foo_persister', $this->createPersisterDefinition(['index' => 'foo', 'type' => 'bar']));
         $container->setDefinition('a_bar_persister', $this->createPersisterDefinition(['index' => 'foo', 'type' => 'bar']));
 
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cannot register persister "a_bar_persister". The persister "a_foo_persister" has been registered for same index "foo" and type "bar"');
+        $this->setExpectedException(\InvalidArgumentException::class, 'Cannot register persister "a_bar_persister". The persister "a_foo_persister" has been registered for same index "foo" and type "bar"');
 
         $pass->process($container);
     }
@@ -110,8 +107,7 @@ class RegisterPersistersPassTest extends TestCase
 
         $container->setDefinition('a_foo_persister', $persister);
 
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Elastica persister "a_foo_persister" with class "stdClass" must implement "FOS\ElasticaBundle\Persister\ObjectPersisterInterface".');
+        $this->setExpectedException(\InvalidArgumentException::class, 'Elastica persister "a_foo_persister" with class "stdClass" must implement "FOS\ElasticaBundle\Persister\ObjectPersisterInterface".');
 
         $pass->process($container);
     }

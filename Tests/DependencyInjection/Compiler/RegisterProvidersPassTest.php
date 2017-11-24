@@ -3,11 +3,10 @@
 namespace FOS\ElasticaBundle\Tests\DependencyInjection\Compiler;
 
 use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterProvidersPass;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class RegisterProvidersPassTest extends TestCase
+class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
 {
     public function testProcessShouldRegisterTaggedProviders()
     {
