@@ -2,27 +2,20 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\DocumentRepository;
-use Doctrine\ODM\MongoDB\Query\Builder;
-use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use FOS\ElasticaBundle\Doctrine\ORMPagerProvider;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
-use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
-class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
+class ORMPagerProviderTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp()
-    {
-        if (!class_exists(DocumentManager::class)) {
-            $this->markTestSkipped('Doctrine MongoDB ODM is not available.');
-        }
-    }
-
     public function testShouldImplementPagerProviderInterface()
     {
-        $rc = new \ReflectionClass(MongoDBPagerProvider::class);
+        $rc = new \ReflectionClass(ORMPagerProvider::class);
 
         $this->assertTrue($rc->implementsInterface(PagerProviderInterface::class));
     }
@@ -33,7 +26,7 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = [];
 
-        new MongoDBPagerProvider($doctrine, $objectClass, $baseConfig);
+        new ORMPagerProvider($doctrine, $objectClass, $baseConfig);
     }
 
     public function testShouldReturnPagerfanataPagerWithDoctrineODMMongoDBAdapter()
@@ -41,15 +34,15 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $expectedBuilder = $this->createMock(Builder::class);
+        $expectedBuilder = $this->createMock(QueryBuilder::class);
 
-        $repository = $this->createMock(DocumentRepository::class);
+        $repository = $this->createMock(EntityRepository::class);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
             ->willReturn($expectedBuilder);
 
-        $manager = $this->createMock(DocumentManager::class);
+        $manager = $this->createMock(EntityManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -64,16 +57,14 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
             ->with($objectClass)
             ->willReturn($manager);
 
-        $provider = new MongoDBPagerProvider($doctrine, $objectClass, $baseConfig);
+        $provider = new ORMPagerProvider($doctrine, $objectClass, $baseConfig);
 
         $pager = $provider->provide();
 
         $this->assertInstanceOf(PagerfantaPager::class, $pager);
 
         $adapter = $pager->getPagerfanta()->getAdapter();
-        $this->assertInstanceOf(DoctrineODMMongoDBAdapter::class, $adapter);
-
-        $this->assertAttributeSame($expectedBuilder, 'queryBuilder', $adapter);
+        $this->assertInstanceOf(DoctrineORMAdapter::class, $adapter);
     }
 
     public function testShouldAllowCallCustomRepositoryMethod()
@@ -81,16 +72,17 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->createMock(MongoDBCustomRepository::class);
+        $repository = $this->createMock(ORMCustomRepository::class);
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
-            ->willReturn($this->createMock(Builder::class));
+            ->willReturn($this->createMock(QueryBuilder::class));
 
-        $manager = $this->createMock(DocumentManager::class);
+        $manager = $this->createMock(EntityManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
+            ->with($objectClass)
             ->willReturn($repository);
 
 
@@ -98,9 +90,10 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
+            ->with($objectClass)
             ->willReturn($manager);
 
-        $provider = new MongoDBPagerProvider($doctrine, $objectClass, $baseConfig);
+        $provider = new ORMPagerProvider($doctrine, $objectClass, $baseConfig);
 
         $pager = $provider->provide(['query_builder_method' => 'createCustomQueryBuilder']);
 
@@ -116,7 +109,7 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class MongoDBCustomRepository extends DocumentRepository
+class ORMCustomRepository extends EntityRepository
 {
     public function createCustomQueryBuilder() {}
 }

@@ -63,14 +63,12 @@ class ORMPagerProvider implements PagerProviderInterface
     /**
      * {@inheritdoc}
      */
-    private function createQueryBuilder($method, array $arguments = [])
+    private function createQueryBuilder($method)
     {
         $repository = $this->doctrine
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass);
-        // ORM query builders require an alias argument
-        $arguments = [static::ENTITY_ALIAS] + $arguments;
 
-        return call_user_func_array([$repository, $method], $arguments);
+        return call_user_func([$repository, $method], self::ENTITY_ALIAS);
     }
 }
