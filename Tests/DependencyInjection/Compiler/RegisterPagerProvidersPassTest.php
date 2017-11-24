@@ -5,11 +5,12 @@ namespace FOS\ElasticaBundle\Tests\DependencyInjection\Compiler;
 use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterPagerProvidersPass;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class RegisterPagerProvidersPassTest extends \PHPUnit_Framework_TestCase
+class RegisterPagerProvidersPassTest extends TestCase
 {
     public function testShouldImplementCompilerPassInterface()
     {

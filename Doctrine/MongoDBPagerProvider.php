@@ -63,12 +63,12 @@ class MongoDBPagerProvider implements PagerProviderInterface
     /**
      * {@inheritdoc}
      */
-    private function createQueryBuilder($method, array $arguments = [])
+    private function createQueryBuilder($method)
     {
         $repository = $this->doctrine
             ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass);
 
-        return call_user_func_array([$repository, $method], $arguments);
+        return call_user_func([$repository, $method]);
     }
 }

@@ -70,4 +70,12 @@ class PagerfantaPager implements PagerInterface
     {
         return $this->pagerfanta->getCurrentPageResults();
     }
+
+    /**
+     * @return Pagerfanta
+     */
+    public function getPagerfanta()
+    {
+        return $this->pagerfanta;
+    }
 }

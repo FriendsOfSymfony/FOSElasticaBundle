@@ -4,13 +4,13 @@ namespace FOS\ElasticaBundle\Tests\DependencyInjection\Compiler;
 
 use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterPersistersPass;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
-use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
 use FOS\ElasticaBundle\Persister\PersisterRegistry;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class RegisterPersistersPassTest extends \PHPUnit_Framework_TestCase
+class RegisterPersistersPassTest extends TestCase
 {
     public function testShouldImplementCompilerPassInterface()
     {
