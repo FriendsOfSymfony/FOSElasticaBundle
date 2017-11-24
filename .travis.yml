@@ -29,6 +29,7 @@ install:
   - /tmp/elasticsearch/bin/elasticsearch --daemonize -Epath.data=/tmp
   - .travis/wait-for-elasticsearch.sh
 
+
 before_script:
   - phpenv config-add travis.php.ini
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
