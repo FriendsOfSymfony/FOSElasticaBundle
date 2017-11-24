@@ -42,6 +42,7 @@ class RegisterPagerProvidersPass implements CompilerPassInterface
                 if (isset($registeredProviders[$index][$type])) {
                     throw new \InvalidArgumentException(sprintf(
                         'Cannot register provider "%s". The provider "%s" has been registered for same index "%s" and type "%s"',
+                        $id,
                         $registeredProviders[$index][$type],
                         $index,
                         $type
