@@ -5,7 +5,7 @@ namespace FOS\ElasticaBundle\Tests\Doctrine;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\DocumentRepository;
-use Doctrine\ODM\PHPCR\Query\Builder;
+use Doctrine\ODM\PHPCR\Query\Builder\QueryBuilder;
 use FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
@@ -42,7 +42,7 @@ class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $expectedBuilder = $this->getMock(Builder::class, [], [], '', false);
+        $expectedBuilder = $this->getMock(QueryBuilder::class, [], [], '', false);
 
         $repository = $this->getMock(DocumentRepository::class, [], [], '', false);
         $repository
@@ -86,7 +86,7 @@ class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
-            ->willReturn($this->getMock(Builder::class, [], [], '', false));
+            ->willReturn($this->getMock(QueryBuilder::class, [], [], '', false));
 
         $manager = $this->getMock(DocumentManager::class, [], [], '', false);
         $manager

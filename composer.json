@@ -27,6 +27,7 @@
         "doctrine/orm": "~2.4",
         "doctrine/doctrine-bundle": "~1.6",
         "doctrine/phpcr-bundle": "~1.2",
+        "doctrine/phpcr-odm": "^1",
         "jackalope/jackalope-doctrine-dbal": "~1.1",
         "jms/serializer-bundle": "~1.1",
         "phpunit/phpunit": "~4.8|~5.0",

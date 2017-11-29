@@ -66,7 +66,7 @@ class PHPCRPagerProvider implements PagerProviderInterface
     protected function createQueryBuilder($method)
     {
         return $this->doctrine
-            ->getManager()
+            ->getManagerForClass($this->objectClass)
             ->getRepository($this->objectClass)
             ->{$method}(static::ENTITY_ALIAS);
     }
