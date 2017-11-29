@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Create command
+ * Create command.
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
@@ -39,7 +40,7 @@ class CreateCommand extends ContainerAwareCommand
     private $configManager;
 
     /**
-     * Alias processor
+     * Alias processor.
      *
      * @var AliasProcessor
      */
@@ -74,7 +75,7 @@ class CreateCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $indexName = $input->getOption('index');
-        $indexes = null === $indexName ? array_keys($this->indexManager->getAllIndexes()) : array($indexName);
+        $indexes = null === $indexName ? array_keys($this->indexManager->getAllIndexes()) : [$indexName];
 
         foreach ($indexes as $indexName) {
             $output->writeln(sprintf('<info>Creating</info> <comment>%s</comment>', $indexName));

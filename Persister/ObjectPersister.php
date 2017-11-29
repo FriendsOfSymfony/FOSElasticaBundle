@@ -62,22 +62,6 @@ class ObjectPersister implements ObjectPersisterInterface
     }
 
     /**
-     * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw.
-     *
-     * @param BulkException $e
-     *
-     * @throws BulkException
-     */
-    private function log(BulkException $e)
-    {
-        if (!$this->logger) {
-            throw $e;
-        }
-
-        $this->logger->error($e);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function insertOne($object)
@@ -182,5 +166,21 @@ class ObjectPersister implements ObjectPersisterInterface
     public function transformToElasticaDocument($object)
     {
         return $this->transformer->transform($object, $this->fields);
+    }
+
+    /**
+     * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw.
+     *
+     * @param BulkException $e
+     *
+     * @throws BulkException
+     */
+    private function log(BulkException $e)
+    {
+        if (!$this->logger) {
+            throw $e;
+        }
+
+        $this->logger->error($e);
     }
 }

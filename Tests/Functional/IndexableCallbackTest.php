@@ -25,6 +25,20 @@ namespace FOS\ElasticaBundle\Tests\Functional;
  */
 class IndexableCallbackTest extends WebTestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->deleteTmpDir('ORM');
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->deleteTmpDir('ORM');
+    }
+
     /**
      * 2 reasons for this test:.
      *
@@ -43,19 +57,5 @@ class IndexableCallbackTest extends WebTestCase
         $this->assertTrue($in->isObjectIndexable('index', 'type2', new TypeObj()));
         $this->assertFalse($in->isObjectIndexable('index', 'type3', new TypeObj()));
         $this->assertFalse($in->isObjectIndexable('index', 'type4', new TypeObj()));
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('ORM');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('ORM');
     }
 }

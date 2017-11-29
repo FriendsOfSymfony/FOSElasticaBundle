@@ -317,8 +317,8 @@ namespace FOS\ElasticaBundle\Tests\Doctrine\Listener;
 
 class Entity
 {
-    private $id;
     public $identifier;
+    private $id;
 
     /**
      * @param int $id

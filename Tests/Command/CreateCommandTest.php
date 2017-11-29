@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -20,7 +21,7 @@ use FOS\ElasticaBundle\Index\MappingBuilder;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
- * Create command test
+ * Create command test.
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
@@ -96,7 +97,7 @@ class CreateCommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test execute with index provided and with alias
+     * Test execute with index provided and with alias.
      *
      * @return void
      */
@@ -121,7 +122,7 @@ class CreateCommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test execute with index provided and without alias
+     * Test execute with index provided and without alias.
      *
      * @return void
      */
