@@ -8,6 +8,7 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\ElasticaBundle\Doctrine\ORMPagerProvider;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
+use FOS\ElasticaBundle\Tests\Mocks\DoctrineORMCustomRepositoryMock;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
@@ -72,7 +73,7 @@ class ORMPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->createMock(ORMCustomRepository::class);
+        $repository = $this->createMock(DoctrineORMCustomRepositoryMock::class);
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
@@ -107,9 +108,4 @@ class ORMPagerProviderTest extends \PHPUnit_Framework_TestCase
     {
         return $this->createMock(ManagerRegistry::class);
     }
-}
-
-class ORMCustomRepository extends EntityRepository
-{
-    public function createCustomQueryBuilder() {}
 }

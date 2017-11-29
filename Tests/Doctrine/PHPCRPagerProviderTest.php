@@ -9,6 +9,7 @@ use Doctrine\ODM\PHPCR\Query\Builder;
 use FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
+use FOS\ElasticaBundle\Tests\Mocks\DoctrinePHPCRCustomRepositoryMock;
 use Pagerfanta\Adapter\DoctrineODMPhpcrAdapter;
 
 class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
@@ -81,7 +82,7 @@ class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->createMock(PHPCRCustomRepository::class);
+        $repository = $this->createMock(DoctrinePHPCRCustomRepositoryMock::class);
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
@@ -114,9 +115,4 @@ class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
     {
         return $this->createMock(ManagerRegistry::class);
     }
-}
-
-class PHPCRCustomRepository extends DocumentRepository
-{
-    public function createCustomQueryBuilder() {}
 }

@@ -8,6 +8,7 @@ use Doctrine\ODM\MongoDB\Query\Builder;
 use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
+use FOS\ElasticaBundle\Tests\Mocks\DoctrineMongoDBCustomRepositoryMock;
 use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
@@ -81,7 +82,7 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->createMock(MongoDBCustomRepository::class);
+        $repository = $this->createMock(DoctrineMongoDBCustomRepositoryMock::class);
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
@@ -114,9 +115,4 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
     {
         return $this->createMock(ManagerRegistry::class);
     }
-}
-
-class MongoDBCustomRepository extends DocumentRepository
-{
-    public function createCustomQueryBuilder() {}
 }
