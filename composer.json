@@ -39,7 +39,6 @@
         "symfony/serializer": "^2.7 || ^3.1",
         "symfony/yaml": "^2.7 || ^3.1",
         "symfony/dependency-injection": "^2.7 || ^3.1",
-        "symfony/validator": "^2.7 || ^3.1",
         "friendsofphp/php-cs-fixer": "^1.11"
     },
     "autoload": {
