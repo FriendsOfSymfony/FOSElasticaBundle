@@ -42,15 +42,15 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $expectedBuilder = $this->createMock(Builder::class);
+        $expectedBuilder = $this->getMock(Builder::class, [], [], '', false);
 
-        $repository = $this->createMock(DocumentRepository::class);
+        $repository = $this->getMock(DocumentRepository::class, [], [], '', false);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
             ->willReturn($expectedBuilder);
 
-        $manager = $this->createMock(DocumentManager::class);
+        $manager = $this->getMock(DocumentManager::class, [], [], '', false);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -82,13 +82,13 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->createMock(DoctrineMongoDBCustomRepositoryMock::class);
+        $repository = $this->getMock(DoctrineMongoDBCustomRepositoryMock::class, [], [], '', false);
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
-            ->willReturn($this->createMock(Builder::class));
+            ->willReturn($this->getMock(Builder::class, [], [], '', false));
 
-        $manager = $this->createMock(DocumentManager::class);
+        $manager = $this->getMock(DocumentManager::class, [], [], '', false);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -113,6 +113,6 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function createDoctrineMock()
     {
-        return $this->createMock(ManagerRegistry::class);
+        return $this->getMock(ManagerRegistry::class, [], [], '', false);
     }
 }
