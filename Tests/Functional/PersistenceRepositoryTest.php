@@ -13,17 +13,6 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 class PersistenceRepositoryTest extends WebTestCase
 {
-    public function testRepositoryShouldBeSetCorrectly()
-    {
-        $client = $this->createClient(['test_case' => 'ORM']);
-
-        $repository = $client->getContainer()->get('fos_elastica.manager.orm')
-            ->getRepository('FOS\ElasticaBundle\Tests\Functional\TypeObject');
-
-        $this->assertNotNull($repository);
-        $this->assertSame('FOS\ElasticaBundle\Tests\Functional\TypeObjectRepository', get_class($repository));
-    }
-
     protected function setUp()
     {
         parent::setUp();
@@ -36,5 +25,16 @@ class PersistenceRepositoryTest extends WebTestCase
         parent::tearDown();
 
         $this->deleteTmpDir('Basic');
+    }
+
+    public function testRepositoryShouldBeSetCorrectly()
+    {
+        $client = $this->createClient(['test_case' => 'ORM']);
+
+        $repository = $client->getContainer()->get('fos_elastica.manager.orm')
+            ->getRepository('FOS\ElasticaBundle\Tests\Functional\TypeObject');
+
+        $this->assertNotNull($repository);
+        $this->assertSame('FOS\ElasticaBundle\Tests\Functional\TypeObjectRepository', get_class($repository));
     }
 }

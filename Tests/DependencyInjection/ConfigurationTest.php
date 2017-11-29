@@ -29,13 +29,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->processor = new Processor();
     }
 
-    private function getConfigs(array $configArray)
-    {
-        $configuration = new Configuration(true);
-
-        return $this->processor->processConfiguration($configuration, [$configArray]);
-    }
-
     public function testUnconfiguredConfiguration()
     {
         $configuration = $this->getConfigs([]);
@@ -306,7 +299,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                     'aws_secret_access_key' => 'AWS_SECRET',
                     'aws_region' => 'AWS_REGION',
                     'aws_session_token' => 'AWS_SESSION_TOKEN',
-                    'ssl' => true
+                    'ssl' => true,
                 ],
             ],
         ]);
@@ -317,5 +310,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('AWS_REGION', $connection['aws_region']);
         $this->assertSame('AWS_SESSION_TOKEN', $connection['aws_session_token']);
         $this->assertTrue($connection['ssl']);
+    }
+
+    private function getConfigs(array $configArray)
+    {
+        $configuration = new Configuration(true);
+
+        return $this->processor->processConfiguration($configuration, [$configArray]);
     }
 }

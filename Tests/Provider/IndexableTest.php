@@ -26,6 +26,17 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
 {
     public $container;
 
+    protected function setUp()
+    {
+        $this->container = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\ContainerInterface')
+            ->getMock();
+
+        $this->container->expects($this->any())
+            ->method('get')
+            ->with('indexableService')
+            ->will($this->returnValue(new IndexableDecider()));
+    }
+
     public function testIndexableUnknown()
     {
         $indexable = new Indexable([]);
@@ -90,17 +101,6 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
             ['[]', false],
         ];
     }
-
-    protected function setUp()
-    {
-        $this->container = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\ContainerInterface')
-            ->getMock();
-
-        $this->container->expects($this->any())
-            ->method('get')
-            ->with('indexableService')
-            ->will($this->returnValue(new IndexableDecider()));
-    }
 }
 
 class Entity
@@ -120,6 +120,11 @@ class Entity
 
 class IndexableDecider
 {
+    public function __invoke($object)
+    {
+        return true;
+    }
+
     public function isIndexable(Entity $entity)
     {
         return !$entity->isIndexable();
@@ -127,10 +132,5 @@ class IndexableDecider
 
     protected function internalMethod()
     {
-    }
-
-    public function __invoke($object)
-    {
-        return true;
     }
 }

@@ -27,6 +27,22 @@ use Symfony\Bundle\FrameworkBundle\Client;
  */
 class MappingToElasticaTest extends WebTestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->deleteTmpDir('Basic');
+        $this->deleteTmpDir('ORM');
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->deleteTmpDir('Basic');
+        $this->deleteTmpDir('ORM');
+    }
+
     public function testResetIndexAddsMappings()
     {
         $client = $this->createClient(['test_case' => 'Basic']);
@@ -121,21 +137,5 @@ class MappingToElasticaTest extends WebTestCase
     private function getType(Client $client, $type = 'type')
     {
         return $client->getContainer()->get('fos_elastica.index.index.'.$type);
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('Basic');
-        $this->deleteTmpDir('ORM');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('Basic');
-        $this->deleteTmpDir('ORM');
     }
 }

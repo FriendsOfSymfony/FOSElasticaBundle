@@ -80,7 +80,7 @@ class MappingBuilder
             $mapping['analyzer'] = $typeConfig->getAnalyzer();
         }
 
-        if ($typeConfig->getDynamic() !== null) {
+        if (null !== $typeConfig->getDynamic()) {
             $mapping['dynamic'] = $typeConfig->getDynamic();
         }
 

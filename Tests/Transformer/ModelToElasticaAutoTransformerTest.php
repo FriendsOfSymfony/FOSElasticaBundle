@@ -19,7 +19,6 @@ class POPO
 {
     public $id = 123;
     public $name = 'someName';
-    private $desc = 'desc';
     public $float = 7.2;
     public $bool = true;
     public $falseBool = false;
@@ -27,6 +26,7 @@ class POPO
     public $nullValue;
     public $file;
     public $fileContents;
+    private $desc = 'desc';
 
     public function __construct()
     {
@@ -223,8 +223,8 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(123, $document->getId());
         $this->assertSame('someName', $data['name']);
         $this->assertSame(7.2, $data['float']);
-        $this->assertSame(true, $data['bool']);
-        $this->assertSame(false, $data['falseBool']);
+        $this->assertTrue($data['bool']);
+        $this->assertFalse($data['falseBool']);
         $expectedDate = new \DateTime('1979-05-05');
         $this->assertSame($expectedDate->format('c'), $data['date']);
     }

@@ -18,42 +18,6 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
  */
 class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpKernel\Log\LoggerInterface
-     */
-    private function getMockLogger()
-    {
-        return $this->getMockBuilder('Psr\Log\LoggerInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    /**
-     * @param string $level
-     * @param string $message
-     * @param array  $context
-     *
-     * @return ElasticaLogger
-     */
-    private function getMockLoggerForLevelMessageAndContext($level, $message, $context)
-    {
-        $loggerMock = $this->getMockBuilder('Psr\Log\LoggerInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $loggerMock->expects($this->once())
-            ->method('log')
-            ->with(
-                $level,
-                $this->equalTo($message),
-                $this->equalTo($context)
-            );
-
-        $elasticaLogger = new ElasticaLogger($loggerMock);
-
-        return $elasticaLogger;
-    }
-
     public function testGetZeroIfNoQueriesAdded()
     {
         $elasticaLogger = new ElasticaLogger();
@@ -186,5 +150,41 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
         $elasticaLogger = new ElasticaLogger($loggerMock);
 
         $elasticaLogger->log($level, $message, $context);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpKernel\Log\LoggerInterface
+     */
+    private function getMockLogger()
+    {
+        return $this->getMockBuilder('Psr\Log\LoggerInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * @param string $level
+     * @param string $message
+     * @param array  $context
+     *
+     * @return ElasticaLogger
+     */
+    private function getMockLoggerForLevelMessageAndContext($level, $message, $context)
+    {
+        $loggerMock = $this->getMockBuilder('Psr\Log\LoggerInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $loggerMock->expects($this->once())
+            ->method('log')
+            ->with(
+                $level,
+                $this->equalTo($message),
+                $this->equalTo($context)
+            );
+
+        $elasticaLogger = new ElasticaLogger($loggerMock);
+
+        return $elasticaLogger;
     }
 }

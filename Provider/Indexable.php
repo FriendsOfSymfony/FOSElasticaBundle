@@ -223,7 +223,7 @@ class Indexable implements IndexableInterface, ContainerAwareInterface
     {
         list($class, $method) = $callback + [null, '__invoke'];
 
-        if (strpos($class, '@') === 0) {
+        if (0 === strpos($class, '@')) {
             $service = $this->container->get(substr($class, 1));
             $callback = [$service, $method];
 

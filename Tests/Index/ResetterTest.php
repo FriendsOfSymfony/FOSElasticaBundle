@@ -11,14 +11,12 @@
 
 namespace FOS\ElasticaBundle\Tests\Index;
 
-use Elastica\Request;
 use Elastica\Type;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\TypeConfig;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
-use FOS\ElasticaBundle\Index\AliasProcessor;
 use FOS\ElasticaBundle\Index\Resetter;
 
 class ResetterTest extends \PHPUnit_Framework_TestCase
@@ -34,6 +32,35 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     private $elasticaClient;
     private $indexManager;
     private $mappingBuilder;
+
+    protected function setUp()
+    {
+        $this->aliasProcessor = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\AliasProcessor')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->configManager = $this->getMockBuilder('FOS\\ElasticaBundle\\Configuration\\ConfigManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->dispatcher = $this->getMockBuilder('Symfony\\Component\\EventDispatcher\\EventDispatcherInterface')
+            ->getMock();
+        $this->elasticaClient = $this->getMockBuilder('Elastica\\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->indexManager = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\IndexManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->mappingBuilder = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\MappingBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->resetter = new Resetter(
+            $this->configManager,
+            $this->indexManager,
+            $this->aliasProcessor,
+            $this->mappingBuilder,
+            $this->dispatcher
+        );
+    }
 
     public function testResetAllIndexes()
     {
@@ -260,34 +287,5 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             ->willReturn($mapping);
 
         return $index;
-    }
-
-    protected function setUp()
-    {
-        $this->aliasProcessor = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\AliasProcessor')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->configManager = $this->getMockBuilder('FOS\\ElasticaBundle\\Configuration\\ConfigManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->dispatcher = $this->getMockBuilder('Symfony\\Component\\EventDispatcher\\EventDispatcherInterface')
-            ->getMock();
-        $this->elasticaClient = $this->getMockBuilder('Elastica\\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->indexManager = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\IndexManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->mappingBuilder = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\MappingBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->resetter = new Resetter(
-            $this->configManager,
-            $this->indexManager,
-            $this->aliasProcessor,
-            $this->mappingBuilder,
-            $this->dispatcher
-        );
     }
 }
