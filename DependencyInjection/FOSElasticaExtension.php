@@ -323,7 +323,7 @@ class FOSElasticaExtension extends Extension
         if (isset($typeConfig['provider'])) {
             $this->loadTypeProvider($typeConfig, $container, $objectPersisterId, $indexName, $typeName);
 
-            if (isset($typeConfig['provider']['pager_provider'])) {
+            if (isset($typeConfig['provider']['pager_provider']) && $typeConfig['provider']['pager_provider']) {
                 if (!class_exists(Pagerfanta::class)) {
                     throw new \InvalidArgumentException('A pager provider needs "pagerfanta/pagerfanta:^1"  to be installed.');
                 }
@@ -503,9 +503,10 @@ class FOSElasticaExtension extends Extension
      */
     private function loadTypePagerProvider(array $typeConfig, ContainerBuilder $container, $indexName, $typeName)
     {
-        if (isset($typeConfig['provider']['service'])) {
-            return $typeConfig['provider']['service'];
-        }
+//     TODO don't forget to uncomment in master branch
+//        if (isset($typeConfig['provider']['service'])) {
+//            return $typeConfig['provider']['service'];
+//        }
 
         $baseConfig = $typeConfig['provider'];
         unset($baseConfig['service']);
@@ -533,6 +534,7 @@ class FOSElasticaExtension extends Extension
                 break;
             case 'propel':
                 $providerDef = new DefinitionDecorator('fos_elastica.pager_provider.prototype.'.$driver);
+                $providerDef->replaceArgument(0, $typeConfig['model']);
                 $providerDef->replaceArgument(1, $baseConfig);
 
                 break;
