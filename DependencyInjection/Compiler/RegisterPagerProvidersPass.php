@@ -15,7 +15,7 @@ use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class RegisterPagerProvidersPass implements CompilerPassInterface
+final class RegisterPagerProvidersPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

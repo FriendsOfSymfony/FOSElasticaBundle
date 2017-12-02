@@ -37,6 +37,8 @@ class PagerPersister implements PagerPersisterInterface
         $nbObjects = $pager->getNbResults();
         $objectPersister = $this->persisterRegistry->getPersister($options['indexName'], $options['typeName']);
 
+        $pager->setMaxPerPage($options['batch_size']);
+
         $page = $pager->getCurrentPage();
         for(;$page <= $pager->getNbPages(); $page++) {
             $pager->setCurrentPage($page);

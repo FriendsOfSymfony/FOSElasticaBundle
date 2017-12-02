@@ -15,7 +15,7 @@ use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class RegisterPersistersPass implements CompilerPassInterface
+final class RegisterPersistersPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
