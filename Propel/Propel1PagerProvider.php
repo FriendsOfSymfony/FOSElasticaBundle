@@ -16,7 +16,7 @@ use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Pagerfanta\Adapter\PropelAdapter;
 use Pagerfanta\Pagerfanta;
 
-class Propel1PagerProvider implements PagerProviderInterface
+final class Propel1PagerProvider implements PagerProviderInterface
 {
     /**
      * @var string

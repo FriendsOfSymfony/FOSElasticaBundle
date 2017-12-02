@@ -17,7 +17,7 @@ use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
-class ORMPagerProvider implements PagerProviderInterface
+final class ORMPagerProvider implements PagerProviderInterface
 {
     const ENTITY_ALIAS = 'a';
 

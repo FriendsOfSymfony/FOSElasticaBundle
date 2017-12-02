@@ -17,10 +17,8 @@ use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
 use Pagerfanta\Pagerfanta;
 
-class MongoDBPagerProvider implements PagerProviderInterface
+final class MongoDBPagerProvider implements PagerProviderInterface
 {
-    const ENTITY_ALIAS = 'a';
-
     /**
      * @var string
      */

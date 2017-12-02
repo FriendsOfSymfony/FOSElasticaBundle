@@ -17,7 +17,7 @@ use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Pagerfanta\Adapter\DoctrineODMPhpcrAdapter;
 use Pagerfanta\Pagerfanta;
 
-class PHPCRPagerProvider implements PagerProviderInterface
+final class PHPCRPagerProvider implements PagerProviderInterface
 {
     const ENTITY_ALIAS = 'a';
 
