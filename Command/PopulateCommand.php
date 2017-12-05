@@ -201,7 +201,7 @@ class PopulateCommand extends ContainerAwareCommand
             $options['batch_size'] = 100;
             $options['skip_indexable_check'] = false;
 
-            $this->pagerPersister->insert($pager, $loggerClosure, $options);
+            $this->pagerPersister->insert($pager, $options);
         } else {
             $provider = $this->providerRegistry->getProvider($index, $type);
             $provider->populate($loggerClosure, $options);

@@ -298,7 +298,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
      */
     private function createObjectPersisterMock()
     {
-        return $this->createMock(ObjectPersisterInterface::class);
+        return $this->getMock(ObjectPersisterInterface::class, [], [], '', false);
     }
 
     /**
@@ -306,7 +306,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
      */
     private function createPersisterRegistryMock()
     {
-        return $this->createMock(PersisterRegistry::class);
+        return $this->getMock(PersisterRegistry::class, [], [], '', false);
     }
 
     /**

@@ -59,7 +59,7 @@ final class PostPersistEventTest extends \PHPUnit_Framework_TestCase
      */
     private function createObjectPersisterMock()
     {
-        return $this->createMock(ObjectPersisterInterface::class);
+        return $this->getMock(ObjectPersisterInterface::class, [], [], '', false);
     }
 
     /**
@@ -67,6 +67,6 @@ final class PostPersistEventTest extends \PHPUnit_Framework_TestCase
      */
     private function createPagerMock()
     {
-        return $this->createMock(PagerInterface::class);
+        return $this->getMock(PagerInterface::class, [], [], '', false);
     }
 }
