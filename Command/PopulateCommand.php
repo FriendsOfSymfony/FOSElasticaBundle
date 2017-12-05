@@ -66,6 +66,7 @@ class PopulateCommand extends ContainerAwareCommand
             ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
             ->addOption('no-delete', null, InputOption::VALUE_NONE, 'Do not delete index after populate')
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
+            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Limit the number of objects to index', null)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
@@ -108,6 +109,7 @@ class PopulateCommand extends ContainerAwareCommand
             'reset' => $reset,
             'ignore_errors' => $input->getOption('ignore-errors'),
             'offset' => $input->getOption('offset'),
+            'limit' => $input->getOption('limit'),
             'sleep' => $input->getOption('sleep'),
         ];
 
@@ -115,10 +117,10 @@ class PopulateCommand extends ContainerAwareCommand
             $options['batch_size'] = (int) $input->getOption('batch-size');
         }
 
-        if ($input->isInteractive() && $reset && $input->getOption('offset')) {
+        if ($input->isInteractive() && $reset && ($input->getOption('offset') || $input->getOption('limit'))) {
             /** @var QuestionHelper $dialog */
             $dialog = $this->getHelperSet()->get('question');
-            if (!$dialog->ask($input, $output, new Question('<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>'))) {
+            if (!$dialog->ask($input, $output, new Question('<question>You chose to reset the index and start indexing with an offset or limit. Do you really want to do that?</question>'))) {
                 return;
             }
         }
