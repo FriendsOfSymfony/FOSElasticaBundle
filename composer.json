@@ -31,7 +31,7 @@
         "jackalope/jackalope-doctrine-dbal": "~1.1",
         "jms/serializer-bundle": "~1.1",
         "phpunit/phpunit": "~4.8|~5.0",
-        "propel/propel1": "1.6.*",
+        "propel/propel1": "^1.6",
         "pagerfanta/pagerfanta": "^1.0.5",
         "knplabs/knp-components": "~1.2",
         "knplabs/knp-paginator-bundle": "~2.4",
