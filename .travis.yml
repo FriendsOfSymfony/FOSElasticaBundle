@@ -9,17 +9,17 @@ cache:
 matrix:
   include:
     - php: 5.5
-      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.*'
+      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.4.*'
     - php: 5.6
-      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.*'
+      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.4.*'
     - php: 7.0
-      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.*'
+      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.4.*'
     - php: 7.1
-      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.*'
+      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.4.*'
     - php: hhvm
-      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.*'
+      env: ES_VERSION=2.3.3 SYMFONY_VERSION='3.4.*'
     - php: 5.5
-      env: COMPOSER_FLAGS="--prefer-lowest --prefer-stable" ES_VERSION=2.3.3 SYMFONY_VERSION='3.*'
+      env: COMPOSER_FLAGS="--prefer-lowest --prefer-stable" ES_VERSION=2.3.3 SYMFONY_VERSION='3.4.*'
     - php: 5.6
       env: SYMFONY_VERSION='2.8.*' ES_VERSION=2.3.3
     - php: 7.1
