@@ -1,25 +1,11 @@
 <?php
 
-namespace FOS\ElasticaBundle\Tests\ObjectPersister;
+namespace FOS\ElasticaBundle\Tests\Persister;
 
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
+use FOS\ElasticaBundle\Tests\Mocks\ObjectPersisterPOPO as POPO;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-
-class POPO
-{
-    public $id   = 123;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getName()
-    {
-        return 'popoName';
-    }
-}
 
 class InvalidObjectPersister extends ObjectPersister
 {
