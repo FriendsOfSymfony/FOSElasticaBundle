@@ -8,6 +8,7 @@ Available documentation for FOSElasticaBundle
 * [Usage](usage.md)
 * [Using a Serializer](serializer.md)
 * [Types](types.md)
+* [Provider](provider.md)
 
 Cookbook Entries
 ----------------

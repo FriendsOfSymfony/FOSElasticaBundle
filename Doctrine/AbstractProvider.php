@@ -141,7 +141,8 @@ abstract class AbstractProvider extends BaseAbstractProvider
             'ignore_errors'        => false,
             'offset'               => 0,
             'query_builder_method' => 'createQueryBuilder',
-            'sleep'                => 0
+            'sleep'                => 0,
+            'pager_provider'       => true,
         ));
     }
 

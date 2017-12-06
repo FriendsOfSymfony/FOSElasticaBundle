@@ -10,9 +10,9 @@
     </parameters>
 
     <services>
-        <service id="fos_elastica.pager_persister" class="FOS\ElasticaBundle\Persister\PagerPersister">
-            <argument type="service" id="fos_elastica.indexable" />
+        <service id="fos_elastica.pager_persister" class="FOS\ElasticaBundle\Persister\InPlacePagerPersister">
             <argument type="service" id="fos_elastica.persister_registry" />
+            <argument type="service" id="event_dispatcher" />
         </service>
 
         <service id="fos_elastica.persister_registry" class="FOS\ElasticaBundle\Persister\PersisterRegistry">

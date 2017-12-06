@@ -60,6 +60,10 @@ final class InPlacePagerPersister implements PagerPersisterInterface
 
                 $objects = $pager->getCurrentPageResults();
 
+                if ($objects instanceof \Traversable) {
+                    $objects = iterator_to_array($objects);
+                }
+
                 $event = new PreInsertObjectsEvent($pager, $objectPersister, $objects, $options);
                 $this->dispatcher->dispatch(Events::PRE_INSERT_OBJECTS, $event);
                 $pager = $event->getPager();

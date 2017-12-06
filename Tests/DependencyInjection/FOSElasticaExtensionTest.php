@@ -4,8 +4,10 @@ namespace FOS\ElasticaBundle\Tests\DependencyInjection;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use FOS\ElasticaBundle\DependencyInjection\FOSElasticaExtension;
+use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Yaml\Yaml;
 
 class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
@@ -291,5 +293,47 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                 ['index' => 'acme_index', 'type' => 'acme_type'],
             ]
         ], $definition->getTags());
+    }
+
+    public function testShouldRegisterPagerPersister()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load([
+            'fos_elastica' => [
+                'clients' => [
+                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                ],
+                'indexes' => [
+                    'acme_index' => [
+                        'types' => [
+                            'acme_type' => [
+                                'properties' => ['text' => null],
+                                'persistence' => [
+                                    'driver' => 'propel',
+                                    'model' => 'theModelClass',
+                                    'provider' => ['pager_provider' => true],
+                                    'listener' => null,
+                                    'finder' => null,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], $container);
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_persister'));
+
+        $definition = $container->getDefinition('fos_elastica.pager_persister');
+        $this->assertSame(InPlacePagerPersister::class, $definition->getClass());
+
+        $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
+        $this->assertSame('fos_elastica.persister_registry', (string) $definition->getArgument(0));
+
+        $this->assertInstanceOf(Reference::class, $definition->getArgument(1));
+        $this->assertSame('event_dispatcher', (string) $definition->getArgument(1));
     }
 }
