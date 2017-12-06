@@ -13,6 +13,12 @@
     </parameters>
 
     <services>
+        <service id="fos_elastica.pager_provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider" public="true" abstract="true">
+            <argument type="service" id="doctrine" /> <!-- manager registry -->
+            <argument /> <!-- model -->
+            <argument type="collection" /> <!-- options -->
+        </service>
+
         <service id="fos_elastica.slice_fetcher.mongodb" class="%fos_elastica.slice_fetcher.mongodb.class%">
         </service>
 

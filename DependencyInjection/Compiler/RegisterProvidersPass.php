@@ -5,6 +5,9 @@ namespace FOS\ElasticaBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
+/**
+ * @deprecated since 4.x and will be removed in 5.0
+ */
 class RegisterProvidersPass implements CompilerPassInterface
 {
     /**
@@ -16,7 +19,7 @@ class RegisterProvidersPass implements CompilerPassInterface
     private $implementations = array();
 
     /**
-     * @see Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface::process()
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
@@ -24,9 +27,7 @@ class RegisterProvidersPass implements CompilerPassInterface
             return;
         }
 
-        // Infer the default index name from the service alias
-        $defaultIndex = substr($container->getAlias('fos_elastica.index'), 19);
-
+        $defaultIndex = $container->getParameter('fos_elastica.default_index');
         $registry = $container->getDefinition('fos_elastica.provider_registry');
         $providers = $container->findTaggedServiceIds('fos_elastica.provider');
 

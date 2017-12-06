@@ -16,7 +16,7 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
         $registryDefinition = new Definition();
 
         $container->setDefinition('fos_elastica.provider_registry', $registryDefinition);
-        $container->setAlias('fos_elastica.index', 'fos_elastica.index.foo');
+        $container->setParameter('fos_elastica.default_index', 'foo');
 
         $container->setDefinition('provider.foo.a', $this->createProviderDefinition(array('type' => 'a')));
         $container->setDefinition('provider.foo.b', $this->createProviderDefinition(array('index' => 'foo', 'type' => 'b')));
@@ -40,7 +40,7 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
         $pass = new RegisterProvidersPass();
 
         $container->setDefinition('fos_elastica.provider_registry', new Definition());
-        $container->setAlias('fos_elastica.index', 'fos_elastica.index.foo');
+        $container->setParameter('fos_elastica.default_index', 'foo');
 
         $providerDef = $this->createProviderDefinition();
         $providerDef->setClass('stdClass');
@@ -59,7 +59,7 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
         $pass = new RegisterProvidersPass();
 
         $container->setDefinition('fos_elastica.provider_registry', new Definition());
-        $container->setAlias('fos_elastica.index', 'fos_elastica.index.foo');
+        $container->setParameter('fos_elastica.default_index', 'foo');
 
         $container->setDefinition('provider.foo.a', $this->createProviderDefinition());
 

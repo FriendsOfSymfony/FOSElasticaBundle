@@ -1,6 +1,6 @@
 <?php
 
-namespace FOS\ElasticaBundle\Tests\Resetter;
+namespace FOS\ElasticaBundle\Tests;
 
 use Elastica\Result;
 use FOS\ElasticaBundle\HybridResult;

@@ -7,6 +7,8 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * @deprecated since 4.1 will be removed in 5.x. Use PagerProviderRegistry instead
+ * 
  * References persistence providers for each index and type.
  */
 class ProviderRegistry implements ContainerAwareInterface
