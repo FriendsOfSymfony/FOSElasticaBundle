@@ -9,27 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Tests\ObjectSerializerPersister;
+namespace FOS\ElasticaBundle\Tests\Persister;
 
 use FOS\ElasticaBundle\Persister\ObjectSerializerPersister;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer;
+use FOS\ElasticaBundle\Tests\Mocks\ObjectSerializerPersisterPOPO as POPO;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-
-class POPO
-{
-    public $id = 123;
-    public $name = 'popoName';
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-}
 
 class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
 {

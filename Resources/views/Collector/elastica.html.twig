@@ -75,18 +75,12 @@
                         <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS) }} ms
                     </small>
                     {% if query.connection.transport in ['Http', 'Https'] %}{# cURL support only HTTP #}
-                        <a href="#elastica_curl_query_{{ key }}" onclick="return toggle_details(this);" style="text-decoration: none;" title="Get the cURL repeatable query">
-                            <img alt="+" src="{{ asset('bundles/framework/images/blue_picto_more.gif') }}" style="display: inline; width: 12px; height: 12px; vertical-align: bottom;" />
-                            <img alt="-" src="{{ asset('bundles/framework/images/blue_picto_less.gif') }}" style="display: none; width: 12px; height: 12px; vertical-align: bottom;" />
-                            <small>Display cURL query</small>
-                        </a>
+                        &nbsp;
+                        <a href="#elastica_curl_query_{{ key }}" onclick="return toggle_details(this);" class="link-inverse sf-toggle-off" title="Get the cURL repeatable query"><small>Display cURL query</small></a>
                     {% endif %}
                     {% if query.backtrace is defined %}
-                        <a href="#elastica_query_backtrace_{{ key }}" onclick="return toggle_details(this);" style="text-decoration: none;" title="Display backtrace of query execution">
-                            <img alt="+" src="{{ asset('bundles/framework/images/blue_picto_more.gif') }}" style="display: inline; width: 12px; height: 12px; vertical-align: bottom;" />
-                            <img alt="-" src="{{ asset('bundles/framework/images/blue_picto_less.gif') }}" style="display: none; width: 12px; height: 12px; vertical-align: bottom;" />
-                            <small>Display query backtrace</small>
-                        </a>
+                        &nbsp;
+                        <a href="#elastica_query_backtrace_{{ key }}" onclick="return toggle_details(this);" class="link-inverse sf-toggle-off" title="Display backtrace of query execution"><small>Display query backtrace</small></a>
                     {% endif %}
 
                     {% if query.connection.transport in ['Http', 'Https'] %}{# cURL support only HTTP #}
@@ -103,20 +97,18 @@
             {% endfor %}
         </ul>
 
-        <script type="text/javascript">//<![CDATA[
+        <script>//<![CDATA[
             function toggle_details(link) {
                 "use strict";
 
-                var sections = link.children;
-
-                if (sections[0].style.display != 'none') {
-                    sections[0].style.display = 'none';
-                    sections[1].style.display = 'inline';
+                if (link.classList.contains('sf-toggle-off')) {
+                    link.classList.remove('sf-toggle-off');
+                    link.classList.add('sf-toggle-on');
 
                     document.getElementById(link.hash.replace("#", "")).style.display = 'block';
                 } else {
-                    sections[0].style.display = 'inline';
-                    sections[1].style.display = 'none';
+                    link.classList.remove('sf-toggle-on');
+                    link.classList.add('sf-toggle-off');
 
                     document.getElementById(link.hash.replace("#", "")).style.display = 'none';
                 }

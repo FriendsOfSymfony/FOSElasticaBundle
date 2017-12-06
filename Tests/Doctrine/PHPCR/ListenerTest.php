@@ -12,13 +12,14 @@
 namespace FOS\ElasticaBundle\Tests\Doctrine\PHPCR;
 
 use FOS\ElasticaBundle\Tests\Doctrine\ListenerTest as BaseListenerTest;
+use Doctrine\ODM\PHPCR\DocumentManager;
 
 class ListenerTest extends BaseListenerTest
 {
     public function setUp()
     {
-        if (!class_exists('Doctrine\ODM\PHPCR\DocumentManager')) {
-            $this->markTestSkipped('Doctrine PHPCR is not available.');
+        if (!class_exists(DocumentManager::class)) {
+            $this->markTestSkipped('Doctrine PHPCR is not present');
         }
     }
 

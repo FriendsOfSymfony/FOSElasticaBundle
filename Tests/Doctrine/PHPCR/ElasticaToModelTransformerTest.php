@@ -11,7 +11,10 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine\PHPCR;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\ElasticaBundle\Doctrine\PHPCR\ElasticaToModelTransformer;
+use Doctrine\ODM\PHPCR\DocumentManager;
+use Doctrine\ODM\PHPCR\DocumentRepository;
 
 class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,7 +29,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
     protected $manager;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var DocumentRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $repository;
 
@@ -40,7 +43,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
         if (!interface_exists('Doctrine\Common\Persistence\ManagerRegistry')) {
             $this->markTestSkipped('Doctrine Common is not present');
         }
-        if (!class_exists('Doctrine\ODM\PHPCR\DocumentManager')) {
+        if (!class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');
         }
 
@@ -57,8 +60,9 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->manager));
 
         $this->repository = $this
-            ->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')
-            ->setMethods([
+            ->getMockBuilder(DocumentRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array(
                 'customQueryBuilderCreator',
                 'createQueryBuilder',
                 'find',
@@ -66,7 +70,12 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
                 'findBy',
                 'findOneBy',
                 'getClassName',
-            ])->getMock();
+                'findMany'
+            ))->getMock();
+
+        $this->repository->expects($this->any())
+            ->method('findMany')
+            ->will($this->returnValue(new ArrayCollection([new \stdClass(), new \stdClass()])));
 
         $this->manager->expects($this->any())
             ->method('getRepository')

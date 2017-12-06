@@ -78,6 +78,60 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==', $configuration['clients']['clustered']['connections'][0]['headers'][0]);
     }
 
+    public function testShouldSetPagerProviderFlagToFalseByDefault()
+    {
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'default' => ['host' => 'a_host', 'port' => 'a_port'],
+            ],
+            'indexes' => [
+                'acme_index' => [
+                    'types' => [
+                        'acme_type' => [
+                            'properties' => ['text' => null],
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'AppBundle\Entity\Blog',
+                                'provider' => [/*'pager_provider' => true*/],
+                                'listener' => null,
+                                'finder' => null,
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->assertSame(false, $configuration['indexes']['acme_index']['types']['acme_type']['persistence']['provider']['pager_provider']);
+    }
+
+    public function testShouldAllowToSetPagerProviderExplicitly()
+    {
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'default' => ['host' => 'a_host', 'port' => 'a_port'],
+            ],
+            'indexes' => [
+                'acme_index' => [
+                    'types' => [
+                        'acme_type' => [
+                            'properties' => ['text' => null],
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'AppBundle\Entity\Blog',
+                                'provider' => ['pager_provider' => true],
+                                'listener' => null,
+                                'finder' => null,
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->assertSame(true, $configuration['indexes']['acme_index']['types']['acme_type']['persistence']['provider']['pager_provider']);
+    }
+
     public function testLogging()
     {
         $configuration = $this->getConfigs([
