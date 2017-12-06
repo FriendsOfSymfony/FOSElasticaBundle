@@ -50,26 +50,26 @@ final class InPlacePagerPersister implements PagerPersisterInterface
 
         $page = $pager->getCurrentPage();
         while ($page <= $pager->getNbPages()) {
+            $pager->setCurrentPage($page);
+
+            $event = new PreFetchObjectsEvent($pager, $objectPersister, $options);
+            $this->dispatcher->dispatch(Events::PRE_FETCH_OBJECTS, $event);
+            $pager = $event->getPager();
+            $options = $event->getOptions();
+
+            $objects = $pager->getCurrentPageResults();
+
+            if ($objects instanceof \Traversable) {
+                $objects = iterator_to_array($objects);
+            }
+
+            $event = new PreInsertObjectsEvent($pager, $objectPersister, $objects, $options);
+            $this->dispatcher->dispatch(Events::PRE_INSERT_OBJECTS, $event);
+            $pager = $event->getPager();
+            $options = $event->getOptions();
+            $objects = $event->getObjects();
+
             try {
-                $pager->setCurrentPage($page);
-
-                $event = new PreFetchObjectsEvent($pager, $objectPersister, $options);
-                $this->dispatcher->dispatch(Events::PRE_FETCH_OBJECTS, $event);
-                $pager = $event->getPager();
-                $options = $event->getOptions();
-
-                $objects = $pager->getCurrentPageResults();
-
-                if ($objects instanceof \Traversable) {
-                    $objects = iterator_to_array($objects);
-                }
-
-                $event = new PreInsertObjectsEvent($pager, $objectPersister, $objects, $options);
-                $this->dispatcher->dispatch(Events::PRE_INSERT_OBJECTS, $event);
-                $pager = $event->getPager();
-                $options = $event->getOptions();
-                $objects = $event->getObjects();
-
                 if (!empty($objects)) {
                     $objectPersister->insertMany($objects);
                 }
@@ -80,11 +80,16 @@ final class InPlacePagerPersister implements PagerPersisterInterface
                 $event = new OnExceptionEvent($pager, $objectPersister, $e, $options);
                 $this->dispatcher->dispatch(Events::ON_EXCEPTION, $event);
 
-                if (false == $event->isIgnored()) {
-                    $e = $event->getException();
+                if ($event->isIgnored()) {
+                    $event = new PostInsertObjectsEvent($pager, $objectPersister, $objects, $options);
+                    $this->dispatcher->dispatch(Events::POST_INSERT_OBJECTS, $event);
 
-                    throw $e;
+                    continue;
                 }
+
+                $e = $event->getException();
+
+                throw $e;
             }
 
             $pager->setCurrentPage($page++);
