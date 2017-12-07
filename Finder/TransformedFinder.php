@@ -70,24 +70,6 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * @param $query
-     * @param null|int $limit
-     * @param array    $options
-     *
-     * @return array
-     */
-    protected function search($query, $limit = null, $options = [])
-    {
-        $queryObject = Query::create($query);
-        if (null !== $limit) {
-            $queryObject->setSize($limit);
-        }
-        $results = $this->searchable->search($queryObject, $options)->getResults();
-
-        return $results;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function findPaginated($query, $options = [])
@@ -126,5 +108,23 @@ class TransformedFinder implements PaginatedFinderInterface
         $query = Query::create($query);
 
         return new RawPaginatorAdapter($this->searchable, $query, $options);
+    }
+
+    /**
+     * @param $query
+     * @param null|int $limit
+     * @param array    $options
+     *
+     * @return array
+     */
+    protected function search($query, $limit = null, $options = [])
+    {
+        $queryObject = Query::create($query);
+        if (null !== $limit) {
+            $queryObject->setSize($limit);
+        }
+        $results = $this->searchable->search($queryObject, $options)->getResults();
+
+        return $results;
     }
 }

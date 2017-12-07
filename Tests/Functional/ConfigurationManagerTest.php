@@ -27,19 +27,6 @@ use Symfony\Bundle\FrameworkBundle\Client;
  */
 class ConfigurationManagerTest extends WebTestCase
 {
-    public function testContainerSource()
-    {
-        $client = $this->createClient(['test_case' => 'Basic']);
-        $manager = $this->getManager($client);
-
-        $index = $manager->getIndexConfiguration('index');
-
-        $this->assertSame('index', $index->getName());
-        $this->assertGreaterThanOrEqual(2, count($index->getTypes()));
-        $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('type'));
-        $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('parent'));
-    }
-
     protected function setUp()
     {
         parent::setUp();
@@ -52,6 +39,19 @@ class ConfigurationManagerTest extends WebTestCase
         parent::tearDown();
 
         $this->deleteTmpDir('Basic');
+    }
+
+    public function testContainerSource()
+    {
+        $client = $this->createClient(['test_case' => 'Basic']);
+        $manager = $this->getManager($client);
+
+        $index = $manager->getIndexConfiguration('index');
+
+        $this->assertSame('index', $index->getName());
+        $this->assertGreaterThanOrEqual(2, count($index->getTypes()));
+        $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('type'));
+        $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('parent'));
     }
 
     /**

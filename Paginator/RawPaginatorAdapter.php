@@ -71,45 +71,6 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     }
 
     /**
-     * Returns the paginated results.
-     *
-     * @param int $offset
-     * @param int $itemCountPerPage
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return ResultSet
-     */
-    protected function getElasticaResults($offset, $itemCountPerPage)
-    {
-        $offset = (int) $offset;
-        $itemCountPerPage = (int) $itemCountPerPage;
-        $size = $this->query->hasParam('size')
-            ? (int) $this->query->getParam('size')
-            : null;
-
-        if (null !== $size && $size < $offset + $itemCountPerPage) {
-            $itemCountPerPage = $size - $offset;
-        }
-
-        if ($itemCountPerPage < 1) {
-            throw new InvalidArgumentException('$itemCountPerPage must be greater than zero');
-        }
-
-        $query = clone $this->query;
-        $query->setFrom($offset);
-        $query->setSize($itemCountPerPage);
-
-        $resultSet = $this->searchable->search($query, $this->options);
-        $this->totalHits = $resultSet->getTotalHits();
-        $this->aggregations = $resultSet->getAggregations();
-        $this->suggests = $resultSet->getSuggests();
-        $this->maxScore = $resultSet->getMaxScore();
-
-        return $resultSet;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getResults($offset, $itemCountPerPage)
@@ -181,5 +142,44 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     public function getQuery()
     {
         return $this->query;
+    }
+
+    /**
+     * Returns the paginated results.
+     *
+     * @param int $offset
+     * @param int $itemCountPerPage
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return ResultSet
+     */
+    protected function getElasticaResults($offset, $itemCountPerPage)
+    {
+        $offset = (int) $offset;
+        $itemCountPerPage = (int) $itemCountPerPage;
+        $size = $this->query->hasParam('size')
+            ? (int) $this->query->getParam('size')
+            : null;
+
+        if (null !== $size && $size < $offset + $itemCountPerPage) {
+            $itemCountPerPage = $size - $offset;
+        }
+
+        if ($itemCountPerPage < 1) {
+            throw new InvalidArgumentException('$itemCountPerPage must be greater than zero');
+        }
+
+        $query = clone $this->query;
+        $query->setFrom($offset);
+        $query->setSize($itemCountPerPage);
+
+        $resultSet = $this->searchable->search($query, $this->options);
+        $this->totalHits = $resultSet->getTotalHits();
+        $this->aggregations = $resultSet->getAggregations();
+        $this->suggests = $resultSet->getSuggests();
+        $this->maxScore = $resultSet->getMaxScore();
+
+        return $resultSet;
     }
 }

@@ -20,8 +20,6 @@ use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
  *
  * Allows retrieval of basic or custom repository for mapped Doctrine
  * entities/documents
- *
- * @deprecated
  */
 class RepositoryManager implements RepositoryManagerInterface
 {
@@ -70,7 +68,7 @@ class RepositoryManager implements RepositoryManagerInterface
     public function getRepository($entityName)
     {
         $realEntityName = $entityName;
-        if (strpos($entityName, ':') !== false) {
+        if (false !== strpos($entityName, ':')) {
             list($namespaceAlias, $simpleClassName) = explode(':', $entityName);
             $realEntityName = $this->managerRegistry->getAliasNamespace($namespaceAlias).'\\'.$simpleClassName;
         }

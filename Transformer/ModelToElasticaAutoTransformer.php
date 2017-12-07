@@ -157,7 +157,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         }
 
         foreach ($fields as $key => $mapping) {
-            if ($key == '_parent') {
+            if ('_parent' == $key) {
                 $property = (null !== $mapping['property']) ? $mapping['property'] : $mapping['type'];
                 $value = $this->propertyAccessor->getValue($object, $property);
                 $document->setParent($this->propertyAccessor->getValue($value, $mapping['identifier']));
@@ -185,7 +185,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
                 continue;
             }
 
-            if (isset($mapping['type']) && $mapping['type'] == 'attachment') {
+            if (isset($mapping['type']) && 'attachment' == $mapping['type']) {
                 // $value is an attachment. Add it to the document.
                 if ($value instanceof \SplFileInfo) {
                     $document->addFile($key, $value->getPathName());
