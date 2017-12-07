@@ -9,11 +9,11 @@ cache:
 matrix:
   include:
     - php: 5.6
-      env: ES_VERSION=5.2.1
+      env: SYMFONY_VERSION='3.4.*' ES_VERSION=5.2.1
     - php: 7.0
-      env: ES_VERSION=5.2.1
+      env: SYMFONY_VERSION='3.4.*' ES_VERSION=5.2.1
     - php: 7.1
-      env: ES_VERSION=5.2.1
+      env: SYMFONY_VERSION='3.4.*' ES_VERSION=5.2.1
     - php: 5.6
       env: COMPOSER_FLAGS="--prefer-lowest --prefer-stable" ES_VERSION=5.2.1
     - php: 5.6
