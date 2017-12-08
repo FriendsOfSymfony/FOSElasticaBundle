@@ -26,6 +26,9 @@ use FOS\ElasticaBundle\Exception\InvalidArgumentTypeException;
  */
 class SliceFetcher implements SliceFetcherInterface
 {
+    /** @var int $lastId */
+    private $lastId = 0;
+
     /**
      * This method should remain in sync with Provider::fetchSlice until that method is deprecated and
      * removed.
@@ -38,6 +41,8 @@ class SliceFetcher implements SliceFetcherInterface
             throw new InvalidArgumentTypeException($queryBuilder, 'Doctrine\ORM\QueryBuilder');
         }
 
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+
         /*
          * An orderBy DQL  part is required to avoid feching the same row twice.
          * @see http://stackoverflow.com/questions/6314879/does-limit-offset-length-require-order-by-for-pagination
@@ -46,18 +51,20 @@ class SliceFetcher implements SliceFetcherInterface
          */
         $orderBy = $queryBuilder->getDQLPart('orderBy');
         if (empty($orderBy)) {
-            $rootAliases = $queryBuilder->getRootAliases();
-
             foreach ($identifierFieldNames as $fieldName) {
-                $queryBuilder->addOrderBy($rootAliases[0].'.'.$fieldName);
+                $queryBuilder->addOrderBy("$rootAlias.$fieldName");
             }
         }
 
-        return $queryBuilder
-            ->setFirstResult($offset)
+        $results = $queryBuilder
+            ->where("$rootAlias.id > $this->lastId")
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult()
         ;
+
+        $this->lastId = (end($results))->getId();
+        reset($results);
+        return $results;
     }
 }
