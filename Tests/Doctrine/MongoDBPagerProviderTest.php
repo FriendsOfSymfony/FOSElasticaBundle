@@ -140,6 +140,7 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
             ->method('register')
             ->with($this->identicalTo($manager), $this->isInstanceOf(PagerInterface::class), $baseConfig)
         ;
+        
 
         $provider = new MongoDBPagerProvider($doctrine,$registerListenersMock, $objectClass, $baseConfig);
 
