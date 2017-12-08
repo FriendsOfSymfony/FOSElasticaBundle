@@ -20,9 +20,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
-use Symfony\Bundle\FrameworkBundle\Tests\Functional\WebTestCase as BaseWebTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase as BaseKernelTestCase;
 
-class WebTestCase extends BaseWebTestCase
+class WebTestCase extends BaseKernelTestCase
 {
     protected static function getKernelClass()
     {

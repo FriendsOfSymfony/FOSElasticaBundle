@@ -43,8 +43,8 @@ class ConfigurationManagerTest extends WebTestCase
 
     public function testContainerSource()
     {
-        $client = $this->createClient(['test_case' => 'Basic']);
-        $manager = $this->getManager($client);
+        static::bootKernel(['test_case' => 'Basic']);
+        $manager = $this->getManager();
 
         $index = $manager->getIndexConfiguration('index');
 
@@ -55,13 +55,11 @@ class ConfigurationManagerTest extends WebTestCase
     }
 
     /**
-     * @param Client $client
-     *
      * @return \FOS\ElasticaBundle\Configuration\ConfigManager
      */
-    private function getManager(Client $client)
+    private function getManager()
     {
-        $manager = $client->getContainer()->get('fos_elastica.config_manager');
+        $manager = static::$kernel->getContainer()->get('fos_elastica.config_manager');
 
         return $manager;
     }

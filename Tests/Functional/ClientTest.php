@@ -41,15 +41,15 @@ class ClientTest extends WebTestCase
 
     public function testContainerSource()
     {
-        $client = $this->createClient(['test_case' => 'Basic']);
+        static::bootKernel(['test_case' => 'Basic']);
 
-        $es = $client->getContainer()->get('fos_elastica.client.default');
+        $es = static::$kernel->getContainer()->get('fos_elastica.client.default');
         $this->assertInstanceOf('Elastica\\Connection\\Strategy\\RoundRobin', $es->getConnectionStrategy());
 
-        $es = $client->getContainer()->get('fos_elastica.client.second_server');
+        $es = static::$kernel->getContainer()->get('fos_elastica.client.second_server');
         $this->assertInstanceOf('Elastica\\Connection\\Strategy\\RoundRobin', $es->getConnectionStrategy());
 
-        $es = $client->getContainer()->get('fos_elastica.client.third');
+        $es = static::$kernel->getContainer()->get('fos_elastica.client.third');
         $this->assertInstanceOf('Elastica\\Connection\\Strategy\\Simple', $es->getConnectionStrategy());
     }
 }

@@ -48,10 +48,10 @@ class IndexableCallbackTest extends WebTestCase
      */
     public function testIndexableCallback()
     {
-        $client = $this->createClient(['test_case' => 'ORM']);
+        static::bootKernel(['test_case' => 'ORM']);
 
         /** @var \FOS\ElasticaBundle\Provider\Indexable $in */
-        $in = $client->getContainer()->get('fos_elastica.indexable');
+        $in = static::$kernel->getContainer()->get('fos_elastica.indexable');
 
         $this->assertTrue($in->isObjectIndexable('index', 'type', new TypeObj()));
         $this->assertTrue($in->isObjectIndexable('index', 'type2', new TypeObj()));
