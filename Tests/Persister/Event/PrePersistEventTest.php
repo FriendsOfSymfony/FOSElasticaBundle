@@ -1,6 +1,7 @@
 <?php
 namespace FOS\ElasticaBundle\Tests\Persister\Event;
 
+use FOS\ElasticaBundle\Persister\Event\PersistEvent;
 use FOS\ElasticaBundle\Persister\Event\PrePersistEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
@@ -13,6 +14,13 @@ final class PrePersistEventTest extends \PHPUnit_Framework_TestCase
         $rc = new \ReflectionClass(PrePersistEvent::class);
 
         $this->assertTrue($rc->isSubclassOf(Event::class));
+    }
+
+    public function testShouldImplementPersistEventInterface()
+    {
+        $rc = new \ReflectionClass(PrePersistEvent::class);
+
+        $this->assertTrue($rc->implementsInterface(PersistEvent::class));
     }
 
     public function testShouldFinal()

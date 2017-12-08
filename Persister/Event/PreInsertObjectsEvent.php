@@ -5,7 +5,7 @@ use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-final class PreInsertObjectsEvent extends Event
+final class PreInsertObjectsEvent extends Event implements PersistEvent
 {
     /**
      * @var PagerInterface

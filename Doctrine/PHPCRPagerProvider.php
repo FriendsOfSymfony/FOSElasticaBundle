@@ -35,17 +35,24 @@ final class PHPCRPagerProvider implements PagerProviderInterface
      * @var array
      */
     private $baseOptions;
+    
+    /**
+     * @var RegisterListenersService
+     */
+    private $registerListenersService;
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param string          $objectClass
-     * @param array           $baseOptions
+     * @param RegisterListenersService $registerListenersService
+     * @param string $objectClass
+     * @param array $baseOptions
      */
-    public function __construct(ManagerRegistry $doctrine, $objectClass, array $baseOptions)
+    public function __construct(ManagerRegistry $doctrine, RegisterListenersService $registerListenersService, $objectClass, array $baseOptions)
     {
         $this->doctrine = $doctrine;
         $this->objectClass = $objectClass;
         $this->baseOptions = $baseOptions;
+        $this->registerListenersService = $registerListenersService;
     }
 
     /**
@@ -54,20 +61,18 @@ final class PHPCRPagerProvider implements PagerProviderInterface
     public function provide(array $options = array())
     {
         $options = array_replace($this->baseOptions, $options);
+
+        $manager = $this->doctrine->getManagerForClass($this->objectClass);
+        $repository = $manager->getRepository($this->objectClass);
         
-        $adapter = new DoctrineODMPhpcrAdapter($this->createQueryBuilder($options['query_builder_method']));
+        $adapter = new DoctrineODMPhpcrAdapter(
+            call_user_func([$repository, $options['query_builder_method']], static::ENTITY_ALIAS)
+        );
+        
+        $pager = new PagerfantaPager(new Pagerfanta($adapter));
+        
+        $this->registerListenersService->register($manager, $pager, $options);
 
-        return new PagerfantaPager(new Pagerfanta($adapter));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createQueryBuilder($method)
-    {
-        return $this->doctrine
-            ->getManagerForClass($this->objectClass)
-            ->getRepository($this->objectClass)
-            ->{$method}(static::ENTITY_ALIAS);
+        return $pager;
     }
 }

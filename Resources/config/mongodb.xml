@@ -7,9 +7,15 @@
     <services>
         <service id="fos_elastica.pager_provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider" public="true" abstract="true">
             <argument type="service" id="doctrine" /> <!-- manager registry -->
+            <argument type="service" id="fos_elastica.doctrine.register_listeners" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
         </service>
+
+        <service id="fos_elastica.doctrine.register_listeners" class="FOS\ElasticaBundle\Doctrine\RegisterListenersService">
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
         <service id="fos_elastica.slice_fetcher.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\SliceFetcher">
         </service>
 

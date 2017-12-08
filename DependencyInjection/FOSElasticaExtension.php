@@ -522,20 +522,20 @@ class FOSElasticaExtension extends Extension
         switch ($driver) {
             case 'orm':
                 $providerDef = new DefinitionDecorator('fos_elastica.pager_provider.prototype.'.$driver);
-                $providerDef->replaceArgument(1, $typeConfig['model']);
-                $providerDef->replaceArgument(2, $baseConfig);
+                $providerDef->replaceArgument(2, $typeConfig['model']);
+                $providerDef->replaceArgument(3, $baseConfig);
 
                 break;
             case 'mongodb':
                 $providerDef = new DefinitionDecorator('fos_elastica.pager_provider.prototype.'.$driver);
-                $providerDef->replaceArgument(1, $typeConfig['model']);
-                $providerDef->replaceArgument(2, $baseConfig);
+                $providerDef->replaceArgument(2, $typeConfig['model']);
+                $providerDef->replaceArgument(3, $baseConfig);
 
                 break;
             case 'phpcr':
                 $providerDef = new DefinitionDecorator('fos_elastica.pager_provider.prototype.'.$driver);
-                $providerDef->replaceArgument(1, $typeConfig['model']);
-                $providerDef->replaceArgument(2, $baseConfig);
+                $providerDef->replaceArgument(2, $typeConfig['model']);
+                $providerDef->replaceArgument(3, $baseConfig);
 
                 break;
             case 'propel':

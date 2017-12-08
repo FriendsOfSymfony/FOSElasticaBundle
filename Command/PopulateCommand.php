@@ -11,10 +11,14 @@
 
 namespace FOS\ElasticaBundle\Command;
 
+use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
 use FOS\ElasticaBundle\Event\IndexPopulateEvent;
 use FOS\ElasticaBundle\Event\TypePopulateEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\Resetter;
+use FOS\ElasticaBundle\Persister\Event\Events;
+use FOS\ElasticaBundle\Persister\Event\OnExceptionEvent;
+use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
@@ -207,6 +211,34 @@ class PopulateCommand extends ContainerAwareCommand
         $loggerClosure = $this->progressClosureBuilder->build($output, 'Populating', $index, $type, $offset);
 
         if ($this->getContainer()->getParameter('fos_elastica.use_v5_api') || getenv('FOS_ELASTICA_USE_V5_API')) {
+            if ($loggerClosure) {
+                $this->dispatcher->addListener(
+                    Events::ON_EXCEPTION, 
+                    function(OnExceptionEvent $event) use ($loggerClosure, $options) {
+                        $loggerClosure(
+                            $options['batch_size'],
+                            count($event->getObjects()),
+                            sprintf('<error>%s</error>', $event->getException()->getMessage())
+                        );
+                    }
+                );
+
+                $this->dispatcher->addListener(
+                    Events::POST_INSERT_OBJECTS,
+                    function(PostInsertObjectsEvent $event) use ($loggerClosure) {
+                        $loggerClosure(count($event->getObjects()), $event->getPager()->getNbResults());
+                    }
+                );
+            }
+            
+            if ($options['ignore_errors']) {
+                $this->dispatcher->addListener(Events::ON_EXCEPTION, function(OnExceptionEvent $event) {
+                    if ($event->getException() instanceof BulkResponseException) {
+                        $event->setIgnore(true);
+                    }
+                });
+            }
+            
             $provider = $this->pagerProviderRegistry->getProvider($index, $type);
 
             $pager = $provider->provide($options);
