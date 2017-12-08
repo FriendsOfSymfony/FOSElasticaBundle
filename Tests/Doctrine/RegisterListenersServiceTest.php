@@ -298,6 +298,10 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldIgnoreDebugLoggingOptionForPHPCRManager()
     {
+        if (!class_exists(\Doctrine\ODM\PHPCR\DocumentManagerInterface::class)) {
+            $this->markTestSkipped('Doctrine PHPCR is not present');
+        }
+
         $dispatcher = $this->createDispatcherMock();
         $dispatcher
             ->expects($this->never())
