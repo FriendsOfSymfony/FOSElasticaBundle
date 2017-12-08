@@ -323,11 +323,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return ObjectManager|\PHPUnit_Framework_MockObject_MockObject
+     * @return ClearableObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getMockObjectManager()
     {
-        $mock = $this->getMockBuilder(__NAMESPACE__.'\ObjectManager')->getMock();
+        $mock = $this->getMockBuilder(ClearableObjectManager::class)->getMock();
 
         $mock->expects($this->any())
             ->method('getClassMetadata')
@@ -369,7 +369,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
  * Doctrine\Common\Persistence\ObjectManager does not include a clear() method
  * in its interface, so create a new interface for mocking.
  */
-interface ObjectManager
+interface ClearableObjectManager
 {
     public function clear();
     public function getClassMetadata();
