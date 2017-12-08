@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Tests\Resetter;
+namespace FOS\ElasticaBundle\Tests;
 
 use FOS\ElasticaBundle\FOSElasticaBundle;
 

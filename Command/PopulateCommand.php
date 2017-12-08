@@ -15,6 +15,8 @@ use FOS\ElasticaBundle\Event\IndexPopulateEvent;
 use FOS\ElasticaBundle\Event\TypePopulateEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\Resetter;
+use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
+use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -50,12 +52,22 @@ class PopulateCommand extends ContainerAwareCommand
     private $providerRegistry;
 
     /**
+     * @var PagerProviderRegistry
+     */
+    private $pagerProviderRegistry;
+
+    /**
+     * @var PagerPersisterInterface
+     */
+    private $pagerPersister;
+
+    /**
      * @var Resetter
      */
     private $resetter;
 
     /**
-     * @see Symfony\Component\Console\Command\Command::configure()
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -82,6 +94,8 @@ class PopulateCommand extends ContainerAwareCommand
         $this->dispatcher = $this->getContainer()->get('event_dispatcher');
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
+        $this->pagerProviderRegistry = $this->getContainer()->get('fos_elastica.pager_provider_registry');
+        $this->pagerPersister = $this->getContainer()->get('fos_elastica.pager_persister');
         $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
         $this->progressClosureBuilder = new ProgressClosureBuilder();
 
@@ -190,9 +204,23 @@ class PopulateCommand extends ContainerAwareCommand
         }
 
         $offset = $options['offset'];
-        $provider = $this->providerRegistry->getProvider($index, $type);
         $loggerClosure = $this->progressClosureBuilder->build($output, 'Populating', $index, $type, $offset);
-        $provider->populate($loggerClosure, $event->getOptions());
+
+        if ($this->getContainer()->getParameter('fos_elastica.use_v5_api') || getenv('FOS_ELASTICA_USE_V5_API')) {
+            $provider = $this->pagerProviderRegistry->getProvider($index, $type);
+
+            $pager = $provider->provide($options);
+
+            $options['indexName'] = $index;
+            $options['typeName'] = $type;
+            $options['batch_size'] = 100;
+            $options['skip_indexable_check'] = false;
+
+            $this->pagerPersister->insert($pager, $options);
+        } else {
+            $provider = $this->providerRegistry->getProvider($index, $type);
+            $provider->populate($loggerClosure, $options);
+        }
 
         $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
 

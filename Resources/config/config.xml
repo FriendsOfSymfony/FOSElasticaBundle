@@ -5,6 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="fos_elastica.use_v5_api">false</parameter>
         <parameter key="fos_elastica.property_accessor.magicCall">false</parameter>
         <parameter key="fos_elastica.property_accessor.throwExceptionOnInvalidIndex">false</parameter>
     </parameters>
