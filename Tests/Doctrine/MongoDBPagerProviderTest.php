@@ -115,10 +115,10 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->getMock(DoctrineMongoDBCustomRepositoryMock::class, [], [], '', false);
+        $repository = $this->getMock(DocumentRepository::class, [], [], '', false);
         $repository
             ->expects($this->once())
-            ->method('createCustomQueryBuilder')
+            ->method('createQueryBuilder')
             ->willReturn($this->getMock(Builder::class, [], [], '', false));
 
         $manager = $this->getMock(DocumentManager::class, [], [], '', false);
