@@ -242,8 +242,8 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
 
         $service = new RegisterListenersService($dispatcher);
 
-        $configuration = $this->getMock(Configuration::class);
-        $connection = $this->getMock(Connection::class, [], [], '', false);
+        $configuration = $this->getMock(\Doctrine\MongoDB\Configuration::class);
+        $connection = $this->getMock(\Doctrine\MongoDB\Connection::class, [], [], '', false);
         $connection
             ->expects($this->once())
             ->method('getConfiguration')
