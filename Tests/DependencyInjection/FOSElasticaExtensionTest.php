@@ -5,7 +5,11 @@ namespace FOS\ElasticaBundle\Tests\DependencyInjection;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use FOS\ElasticaBundle\DependencyInjection\FOSElasticaExtension;
 use FOS\ElasticaBundle\Doctrine\RegisterListenersService;
+use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
+use FOS\ElasticaBundle\Doctrine\ORMPagerProvider;
+use FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider;
 use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
+use FOS\ElasticaBundle\Propel\Propel1PagerProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
@@ -133,6 +137,12 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                 ['index' => 'acme_index', 'type' => 'acme_type'],
             ]
         ], $definition->getTags());
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.prototype.orm'));
+        $this->assertSame(
+            ORMPagerProvider::class,
+            $container->getDefinition('fos_elastica.pager_provider.prototype.orm')->getClass()
+        );
     }
 
     public function testShouldRegisterDoctrineMongoDBPagerProviderIfEnabled()
@@ -188,6 +198,12 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                 ['index' => 'acme_index', 'type' => 'acme_type'],
             ]
         ], $definition->getTags());
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.prototype.mongodb'));
+        $this->assertSame(
+            MongoDBPagerProvider::class,
+            $container->getDefinition('fos_elastica.pager_provider.prototype.mongodb')->getClass()
+        );
     }
 
     public function testShouldRegisterDoctrinePHPCRPagerProviderIfEnabled()
@@ -243,6 +259,12 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                 ['index' => 'acme_index', 'type' => 'acme_type'],
             ]
         ], $definition->getTags());
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.prototype.phpcr'));
+        $this->assertSame(
+            PHPCRPagerProvider::class,
+            $container->getDefinition('fos_elastica.pager_provider.prototype.phpcr')->getClass()
+        );
     }
 
     public function testShouldRegisterPropel1PagerProviderIfEnabled()
@@ -294,6 +316,12 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                 ['index' => 'acme_index', 'type' => 'acme_type'],
             ]
         ], $definition->getTags());
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.prototype.propel'));
+        $this->assertSame(
+            Propel1PagerProvider::class,
+            $container->getDefinition('fos_elastica.pager_provider.prototype.propel')->getClass()
+        );
     }
 
     public function testShouldRegisterPagerPersister()
