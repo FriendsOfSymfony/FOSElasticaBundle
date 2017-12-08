@@ -5,7 +5,7 @@ use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-final class PostPersistEvent extends Event
+final class PostPersistEvent extends Event implements PersistEvent
 {
     /**
      * @var PagerInterface

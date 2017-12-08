@@ -5,7 +5,7 @@ use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-final class OnExceptionEvent extends Event
+final class OnExceptionEvent extends Event implements PersistEvent
 {
     /**
      * @var PagerInterface
@@ -27,16 +27,30 @@ final class OnExceptionEvent extends Event
      */
     private $options;
 
+    /**
+     * @var array
+     */
+    private $objects;
+
+    /**
+     * @var bool
+     */
     private $ignore;
 
-    public function __construct(PagerInterface $pager, ObjectPersisterInterface $objectPersister, \Exception $exception, array $options)
-    {
+    public function __construct(
+        PagerInterface $pager, 
+        ObjectPersisterInterface $objectPersister, 
+        \Exception $exception, 
+        array $objects, 
+        array $options
+    ) {
         $this->pager = $pager;
         $this->objectPersister = $objectPersister;
         $this->exception = $exception;
         $this->options = $options;
 
         $this->ignore = false;
+        $this->objects = $objects;
     }
 
     /**
@@ -93,5 +107,13 @@ final class OnExceptionEvent extends Event
     public function setIgnore($ignore)
     {
         $this->ignore = !!$ignore;
+    }
+
+    /**
+     * @return array
+     */
+    public function getObjects()
+    {
+        return $this->objects;
     }
 }
