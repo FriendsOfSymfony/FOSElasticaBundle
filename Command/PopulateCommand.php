@@ -21,7 +21,6 @@ use FOS\ElasticaBundle\Persister\Event\OnExceptionEvent;
 use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
-use FOS\ElasticaBundle\Provider\ProviderRegistry;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -49,11 +48,6 @@ class PopulateCommand extends ContainerAwareCommand
      * @var ProgressClosureBuilder
      */
     private $progressClosureBuilder;
-
-    /**
-     * @var ProviderRegistry
-     */
-    private $providerRegistry;
 
     /**
      * @var PagerProviderRegistry
@@ -97,7 +91,6 @@ class PopulateCommand extends ContainerAwareCommand
     {
         $this->dispatcher = $this->getContainer()->get('event_dispatcher');
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
-        $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
         $this->pagerProviderRegistry = $this->getContainer()->get('fos_elastica.pager_provider_registry');
         $this->pagerPersister = $this->getContainer()->get('fos_elastica.pager_persister');
         $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
@@ -178,7 +171,7 @@ class PopulateCommand extends ContainerAwareCommand
             $this->resetter->resetIndex($index, true);
         }
 
-        $types = array_keys($this->providerRegistry->getIndexProviders($index));
+        $types = array_keys($this->pagerProviderRegistry->getIndexProviders($index));
         foreach ($types as $type) {
             $this->populateIndexType($output, $index, $type, false, $event->getOptions());
         }
@@ -210,49 +203,44 @@ class PopulateCommand extends ContainerAwareCommand
         $offset = $options['offset'];
         $loggerClosure = $this->progressClosureBuilder->build($output, 'Populating', $index, $type, $offset);
 
-        if ($this->getContainer()->getParameter('fos_elastica.use_v5_api') || getenv('FOS_ELASTICA_USE_V5_API')) {
-            if ($loggerClosure) {
-                $this->dispatcher->addListener(
-                    Events::ON_EXCEPTION, 
-                    function(OnExceptionEvent $event) use ($loggerClosure, $options) {
-                        $loggerClosure(
-                            $options['batch_size'],
-                            count($event->getObjects()),
-                            sprintf('<error>%s</error>', $event->getException()->getMessage())
-                        );
-                    }
-                );
+        if ($loggerClosure) {
+            $this->dispatcher->addListener(
+                Events::ON_EXCEPTION,
+                function(OnExceptionEvent $event) use ($loggerClosure, $options) {
+                    $loggerClosure(
+                        $options['batch_size'],
+                        count($event->getObjects()),
+                        sprintf('<error>%s</error>', $event->getException()->getMessage())
+                    );
+                }
+            );
 
-                $this->dispatcher->addListener(
-                    Events::POST_INSERT_OBJECTS,
-                    function(PostInsertObjectsEvent $event) use ($loggerClosure) {
-                        $loggerClosure(count($event->getObjects()), $event->getPager()->getNbResults());
-                    }
-                );
-            }
-            
-            if ($options['ignore_errors']) {
-                $this->dispatcher->addListener(Events::ON_EXCEPTION, function(OnExceptionEvent $event) {
-                    if ($event->getException() instanceof BulkResponseException) {
-                        $event->setIgnore(true);
-                    }
-                });
-            }
-            
-            $provider = $this->pagerProviderRegistry->getProvider($index, $type);
-
-            $pager = $provider->provide($options);
-
-            $options['indexName'] = $index;
-            $options['typeName'] = $type;
-            $options['batch_size'] = 100;
-            $options['skip_indexable_check'] = false;
-
-            $this->pagerPersister->insert($pager, $options);
-        } else {
-            $provider = $this->providerRegistry->getProvider($index, $type);
-            $provider->populate($loggerClosure, $options);
+            $this->dispatcher->addListener(
+                Events::POST_INSERT_OBJECTS,
+                function(PostInsertObjectsEvent $event) use ($loggerClosure) {
+                    $loggerClosure(count($event->getObjects()), $event->getPager()->getNbResults());
+                }
+            );
         }
+
+        if ($options['ignore_errors']) {
+            $this->dispatcher->addListener(Events::ON_EXCEPTION, function(OnExceptionEvent $event) {
+                if ($event->getException() instanceof BulkResponseException) {
+                    $event->setIgnore(true);
+                }
+            });
+        }
+
+        $provider = $this->pagerProviderRegistry->getProvider($index, $type);
+
+        $pager = $provider->provide($options);
+
+//        $options['indexName'] = $index;
+//        $options['typeName'] = $type;
+//        $options['batch_size'] = 100;
+//        $options['skip_indexable_check'] = false;
+
+        $this->pagerPersister->insert($pager, $options);
 
         $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
 

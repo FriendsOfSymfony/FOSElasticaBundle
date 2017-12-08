@@ -11,9 +11,6 @@ Here's example on how to configure Doctrine ORM provider
 ```yaml
 # app/config/config.yml
 
-parameters:
-    fos_elastica.use_v5_api: true
-
 fos_elastica:
     indexes:
         theIndexName:
@@ -22,8 +19,7 @@ fos_elastica:
                     persistence:
                         driver: orm
                         model: Application\UserBundle\Entity\User
-                        provider: 
-                            pager_provider: true
+                        provider: ~
 ```
 
 There are other providers Doctrine MongoDB, Doctrine PHPCR, Propel1 available.
@@ -32,4 +28,4 @@ There are other providers Doctrine MongoDB, Doctrine PHPCR, Propel1 available.
 Provider options
 ----------------
 
-[Back to index](../index.md)
+[Back to index](index.md)
