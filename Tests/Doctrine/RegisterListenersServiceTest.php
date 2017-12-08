@@ -250,7 +250,7 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($configuration)
         ;
 
-        $manager = $this->getMock(Doctrine\ODM\MongoDB\DocumentManager::class, [], [], '', false);
+        $manager = $this->getMock(\Doctrine\ODM\MongoDB\DocumentManager::class, [], [], '', false);
         $manager
             ->expects($this->once())
             ->method('getConnection')
@@ -280,7 +280,7 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
 
         $service = new RegisterListenersService($dispatcher);
 
-        $manager = $this->getMock(Doctrine\ODM\MongoDB\DocumentManager::class, [], [], '', false);
+        $manager = $this->getMock(\Doctrine\ODM\MongoDB\DocumentManager::class, [], [], '', false);
         $manager
             ->expects($this->never())
             ->method('getConnection')
