@@ -37,15 +37,22 @@ final class ORMPagerProvider implements PagerProviderInterface
     private $baseOptions;
 
     /**
-     * @param ManagerRegistry $doctrine
-     * @param string          $objectClass
-     * @param array           $baseOptions
+     * @var RegisterListenersService
      */
-    public function __construct(ManagerRegistry $doctrine, $objectClass, array $baseOptions)
+    private $registerListenersService;
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param RegisterListenersService $registerListenersService
+     * @param string $objectClass
+     * @param array $baseOptions
+     */
+    public function __construct(ManagerRegistry $doctrine, RegisterListenersService $registerListenersService, $objectClass, array $baseOptions)
     {
         $this->doctrine = $doctrine;
         $this->objectClass = $objectClass;
         $this->baseOptions = $baseOptions;
+        $this->registerListenersService = $registerListenersService;
     }
 
     /**
@@ -54,21 +61,17 @@ final class ORMPagerProvider implements PagerProviderInterface
     public function provide(array $options = array())
     {
         $options = array_replace($this->baseOptions, $options);
-        
-        $adapter = new DoctrineORMAdapter($this->createQueryBuilder($options['query_builder_method']));
 
-        return new PagerfantaPager(new Pagerfanta($adapter));
-    }
+        $manager = $this->doctrine->getManagerForClass($this->objectClass);
+        $repository = $manager->getRepository($this->objectClass);
 
-    /**
-     * {@inheritdoc}
-     */
-    private function createQueryBuilder($method)
-    {
-        $repository = $this->doctrine
-            ->getManagerForClass($this->objectClass)
-            ->getRepository($this->objectClass);
+        $pager = new PagerfantaPager(new Pagerfanta(new DoctrineORMAdapter(call_user_func(
+            [$repository, $options['query_builder_method']],
+            self::ENTITY_ALIAS
+        ))));
 
-        return call_user_func([$repository, $method], self::ENTITY_ALIAS);
+        $this->registerListenersService->register($manager, $pager, $options);
+
+        return $pager;
     }
 }

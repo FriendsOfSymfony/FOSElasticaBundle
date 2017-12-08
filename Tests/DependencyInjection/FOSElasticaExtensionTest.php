@@ -4,6 +4,7 @@ namespace FOS\ElasticaBundle\Tests\DependencyInjection;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use FOS\ElasticaBundle\DependencyInjection\FOSElasticaExtension;
+use FOS\ElasticaBundle\Doctrine\RegisterListenersService;
 use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -118,14 +119,14 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
         $this->assertInstanceOf(DefinitionDecorator::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.orm', $definition->getParent());
-        $this->assertSame('theModelClass', $definition->getArgument(1));
+        $this->assertSame('theModelClass', $definition->getArgument(2));
         $this->assertSame([
             'pager_provider' => true,
             'batch_size' => 100,
             'clear_object_manager' => true,
             'debug_logging' => true,
             'query_builder_method' => 'createQueryBuilder',
-        ], $definition->getArgument(2));
+        ], $definition->getArgument(3));
 
         $this->assertSame([
             'fos_elastica.pager_provider' => [
@@ -173,14 +174,14 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
         $this->assertInstanceOf(DefinitionDecorator::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.mongodb', $definition->getParent());
-        $this->assertSame('theModelClass', $definition->getArgument(1));
+        $this->assertSame('theModelClass', $definition->getArgument(2));
         $this->assertSame([
             'pager_provider' => true,
             'batch_size' => 100,
             'clear_object_manager' => true,
             'debug_logging' => true,
             'query_builder_method' => 'createQueryBuilder',
-        ], $definition->getArgument(2));
+        ], $definition->getArgument(3));
 
         $this->assertSame([
             'fos_elastica.pager_provider' => [
@@ -228,14 +229,14 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
         $this->assertInstanceOf(DefinitionDecorator::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.phpcr', $definition->getParent());
-        $this->assertSame('theModelClass', $definition->getArgument(1));
+        $this->assertSame('theModelClass', $definition->getArgument(2));
         $this->assertSame([
             'pager_provider' => true,
             'batch_size' => 100,
             'clear_object_manager' => true,
             'debug_logging' => true,
             'query_builder_method' => 'createQueryBuilder',
-        ], $definition->getArgument(2));
+        ], $definition->getArgument(3));
 
         $this->assertSame([
             'fos_elastica.pager_provider' => [
@@ -335,5 +336,77 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(1));
         $this->assertSame('event_dispatcher', (string) $definition->getArgument(1));
+    }
+
+    public function testShouldRegisterRegisterListenersServiceForDoctrineProvider()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load([
+            'fos_elastica' => [
+                'clients' => [
+                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                ],
+                'indexes' => [
+                    'acme_index' => [
+                        'types' => [
+                            'acme_type' => [
+                                'properties' => ['text' => null],
+                                'persistence' => [
+                                    'driver' => 'orm',
+                                    'model' => 'theModelClass',
+                                    'provider' => ['pager_provider' => true],
+                                    'listener' => null,
+                                    'finder' => null,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], $container);
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.doctrine.register_listeners'));
+
+        $definition = $container->getDefinition('fos_elastica.doctrine.register_listeners');
+        $this->assertSame(RegisterListenersService::class, $definition->getClass());
+
+        $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
+        $this->assertSame('event_dispatcher', (string) $definition->getArgument(0));
+    }
+
+    public function testShouldNotRegisterRegisterListenersServiceForNotDoctrineProvider()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load([
+            'fos_elastica' => [
+                'clients' => [
+                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                ],
+                'indexes' => [
+                    'acme_index' => [
+                        'types' => [
+                            'acme_type' => [
+                                'properties' => ['text' => null],
+                                'persistence' => [
+                                    'driver' => 'propel',
+                                    'model' => 'theModelClass',
+                                    'provider' => ['pager_provider' => true],
+                                    'listener' => null,
+                                    'finder' => null,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], $container);
+
+        $this->assertFalse($container->hasDefinition('fos_elastica.doctrine.register_listeners'));
     }
 }
