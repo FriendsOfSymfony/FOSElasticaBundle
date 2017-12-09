@@ -540,6 +540,20 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('bar', $data['unmappedValue']);
     }
 
+    public function testIdentifierIsCastedToString()
+    {
+        $idObject = new CastableObject();;
+        $idObject->foo = '00000000-0000-0000-0000-000000000000';
+
+        $object = new \stdClass();
+        $object->id = $idObject;
+
+        $transformer = $this->getTransformer();
+        $document = $transformer->transform($object, []);
+
+        $this->assertSame('string', gettype($document->getId()));
+    }
+
     /**
      * @param null|\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
      *
