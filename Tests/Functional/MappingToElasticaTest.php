@@ -27,22 +27,6 @@ use Symfony\Bundle\FrameworkBundle\Client;
  */
 class MappingToElasticaTest extends WebTestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('Basic');
-        $this->deleteTmpDir('ORM');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('Basic');
-        $this->deleteTmpDir('ORM');
-    }
-
     public function testResetIndexAddsMappings()
     {
         static::bootKernel(['test_case' => 'Basic']);

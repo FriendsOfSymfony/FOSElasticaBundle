@@ -13,20 +13,6 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 class PersistenceRepositoryTest extends WebTestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('Basic');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('Basic');
-    }
-
     public function testRepositoryShouldBeSetCorrectly()
     {
         static::bootKernel(['test_case' => 'ORM']);

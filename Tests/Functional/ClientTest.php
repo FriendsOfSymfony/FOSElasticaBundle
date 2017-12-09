@@ -25,20 +25,6 @@ namespace FOS\ElasticaBundle\Tests\Functional;
  */
 class ClientTest extends WebTestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('Basic');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('Basic');
-    }
-
     public function testContainerSource()
     {
         static::bootKernel(['test_case' => 'Basic']);
