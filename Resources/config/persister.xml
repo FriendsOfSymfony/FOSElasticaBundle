@@ -16,10 +16,16 @@
         </service>
 
         <service id="fos_elastica.persister_registry" class="FOS\ElasticaBundle\Persister\PersisterRegistry">
-            <argument type="collection"></argument>
+            <argument type="collection" />
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
+        </service>
+
+        <service id="fos_elastica.filter_objects_listener" class="FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener">
+            <argument type="service" id="fos_elastica.indexable" />
+
+            <tag name="kernel.event_subscriber" />
         </service>
 
         <service id="fos_elastica.object_persister" class="%fos_elastica.object_persister.class%" abstract="true">
