@@ -9,6 +9,7 @@ use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
 use FOS\ElasticaBundle\Doctrine\ORMPagerProvider;
 use FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider;
 use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
+use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
 use FOS\ElasticaBundle\Propel\Propel1PagerProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -436,5 +437,46 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         ], $container);
 
         $this->assertFalse($container->hasDefinition('fos_elastica.doctrine.register_listeners'));
+    }
+
+    public function testShouldRegisterFilterObjectsListener()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load([
+            'fos_elastica' => [
+                'clients' => [
+                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                ],
+                'indexes' => [
+                    'acme_index' => [
+                        'types' => [
+                            'acme_type' => [
+                                'properties' => ['text' => null],
+                                'persistence' => [
+                                    'driver' => 'propel',
+                                    'model' => 'theModelClass',
+                                    'provider' => ['pager_provider' => true],
+                                    'listener' => null,
+                                    'finder' => null,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], $container);
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.filter_objects_listener'));
+
+        $listener = $container->getDefinition('fos_elastica.filter_objects_listener');
+
+        $this->assertSame(FilterObjectsListener::class, $listener->getClass());
+
+        $this->assertInstanceOf(Reference::class, $listener->getArgument(0));
+        $this->assertSame('fos_elastica.indexable', (string) $listener->getArgument(0));
+        $this->assertEquals(['kernel.event_subscriber' => [[]]], $listener->getTags());
     }
 }
