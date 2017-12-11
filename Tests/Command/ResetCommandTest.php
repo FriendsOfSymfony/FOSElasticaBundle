@@ -12,36 +12,41 @@
 namespace FOS\ElasticaBundle\Tests\Command;
 
 use FOS\ElasticaBundle\Command\ResetCommand;
+use FOS\ElasticaBundle\Index\IndexManager;
+use FOS\ElasticaBundle\Index\Resetter;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\DependencyInjection\Container;
 
 class ResetCommandTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var ResetCommand
+     */
     private $command;
+
+    /**
+     * @var Resetter|\PHPUnit_Framework_MockObject_MockObject
+     */
     private $resetter;
+
+    /**
+     * @var IndexManager|\PHPUnit_Framework_MockObject_MockObject
+     */
     private $indexManager;
 
-    public function setup()
+    protected function setUp()
     {
-        $container = new Container();
-
-        $this->resetter = $this->getMockBuilder('\FOS\ElasticaBundle\Index\Resetter')
+        $this->resetter = $this->getMockBuilder(Resetter::class)
             ->disableOriginalConstructor()
             ->setMethods(['resetIndex', 'resetIndexType'])
             ->getMock();
 
-        $container->set('fos_elastica.resetter', $this->resetter);
-
-        $this->indexManager = $this->getMockBuilder('\FOS\ElasticaBundle\Index\IndexManager')
+        $this->indexManager = $this->getMockBuilder(IndexManager::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAllIndexes'])
             ->getMock();
 
-        $container->set('fos_elastica.index_manager', $this->indexManager);
-
-        $this->command = new ResetCommand();
-        $this->command->setContainer($container);
+        $this->command = new ResetCommand($this->indexManager, $this->resetter);
     }
 
     public function testResetAllIndexes()

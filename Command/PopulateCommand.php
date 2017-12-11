@@ -22,57 +22,50 @@ use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Populate the search index.
  */
-class PopulateCommand extends ContainerAwareCommand
+class PopulateCommand extends Command
 {
-    /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-     */
+    protected static $defaultName = 'fos:elastica:populate';
+
     private $dispatcher;
-
-    /**
-     * @var IndexManager
-     */
     private $indexManager;
-
-    /**
-     * @var ProgressClosureBuilder
-     */
-    private $progressClosureBuilder;
-
-    /**
-     * @var ProviderRegistry
-     */
     private $providerRegistry;
-
-    /**
-     * @var PagerProviderRegistry
-     */
     private $pagerProviderRegistry;
-
-    /**
-     * @var PagerPersisterInterface
-     */
     private $pagerPersister;
-
-    /**
-     * @var Resetter
-     */
     private $resetter;
+    private $useV5Api;
 
-    /**
-     * {@inheritdoc}
-     */
+    public function __construct(
+        EventDispatcherInterface $dispatcher,
+        IndexManager $indexManager,
+        ProviderRegistry $providerRegistry,
+        PagerProviderRegistry $pagerProviderRegistry,
+        PagerPersisterInterface $pagerPersister,
+        Resetter $resetter,
+        $useV5Api
+    ) {
+        parent::__construct();
+
+        $this->dispatcher = $dispatcher;
+        $this->indexManager = $indexManager;
+        $this->providerRegistry = $providerRegistry;
+        $this->pagerProviderRegistry = $pagerProviderRegistry;
+        $this->pagerPersister = $pagerPersister;
+        $this->resetter = $resetter;
+        $this->useV5Api = $useV5Api;
+    }
+
     protected function configure()
     {
         $this
@@ -90,20 +83,9 @@ class PopulateCommand extends ContainerAwareCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->dispatcher = $this->getContainer()->get('event_dispatcher');
-        $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
-        $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
-        $this->pagerProviderRegistry = $this->getContainer()->get('fos_elastica.pager_provider_registry');
-        $this->pagerPersister = $this->getContainer()->get('fos_elastica.pager_persister');
-        $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
-        $this->progressClosureBuilder = new ProgressClosureBuilder();
-
-        if (!$input->getOption('no-overwrite-format') && class_exists('Symfony\\Component\\Console\\Helper\\ProgressBar')) {
+        if (!$input->getOption('no-overwrite-format')) {
             ProgressBar::setFormatDefinition('normal', " %current%/%max% [%bar%] %percent:3s%%\n%message%");
             ProgressBar::setFormatDefinition('verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%\n%message%");
             ProgressBar::setFormatDefinition('very_verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n%message%");
@@ -111,9 +93,6 @@ class PopulateCommand extends ContainerAwareCommand
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $index = $input->getOption('index');
@@ -185,7 +164,7 @@ class PopulateCommand extends ContainerAwareCommand
 
         $this->dispatcher->dispatch(IndexPopulateEvent::POST_INDEX_POPULATE, $event);
 
-        $this->refreshIndex($output, $index, $reset);
+        $this->refreshIndex($output, $index);
     }
 
     /**
@@ -208,9 +187,9 @@ class PopulateCommand extends ContainerAwareCommand
         }
 
         $offset = $options['offset'];
-        $loggerClosure = $this->progressClosureBuilder->build($output, 'Populating', $index, $type, $offset);
+        $loggerClosure = ProgressClosureBuilder::build($output, 'Populating', $index, $type, $offset);
 
-        if ($this->getContainer()->getParameter('fos_elastica.use_v5_api') || getenv('FOS_ELASTICA_USE_V5_API')) {
+        if ($this->useV5Api || getenv('FOS_ELASTICA_USE_V5_API')) {
             if ($loggerClosure) {
                 $this->dispatcher->addListener(
                     Events::ON_EXCEPTION, 
