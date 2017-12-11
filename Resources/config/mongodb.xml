@@ -16,18 +16,6 @@
             <argument type="service" id="event_dispatcher"/>
         </service>
 
-        <service id="fos_elastica.slice_fetcher.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\SliceFetcher">
-        </service>
-
-        <service id="fos_elastica.provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDB\Provider" public="true" abstract="true">
-            <argument /> <!-- object persister -->
-            <argument type="service" id="fos_elastica.indexable" />
-            <argument /> <!-- model -->
-            <argument type="collection" /> <!-- options -->
-            <argument type="service" id="doctrine_mongodb" /> <!-- manager registry -->
-            <argument type="service" id="fos_elastica.slice_fetcher.mongodb" /> <!-- slice fetcher -->
-        </service>
-
         <service id="fos_elastica.listener.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\Listener" public="false" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
