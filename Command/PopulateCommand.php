@@ -9,6 +9,7 @@ use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\Resetter;
 use FOS\ElasticaBundle\Persister\Event\Events;
 use FOS\ElasticaBundle\Persister\Event\OnExceptionEvent;
+use FOS\ElasticaBundle\Persister\Event\PostAsyncInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
@@ -212,6 +213,13 @@ class PopulateCommand extends ContainerAwareCommand
                     Events::POST_INSERT_OBJECTS,
                     function(PostInsertObjectsEvent $event) use ($loggerClosure) {
                         $loggerClosure(count($event->getObjects()), $event->getPager()->getNbResults());
+                    }
+                );
+
+                $this->dispatcher->addListener(
+                    Events::POST_ASYNC_INSERT_OBJECTS,
+                    function(PostAsyncInsertObjectsEvent $event) use ($loggerClosure) {
+                        $loggerClosure($event->getObjectsCount(), $event->getPager()->getNbResults(), $event->getErrorMessage());
                     }
                 );
             }

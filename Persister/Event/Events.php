@@ -11,6 +11,8 @@ final class Events
 
     const POST_INSERT_OBJECTS = 'elastica.pager_persister.post_insert_objects';
 
+    const POST_ASYNC_INSERT_OBJECTS = 'elastica.pager_persister.post_async_insert_objects';
+
     const ON_EXCEPTION = 'elastica.pager_persister.on_exception';
 
     const POST_PERSIST = 'elastica.pager_persister.post_persist';
