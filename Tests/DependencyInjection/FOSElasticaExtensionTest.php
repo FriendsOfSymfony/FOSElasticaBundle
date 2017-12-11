@@ -430,7 +430,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                                 'persistence' => [
                                     'driver' => 'propel',
                                     'model' => 'theModelClass',
-                                    'provider' => ['pager_provider' => true],
+                                    'provider' => null,
                                     'listener' => null,
                                     'finder' => null,
                                 ]
