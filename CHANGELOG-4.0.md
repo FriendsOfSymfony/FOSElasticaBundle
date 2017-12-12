@@ -4,6 +4,12 @@ CHANGELOG for 4.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 4.0 versions.
 
+## 4.1.0
+
+* Introduce a new provider's API. Deprecate legacy ones.
+* Introduce a provider pager. 
+* Introduce InPlacePagerPersister.
+
 ### 4.0.1 (2017-08-10)
 
 * Fixed Propel object sorting

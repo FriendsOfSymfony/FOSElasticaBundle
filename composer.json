@@ -17,6 +17,7 @@
         "symfony/console": "^2.7 || ^3.1",
         "symfony/options-resolver" : "^2.7 || ^3.1",
         "symfony/property-access": "^2.7 || ^3.1",
+        "pagerfanta/pagerfanta": "^1.0.5",
         "psr/log": "^1.0",
         "ruflin/elastica": "^5.2.1"
     },
@@ -29,7 +30,6 @@
         "jms/serializer-bundle": "^2.0",
         "phpunit/phpunit": "^4.8 || ^5.0",
         "propel/propel1": "^1.7",
-        "pagerfanta/pagerfanta": "^1.0.5",
         "knplabs/knp-components": "^1.2",
         "symfony/expression-language" : "^2.7 || ^3.1",
         "symfony/twig-bundle": "^2.7 || ^3.1",

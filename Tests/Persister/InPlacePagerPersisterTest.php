@@ -35,7 +35,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
-        $options = ['indexName' => 'theIndex', 'typeName' => 'theType', 'batch_size' => 10];
+        $options = ['indexName' => 'theIndex', 'typeName' => 'theType'];
 
         $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
         $dispatcher = new EventDispatcher();
@@ -51,7 +51,10 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf(PrePersistEvent::class, $event);
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
-            $this->assertSame($options, $event->getOptions());
+            $this->assertSame(
+                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                $event->getOptions()
+            );
         });
 
         $persister->insert($pager, $options);
@@ -63,7 +66,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
-        $options = ['indexName' => 'theIndex', 'typeName' => 'theType', 'batch_size' => 10];
+        $options = ['indexName' => 'theIndex', 'typeName' => 'theType'];
 
         $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
         $dispatcher = new EventDispatcher();
@@ -81,7 +84,10 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf(PreFetchObjectsEvent::class, $event);
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
-            $this->assertSame($options, $event->getOptions());
+            $this->assertSame(
+                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                $event->getOptions()
+            );
         });
 
         $persister->insert($pager, $options);
@@ -93,7 +99,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
-        $options = ['indexName' => 'theIndex', 'typeName' => 'theType', 'batch_size' => 10];
+        $options = ['indexName' => 'theIndex', 'typeName' => 'theType'];
 
         $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
         $dispatcher = new EventDispatcher();
@@ -111,7 +117,10 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf(PreInsertObjectsEvent::class, $event);
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
-            $this->assertSame($options, $event->getOptions());
+            $this->assertSame(
+                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                $event->getOptions()
+            );
             $this->assertSame($objects, $event->getObjects());
         });
 
@@ -124,7 +133,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
-        $options = ['indexName' => 'theIndex', 'typeName' => 'theType', 'batch_size' => 10];
+        $options = ['indexName' => 'theIndex', 'typeName' => 'theType'];
 
         $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
         $dispatcher = new EventDispatcher();
@@ -142,7 +151,10 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf(PostInsertObjectsEvent::class, $event);
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
-            $this->assertSame($options, $event->getOptions());
+            $this->assertSame(
+                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                $event->getOptions()
+            );
             $this->assertSame($objects, $event->getObjects());
         });
 
@@ -155,7 +167,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
-        $options = ['indexName' => 'theIndex', 'typeName' => 'theType', 'batch_size' => 10];
+        $options = ['indexName' => 'theIndex', 'typeName' => 'theType'];
 
         $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
         $dispatcher = new EventDispatcher();
@@ -173,7 +185,10 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf(PostPersistEvent::class, $event);
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
-            $this->assertSame($options, $event->getOptions());
+            $this->assertSame(
+                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                $event->getOptions()
+            );
         });
 
         $persister->insert($pager, $options);
@@ -207,6 +222,38 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
         $persister->insert($pager, $options);
     }
 
+    public function testShouldCallObjectPersisterInsertManyMethodOnlyForSecondPage()
+    {
+        $options = [
+            'indexName' => 'theIndex',
+            'typeName' => 'theType',
+            'batch_size' => 2,
+            'first_page' => 2,
+            'last_page' => 2,
+        ];
+
+        $firstPage = [new \stdClass(), new \stdClass()];
+        $secondPage = [new \stdClass(), new \stdClass()];
+        $thirdPage = [new \stdClass(), new \stdClass()];
+
+        $objects = [$firstPage[0], $firstPage[1], $secondPage[0], $secondPage[1], $thirdPage[0], $thirdPage[1]];
+
+        $objectPersisterMock = $this->createObjectPersisterMock();
+        $objectPersisterMock
+            ->expects($this->once())
+            ->method('insertMany')
+            ->withConsecutive($this->identicalTo([$secondPage]))
+        ;
+
+        $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
+
+        $persister = new InPlacePagerPersister($registryMock, new EventDispatcher());
+
+        $pager = $this->createPager($objects);
+
+        $persister->insert($pager, $options);
+    }
+
     public function testShouldDispatchOnExceptionEventWithExpectedArgumentsAndReThrowIt()
     {
         $exception = new \LogicException();
@@ -219,7 +266,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
         ;
 
 
-        $options = ['indexName' => 'theIndex', 'typeName' => 'theType', 'batch_size' => 10];
+        $options = ['indexName' => 'theIndex', 'typeName' => 'theType'];
 
         $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
         $dispatcher = new EventDispatcher();
@@ -237,7 +284,10 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf(OnExceptionEvent::class, $event);
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
-            $this->assertSame($options, $event->getOptions());
+            $this->assertSame(
+                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                $event->getOptions()
+            );
             $this->assertSame($exception, $event->getException());
         });
 
@@ -265,7 +315,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
         ;
 
 
-        $options = ['indexName' => 'theIndex', 'typeName' => 'theType', 'batch_size' => 10];
+        $options = ['indexName' => 'theIndex', 'typeName' => 'theType'];
 
         $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
         $dispatcher = new EventDispatcher();

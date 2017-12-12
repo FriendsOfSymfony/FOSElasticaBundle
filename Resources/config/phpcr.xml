@@ -16,18 +16,6 @@
             <argument type="service" id="event_dispatcher"/>
         </service>
 
-        <service id="fos_elastica.slice_fetcher.phpcr" class="FOS\ElasticaBundle\Doctrine\PHPCR\SliceFetcher">
-        </service>
-
-        <service id="fos_elastica.provider.prototype.phpcr" class="FOS\ElasticaBundle\Doctrine\PHPCR\Provider" public="true" abstract="true">
-            <argument /> <!-- object persister -->
-            <argument type="service" id="fos_elastica.indexable" />
-            <argument /> <!-- model -->
-            <argument type="collection" /> <!-- options -->
-            <argument type="service" id="doctrine_phpcr" /> <!-- manager registry -->
-            <argument type="service" id="fos_elastica.slice_fetcher.phpcr" /> <!-- slice fetcher -->
-        </service>
-
         <service id="fos_elastica.listener.prototype.phpcr" class="FOS\ElasticaBundle\Doctrine\Listener" public="false" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
