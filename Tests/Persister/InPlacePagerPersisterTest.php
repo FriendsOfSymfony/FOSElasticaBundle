@@ -52,7 +52,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
             $this->assertSame(
-                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                ['max_per_page' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
                 $event->getOptions()
             );
         });
@@ -85,7 +85,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
             $this->assertSame(
-                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                ['max_per_page' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
                 $event->getOptions()
             );
         });
@@ -118,7 +118,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
             $this->assertSame(
-                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                ['max_per_page' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
                 $event->getOptions()
             );
             $this->assertSame($objects, $event->getObjects());
@@ -152,7 +152,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
             $this->assertSame(
-                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                ['max_per_page' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
                 $event->getOptions()
             );
             $this->assertSame($objects, $event->getObjects());
@@ -186,7 +186,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
             $this->assertSame(
-                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                ['max_per_page' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
                 $event->getOptions()
             );
         });
@@ -198,7 +198,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldCallObjectPersisterInsertManyMethodForEachPage()
     {
-        $options = ['indexName' => 'theIndex', 'typeName' => 'theType', 'batch_size' => 2];
+        $options = ['indexName' => 'theIndex', 'typeName' => 'theType', 'max_per_page' => 2];
 
         $firstPage = [new \stdClass(), new \stdClass()];
         $secondPage = [new \stdClass(), new \stdClass()];
@@ -227,7 +227,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
         $options = [
             'indexName' => 'theIndex',
             'typeName' => 'theType',
-            'batch_size' => 2,
+            'max_per_page' => 2,
             'first_page' => 2,
             'last_page' => 2,
         ];
@@ -243,6 +243,36 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('insertMany')
             ->withConsecutive($this->identicalTo([$secondPage]))
+        ;
+
+        $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
+
+        $persister = new InPlacePagerPersister($registryMock, new EventDispatcher());
+
+        $pager = $this->createPager($objects);
+
+        $persister->insert($pager, $options);
+    }
+
+    public function testShouldIterateToRealLastPageEvenIfLastPageOptionIsBigger()
+    {
+        $options = [
+            'indexName' => 'theIndex',
+            'typeName' => 'theType',
+            'max_per_page' => 2,
+            'last_page' => 100,
+        ];
+
+        $firstPage = [new \stdClass(), new \stdClass()];
+        $secondPage = [new \stdClass(), new \stdClass()];
+        $thirdPage = [new \stdClass(), new \stdClass()];
+
+        $objects = [$firstPage[0], $firstPage[1], $secondPage[0], $secondPage[1], $thirdPage[0], $thirdPage[1]];
+
+        $objectPersisterMock = $this->createObjectPersisterMock();
+        $objectPersisterMock
+            ->expects($this->exactly(3))
+            ->method('insertMany')
         ;
 
         $registryMock = $this->createPersisterRegistryStub($objectPersisterMock);
@@ -285,7 +315,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($pager, $event->getPager());
             $this->assertSame($objectPersisterMock, $event->getObjectPersister());
             $this->assertSame(
-                ['batch_size' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
+                ['max_per_page' => 100, 'first_page' => 1, 'last_page' => 1] + $options,
                 $event->getOptions()
             );
             $this->assertSame($exception, $event->getException());
