@@ -20,7 +20,9 @@ use FOS\ElasticaBundle\Persister\Event\Events;
 use FOS\ElasticaBundle\Persister\Event\OnExceptionEvent;
 use FOS\ElasticaBundle\Persister\Event\PostAsyncInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
+use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
+use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -76,11 +78,17 @@ class PopulateCommand extends ContainerAwareCommand
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
             ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
             ->addOption('no-delete', null, InputOption::VALUE_NONE, 'Do not delete index after populate')
-            ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
+            ->addOption('offset', null, InputOption::VALUE_REQUIRED, '[DEPRECATED] Start indexing at offset', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
-            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
+            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, '[DEPRECATED] Index packet size (overrides provider config option)')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->addOption('no-overwrite-format', null, InputOption::VALUE_NONE, 'Prevent this command from overwriting ProgressBar\'s formats')
+
+            ->addOption('first-page', null, InputOption::VALUE_REQUIRED, 'The pager\'s page to start population from. Including the given page.', 1)
+            ->addOption('last-page', null, InputOption::VALUE_REQUIRED, 'The pager\'s page to end population on. Including the given page.', null)
+            ->addOption('max-per-page', null, InputOption::VALUE_REQUIRED, 'The pager\'s page size', 100)
+            ->addOption('pager-persister', null, InputOption::VALUE_REQUIRED, 'The pager persister to be used to populate the index', InPlacePagerPersister::NAME)
+
             ->setDescription('Populates search indexes from providers')
         ;
     }
@@ -93,9 +101,12 @@ class PopulateCommand extends ContainerAwareCommand
         $this->dispatcher = $this->getContainer()->get('event_dispatcher');
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->pagerProviderRegistry = $this->getContainer()->get('fos_elastica.pager_provider_registry');
-        $this->pagerPersister = $this->getContainer()->get('fos_elastica.pager_persister');
         $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
         $this->progressClosureBuilder = new ProgressClosureBuilder();
+
+        /** @var PagerPersisterRegistry $pagerPersisterRegistry */
+        $pagerPersisterRegistry = $this->getContainer()->get('fos_elastica.pager_persister_registry');
+        $this->pagerPersister = $pagerPersisterRegistry->getPagerPersister($input->getOption('pager-persister'));
 
         if (!$input->getOption('no-overwrite-format') && class_exists('Symfony\\Component\\Console\\Helper\\ProgressBar')) {
             ProgressBar::setFormatDefinition('normal', " %current%/%max% [%bar%] %percent:3s%%\n%message%");
@@ -121,7 +132,13 @@ class PopulateCommand extends ContainerAwareCommand
             'ignore_errors' => $input->getOption('ignore-errors'),
             'offset' => $input->getOption('offset'),
             'sleep' => $input->getOption('sleep'),
+            'first_page' => $input->getOption('first-page'),
+            'max_per_page' => $input->getOption('max-per-page'),
         ];
+
+        if ($input->getOption('last-page')) {
+            $options['last_page'] = $input->getOption('last-page');
+        }
 
         if ($input->getOption('batch-size')) {
             $options['batch_size'] = (int) $input->getOption('batch-size');

@@ -14,6 +14,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class InPlacePagerPersister implements PagerPersisterInterface
 {
+    const NAME = 'in_place';
+    
     /**
      * @var PersisterRegistry
      */
@@ -39,10 +41,10 @@ final class InPlacePagerPersister implements PagerPersisterInterface
      */
     public function insert(PagerInterface $pager, array $options = array())
     {
-        $pager->setMaxPerPage(empty($options['batch_size']) ? 100 : $options['batch_size']);
+        $pager->setMaxPerPage(empty($options['max_per_page']) ? 100 : $options['max_per_page']);
 
         $options = array_replace([
-            'batch_size' => $pager->getMaxPerPage(),
+            'max_per_page' => $pager->getMaxPerPage(),
             'first_page' => $pager->getCurrentPage(),
             'last_page' => $pager->getNbPages(),
         ], $options);
@@ -57,7 +59,7 @@ final class InPlacePagerPersister implements PagerPersisterInterface
             $pager = $event->getPager();
             $options = $event->getOptions();
 
-            $lastPage = $options['last_page'];
+            $lastPage = min($options['last_page'], $pager->getNbPages());
             $page = $pager->getCurrentPage();
             do {
                 $pager->setCurrentPage($page);
@@ -70,7 +72,6 @@ final class InPlacePagerPersister implements PagerPersisterInterface
             $event = new PostPersistEvent($pager, $objectPersister, $options);
             $this->dispatcher->dispatch(Events::POST_PERSIST, $event);
         }
-
     }
 
     /**
