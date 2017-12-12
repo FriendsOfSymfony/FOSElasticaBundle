@@ -81,7 +81,7 @@ class SerializerTest extends WebTestCase
         $enabledNullType = $container->get('fos_elastica.index.index.type_serialize_null_enabled');
         $documentData = $enabledNullType->getDocument(1)->getData();
         $this->assertArrayHasKey('field1', $documentData);
-        $this->assertSame($documentData['field1'], null);
+        $this->assertNull($documentData['field1']);
     }
 
     public function testUnmappedType()
