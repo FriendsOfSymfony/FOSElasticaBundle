@@ -23,7 +23,6 @@ matrix:
   fast_finish: true
 
 install:
-  - composer self-update
   - mkdir /tmp/elasticsearch
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
   - /tmp/elasticsearch/bin/elasticsearch-plugin install -b mapper-attachments
