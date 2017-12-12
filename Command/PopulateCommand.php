@@ -11,7 +11,9 @@ use FOS\ElasticaBundle\Persister\Event\Events;
 use FOS\ElasticaBundle\Persister\Event\OnExceptionEvent;
 use FOS\ElasticaBundle\Persister\Event\PostAsyncInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
+use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
+use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -78,9 +80,10 @@ class PopulateCommand extends ContainerAwareCommand
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->addOption('no-overwrite-format', null, InputOption::VALUE_NONE, 'Prevent this command from overwriting ProgressBar\'s formats')
 
-            ->addOption('first-page', null, InputOption::VALUE_OPTIONAL, 'The pager\'s page to start population from. Including the given page.', 1)
-            ->addOption('last-page', null, InputOption::VALUE_OPTIONAL, 'The pager\'s page to end population on. Including the given page.', null)
-            ->addOption('max-per-page', null, InputOption::VALUE_OPTIONAL, 'The pager\'s page size', 100)
+            ->addOption('first-page', null, InputOption::VALUE_REQUIRED, 'The pager\'s page to start population from. Including the given page.', 1)
+            ->addOption('last-page', null, InputOption::VALUE_REQUIRED, 'The pager\'s page to end population on. Including the given page.', null)
+            ->addOption('max-per-page', null, InputOption::VALUE_REQUIRED, 'The pager\'s page size', 100)
+            ->addOption('pager-persister', null, InputOption::VALUE_REQUIRED, 'The pager persister to be used to populate the index', InPlacePagerPersister::NAME)
 
             ->setDescription('Populates search indexes from providers')
         ;
@@ -95,9 +98,12 @@ class PopulateCommand extends ContainerAwareCommand
         $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
         $this->pagerProviderRegistry = $this->getContainer()->get('fos_elastica.pager_provider_registry');
-        $this->pagerPersister = $this->getContainer()->get('fos_elastica.pager_persister');
         $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
         $this->progressClosureBuilder = new ProgressClosureBuilder();
+
+        /** @var PagerPersisterRegistry $pagerPersisterRegistry */
+        $pagerPersisterRegistry = $this->getContainer()->get('fos_elastica.pager_persister_registry');
+        $this->pagerPersister = $pagerPersisterRegistry->getPagerPersister($input->getOption('pager-persister'));
 
         if (!$input->getOption('no-overwrite-format') && class_exists('Symfony\\Component\\Console\\Helper\\ProgressBar')) {
             ProgressBar::setFormatDefinition('normal', " %current%/%max% [%bar%] %percent:3s%%\n%message%");
