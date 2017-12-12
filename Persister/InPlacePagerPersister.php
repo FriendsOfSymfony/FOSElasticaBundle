@@ -14,6 +14,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class InPlacePagerPersister implements PagerPersisterInterface
 {
+    const NAME = 'in_place';
+    
     /**
      * @var PersisterRegistry
      */
