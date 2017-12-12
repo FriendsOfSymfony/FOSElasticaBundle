@@ -243,10 +243,8 @@ class PopulateCommand extends ContainerAwareCommand
 
         $pager = $provider->provide($options);
 
-//        $options['indexName'] = $index;
-//        $options['typeName'] = $type;
-//        $options['batch_size'] = 100;
-//        $options['skip_indexable_check'] = false;
+        $options['indexName'] = $index;
+        $options['typeName'] = $type;
 
         $this->pagerPersister->insert($pager, $options);
 
