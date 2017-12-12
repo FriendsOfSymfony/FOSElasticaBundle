@@ -19,6 +19,7 @@ use FOS\ElasticaBundle\Doctrine\ORMPagerProvider;
 use FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider;
 use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
+use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use FOS\ElasticaBundle\Propel\Propel1PagerProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -297,7 +298,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testShouldRegisterPagerPersister()
+    public function testShouldRegisterInPlacePagerPersister()
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
@@ -327,9 +328,9 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
             ]
         ], $container);
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_persister'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.in_place_pager_persister'));
 
-        $definition = $container->getDefinition('fos_elastica.pager_persister');
+        $definition = $container->getDefinition('fos_elastica.in_place_pager_persister');
         $this->assertSame(InPlacePagerPersister::class, $definition->getClass());
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
@@ -337,6 +338,10 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(1));
         $this->assertSame('event_dispatcher', (string) $definition->getArgument(1));
+
+        $this->assertSame([
+            'fos_elastica.pager_persister' => [['persisterName' => 'in_place']]
+        ], $definition->getTags());
     }
 
     public function testShouldRegisterRegisterListenersServiceForDoctrineProvider()
@@ -450,5 +455,42 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Reference::class, $listener->getArgument(0));
         $this->assertSame('fos_elastica.indexable', (string) $listener->getArgument(0));
         $this->assertEquals(['kernel.event_subscriber' => [[]]], $listener->getTags());
+    }
+
+    public function testShouldRegisterPagerPersisterRegisterService()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load([
+            'fos_elastica' => [
+                'clients' => [
+                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                ],
+                'indexes' => [
+                    'acme_index' => [
+                        'types' => [
+                            'acme_type' => [
+                                'properties' => ['text' => null],
+                                'persistence' => [
+                                    'driver' => 'propel',
+                                    'model' => 'theModelClass',
+                                    'provider' => null,
+                                    'listener' => null,
+                                    'finder' => null,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], $container);
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_persister_registry'));
+
+        $listener = $container->getDefinition('fos_elastica.pager_persister_registry');
+        $this->assertSame(PagerPersisterRegistry::class, $listener->getClass());
+        $this->assertSame([], $listener->getArgument(0));
     }
 }

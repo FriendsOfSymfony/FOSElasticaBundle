@@ -5,9 +5,19 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="fos_elastica.pager_persister" class="FOS\ElasticaBundle\Persister\InPlacePagerPersister">
+        <service id="fos_elastica.in_place_pager_persister" class="FOS\ElasticaBundle\Persister\InPlacePagerPersister">
             <argument type="service" id="fos_elastica.persister_registry" />
             <argument type="service" id="event_dispatcher" />
+
+            <tag name="fos_elastica.pager_persister" persisterName="in_place" />
+        </service>
+
+        <service id="fos_elastica.pager_persister_registry" class="FOS\ElasticaBundle\Persister\PagerPersisterRegistry">
+            <argument type="collection" /> <!-- nameToServiceIdMap -->
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
         </service>
         <service id="fos_elastica.persister_registry" class="FOS\ElasticaBundle\Persister\PersisterRegistry">
             <argument type="collection" />
