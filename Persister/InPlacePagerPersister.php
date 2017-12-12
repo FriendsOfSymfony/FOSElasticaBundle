@@ -39,6 +39,16 @@ final class InPlacePagerPersister implements PagerPersisterInterface
      */
     public function insert(PagerInterface $pager, array $options = array())
     {
+        $pager->setMaxPerPage(empty($options['batch_size']) ? 100 : $options['batch_size']);
+
+        $options = array_replace([
+            'batch_size' => $pager->getMaxPerPage(),
+            'first_page' => $pager->getCurrentPage(),
+            'last_page' => $pager->getNbPages(),
+        ], $options);
+
+        $pager->setCurrentPage($options['first_page']);
+
         $objectPersister = $this->registry->getPersister($options['indexName'], $options['typeName']);
 
         try {
@@ -47,14 +57,15 @@ final class InPlacePagerPersister implements PagerPersisterInterface
             $pager = $event->getPager();
             $options = $event->getOptions();
 
-            $pager->setMaxPerPage($options['batch_size']);
-
+            $lastPage = $options['last_page'];
             $page = $pager->getCurrentPage();
-            while ($page <= $pager->getNbPages()) {
+            do {
+                $pager->setCurrentPage($page);
+
                 $this->insertPage($page, $pager, $objectPersister, $options);
 
-                $pager->setCurrentPage($page++);
-            }
+                $page++;
+            } while ($page <= $lastPage);
         } finally {
             $event = new PostPersistEvent($pager, $objectPersister, $options);
             $this->dispatcher->dispatch(Events::POST_PERSIST, $event);
