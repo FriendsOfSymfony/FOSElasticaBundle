@@ -27,31 +27,17 @@ use Elastica\Query\Match;
  */
 class PropertyPathTest extends WebTestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('Basic');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('Basic');
-    }
-
     public function testContainerSource()
     {
-        $client = $this->createClient(['test_case' => 'ORM']);
+        static::bootKernel(['test_case' => 'ORM']);
         /** @var \FOS\ElasticaBundle\Persister\ObjectPersister $persister */
-        $persister = $client->getContainer()->get('fos_elastica.object_persister.index.property_paths_type');
+        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.index.property_paths_type');
         $obj = new TypeObj();
         $obj->coll = 'Hello';
         $persister->insertOne($obj);
 
         /** @var \Elastica\Index $index */
-        $index = $client->getContainer()->get('fos_elastica.index.index');
+        $index = static::$kernel->getContainer()->get('fos_elastica.index.index');
         $index->refresh();
 
         $query = new Match();

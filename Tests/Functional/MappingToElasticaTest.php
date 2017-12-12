@@ -27,34 +27,18 @@ use Symfony\Bundle\FrameworkBundle\Client;
  */
 class MappingToElasticaTest extends WebTestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('Basic');
-        $this->deleteTmpDir('ORM');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('Basic');
-        $this->deleteTmpDir('ORM');
-    }
-
     public function testResetIndexAddsMappings()
     {
-        $client = $this->createClient(['test_case' => 'Basic']);
-        $resetter = $this->getResetter($client);
+        static::bootKernel(['test_case' => 'Basic']);
+        $resetter = $this->getResetter();
         $resetter->resetIndex('index');
 
-        $type = $this->getType($client);
+        $type = $this->getType();
         $mapping = $type->getMapping();
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
 
-        $type = $this->getType($client, 'type');
+        $type = $this->getType();
         $mapping = $type->getMapping();
         $this->assertSame('parent', $mapping['type']['_parent']['type']);
 
@@ -65,11 +49,11 @@ class MappingToElasticaTest extends WebTestCase
 
     public function testResetType()
     {
-        $client = $this->createClient(['test_case' => 'Basic']);
-        $resetter = $this->getResetter($client);
+        static::bootKernel(['test_case' => 'Basic']);
+        $resetter = $this->getResetter();
         $resetter->resetIndexType('index', 'type');
 
-        $type = $this->getType($client);
+        $type = $this->getType();
         $mapping = $type->getMapping();
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
@@ -80,11 +64,11 @@ class MappingToElasticaTest extends WebTestCase
 
     public function testORMResetIndexAddsMappings()
     {
-        $client = $this->createClient(['test_case' => 'ORM']);
-        $resetter = $this->getResetter($client);
+        static::bootKernel(['test_case' => 'ORM']);
+        $resetter = $this->getResetter();
         $resetter->resetIndex('index');
 
-        $type = $this->getType($client);
+        $type = $this->getType();
         $mapping = $type->getMapping();
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
@@ -92,11 +76,11 @@ class MappingToElasticaTest extends WebTestCase
 
     public function testORMResetType()
     {
-        $client = $this->createClient(['test_case' => 'ORM']);
-        $resetter = $this->getResetter($client);
+        static::bootKernel(['test_case' => 'ORM']);
+        $resetter = $this->getResetter();
         $resetter->resetIndexType('index', 'type');
 
-        $type = $this->getType($client);
+        $type = $this->getType();
         $mapping = $type->getMapping();
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
@@ -104,8 +88,8 @@ class MappingToElasticaTest extends WebTestCase
 
     public function testMappingIteratorToArrayField()
     {
-        $client = $this->createClient(['test_case' => 'ORM']);
-        $persister = $client->getContainer()->get('fos_elastica.object_persister.index.type');
+        static::bootKernel(['test_case' => 'ORM']);
+        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.index.type');
 
         $object = new TypeObj();
         $object->id = 1;
@@ -119,23 +103,20 @@ class MappingToElasticaTest extends WebTestCase
     }
 
     /**
-     * @param Client $client
-     *
      * @return \FOS\ElasticaBundle\Index\Resetter $resetter
      */
-    private function getResetter(Client $client)
+    private function getResetter()
     {
-        return $client->getContainer()->get('fos_elastica.resetter');
+        return static::$kernel->getContainer()->get('fos_elastica.resetter');
     }
 
     /**
-     * @param Client $client
      * @param string $type
      *
      * @return \Elastica\Type
      */
-    private function getType(Client $client, $type = 'type')
+    private function getType($type = 'type')
     {
-        return $client->getContainer()->get('fos_elastica.index.index.'.$type);
+        return static::$kernel->getContainer()->get('fos_elastica.index.index.'.$type);
     }
 }
