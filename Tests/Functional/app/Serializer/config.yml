@@ -3,7 +3,7 @@ imports:
 
 doctrine:
     dbal:
-        path: %kernel.cache_dir%/db.sqlite
+        path: "%kernel.cache_dir%/db.sqlite"
         charset:  UTF8
     orm:
         auto_generate_proxy_classes: false
@@ -24,12 +24,12 @@ jms_serializer:
 fos_elastica:
     clients:
         default:
-            url: http://localhost:9200
+            url: "http://localhost:9200"
     serializer:
         serializer: jms_serializer
     indexes:
         index:
-            index_name: foselastica_ser_test_%kernel.environment%
+            index_name: "foselastica_ser_test_%kernel.environment%"
             types:
                 type:
                     properties:
