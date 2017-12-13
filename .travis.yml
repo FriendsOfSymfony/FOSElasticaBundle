@@ -33,7 +33,7 @@ matrix:
     - php: 7.2
       env: SYMFONY_VERSION="^3"
     - php: 7.2
-      env: SYMFONY_VERSION=^4"
+      env: SYMFONY_VERSION="^4"
 
 install:
   # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
