@@ -13,10 +13,11 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "symfony/framework-bundle": "^2.7 || ^3.2 || ^4.0",
-        "symfony/console": "^2.7 || ^3.2 || ^4.0",
-        "symfony/options-resolver" : "^2.7 || ^3.2 || ^4.0",
-        "symfony/property-access": "^2.7 || ^3.2 || ^4.0",
+        "symfony/framework-bundle": "^2.8|^3.4|^4",
+        "symfony/console": "^2.8|^3.4|^4",
+        "symfony/options-resolver" : "^2.8|^3.4|^4",
+        "symfony/property-access": "^2.8|^3.4|^4",
+        "pagerfanta/pagerfanta": "^1.0.5",
         "psr/log": "^1.0",
         "ruflin/elastica": "^5.2.1"
     },
@@ -29,16 +30,12 @@
         "jms/serializer-bundle": "^2.0",
         "phpunit/phpunit": "^4.8 || ^5.0",
         "propel/propel1": "^1.7",
-        "pagerfanta/pagerfanta": "^1.0.5",
         "knplabs/knp-components": "^1.2",
-        "symfony/expression-language" : "^2.7 || ^3.2 || ^4.0",
-        "symfony/twig-bundle": "^2.7 || ^3.2 || ^4.0",
-        "symfony/serializer": "^2.7 || ^3.2 || ^4.0",
-        "symfony/yaml": "^2.7 || ^3.2 || ^4.0",
+        "symfony/expression-language" : "^2.8|^3.4|^4",
+        "symfony/twig-bundle": "^2.8|^3.4|^4",
+        "symfony/serializer": "^2.8|^3.4|^4",
+        "symfony/yaml": "^2.8|^3.4|^4",
         "friendsofphp/php-cs-fixer": "^2.2"
-    },
-    "conflict": {
-        "symfony/dependency-injection": "<2.7"
     },
     "autoload": {
         "psr-4": { "FOS\\ElasticaBundle\\": "" }

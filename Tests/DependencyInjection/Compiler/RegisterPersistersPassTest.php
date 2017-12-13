@@ -35,7 +35,7 @@ class RegisterPersistersPassTest extends \PHPUnit_Framework_TestCase
         $pass->process($container);
     }
 
-    public function testShouldRegisterTaggedPagerPersisters()
+    public function testShouldRegisterTaggedObjectPersisters()
     {
         $container = new ContainerBuilder();
         $pass = new RegisterPersistersPass();
@@ -94,7 +94,7 @@ class RegisterPersistersPassTest extends \PHPUnit_Framework_TestCase
         $pass->process($container);
     }
 
-    public function testThrowsIfPersisterServiceDoesNotImplementPagerPersisterInterface()
+    public function testThrowsIfPersisterServiceDoesNotImplementObjectPersisterInterface()
     {
         $container = new ContainerBuilder();
         $pass = new RegisterPersistersPass();

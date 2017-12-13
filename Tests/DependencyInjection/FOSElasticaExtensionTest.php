@@ -18,6 +18,8 @@ use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
 use FOS\ElasticaBundle\Doctrine\ORMPagerProvider;
 use FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider;
 use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
+use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
+use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use FOS\ElasticaBundle\Propel\Propel1PagerProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -64,39 +66,6 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index.driverless'));
     }
 
-    public function testShouldNotRegisterPagerProviderIfNotEnabled()
-    {
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.debug', true);
-
-        $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
-                ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'AppBundle\Entity\Blog',
-                                    'provider' => ['pager_provider' => false],
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
-
-        $this->assertFalse($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
-    }
-
     public function testShouldRegisterDoctrineORMPagerProviderIfEnabled()
     {
         $container = new ContainerBuilder();
@@ -116,7 +85,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                                 'persistence' => [
                                     'driver' => 'orm',
                                     'model' => 'theModelClass',
-                                    'provider' => ['pager_provider' => true],
+                                    'provider' => null,
                                     'listener' => null,
                                     'finder' => null,
                                 ]
@@ -134,7 +103,6 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('fos_elastica.pager_provider.prototype.orm', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
         $this->assertSame([
-            'pager_provider' => true,
             'batch_size' => 100,
             'clear_object_manager' => true,
             'debug_logging' => true,
@@ -177,7 +145,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                                 'persistence' => [
                                     'driver' => 'mongodb',
                                     'model' => 'theModelClass',
-                                    'provider' => ['pager_provider' => true],
+                                    'provider' => null,
                                     'listener' => null,
                                     'finder' => null,
                                 ]
@@ -195,7 +163,6 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('fos_elastica.pager_provider.prototype.mongodb', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
         $this->assertSame([
-            'pager_provider' => true,
             'batch_size' => 100,
             'clear_object_manager' => true,
             'debug_logging' => true,
@@ -238,7 +205,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                                 'persistence' => [
                                     'driver' => 'phpcr',
                                     'model' => 'theModelClass',
-                                    'provider' => ['pager_provider' => true],
+                                    'provider' => null,
                                     'listener' => null,
                                     'finder' => null,
                                 ]
@@ -256,7 +223,6 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('fos_elastica.pager_provider.prototype.phpcr', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
         $this->assertSame([
-            'pager_provider' => true,
             'batch_size' => 100,
             'clear_object_manager' => true,
             'debug_logging' => true,
@@ -295,7 +261,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                                 'persistence' => [
                                     'driver' => 'propel',
                                     'model' => 'theModelClass',
-                                    'provider' => ['pager_provider' => true],
+                                    'provider' => null,
                                     'listener' => null,
                                     'finder' => null,
                                 ]
@@ -313,7 +279,6 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('fos_elastica.pager_provider.prototype.propel', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(0));
         $this->assertSame([
-            'pager_provider' => true,
             'batch_size' => 100,
             'clear_object_manager' => true,
             'debug_logging' => true,
@@ -333,7 +298,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testShouldRegisterPagerPersister()
+    public function testShouldRegisterInPlacePagerPersister()
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
@@ -352,7 +317,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                                 'persistence' => [
                                     'driver' => 'propel',
                                     'model' => 'theModelClass',
-                                    'provider' => ['pager_provider' => true],
+                                    'provider' => null,
                                     'listener' => null,
                                     'finder' => null,
                                 ]
@@ -363,9 +328,9 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
             ]
         ], $container);
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_persister'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.in_place_pager_persister'));
 
-        $definition = $container->getDefinition('fos_elastica.pager_persister');
+        $definition = $container->getDefinition('fos_elastica.in_place_pager_persister');
         $this->assertSame(InPlacePagerPersister::class, $definition->getClass());
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
@@ -373,6 +338,10 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(1));
         $this->assertSame('event_dispatcher', (string) $definition->getArgument(1));
+
+        $this->assertSame([
+            'fos_elastica.pager_persister' => [['persisterName' => 'in_place']]
+        ], $definition->getTags());
     }
 
     public function testShouldRegisterRegisterListenersServiceForDoctrineProvider()
@@ -394,7 +363,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                                 'persistence' => [
                                     'driver' => 'orm',
                                     'model' => 'theModelClass',
-                                    'provider' => ['pager_provider' => true],
+                                    'provider' => null,
                                     'listener' => null,
                                     'finder' => null,
                                 ]
@@ -433,7 +402,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
                                 'persistence' => [
                                     'driver' => 'propel',
                                     'model' => 'theModelClass',
-                                    'provider' => ['pager_provider' => true],
+                                    'provider' => null,
                                     'listener' => null,
                                     'finder' => null,
                                 ]
@@ -445,5 +414,83 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         ], $container);
 
         $this->assertFalse($container->hasDefinition('fos_elastica.doctrine.register_listeners'));
+    }
+
+    public function testShouldRegisterFilterObjectsListener()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load([
+            'fos_elastica' => [
+                'clients' => [
+                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                ],
+                'indexes' => [
+                    'acme_index' => [
+                        'types' => [
+                            'acme_type' => [
+                                'properties' => ['text' => null],
+                                'persistence' => [
+                                    'driver' => 'propel',
+                                    'model' => 'theModelClass',
+                                    'provider' => null,
+                                    'listener' => null,
+                                    'finder' => null,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], $container);
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.filter_objects_listener'));
+
+        $listener = $container->getDefinition('fos_elastica.filter_objects_listener');
+
+        $this->assertSame(FilterObjectsListener::class, $listener->getClass());
+
+        $this->assertInstanceOf(Reference::class, $listener->getArgument(0));
+        $this->assertSame('fos_elastica.indexable', (string) $listener->getArgument(0));
+        $this->assertEquals(['kernel.event_subscriber' => [[]]], $listener->getTags());
+    }
+
+    public function testShouldRegisterPagerPersisterRegisterService()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load([
+            'fos_elastica' => [
+                'clients' => [
+                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                ],
+                'indexes' => [
+                    'acme_index' => [
+                        'types' => [
+                            'acme_type' => [
+                                'properties' => ['text' => null],
+                                'persistence' => [
+                                    'driver' => 'propel',
+                                    'model' => 'theModelClass',
+                                    'provider' => null,
+                                    'listener' => null,
+                                    'finder' => null,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], $container);
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_persister_registry'));
+
+        $listener = $container->getDefinition('fos_elastica.pager_persister_registry');
+        $this->assertSame(PagerPersisterRegistry::class, $listener->getClass());
+        $this->assertSame([], $listener->getArgument(0));
     }
 }

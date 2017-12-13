@@ -17,11 +17,9 @@
             <tag name="console.command" />
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="fos_elastica.index_manager" />
-            <argument type="service" id="fos_elastica.provider_registry" />
             <argument type="service" id="fos_elastica.pager_provider_registry" />
-            <argument type="service" id="fos_elastica.pager_persister" />
+            <argument type="service" id="fos_elastica.pager_perister_registry" />
             <argument type="service" id="fos_elastica.resetter" />
-            <argument>%fos_elastica.use_v5_api%</argument>
         </service>
 
         <service id="fos_elastica.command.reset" class="FOS\ElasticaBundle\Command\ResetCommand">
