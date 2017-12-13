@@ -13,6 +13,7 @@ in 5.0 versions.
 * Fix undefined index when `ignore_missing` is active.
 * Dropped PHP 5.5 support.
 * Removed Symfony 2.7, 2.8, 3.0 and 3.1 support.
+* Made commands services and add support for lazy loading of them
 * Removed all `fos_elastica.*.class` parameters. Overwrite or decorate the service instead if you
    need to change the definition.
 * [BC break] Removed `_boost`, `ttl` and `timestamp` config options.
