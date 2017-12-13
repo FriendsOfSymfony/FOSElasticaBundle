@@ -145,6 +145,8 @@ running the console command:
 $ php app/console fos:elastica:populate
 ```
 
+_**Note:** Consider reading [speed up populate command](cookbook/speed-up-populate-command.md) if you are going to deal with big data set._
+
 The command will also create all indexes and types defined if they do not already exist
 on the Elasticsearch server.
 
