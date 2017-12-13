@@ -21,8 +21,8 @@ use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
 use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use FOS\ElasticaBundle\Propel\Propel1PagerProvider;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Yaml\Yaml;
 
@@ -99,7 +99,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
 
         $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
-        $this->assertInstanceOf(DefinitionDecorator::class, $definition);
+        $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.orm', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
         $this->assertSame([
@@ -159,7 +159,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
 
         $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
-        $this->assertInstanceOf(DefinitionDecorator::class, $definition);
+        $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.mongodb', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
         $this->assertSame([
@@ -219,7 +219,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
 
         $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
-        $this->assertInstanceOf(DefinitionDecorator::class, $definition);
+        $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.phpcr', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
         $this->assertSame([
@@ -275,7 +275,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
 
         $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
-        $this->assertInstanceOf(DefinitionDecorator::class, $definition);
+        $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.propel', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(0));
         $this->assertSame([

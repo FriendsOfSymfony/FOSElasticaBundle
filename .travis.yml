@@ -29,11 +29,7 @@ matrix:
 
     # Install all SF components in the same major version, see https://github.com/dunglas/symfony-lock
     - php: 7.2
-      env: SYMFONY_VERSION="^2"
-    - php: 7.2
       env: SYMFONY_VERSION="^3"
-    - php: 7.2
-      env: SYMFONY_VERSION="^4"
 
 install:
   # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
