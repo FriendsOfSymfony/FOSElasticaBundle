@@ -18,7 +18,7 @@
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.pager_provider_registry" />
-            <argument type="service" id="fos_elastica.pager_perister_registry" />
+            <argument type="service" id="fos_elastica.pager_persister_registry" />
             <argument type="service" id="fos_elastica.resetter" />
         </service>
 
