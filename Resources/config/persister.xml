@@ -19,6 +19,7 @@
                 <argument type="service" id="service_container" />
             </call>
         </service>
+
         <service id="fos_elastica.persister_registry" class="FOS\ElasticaBundle\Persister\PersisterRegistry" public="true">
             <argument type="collection" />
             <call method="setContainer">
@@ -26,7 +27,7 @@
             </call>
         </service>
 
-        <service id="fos_elastica.filter_objects_listener" class="FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener">
+        <service id="fos_elastica.filter_objects_listener" class="FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener" public="true">
             <argument type="service" id="fos_elastica.indexable" />
 
             <tag name="kernel.event_subscriber" />
