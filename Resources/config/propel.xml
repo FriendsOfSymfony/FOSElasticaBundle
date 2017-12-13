@@ -17,7 +17,7 @@
             </call>
         </service>
 
-        <service id="fos_elastica.manager.propel" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
+        <service id="fos_elastica.manager.propel" class="FOS\ElasticaBundle\Doctrine\RepositoryManager" public="true">
             <argument type="service" id="fos_elastica.repository_manager" />
         </service>
     </services>

@@ -5,32 +5,32 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="fos_elastica.repository_manager" class="FOS\ElasticaBundle\Manager\RepositoryManager" />
+        <service id="fos_elastica.repository_manager" class="FOS\ElasticaBundle\Manager\RepositoryManager" public="true" />
 
-        <service id="fos_elastica.alias_processor" class="FOS\ElasticaBundle\Index\AliasProcessor" />
+        <service id="fos_elastica.alias_processor" class="FOS\ElasticaBundle\Index\AliasProcessor" public="false" />
 
-        <service id="fos_elastica.indexable" class="FOS\ElasticaBundle\Provider\Indexable">
+        <service id="fos_elastica.indexable" class="FOS\ElasticaBundle\Provider\Indexable" public="true">
             <argument type="collection" /> <!-- array of indexable callbacks keyed by type name -->
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
         </service>
 
-        <service id="fos_elastica.index_prototype" class="FOS\ElasticaBundle\Elastica\Index" abstract="true">
+        <service id="fos_elastica.index_prototype" class="FOS\ElasticaBundle\Elastica\Index" public="true" abstract="true">
             <argument /> <!-- index name -->
             <!-- tagged with fos_elastica.index in the Extension -->
         </service>
 
-        <service id="fos_elastica.type_prototype" class="Elastica\Type" abstract="true">
+        <service id="fos_elastica.type_prototype" class="Elastica\Type" public="true" abstract="true">
             <argument /> <!-- type name -->
         </service>
 
-        <service id="fos_elastica.index_manager" class="FOS\ElasticaBundle\Index\IndexManager">
+        <service id="fos_elastica.index_manager" class="FOS\ElasticaBundle\Index\IndexManager" public="true">
             <argument /> <!-- indexes -->
             <argument type="service" id="fos_elastica.index" /> <!-- default index -->
         </service>
 
-        <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter">
+        <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter" public="true">
             <argument type="service" id="fos_elastica.config_manager" />
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.alias_processor" />

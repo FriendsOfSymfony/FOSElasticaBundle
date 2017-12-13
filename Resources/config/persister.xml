@@ -33,14 +33,14 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="fos_elastica.object_persister" class="FOS\ElasticaBundle\Persister\ObjectPersister" abstract="true">
+        <service id="fos_elastica.object_persister" class="FOS\ElasticaBundle\Persister\ObjectPersister" public="true" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
             <argument /> <!-- properties mapping -->
         </service>
 
-        <service id="fos_elastica.object_serializer_persister" class="FOS\ElasticaBundle\Persister\ObjectSerializerPersister" abstract="true">
+        <service id="fos_elastica.object_serializer_persister" class="FOS\ElasticaBundle\Persister\ObjectSerializerPersister" public="true" abstract="true">
             <argument /> <!-- type -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
