@@ -281,7 +281,7 @@ class FOSElasticaExtension extends Extension
             }
 
             if (isset($type['indexable_callback'])) {
-                $indexableCallbacks[sprintf('%s/%s', $indexName, $name)] = $type['indexable_callback'];
+                $indexableCallbacks[sprintf('%s/%s', $indexName, $name)] = $this->buildCallback($type['indexable_callback'], $name);
             }
 
             if ($container->hasDefinition('fos_elastica.serializer_callback_prototype')) {
@@ -304,6 +304,37 @@ class FOSElasticaExtension extends Extension
                 $container->setDefinition($typeSerializerId, $typeSerializerDef);
             }
         }
+    }
+
+    private function buildCallback($indexCallback, $typeName)
+    {
+        if (is_array($indexCallback)) {
+            if (!isset($indexCallback[0])) {
+                throw new \InvalidArgumentException(sprintf('Invalid indexable_callback for type %s'), $typeName);
+            }
+
+            $classOrServiceRef = $this->transformServiceReference($indexCallback[0]);
+            if ($classOrServiceRef instanceof Reference && !isset($indexCallback[1])) {
+                return $classOrServiceRef; // __invoke
+            }
+
+            if (!isset($indexCallback[1])) {
+                throw new \InvalidArgumentException(sprintf('Invalid indexable_callback for type %s'), $typeName);
+            }
+
+            return [$classOrServiceRef, $indexCallback[1]];
+        };
+
+        if (is_string($indexCallback)) {
+            return $this->transformServiceReference($indexCallback);
+        }
+
+        throw new \InvalidArgumentException(sprintf('Invalid indexable_callback for type %s'), $typeName);
+    }
+
+    private function transformServiceReference($classOrService)
+    {
+        return 0 === strpos($classOrService, '@') ? new Reference(substr($classOrService, 1)) : $classOrService;
     }
 
     /**

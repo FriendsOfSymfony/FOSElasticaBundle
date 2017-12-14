@@ -9,11 +9,8 @@
 
         <service id="fos_elastica.alias_processor" class="FOS\ElasticaBundle\Index\AliasProcessor" public="false" />
 
-        <service id="fos_elastica.indexable" class="FOS\ElasticaBundle\Provider\Indexable" public="true">
+        <service id="fos_elastica.indexable" class="FOS\ElasticaBundle\Provider\Indexable" public="false">
             <argument type="collection" /> <!-- array of indexable callbacks keyed by type name -->
-            <call method="setContainer">
-                <argument type="service" id="service_container" />
-            </call>
         </service>
 
         <service id="fos_elastica.index_prototype" class="FOS\ElasticaBundle\Elastica\Index" public="true" abstract="true">
