@@ -5,6 +5,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <defaults public="false" />
+
         <service id="fos_elastica.pager_provider.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORMPagerProvider" public="true" abstract="true">
             <argument type="service" id="doctrine" /> <!-- manager registry -->
             <argument type="service" id="fos_elastica.doctrine.register_listeners" />
@@ -16,14 +18,14 @@
             <argument type="service" id="event_dispatcher"/>
         </service>
 
-        <service id="fos_elastica.listener.prototype.orm" class="FOS\ElasticaBundle\Doctrine\Listener" public="false" abstract="true">
+        <service id="fos_elastica.listener.prototype.orm" class="FOS\ElasticaBundle\Doctrine\Listener" abstract="true">
             <argument /> <!-- object persister -->
             <argument type="service" id="fos_elastica.indexable" />
             <argument type="collection" /> <!-- configuration -->
             <argument>null</argument> <!-- logger -->
         </service>
 
-        <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" public="false" abstract="true">
+        <service id="fos_elastica.elastica_to_model_transformer.prototype.orm" class="FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer" abstract="true">
             <argument type="service" id="doctrine" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
@@ -32,7 +34,7 @@
             </call>
         </service>
 
-        <service id="fos_elastica.manager.orm" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
+        <service id="fos_elastica.manager.orm" class="FOS\ElasticaBundle\Doctrine\RepositoryManager" public="true">
             <argument type="service" id="doctrine" />
             <argument type="service" id="fos_elastica.repository_manager" />
         </service>

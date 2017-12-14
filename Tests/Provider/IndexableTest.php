@@ -24,23 +24,9 @@ use FOS\ElasticaBundle\Provider\Indexable;
 
 class IndexableTest extends \PHPUnit_Framework_TestCase
 {
-    public $container;
-
-    protected function setUp()
-    {
-        $this->container = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\ContainerInterface')
-            ->getMock();
-
-        $this->container->expects($this->any())
-            ->method('get')
-            ->with('indexableService')
-            ->will($this->returnValue(new IndexableDecider()));
-    }
-
     public function testIndexableUnknown()
     {
         $indexable = new Indexable([]);
-        $indexable->setContainer($this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
         $this->assertTrue($index);
@@ -54,7 +40,6 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
         $indexable = new Indexable([
             'index/type' => $callback,
         ]);
-        $indexable->setContainer($this->container);
         $index = $indexable->isObjectIndexable('index', 'type', new Entity());
 
         $this->assertSame($return, $index);
@@ -69,7 +54,6 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
         $indexable = new Indexable([
             'index/type' => $callback,
         ]);
-        $indexable->setContainer($this->container);
         $indexable->isObjectIndexable('index', 'type', new Entity());
     }
 
@@ -77,7 +61,6 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['nonexistentEntityMethod'],
-            [['@indexableService', 'internalMethod']],
             [[new IndexableDecider(), 'internalMethod']],
             [42],
             ['entity.getIsIndexable() && nonexistentEntityFunction()'],
@@ -89,8 +72,7 @@ class IndexableTest extends \PHPUnit_Framework_TestCase
         return [
             ['isIndexable', false],
             [[new IndexableDecider(), 'isIndexable'], true],
-            [['@indexableService', 'isIndexable'], true],
-            [['@indexableService'], true],
+            [new IndexableDecider(), true],
             [function (Entity $entity) {
                 return $entity->maybeIndex();
             }, true],

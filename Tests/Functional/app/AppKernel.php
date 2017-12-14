@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Tests\Functional\app;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -69,6 +70,10 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
+        $loader->load(function (ContainerBuilder $container) {
+            $container->setParameter('fos_elastica.host', $_SERVER['FOS_ELASTICA_HOST']);
+            $container->setParameter('fos_elastica.port', $_SERVER['FOS_ELASTICA_PORT']);
+        });
         $loader->load($this->rootConfig);
     }
 

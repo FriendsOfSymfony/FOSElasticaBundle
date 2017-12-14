@@ -13,7 +13,8 @@ namespace FOS\ElasticaBundle\Command;
 
 use Elastica\Query;
 use Elastica\Result;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use FOS\ElasticaBundle\Index\IndexManager;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,11 +23,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Searches a type.
  */
-class SearchCommand extends ContainerAwareCommand
+class SearchCommand extends Command
 {
-    /**
-     * @see Command
-     */
+    protected static $defaultName = 'fos:elastica:search';
+
+    private $indexManager;
+
+    public function __construct(IndexManager $indexManager)
+    {
+        parent::__construct();
+
+        $this->indexManager = $indexManager;
+    }
+
     protected function configure()
     {
         $this
@@ -43,14 +52,10 @@ class SearchCommand extends ContainerAwareCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $indexName = $input->getOption('index');
-        /** @var $index \Elastica\Index */
-        $index = $this->getContainer()->get('fos_elastica.index_manager')->getIndex($indexName ? $indexName : null);
+        $index = $this->indexManager->getIndex($indexName ? $indexName : null);
         $type = $index->getType($input->getArgument('type'));
         $query = Query::create($input->getArgument('query'));
         $query->setSize($input->getOption('limit'));

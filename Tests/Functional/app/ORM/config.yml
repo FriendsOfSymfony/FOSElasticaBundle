@@ -10,13 +10,17 @@ doctrine:
         auto_mapping: false
 
 services:
+    test_alias.fos_elastica.indexable:
+        alias: fos_elastica.indexable
+        public: true
     indexable_service:
         class: FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService
+        public: false
 
 fos_elastica:
     clients:
         default:
-            url: http://localhost:9200
+            url: "http://localhost:9200"
     indexes:
         fos_elastica_orm_test:
             types:
@@ -88,7 +92,7 @@ fos_elastica:
                         finder: ~
                         provider: ~
         second_index:
-            index_name: foselastica_orm_test_second_%kernel.environment%
+            index_name: "foselastica_orm_test_second_%kernel.environment%"
             types:
                 type:
                     properties:

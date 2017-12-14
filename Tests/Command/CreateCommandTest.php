@@ -18,11 +18,8 @@ use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\AliasProcessor;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\MappingBuilder;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
- * Create command test.
- *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
 class CreateCommandTest extends \PHPUnit_Framework_TestCase
@@ -62,12 +59,8 @@ class CreateCommandTest extends \PHPUnit_Framework_TestCase
      */
     private $index;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setup()
+    protected function setUp()
     {
-        $container = new Container();
         $this->indexManager = $this->getMockBuilder('\FOS\ElasticaBundle\Index\IndexManager')
             ->disableOriginalConstructor()
             ->getMock();
@@ -87,13 +80,12 @@ class CreateCommandTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $container->set('fos_elastica.index_manager', $this->indexManager);
-        $container->set('fos_elastica.mapping_builder', $this->mappingBuilder);
-        $container->set('fos_elastica.config_manager', $this->configManager);
-        $container->set('fos_elastica.alias_processor', $this->aliasProcessor);
-
-        $this->command = new CreateCommand();
-        $this->command->setContainer($container);
+        $this->command = new CreateCommand(
+            $this->indexManager,
+            $this->mappingBuilder,
+            $this->configManager,
+            $this->aliasProcessor
+        );
     }
 
     /**

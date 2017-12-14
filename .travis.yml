@@ -6,29 +6,41 @@ cache:
     directories:
         - $HOME/.composer/cache
 
+env:
+  global:
+    - PHPUNIT_FLAGS="-v"
+    - ES_VERSION="5.2.1"
+
 matrix:
-  include:
-    - php: 5.6
-      env: SYMFONY_VERSION='^3' ES_VERSION=5.2.1
-    - php: 7.0
-      env: SYMFONY_VERSION='^3' ES_VERSION=5.2.1
-    - php: 7.1
-      env: SYMFONY_VERSION='^3' ES_VERSION=5.2.1
-    - php: 5.6
-      env: COMPOSER_FLAGS="--prefer-lowest --prefer-stable" ES_VERSION=5.2.1
-    - php: 5.6
-      env: SYMFONY_VERSION='^2' ES_VERSION=5.2.1
-    - php: 7.1
-      env: SYMFONY_VERSION='^2' ES_VERSION=5.2.1
   fast_finish: true
+  include:
+    # Minimum supported dependencies with min and max PHP version
+    - php: 5.6
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+    - php: 7.2
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+
+    # Latest supported dependencies with each PHP version
+    - php: 5.6
+    - php: 7.0
+    - php: 7.1
+    - php: 7.2
+      env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover=coverage.clover"
+
+    # Install all SF components in the same major version, see https://github.com/dunglas/symfony-lock
+    - php: 7.2
+      env: SYMFONY_VERSION="^3"
 
 install:
+  # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
+  - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update dunglas/symfony-lock=$SYMFONY_VERSION; fi;
+  - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
   - mkdir /tmp/elasticsearch
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
   - /tmp/elasticsearch/bin/elasticsearch-plugin install -b mapper-attachments
   - /tmp/elasticsearch/bin/elasticsearch --daemonize -Epath.data=/tmp
   - .travis/wait-for-elasticsearch.sh
-
 
 before_script:
   - phpenv config-add travis.php.ini
@@ -36,13 +48,11 @@ before_script:
   - if [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then composer require --dev --no-update doctrine/mongodb-odm=^1; fi;
   - if [ "$TRAVIS_PHP_VERSION" = "7.0" ]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;
   - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update dunglas/symfony-lock=$SYMFONY_VERSION; fi;
-  - if [ "$DEPENDENCIES" = "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
-  - composer update $COMPOSER_FLAGS --prefer-dist
 
 script:
-  - vendor/bin/phpunit --coverage-clover=coverage.clover
+  - vendor/bin/phpunit ${PHPUNIT_FLAGS}
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - if [[ $COVERAGE = true ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [[ $COVERAGE = true ]]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+
