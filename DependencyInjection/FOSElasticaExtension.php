@@ -11,6 +11,8 @@
 
 namespace FOS\ElasticaBundle\DependencyInjection;
 
+use FOS\ElasticaBundle\Elastica\Client;
+use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -77,6 +79,7 @@ class FOSElasticaExtension extends Extension
 
         $this->loadClients($config['clients'], $container);
         $container->setAlias('fos_elastica.client', sprintf('fos_elastica.client.%s', $config['default_client']))->setPublic(true);
+        $container->setAlias(Client::class, 'fos_elastica.client')->setPublic(false);
 
         $this->loadIndexes($config['indexes'], $container);
         $container->setAlias('fos_elastica.index', sprintf('fos_elastica.index.%s', $config['default_index']))->setPublic(true);
@@ -765,6 +768,7 @@ class FOSElasticaExtension extends Extension
         }
 
         $container->setAlias('fos_elastica.manager', sprintf('fos_elastica.manager.%s', $defaultManagerService))->setPublic(true);
+        $container->setAlias(RepositoryManagerInterface::class, 'fos_elastica.manager')->setPublic(false);
     }
 
     /**
