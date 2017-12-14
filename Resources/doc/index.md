@@ -26,4 +26,4 @@ Cookbook Entries
 * [Multi type search](cookbook/multi-type-search.md)
 * [Attachments Handling](cookbook/attachments.md)
 * [Populate Events](cookbook/populate-events.md)
-* [Populate optimizations](cookbook/populate-optimizations.md)
+* [Speed up populate command](cookbook/speed-up-populate-command.md)
