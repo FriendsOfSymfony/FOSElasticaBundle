@@ -40,6 +40,9 @@
     "conflict": {
         "symfony/dependency-injection": "<3.3"
     },
+    "suggest": {
+        "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
+    },
     "autoload": {
         "psr-4": { "FOS\\ElasticaBundle\\": "" }
     },
