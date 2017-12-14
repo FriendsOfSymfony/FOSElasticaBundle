@@ -136,6 +136,7 @@ class PopulateCommand extends Command
             'sleep' => $input->getOption('sleep'),
             'first_page' => $input->getOption('first-page'),
             'max_per_page' => $input->getOption('max-per-page'),
+            'page-persister' => $input->getOption('pager-persister'),
         ];
 
         if ($input->getOption('last-page')) {
@@ -265,7 +266,7 @@ class PopulateCommand extends Command
         $options['indexName'] = $index;
         $options['typeName'] = $type;
 
-        $this->pagerPersisterRegistry->insert($pager, $options);
+        $this->pagerPersisterRegistry->getPagerPersister($options['page-persister'])->insert($pager, $options);
 
         $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
 
