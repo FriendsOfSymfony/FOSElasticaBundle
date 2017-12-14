@@ -22,7 +22,7 @@ So, we only have to install `EnqueueBundle` and one of the MQ transports.
 I am going to install the bundle and filesystem transport by way of example.
 
 ```bash
-$ composer require enqueue/enqueue-bundle:^0.8 enqueue/fs:^0.8
+$ composer require enqueue/elastica-bundle:^0.8.1 enqueue/fs:^0.8
 ```
 
 _**Note:** As long as you are on Symfony Flex you are done. If not, you have to do some extra things, like registering the bundle in your `AppKernel` class._  
