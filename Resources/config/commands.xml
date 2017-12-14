@@ -5,7 +5,9 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="fos_elastica.command.create" class="FOS\ElasticaBundle\Command\CreateCommand" public="false">
+        <defaults public="false" />
+
+        <service id="fos_elastica.command.create" class="FOS\ElasticaBundle\Command\CreateCommand">
             <tag name="console.command" />
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.mapping_builder" />
@@ -13,7 +15,7 @@
             <argument type="service" id="fos_elastica.alias_processor" />
         </service>
 
-        <service id="fos_elastica.command.populate" class="FOS\ElasticaBundle\Command\PopulateCommand" public="false">
+        <service id="fos_elastica.command.populate" class="FOS\ElasticaBundle\Command\PopulateCommand">
             <tag name="console.command" />
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="fos_elastica.index_manager" />
@@ -22,13 +24,13 @@
             <argument type="service" id="fos_elastica.resetter" />
         </service>
 
-        <service id="fos_elastica.command.reset" class="FOS\ElasticaBundle\Command\ResetCommand" public="false">
+        <service id="fos_elastica.command.reset" class="FOS\ElasticaBundle\Command\ResetCommand">
             <tag name="console.command" />
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.resetter" />
         </service>
 
-        <service id="fos_elastica.command.search" class="FOS\ElasticaBundle\Command\SearchCommand" public="false">
+        <service id="fos_elastica.command.search" class="FOS\ElasticaBundle\Command\SearchCommand">
             <tag name="console.command" />
             <argument type="service" id="fos_elastica.index_manager" />
         </service>

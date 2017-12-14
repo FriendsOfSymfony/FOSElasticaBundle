@@ -5,11 +5,13 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <defaults public="false" />
+
         <service id="fos_elastica.repository_manager" class="FOS\ElasticaBundle\Manager\RepositoryManager" public="true" />
 
-        <service id="fos_elastica.alias_processor" class="FOS\ElasticaBundle\Index\AliasProcessor" public="false" />
+        <service id="fos_elastica.alias_processor" class="FOS\ElasticaBundle\Index\AliasProcessor" />
 
-        <service id="fos_elastica.indexable" class="FOS\ElasticaBundle\Provider\Indexable" public="false">
+        <service id="fos_elastica.indexable" class="FOS\ElasticaBundle\Provider\Indexable">
             <argument type="collection" /> <!-- array of indexable callbacks keyed by type name -->
         </service>
 
@@ -26,7 +28,7 @@
             <argument /> <!-- indexes -->
             <argument type="service" id="fos_elastica.index" /> <!-- default index -->
         </service>
-        <service id="FOS\ElasticaBundle\Index\IndexManager" alias="fos_elastica.index_manager" public="false" />
+        <service id="FOS\ElasticaBundle\Index\IndexManager" alias="fos_elastica.index_manager"/>
 
         <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter" public="true">
             <argument type="service" id="fos_elastica.config_manager" />
@@ -35,7 +37,7 @@
             <argument type="service" id="fos_elastica.mapping_builder" />
             <argument type="service" id="event_dispatcher"/>
         </service>
-        <service id="FOS\ElasticaBundle\Index\Resetter" alias="fos_elastica.resetter" public="false" />
+        <service id="FOS\ElasticaBundle\Index\Resetter" alias="fos_elastica.resetter" />
 
         <!-- Abstract definition for all finders. -->
         <service id="fos_elastica.finder" class="FOS\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
