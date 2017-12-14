@@ -76,10 +76,10 @@ class FOSElasticaExtension extends Extension
         }
 
         $this->loadClients($config['clients'], $container);
-        $container->setAlias('fos_elastica.client', sprintf('fos_elastica.client.%s', $config['default_client']));
+        $container->setAlias('fos_elastica.client', sprintf('fos_elastica.client.%s', $config['default_client']))->setPublic(true);
 
         $this->loadIndexes($config['indexes'], $container);
-        $container->setAlias('fos_elastica.index', sprintf('fos_elastica.index.%s', $config['default_index']));
+        $container->setAlias('fos_elastica.index', sprintf('fos_elastica.index.%s', $config['default_index']))->setPublic(true);
         $container->setParameter('fos_elastica.default_index', $config['default_index']);
 
         $container->getDefinition('fos_elastica.config_source.container')->replaceArgument(0, $this->indexConfigs);
@@ -764,7 +764,7 @@ class FOSElasticaExtension extends Extension
             $defaultManagerService = $this->loadedDrivers[0];
         }
 
-        $container->setAlias('fos_elastica.manager', sprintf('fos_elastica.manager.%s', $defaultManagerService));
+        $container->setAlias('fos_elastica.manager', sprintf('fos_elastica.manager.%s', $defaultManagerService))->setPublic(true);
     }
 
     /**
