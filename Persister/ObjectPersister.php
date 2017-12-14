@@ -66,7 +66,7 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function insertOne($object)
     {
-        $this->insertMany([$object]);
+        return $this->insertMany([$object]);
     }
 
     /**
@@ -74,7 +74,7 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function replaceOne($object)
     {
-        $this->replaceMany([$object]);
+        return $this->replaceMany([$object]);
     }
 
     /**
@@ -82,7 +82,7 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function deleteOne($object)
     {
-        $this->deleteMany([$object]);
+        return $this->deleteMany([$object]);
     }
 
     /**
@@ -90,7 +90,7 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function deleteById($id)
     {
-        $this->deleteManyByIdentifiers([$id]);
+        return $this->deleteManyByIdentifiers([$id]);
     }
 
     /**
@@ -103,7 +103,7 @@ class ObjectPersister implements ObjectPersisterInterface
             $documents[] = $this->transformToElasticaDocument($object);
         }
         try {
-            $this->type->addDocuments($documents);
+            return $this->type->addDocuments($documents);
         } catch (BulkException $e) {
             $this->log($e);
         }
@@ -122,7 +122,7 @@ class ObjectPersister implements ObjectPersisterInterface
         }
 
         try {
-            $this->type->updateDocuments($documents);
+            return $this->type->updateDocuments($documents);
         } catch (BulkException $e) {
             $this->log($e);
         }
@@ -138,7 +138,7 @@ class ObjectPersister implements ObjectPersisterInterface
             $documents[] = $this->transformToElasticaDocument($object);
         }
         try {
-            $this->type->deleteDocuments($documents);
+            return $this->type->deleteDocuments($documents);
         } catch (BulkException $e) {
             $this->log($e);
         }
@@ -150,7 +150,7 @@ class ObjectPersister implements ObjectPersisterInterface
     public function deleteManyByIdentifiers(array $identifiers)
     {
         try {
-            $this->type->getIndex()->getClient()->deleteIds($identifiers, $this->type->getIndex(), $this->type);
+            return $this->type->getIndex()->getClient()->deleteIds($identifiers, $this->type->getIndex(), $this->type);
         } catch (BulkException $e) {
             $this->log($e);
         }
