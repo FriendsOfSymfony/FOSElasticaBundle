@@ -7,6 +7,7 @@ Here's some signs, if you spot them consider using the solution from this tutori
   * The command takes enormous amount of time to re-index data.
   * It consumes a lot of memory.
   * It fails here and there because of lucking resources or running out of time.
+  * It fails on some buggy model and you want to gracefully skip it and continue indexing.
 
 This chapter describes a solution that improves the command performance and reduces its time&memory consumption. 
 Instead of doing everything in one single process the populate command delegates work to workers (via [message queue](https://en.wikipedia.org/wiki/Message_queue)).

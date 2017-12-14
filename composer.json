@@ -44,6 +44,9 @@
         "symfony/validator": "^2.8|^3.4",
         "symfony/stopwatch": "^2.8|^3.4"
     },
+    "suggest": {
+        "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
+    },
     "autoload": {
         "psr-4": { "FOS\\ElasticaBundle\\": "" }
     },
