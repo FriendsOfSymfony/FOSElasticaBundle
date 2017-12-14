@@ -12,11 +12,13 @@
 namespace FOS\ElasticaBundle\Tests\Logger;
 
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
-class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
+class ElasticaLoggerTest extends TestCase
 {
     public function testGetZeroIfNoQueriesAdded()
     {
@@ -153,13 +155,11 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpKernel\Log\LoggerInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|LoggerInterface
      */
     private function getMockLogger()
     {
-        return $this->getMockBuilder('Psr\Log\LoggerInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock(LoggerInterface::class);
     }
 
     /**
@@ -171,9 +171,7 @@ class ElasticaLoggerTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockLoggerForLevelMessageAndContext($level, $message, $context)
     {
-        $loggerMock = $this->getMockBuilder('Psr\Log\LoggerInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $loggerMock = $this->createMock(LoggerInterface::class);
 
         $loggerMock->expects($this->once())
             ->method('log')

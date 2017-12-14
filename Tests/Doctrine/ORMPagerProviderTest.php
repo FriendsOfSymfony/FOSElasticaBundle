@@ -12,9 +12,10 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Tests\Mocks\DoctrineORMCustomRepositoryMock;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
-class ORMPagerProviderTest extends \PHPUnit_Framework_TestCase
+class ORMPagerProviderTest extends TestCase
 {
     public function testShouldImplementPagerProviderInterface()
     {
@@ -37,15 +38,15 @@ class ORMPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $expectedBuilder = $this->getMock(QueryBuilder::class, [], [], '', false);
+        $expectedBuilder = $this->createMock(QueryBuilder::class);
 
-        $repository = $this->getMock(EntityRepository::class, [], [], '', false);
+        $repository = $this->createMock(EntityRepository::class);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
             ->willReturn($expectedBuilder);
 
-        $manager = $this->getMock(EntityManager::class, [], [], '', false);
+        $manager = $this->createMock(EntityManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -75,13 +76,13 @@ class ORMPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->getMock(DoctrineORMCustomRepositoryMock::class, [], [], '', false);
+        $repository = $this->createMock(DoctrineORMCustomRepositoryMock::class);
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
-            ->willReturn($this->getMock(QueryBuilder::class, [], [], '', false));
+            ->willReturn($this->createMock(QueryBuilder::class));
 
-        $manager = $this->getMock(EntityManager::class, [], [], '', false);
+        $manager = $this->createMock(EntityManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -108,13 +109,13 @@ class ORMPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->getMock(EntityRepository::class, [], [], '', false);
+        $repository = $this->createMock(EntityRepository::class);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($this->getMock(QueryBuilder::class, [], [], '', false));
+            ->willReturn($this->createMock(QueryBuilder::class));
 
-        $manager = $this->getMock(EntityManager::class, [], [], '', false);
+        $manager = $this->createMock(EntityManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -146,7 +147,7 @@ class ORMPagerProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function createRegisterListenersServiceMock()
     {
-        return $this->getMock(RegisterListenersService::class, [], [], '', false);
+        return $this->createMock(RegisterListenersService::class);
     }
 
     /**
@@ -154,6 +155,6 @@ class ORMPagerProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function createDoctrineMock()
     {
-        return $this->getMock(ManagerRegistry::class, [], [], '', false);
+        return $this->createMock(ManagerRegistry::class);
     }
 }

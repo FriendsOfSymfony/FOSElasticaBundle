@@ -18,11 +18,14 @@ use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\AliasProcessor;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\MappingBuilder;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
-class CreateCommandTest extends \PHPUnit_Framework_TestCase
+class CreateCommandTest extends TestCase
 {
     /**
      * @var IndexManager|\PHPUnit_Framework_MockObject_MockObject
@@ -50,35 +53,23 @@ class CreateCommandTest extends \PHPUnit_Framework_TestCase
     private $command;
 
     /**
-     * @var IndexConfig
+     * @var IndexConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $indexConfig;
 
     /**
-     * @var Index
+     * @var Index|\PHPUnit_Framework_MockObject_MockObject
      */
     private $index;
 
     protected function setUp()
     {
-        $this->indexManager = $this->getMockBuilder('\FOS\ElasticaBundle\Index\IndexManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->mappingBuilder = $this->getMockBuilder('FOS\ElasticaBundle\Index\MappingBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->configManager = $this->getMockBuilder('FOS\ElasticaBundle\Configuration\ConfigManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->aliasProcessor = $this->getMockBuilder('FOS\ElasticaBundle\Index\AliasProcessor')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->indexConfig = $this->getMockBuilder('\FOS\ElasticaBundle\Configuration\IndexConfig')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->index = $this->getMockBuilder('\FOS\ElasticaBundle\Elastica\Index')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->indexManager = $this->createMock(IndexManager::class);
+        $this->mappingBuilder = $this->createMock(MappingBuilder::class);
+        $this->configManager = $this->createMock(ConfigManager::class);
+        $this->aliasProcessor = $this->createMock(AliasProcessor::class);
+        $this->indexConfig = $this->createMock(IndexConfig::class);
+        $this->index = $this->createMock(Index::class);
 
         $this->command = new CreateCommand(
             $this->indexManager,
@@ -88,15 +79,10 @@ class CreateCommandTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * Test execute with index provided and with alias.
-     *
-     * @return void
-     */
     public function testExecuteWithIndexProvidedAndWithAlias()
     {
-        $input = $this->getMockForAbstractClass('\Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMockForAbstractClass('\Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createMock(InputInterface::class);
+        $output = $this->createMock(OutputInterface::class);
 
         $indexName = 'foo';
         $mapping = ['mapping'];
@@ -113,15 +99,10 @@ class CreateCommandTest extends \PHPUnit_Framework_TestCase
         $this->command->run($input, $output);
     }
 
-    /**
-     * Test execute with index provided and without alias.
-     *
-     * @return void
-     */
     public function testExecuteWithIndexProvidedAndWithoutAlias()
     {
-        $input = $this->getMockForAbstractClass('\Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMockForAbstractClass('\Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createMock(InputInterface::class);
+        $output = $this->createMock(OutputInterface::class);
 
         $indexName = 'foo';
         $mapping = ['mapping'];
@@ -140,8 +121,8 @@ class CreateCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testExecuteAllIndices()
     {
-        $input = $this->getMockForAbstractClass('\Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMockForAbstractClass('\Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createMock(InputInterface::class);
+        $output = $this->createMock(OutputInterface::class);
         $indexConfig1 = clone $this->indexConfig;
         $indexConfig2 = clone $this->indexConfig;
         $index1 = clone $this->index;

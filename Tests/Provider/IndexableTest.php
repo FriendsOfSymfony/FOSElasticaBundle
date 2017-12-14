@@ -21,8 +21,9 @@
 namespace FOS\ElasticaBundle\Tests\Provider;
 
 use FOS\ElasticaBundle\Provider\Indexable;
+use PHPUnit\Framework\TestCase;
 
-class IndexableTest extends \PHPUnit_Framework_TestCase
+class IndexableTest extends TestCase
 {
     public function testIndexableUnknown()
     {

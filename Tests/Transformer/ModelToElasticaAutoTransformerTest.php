@@ -11,8 +11,11 @@
 
 namespace FOS\ElasticaBundle\Tests\Transformer\ModelToElasticaAutoTransformer;
 
+use Elastica\Document;
 use FOS\ElasticaBundle\Event\TransformEvent;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class POPO
@@ -156,23 +159,22 @@ class CastableObject
     }
 }
 
-class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
+class ModelToElasticaAutoTransformerTest extends TestCase
 {
     public function testTransformerDispatches()
     {
-        $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')
-            ->getMock();
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $dispatcher->expects($this->exactly(2))
             ->method('dispatch')
             ->withConsecutive(
                 [
                     TransformEvent::PRE_TRANSFORM,
-                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent'),
+                    $this->isInstanceOf(TransformEvent::class),
                 ],
                 [
                     TransformEvent::POST_TRANSFORM,
-                    $this->isInstanceOf('FOS\ElasticaBundle\Event\TransformEvent'),
+                    $this->isInstanceOf(TransformEvent::class),
                 ]
             );
 
@@ -185,11 +187,11 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $transformer = $this->getTransformer();
 
         $document = $transformer->transform(new POPO(), ['name' => ['property_path' => false]]);
-        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertInstanceOf(Document::class, $document);
         $this->assertFalse($document->has('name'));
 
         $document = $transformer->transform(new POPO(), ['realName' => ['property_path' => 'name']]);
-        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertInstanceOf(Document::class, $document);
         $this->assertTrue($document->has('realName'));
         $this->assertSame('someName', $document->get('realName'));
     }
@@ -200,7 +202,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $document = $transformer->transform(new POPO(), ['name' => []]);
         $data = $document->getData();
 
-        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertInstanceOf(Document::class, $document);
         $this->assertSame(123, $document->getId());
         $this->assertSame('someName', $data['name']);
     }
@@ -219,7 +221,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         );
         $data = $document->getData();
 
-        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertInstanceOf(Document::class, $document);
         $this->assertSame(123, $document->getId());
         $this->assertSame('someName', $data['name']);
         $this->assertSame(7.2, $data['float']);

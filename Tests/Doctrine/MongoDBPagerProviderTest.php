@@ -12,11 +12,12 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Tests\Mocks\DoctrineMongoDBCustomRepositoryMock;
 use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
-class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
+class MongoDBPagerProviderTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         if (!class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine MongoDB ODM is not available.');
@@ -44,15 +45,15 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $expectedBuilder = $this->getMock(Builder::class, [], [], '', false);
+        $expectedBuilder = $this->createMock(Builder::class);
 
-        $repository = $this->getMock(DocumentRepository::class, [], [], '', false);
+        $repository = $this->createMock(DocumentRepository::class);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
             ->willReturn($expectedBuilder);
 
-        $manager = $this->getMock(DocumentManager::class, [], [], '', false);
+        $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -84,18 +85,17 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->getMock(DoctrineMongoDBCustomRepositoryMock::class, [], [], '', false);
+        $repository = $this->createMock(DoctrineMongoDBCustomRepositoryMock::class);
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
-            ->willReturn($this->getMock(Builder::class, [], [], '', false));
+            ->willReturn($this->createMock(Builder::class));
 
-        $manager = $this->getMock(DocumentManager::class, [], [], '', false);
+        $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
             ->willReturn($repository);
-
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
@@ -115,13 +115,13 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->getMock(DocumentRepository::class, [], [], '', false);
+        $repository = $this->createMock(DocumentRepository::class);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($this->getMock(Builder::class, [], [], '', false));
+            ->willReturn($this->createMock(Builder::class));
 
-        $manager = $this->getMock(DocumentManager::class, [], [], '', false);
+        $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -151,7 +151,7 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function createDoctrineMock()
     {
-        return $this->getMock(ManagerRegistry::class, [], [], '', false);
+        return $this->createMock(ManagerRegistry::class);
     }
 
     /**
@@ -159,6 +159,6 @@ class MongoDBPagerProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function createRegisterListenersServiceMock()
     {
-        return $this->getMock(RegisterListenersService::class, [], [], '', false);
+        return $this->createMock(RegisterListenersService::class);
     }
 }

@@ -13,10 +13,11 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Tests\Mocks\DoctrinePHPCRCustomRepositoryMock;
 use Pagerfanta\Adapter\DoctrineODMPhpcrAdapter;
+use PHPUnit\Framework\TestCase;
 
-class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
+class PHPCRPagerProviderTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         if (!class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');
@@ -44,15 +45,15 @@ class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $expectedBuilder = $this->getMock(QueryBuilder::class, [], [], '', false);
+        $expectedBuilder = $this->createMock(QueryBuilder::class);
 
-        $repository = $this->getMock(DocumentRepository::class, [], [], '', false);
+        $repository = $this->createMock(DocumentRepository::class);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
             ->willReturn($expectedBuilder);
 
-        $manager = $this->getMock(DocumentManager::class, [], [], '', false);
+        $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -84,13 +85,13 @@ class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $repository = $this->getMock(DoctrinePHPCRCustomRepositoryMock::class, [], [], '', false);
+        $repository = $this->createMock(DoctrinePHPCRCustomRepositoryMock::class);
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
-            ->willReturn($this->getMock(QueryBuilder::class, [], [], '', false));
+            ->willReturn($this->createMock(QueryBuilder::class));
 
-        $manager = $this->getMock(DocumentManager::class, [], [], '', false);
+        $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -115,15 +116,15 @@ class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
 
-        $queryBuilder = $this->getMock(QueryBuilder::class, [], [], '', false);
+        $queryBuilder = $this->createMock(QueryBuilder::class);
 
-        $repository = $this->getMock(DocumentRepository::class, [], [], '', false);
+        $repository = $this->createMock(DocumentRepository::class);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
             ->willReturn($queryBuilder);
 
-        $manager = $this->getMock(DocumentManager::class, [], [], '', false);
+        $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
@@ -153,7 +154,7 @@ class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function createDoctrineMock()
     {
-        return $this->getMock(ManagerRegistry::class, [], [], '', false);
+        return $this->createMock(ManagerRegistry::class);
     }
 
     /**
@@ -161,6 +162,6 @@ class PHPCRPagerProviderTest extends \PHPUnit_Framework_TestCase
      */
     private function createRegisterListenersServiceMock()
     {
-        return $this->getMock(RegisterListenersService::class, [], [], '', false);
+        return $this->createMock(RegisterListenersService::class);
     }
 }

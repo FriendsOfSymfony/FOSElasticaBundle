@@ -12,19 +12,17 @@
 namespace FOS\ElasticaBundle\Tests\Resetter\DependencyInjection;
 
 use FOS\ElasticaBundle\DependencyInjection\Configuration;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 
-/**
- * ConfigurationTest.
- */
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class ConfigurationTest extends TestCase
 {
     /**
      * @var Processor
      */
     private $processor;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->processor = new Processor();
     }

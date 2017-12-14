@@ -13,8 +13,9 @@ namespace FOS\ElasticaBundle\Tests\Index;
 
 use FOS\ElasticaBundle\Configuration\TypeConfig;
 use FOS\ElasticaBundle\Index\MappingBuilder;
+use PHPUnit\Framework\TestCase;
 
-class MappingBuilderTest extends \PHPUnit_Framework_TestCase
+class MappingBuilderTest extends TestCase
 {
     /**
      * @var MappingBuilder

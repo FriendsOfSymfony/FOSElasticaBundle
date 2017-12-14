@@ -1,4 +1,5 @@
 <?php
+
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
 use Doctrine\Common\Persistence\ObjectManager;
@@ -10,10 +11,11 @@ use FOS\ElasticaBundle\Persister\Event\Events;
 use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
+class RegisterListenersServiceTest extends TestCase
 {
     public function testCouldBeConstructedWithDispatcherArgument()
     {
@@ -174,15 +176,15 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
 
         $service = new RegisterListenersService($dispatcher);
 
-        $configuration = $this->getMock(Configuration::class);
-        $connection = $this->getMock(Connection::class, [], [], '', false);
+        $configuration = $this->createMock(Configuration::class);
+        $connection = $this->createMock(Connection::class);
         $connection
             ->expects($this->once())
             ->method('getConfiguration')
             ->willReturn($configuration)
         ;
 
-        $manager = $this->getMock(EntityManagerInterface::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $manager
             ->expects($this->once())
             ->method('getConnection')
@@ -208,7 +210,7 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
 
         $service = new RegisterListenersService($dispatcher);
 
-        $manager = $this->getMock(EntityManagerInterface::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $manager
             ->expects($this->never())
             ->method('getConnection')
@@ -242,21 +244,20 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
 
         $service = new RegisterListenersService($dispatcher);
 
-        $configuration = $this->getMock(\Doctrine\MongoDB\Configuration::class);
-        $connection = $this->getMock(\Doctrine\MongoDB\Connection::class, [], [], '', false);
+        $configuration = $this->createMock(\Doctrine\MongoDB\Configuration::class);
+        $connection = $this->createMock(\Doctrine\MongoDB\Connection::class);
         $connection
             ->expects($this->once())
             ->method('getConfiguration')
             ->willReturn($configuration)
         ;
 
-        $manager = $this->getMock(\Doctrine\ODM\MongoDB\DocumentManager::class, [], [], '', false);
+        $manager = $this->createMock(\Doctrine\ODM\MongoDB\DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getConnection')
             ->willReturn($connection)
         ;
-
 
         $pager = $this->createPagerMock();
 
@@ -280,7 +281,7 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
 
         $service = new RegisterListenersService($dispatcher);
 
-        $manager = $this->getMock(\Doctrine\ODM\MongoDB\DocumentManager::class, [], [], '', false);
+        $manager = $this->createMock(\Doctrine\ODM\MongoDB\DocumentManager::class);
         $manager
             ->expects($this->never())
             ->method('getConnection')
@@ -310,7 +311,7 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
 
         $service = new RegisterListenersService($dispatcher);
 
-        $manager = $this->getMock(\Doctrine\ODM\PHPCR\DocumentManagerInterface::class);
+        $manager = $this->createMock(\Doctrine\ODM\PHPCR\DocumentManagerInterface::class);
 
         $pager = $this->createPagerMock();
 
@@ -328,7 +329,7 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
 
     private function createPagerMock()
     {
-        return $this->getMock(PagerInterface::class, [], [], '', false);
+        return $this->createMock(PagerInterface::class);
     }
 
     /**
@@ -336,7 +337,7 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
      */
     private function createObjectPersisterMock()
     {
-        return $this->getMock(ObjectPersisterInterface::class, [], [], '', false);
+        return $this->createMock(ObjectPersisterInterface::class);
     }
 
     /**
@@ -344,7 +345,7 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
      */
     private function createObjectManagerMock()
     {
-        return $this->getMock(ObjectManager::class, [], [], '', false);
+        return $this->createMock(ObjectManager::class);
     }
 
     /**
@@ -360,6 +361,6 @@ class RegisterListenersServiceTest extends \PHPUnit_Framework_TestCase
      */
     private function createDispatcherMock()
     {
-        return $this->getMock(EventDispatcherInterface::class, [], [], '', false);
+        return $this->createMock(EventDispatcherInterface::class);
     }
 }

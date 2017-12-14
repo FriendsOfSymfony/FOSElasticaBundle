@@ -11,8 +11,12 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Doctrine\RepositoryManager;
+use FOS\ElasticaBundle\Finder\TransformedFinder;
+use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use FOS\ElasticaBundle\Repository;
+use PHPUnit\Framework\TestCase;
 
 class CustomRepository
 {
@@ -25,65 +29,45 @@ class Entity
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
-class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
+class RepositoryManagerTest extends TestCase
 {
     public function testThatGetRepositoryCallsMainRepositoryManager()
     {
-        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
-        $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $mainManager = $this->getMockBuilder('FOS\ElasticaBundle\Manager\RepositoryManagerInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $finderMock = $this->createMock(TransformedFinder::class);
+        $registryMock = $this->createMock(ManagerRegistry::class);
+        $mainManager = $this->createMock(RepositoryManagerInterface::class);
 
         $mainManager->method('getRepository')
             ->with($this->equalTo('index/type'))
             ->willReturn(new Repository($finderMock));
 
-        $entityName = 'FOS\ElasticaBundle\Tests\Manager\Entity';
+        $entityName = Entity::class;
 
         $manager = new RepositoryManager($registryMock, $mainManager);
         $manager->addEntity($entityName, 'index/type');
         $repository = $manager->getRepository($entityName);
-        $this->assertInstanceOf('FOS\ElasticaBundle\Repository', $repository);
+        $this->assertInstanceOf(Repository::class, $repository);
     }
 
     public function testGetRepositoryShouldResolveEntityShortName()
     {
-        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
-        $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $finderMock = $this->createMock(TransformedFinder::class);
+        $registryMock = $this->createMock(ManagerRegistry::class);
+        $mainManager = $this->createMock(RepositoryManagerInterface::class);
 
         $registryMock->method('getAliasNamespace')
             ->with($this->equalTo('FOSElasticaBundle'))
-            ->willReturn('FOS\ElasticaBundle\Tests\Manager');
-
-        $mainManager = $this->getMockBuilder('FOS\ElasticaBundle\Manager\RepositoryManagerInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->willReturn('FOS\ElasticaBundle\Tests\Doctrine');
 
         $mainManager->method('getRepository')
             ->with($this->equalTo('index/type'))
             ->willReturn(new Repository($finderMock));
 
-        $entityName = 'FOS\ElasticaBundle\Tests\Manager\Entity';
+        $entityName = Entity::class;
 
         $manager = new RepositoryManager($registryMock, $mainManager);
         $manager->addEntity($entityName, 'index/type');
         $repository = $manager->getRepository('FOSElasticaBundle:Entity');
-        $this->assertInstanceOf('FOS\ElasticaBundle\Repository', $repository);
+        $this->assertInstanceOf(Repository::class, $repository);
     }
 }

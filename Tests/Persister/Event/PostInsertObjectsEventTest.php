@@ -5,9 +5,10 @@ use FOS\ElasticaBundle\Persister\Event\PersistEvent;
 use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\Event;
 
-final class PostInsertObjectsEventTest extends \PHPUnit_Framework_TestCase
+final class PostInsertObjectsEventTest extends TestCase
 {
     public function testShouldBeSubClassOfEventClass()
     {
@@ -81,7 +82,7 @@ final class PostInsertObjectsEventTest extends \PHPUnit_Framework_TestCase
      */
     private function createObjectPersisterMock()
     {
-        return $this->getMock(ObjectPersisterInterface::class, [], [], '', false);
+        return $this->createMock(ObjectPersisterInterface::class);
     }
 
     /**
@@ -89,6 +90,6 @@ final class PostInsertObjectsEventTest extends \PHPUnit_Framework_TestCase
      */
     private function createPagerMock()
     {
-        return $this->getMock(PagerInterface::class, [], [], '', false);
+        return $this->createMock(PagerInterface::class);
     }
 }

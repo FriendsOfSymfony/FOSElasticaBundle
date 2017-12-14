@@ -11,20 +11,25 @@
 
 namespace FOS\ElasticaBundle\Tests\Client;
 
+use Elastica\Connection;
 use Elastica\Request;
+use Elastica\Response;
 use Elastica\Transport\NullTransport;
+use FOS\ElasticaBundle\Elastica\Client;
+use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use PHPUnit\Framework\TestCase;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends TestCase
 {
     public function testRequestsAreLogged()
     {
         $transport = new NullTransport();
 
-        $connection = $this->getMockBuilder('Elastica\Connection')->getMock();
+        $connection = $this->createMock(Connection::class);
         $connection->expects($this->any())->method('getTransportObject')->will($this->returnValue($transport));
         $connection->expects($this->any())->method('toArray')->will($this->returnValue([]));
 
-        $logger = $this->getMockBuilder('FOS\ElasticaBundle\Logger\ElasticaLogger')->getMock();
+        $logger = $this->createMock(ElasticaLogger::class);
         $logger
             ->expects($this->once())
             ->method('logQuery')
@@ -40,7 +45,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 $this->isType('array')
             );
 
-        $client = $this->getMockBuilder('FOS\ElasticaBundle\Elastica\Client')
+        $client = $this->getMockBuilder(Client::class)
             ->setMethods(['getConnection'])
             ->getMock();
 
@@ -50,6 +55,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $response = $client->request('foo');
 
-        $this->assertInstanceOf('Elastica\Response', $response);
+        $this->assertInstanceOf(Response::class, $response);
     }
 }

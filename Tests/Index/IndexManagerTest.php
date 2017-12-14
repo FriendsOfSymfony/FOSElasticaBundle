@@ -11,9 +11,11 @@
 
 namespace FOS\ElasticaBundle\Tests\Index;
 
+use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\IndexManager;
+use PHPUnit\Framework\TestCase;
 
-class IndexManagerTest extends \PHPUnit_Framework_TestCase
+class IndexManagerTest extends TestCase
 {
     private $indexes = [];
 
@@ -22,12 +24,10 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
      */
     private $indexManager;
 
-    public function setUp()
+    protected function setUp()
     {
         foreach (['index1', 'index2', 'index3'] as $indexName) {
-            $index = $this->getMockBuilder('FOS\\ElasticaBundle\\Elastica\\Index')
-                ->disableOriginalConstructor()
-                ->getMock();
+            $index = $this->createMock(Index::class);
 
             $index->expects($this->any())
                 ->method('getName')

@@ -12,34 +12,33 @@
 namespace FOS\ElasticaBundle\Tests\Doctrine\PHPCR;
 
 use FOS\ElasticaBundle\Tests\Doctrine\ListenerTest as BaseListenerTest;
-use Doctrine\ODM\PHPCR\DocumentManager;
 
 class ListenerTest extends BaseListenerTest
 {
-    public function setUp()
+    protected function setUp()
     {
-        if (!class_exists(DocumentManager::class)) {
+        if (!class_exists(\Doctrine\ODM\PHPCR\DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');
         }
     }
 
     protected function getClassMetadataClass()
     {
-        return 'Doctrine\ODM\PHPCR\Mapping\ClassMetadata';
+        return \Doctrine\ODM\PHPCR\Mapping\ClassMetadata::class;
     }
 
     protected function getLifecycleEventArgsClass()
     {
-        return 'Doctrine\Common\Persistence\Event\LifecycleEventArgs';
+        return \Doctrine\Common\Persistence\Event\LifecycleEventArgs::class;
     }
 
     protected function getListenerClass()
     {
-        return 'FOS\ElasticaBundle\Doctrine\Listener';
+        return \FOS\ElasticaBundle\Doctrine\Listener::class;
     }
 
     protected function getObjectManagerClass()
     {
-        return 'Doctrine\ODM\PHPCR\DocumentManager';
+        return \Doctrine\ODM\PHPCR\DocumentManager::class;
     }
 }

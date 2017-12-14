@@ -12,28 +12,26 @@
 namespace FOS\ElasticaBundle\Tests\DataCollector;
 
 use FOS\ElasticaBundle\DataCollector\ElasticaDataCollector;
+use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
-class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
+class ElasticaDataCollectorTest extends TestCase
 {
     public function testCorrectAmountOfQueries()
     {
-        /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Request */
-        $requestMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|Request */
+        $requestMock = $this->createMock(Request::class);
 
-        /** @var $responseMock \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Response */
-        $responseMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $responseMock \PHPUnit_Framework_MockObject_MockObject|Response */
+        $responseMock = $this->createMock(Response::class);
 
-        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Logger\ElasticaLogger */
-        $loggerMock = $this->getMockBuilder('FOS\ElasticaBundle\Logger\ElasticaLogger')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        $loggerMock = $this->createMock(ElasticaLogger::class);
 
         $totalQueries = rand();
 
@@ -48,20 +46,14 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectQueriesReturned()
     {
-        /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Request */
-        $requestMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|Request */
+        $requestMock = $this->createMock(Request::class);
 
-        /** @var $responseMock \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Response */
-        $responseMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $responseMock \PHPUnit_Framework_MockObject_MockObject|Response */
+        $responseMock = $this->createMock(Response::class);
 
-        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Logger\ElasticaLogger */
-        $loggerMock = $this->getMockBuilder('FOS\ElasticaBundle\Logger\ElasticaLogger')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        $loggerMock = $this->createMock(ElasticaLogger::class);
 
         $queries = ['testQueries'];
 
@@ -76,20 +68,14 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 
     public function testCorrectQueriesTime()
     {
-        /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Request */
-        $requestMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|Request */
+        $requestMock = $this->createMock(Request::class);
 
-        /** @var $responseMock \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Response */
-        $responseMock = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $responseMock \PHPUnit_Framework_MockObject_MockObject|Response */
+        $responseMock = $this->createMock(Response::class);
 
-        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Logger\ElasticaLogger */
-        $loggerMock = $this->getMockBuilder('FOS\ElasticaBundle\Logger\ElasticaLogger')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        $loggerMock = $this->createMock(ElasticaLogger::class);
 
         $queries = [[
             'engineMS' => 15,
@@ -110,9 +96,8 @@ class ElasticaDataCollectorTest extends \PHPUnit_Framework_TestCase
 
     public function testName()
     {
-        $loggerMock = $this->getMockBuilder('FOS\ElasticaBundle\Logger\ElasticaLogger')
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        $loggerMock = $this->createMock(ElasticaLogger::class);
 
         $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
 

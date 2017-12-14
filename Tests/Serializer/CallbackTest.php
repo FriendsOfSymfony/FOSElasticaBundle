@@ -12,20 +12,23 @@
 namespace FOS\ElasticaBundle\Tests\Serializer;
 
 use FOS\ElasticaBundle\Serializer\Callback;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Serializer\SerializerInterface;
 
-class CallbackTest extends \PHPUnit_Framework_TestCase
+class CallbackTest extends TestCase
 {
     public function testSerializerMustHaveSerializeMethod()
     {
         $callback = new Callback();
-        $this->setExpectedException('RuntimeException', 'The serializer must have a "serialize" method.');
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('The serializer must have a "serialize" method.');
         $callback->setSerializer(new \stdClass());
     }
 
     public function testSetGroupsWorksWithValidSerializer()
     {
         $callback = new Callback();
-        $serializer = $this->getMockBuilder('Symfony\Component\Serializer\Serializer')->disableOriginalConstructor()->getMock();
+        $serializer = $this->createMock(SerializerInterface::class);
         $callback->setSerializer($serializer);
 
         $callback->setGroups(['foo']);
@@ -34,13 +37,12 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
     public function testSetGroupsFailsWithInvalidSerializer()
     {
         $callback = new Callback();
-        $serializer = $this->getMockBuilder('FOS\ElasticaBundle\Tests\Serializer\FakeSerializer')->setMethods(['serialize'])->getMock();
+        $serializer = $this->createMock(FakeSerializer::class);
         $callback->setSerializer($serializer);
 
-        $this->setExpectedException(
-            'RuntimeException',
-            'Setting serialization groups requires using "JMS\Serializer\Serializer" or '
-                .'"Symfony\Component\Serializer\Serializer"'
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Setting serialization groups requires using "JMS\Serializer\Serializer" or "Symfony\Component\Serializer\Serializer"'
         );
 
         $callback->setGroups(['foo']);

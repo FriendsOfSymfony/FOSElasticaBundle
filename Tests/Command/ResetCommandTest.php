@@ -14,10 +14,11 @@ namespace FOS\ElasticaBundle\Tests\Command;
 use FOS\ElasticaBundle\Command\ResetCommand;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\Resetter;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 
-class ResetCommandTest extends \PHPUnit_Framework_TestCase
+class ResetCommandTest extends TestCase
 {
     /**
      * @var ResetCommand
@@ -36,15 +37,8 @@ class ResetCommandTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->resetter = $this->getMockBuilder(Resetter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['resetIndex', 'resetIndexType'])
-            ->getMock();
-
-        $this->indexManager = $this->getMockBuilder(IndexManager::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getAllIndexes'])
-            ->getMock();
+        $this->resetter = $this->createMock(Resetter::class);
+        $this->indexManager = $this->createMock(IndexManager::class);
 
         $this->command = new ResetCommand($this->indexManager, $this->resetter);
     }

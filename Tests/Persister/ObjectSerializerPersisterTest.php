@@ -11,25 +11,25 @@
 
 namespace FOS\ElasticaBundle\Tests\Persister;
 
+use Elastica\Type;
 use FOS\ElasticaBundle\Persister\ObjectSerializerPersister;
+use FOS\ElasticaBundle\Serializer\Callback;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer;
 use FOS\ElasticaBundle\Tests\Mocks\ObjectSerializerPersisterPOPO as POPO;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
+class ObjectSerializerPersisterTest extends TestCase
 {
     public function testThatCanReplaceObject()
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->once())
             ->method('updateDocuments');
 
-        $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
+        $serializerMock = $this->createMock(Callback::class);
         $serializerMock->expects($this->once())->method('serialize');
 
         $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', [$serializerMock, 'serialize']);
@@ -40,16 +40,13 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->never())
             ->method('deleteById');
         $typeMock->expects($this->once())
             ->method('addDocuments');
 
-        $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
+        $serializerMock = $this->createMock(Callback::class);
         $serializerMock->expects($this->once())->method('serialize');
 
         $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', [$serializerMock, 'serialize']);
@@ -60,16 +57,13 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->once())
             ->method('deleteDocuments');
         $typeMock->expects($this->never())
             ->method('addDocument');
 
-        $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
+        $serializerMock = $this->createMock(Callback::class);
         $serializerMock->expects($this->once())->method('serialize');
 
         $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', [$serializerMock, 'serialize']);
@@ -80,10 +74,7 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->never())
             ->method('deleteById');
         $typeMock->expects($this->never())
@@ -93,7 +84,7 @@ class ObjectSerializerPersisterTest extends \PHPUnit_Framework_TestCase
         $typeMock->expects($this->once())
             ->method('addDocuments');
 
-        $serializerMock = $this->getMockBuilder('FOS\ElasticaBundle\Serializer\Callback')->getMock();
+        $serializerMock = $this->createMock(Callback::class);
         $serializerMock->expects($this->exactly(2))->method('serialize');
 
         $objectPersister = new ObjectSerializerPersister($typeMock, $transformer, 'SomeClass', [$serializerMock, 'serialize']);

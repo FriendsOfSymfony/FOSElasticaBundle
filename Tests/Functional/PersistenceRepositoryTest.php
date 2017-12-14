@@ -18,9 +18,8 @@ class PersistenceRepositoryTest extends WebTestCase
         static::bootKernel(['test_case' => 'ORM']);
 
         $repository = static::$kernel->getContainer()->get('fos_elastica.manager.orm')
-            ->getRepository('FOS\ElasticaBundle\Tests\Functional\TypeObject');
+            ->getRepository(TypeObject::class);
 
-        $this->assertNotNull($repository);
-        $this->assertSame('FOS\ElasticaBundle\Tests\Functional\TypeObjectRepository', get_class($repository));
+        $this->assertInstanceOf(TypeObjectRepository::class, $repository);
     }
 }
