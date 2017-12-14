@@ -265,7 +265,7 @@ class PopulateCommand extends Command
         $options['indexName'] = $index;
         $options['typeName'] = $type;
 
-        $this->pagerPersisterRegistry->insert($pager, $options);
+        $this->pagerPersister->insert($pager, $options);
 
         $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
 
