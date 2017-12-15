@@ -44,7 +44,10 @@
         "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
     },
     "autoload": {
-        "psr-4": { "FOS\\ElasticaBundle\\": "" }
+        "psr-4": { "FOS\\ElasticaBundle\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "FOS\\ElasticaBundle\\Tests\\": "tests/" }
     },
     "extra": {
         "branch-alias": {
