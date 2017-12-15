@@ -16,22 +16,18 @@ Symfony. Features include:
 Documentation
 -------------
 
-Documentation for FOSElasticaBundle is in `Resources/doc/index.md`
+Documentation for FOSElasticaBundle is in `doc/index.md`
 
-[Read the documentation for 5.0.x](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Resources/doc/index.md)
+[Read the documentation for 5.0.x](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/doc/index.md)
 
 [Read the documentation for 4.0.x](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/4.0.x/Resources/doc/index.md)
-
-[Read the documentation for 3.2.x](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/3.2.x/Resources/doc/index.md)
 
 Installation
 ------------
 
-Installation instructions can be found in the [documentation](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Resources/doc/setup.md)
+Installation instructions can be found in the [documentation](doc/setup.md)
 
 License
 -------
 
-This bundle is under the MIT license. See the complete license in the bundle:
-
-    Resources/meta/LICENSE
+This bundle is released under the MIT license. See the included [LICENSE](LICENSE) file for more information.
