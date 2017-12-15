@@ -18,7 +18,6 @@ Cookbook Entries
 * [Custom Repositories](cookbook/custom-repositories.md)
 * [Pre Transform Event](cookbook/pre-transform-event.md)
 * [HTTP Headers for Elastica](cookbook/elastica-client-http-headers.md)
-* Performance - [Logging](cookbook/logging.md) - [Compression](cookbook/compression.md)
 * [Manual Providers](cookbook/manual-provider.md)
 * [Clustering - Multiple Connections](cookbook/multiple-connections.md)
 * [Suppressing server errors](cookbook/suppress-server-errors.md)
@@ -26,4 +25,8 @@ Cookbook Entries
 * [Multi type search](cookbook/multi-type-search.md)
 * [Attachments Handling](cookbook/attachments.md)
 * [Populate Events](cookbook/populate-events.md)
-* [Speed up populate command](cookbook/speed-up-populate-command.md)
+* Performance
+   - [Logging](cookbook/logging.md) 
+   - [Compression](cookbook/compression.md)
+   - [Speed up populate command](cookbook/speed-up-populate-command.md)
+   - [Doctrine queue listener](cookbook/doctrine-queue-listener.md)

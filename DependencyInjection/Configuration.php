@@ -537,6 +537,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('listener')
                     ->addDefaultsIfNotSet()
                     ->children()
+                        ->booleanNode('enabled')->defaultTrue()->end()
                         ->scalarNode('insert')->defaultTrue()->end()
                         ->scalarNode('update')->defaultTrue()->end()
                         ->scalarNode('delete')->defaultTrue()->end()

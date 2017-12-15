@@ -334,7 +334,7 @@ class FOSElasticaExtension extends Extension
         if (isset($typeConfig['finder'])) {
             $this->loadTypeFinder($typeConfig, $container, $elasticaToModelTransformerId, $typeRef, $indexName, $typeName);
         }
-        if (isset($typeConfig['listener'])) {
+        if (isset($typeConfig['listener']) && $typeConfig['listener']['enabled']) {
             $this->loadTypeListener($typeConfig, $container, $objectPersisterId, $indexName, $typeName);
         }
     }
