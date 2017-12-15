@@ -19,7 +19,7 @@ For queuing it uses [EnqueueBundle](https://github.com/php-enqueue/enqueue-dev/b
 ## Installation
 
 I assume you already have `FOSElasticaBundle` installed, if not here's the [setup doc](../setup.md). 
-So, we only have to install `EnqueueBundle` and one of the MQ transports. 
+So, we only have to install `EnqueueElasticaBundle` and one of the MQ transports. 
 I am going to install the bundle and filesystem transport by way of example.
 
 ```bash
