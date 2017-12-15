@@ -28,12 +28,12 @@ The usage is simple, you have to disable the default listener:
 ```yaml
 fos_elastica:
     indexes:
-        enqueue:
+        acme_index:
             types:
-                blog:
+                acme_type:
                     persistence:
-                        driver: orm
-                        model: AppBundle\Entity\Blog
+                        driver: 'orm'
+                        model: 'AppBundle\Entity\Blog'
                         listener: { enabled: false }
 ```
 
@@ -44,8 +44,8 @@ enqueue_elastica:
     doctrine:
         queue_listeners:
             -
-              index_name: 'enqueue'
-              type_name: 'blog'
+              index_name: 'acme_index'
+              type_name: 'acme_blog'
               model_class: 'AppBundle\Entity\Blog'
 ```
 
