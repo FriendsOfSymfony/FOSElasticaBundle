@@ -201,7 +201,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $data = $document->getData();
 
         $this->assertInstanceOf('Elastica\Document', $document);
-        $this->assertSame(123, (int) $document->getId());
+        $this->assertSame(123, $document->getId());
         $this->assertSame('someName', $data['name']);
     }
 
@@ -220,7 +220,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $data = $document->getData();
 
         $this->assertInstanceOf('Elastica\Document', $document);
-        $this->assertSame(123, (int) $document->getId());
+        $this->assertSame(123, $document->getId());
         $this->assertSame('someName', $data['name']);
         $this->assertSame(7.2, $data['float']);
         $this->assertTrue($data['bool']);

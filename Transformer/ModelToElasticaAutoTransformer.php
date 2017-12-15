@@ -76,7 +76,11 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      **/
     public function transform($object, array $fields)
     {
-        $identifier = (string) $this->propertyAccessor->getValue($object, $this->options['identifier']);
+        $identifier = $this->propertyAccessor->getValue($object, $this->options['identifier']);
+        if ($identifier && !is_scalar($identifier)) {
+            $identifier = (string) $identifier;
+        }
+
         $document = $this->transformObjectToDocument($object, $fields, $identifier);
 
         return $document;
