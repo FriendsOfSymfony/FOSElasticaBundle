@@ -16,10 +16,11 @@ use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber;
 use Knp\Component\Pager\Event\ItemsEvent;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
+class PaginateElasticaQuerySubscriberTest extends TestCase
 {
     public function testShouldDoNothingIfSortParamIsEmpty()
     {
@@ -272,16 +273,12 @@ class PaginateElasticaQuerySubscriberTest extends \PHPUnit_Framework_TestCase
 
     protected function getAdapterMock()
     {
-        return $this->getMockBuilder(RawPaginatorAdapter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock(RawPaginatorAdapter::class);
     }
 
     protected function getResultSetMock()
     {
-        return $this->getMockBuilder(PartialResultsInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock(PartialResultsInterface::class);
     }
 
     private function getRequestStack(Request $request = null)

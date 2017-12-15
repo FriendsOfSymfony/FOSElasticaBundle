@@ -12,19 +12,21 @@
 namespace FOS\ElasticaBundle\Tests\Doctrine\PHPCR;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Doctrine\PHPCR\ElasticaToModelTransformer;
 use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\DocumentRepository;
+use PHPUnit\Framework\TestCase;
 
-class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
+class ElasticaToModelTransformerTest extends TestCase
 {
     /**
-     * @var \Doctrine\Common\Persistence\ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
     /**
-     * @var \Doctrine\ODM\PHPCR\DocumentManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var DocumentManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $manager;
 
@@ -33,27 +35,16 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
      */
     protected $repository;
 
-    /**
-     * @var string
-     */
     protected $objectClass = 'stdClass';
 
     protected function setUp()
     {
-        if (!interface_exists('Doctrine\Common\Persistence\ManagerRegistry')) {
-            $this->markTestSkipped('Doctrine Common is not present');
-        }
         if (!class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');
         }
 
-        $this->registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->manager = $this->getMockBuilder('Doctrine\ODM\PHPCR\DocumentManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->registry = $this->createMock(ManagerRegistry::class);
+        $this->manager = $this->createMock(DocumentManager::class);
 
         $this->registry->expects($this->any())
             ->method('getManager')
@@ -91,7 +82,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 
         $transformer = new ElasticaToModelTransformer($this->registry, $this->objectClass);
 
-        $class = new \ReflectionClass('FOS\ElasticaBundle\Doctrine\PHPCR\ElasticaToModelTransformer');
+        $class = new \ReflectionClass(ElasticaToModelTransformer::class);
         $method = $class->getMethod('findByIdentifiers');
         $method->setAccessible(true);
 

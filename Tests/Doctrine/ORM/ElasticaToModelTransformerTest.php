@@ -11,9 +11,16 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine\ORM;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\QueryBuilder;
 use FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer;
+use PHPUnit\Framework\TestCase;
 
-class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
+class ElasticaToModelTransformerTest extends TestCase
 {
     /**
      * @var \Doctrine\Common\Persistence\ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
@@ -37,13 +44,8 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->manager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->registry = $this->createMock(ManagerRegistry::class);
+        $this->manager = $this->createMock(ObjectManager::class);
 
         $this->registry->expects($this->any())
             ->method('getManagerForClass')
@@ -51,7 +53,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->manager));
 
         $this->repository = $this
-            ->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')
+            ->getMockBuilder(ObjectRepository::class)
             ->setMethods([
                 'customQueryBuilderCreator',
                 'createQueryBuilder',
@@ -74,9 +76,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function testTransformUsesQueryBuilderMethodConfiguration()
     {
-        $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $qb = $this->createMock(QueryBuilder::class);
 
         $this->repository->expects($this->once())
             ->method('customQueryBuilderCreator')
@@ -89,7 +89,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             'query_builder_method' => 'customQueryBuilderCreator',
         ]);
 
-        $class = new \ReflectionClass('FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer');
+        $class = new \ReflectionClass(ElasticaToModelTransformer::class);
         $method = $class->getMethod('getEntityQueryBuilder');
         $method->setAccessible(true);
 
@@ -102,9 +102,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function testTransformUsesDefaultQueryBuilderMethodConfiguration()
     {
-        $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $qb = $this->createMock(QueryBuilder::class);
 
         $this->repository->expects($this->never())
             ->method('customQueryBuilderCreator');
@@ -115,7 +113,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 
         $transformer = new ElasticaToModelTransformer($this->registry, $this->objectClass);
 
-        $class = new \ReflectionClass('FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer');
+        $class = new \ReflectionClass(ElasticaToModelTransformer::class);
         $method = $class->getMethod('getEntityQueryBuilder');
         $method->setAccessible(true);
 
@@ -127,7 +125,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function testUsesHintsConfigurationIfGiven()
     {
-        $query = $this->getMockBuilder('Doctrine\ORM\AbstractQuery')
+        $query = $this->getMockBuilder(AbstractQuery::class)
             ->setMethods(['setHint', 'execute', 'setHydrationMode'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -137,11 +135,9 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             ->with('customHintName', 'Custom\Hint\Class')
             ->willReturnSelf();
 
-        $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $qb = $this->createMock(QueryBuilder::class);
         $qb->expects($this->any())->method('getQuery')->willReturn($query);
-        $qb->expects($this->any())->method('expr')->willReturn($this->getMockBuilder('Doctrine\ORM\Query\Expr')->getMock());
+        $qb->expects($this->any())->method('expr')->willReturn($this->createMock(Expr::class));
         $qb->expects($this->any())->method('andWhere')->willReturnSelf();
 
         $this->repository->expects($this->once())
@@ -155,7 +151,7 @@ class ElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             ],
         ]);
 
-        $class = new \ReflectionClass('FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer');
+        $class = new \ReflectionClass(ElasticaToModelTransformer::class);
         $method = $class->getMethod('findByIdentifiers');
         $method->setAccessible(true);
 

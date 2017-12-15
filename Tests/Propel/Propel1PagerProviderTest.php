@@ -1,4 +1,5 @@
 <?php
+
 namespace FOS\ElasticaBundle\Tests\Propel;
 
 use FOS\ElasticaBundle\Propel\Propel1PagerProvider;
@@ -6,8 +7,9 @@ use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Tests\Mocks\PropelModelFooQuery;
 use Pagerfanta\Adapter\PropelAdapter;
+use PHPUnit\Framework\TestCase;
 
-class Propel1PagerProviderTest extends \PHPUnit_Framework_TestCase
+class Propel1PagerProviderTest extends TestCase
 {
     public function testShouldImplementPagerProviderInterface()
     {

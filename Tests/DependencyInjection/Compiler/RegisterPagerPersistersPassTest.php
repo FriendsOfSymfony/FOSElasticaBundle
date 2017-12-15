@@ -5,11 +5,12 @@ namespace FOS\ElasticaBundle\Tests\DependencyInjection\Compiler;
 use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterPagerPersistersPass;
 use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
 use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class RegisterPagerPersistersPassTest extends \PHPUnit_Framework_TestCase
+class RegisterPagerPersistersPassTest extends TestCase
 {
     public function testShouldImplementCompilerPassInterface()
     {
@@ -65,7 +66,8 @@ class RegisterPagerPersistersPassTest extends \PHPUnit_Framework_TestCase
 
         $container->setDefinition('a_persister', $this->createPagerPersisterDefinition([]));
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Elastica pager persister "a_persister" must specify the "persisterName" attribute.');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Elastica pager persister "a_persister" must specify the "persisterName" attribute.');
 
         $pass->process($container);
     }
@@ -80,7 +82,8 @@ class RegisterPagerPersistersPassTest extends \PHPUnit_Framework_TestCase
         $container->setDefinition('a_foo_persister', $this->createPagerPersisterDefinition(['persisterName' => 'foo']));
         $container->setDefinition('a_bar_persister', $this->createPagerPersisterDefinition(['persisterName' => 'foo']));
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Cannot register pager persister "a_bar_persister". The pager persister "a_foo_persister" has been registered for same name "foo"');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot register pager persister "a_bar_persister". The pager persister "a_foo_persister" has been registered for same name "foo"');
 
         $pass->process($container);
     }
@@ -97,7 +100,8 @@ class RegisterPagerPersistersPassTest extends \PHPUnit_Framework_TestCase
 
         $container->setDefinition('a_foo_persister', $persister);
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Elastica pager persister "a_foo_persister" with class "stdClass" must implement "FOS\ElasticaBundle\Persister\PagerPersisterInterface".');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Elastica pager persister "a_foo_persister" with class "stdClass" must implement "FOS\ElasticaBundle\Persister\PagerPersisterInterface".');
 
         $pass->process($container);
     }

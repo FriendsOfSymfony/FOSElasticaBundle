@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./vendor/autoload.php" colors="true">
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.5/phpunit.xsd"
+        colors                                     = "true"
+        beStrictAboutOutputDuringTests             = "true"
+        beStrictAboutTestsThatDoNotTestAnything    = "false"
+        convertDeprecationsToExceptions            = "false"
+        verbose                                    = "true"
+        bootstrap                                  = "vendor/autoload.php"
+>
     <php>
         <server name="FOS_ELASTICA_HOST" value="localhost" />
         <server name="FOS_ELASTICA_PORT" value="9200" />

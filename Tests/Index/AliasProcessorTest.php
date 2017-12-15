@@ -20,13 +20,16 @@
 
 namespace FOS\ElasticaBundle\Tests\Index;
 
+use Elastica\Client;
 use Elastica\Exception\ResponseException;
 use Elastica\Request;
 use Elastica\Response;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
+use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\AliasProcessor;
+use PHPUnit\Framework\TestCase;
 
-class AliasProcessorTest extends \PHPUnit_Framework_TestCase
+class AliasProcessorTest extends TestCase
 {
     /**
      * @var AliasProcessor
@@ -48,9 +51,7 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
     public function testSetRootName($name, $configArray, $resultStartsWith)
     {
         $indexConfig = new IndexConfig($name, [], $configArray);
-        $index = $this->getMockBuilder('FOS\\ElasticaBundle\\Elastica\\Index')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $index = $this->createMock(Index::class);
         $index->expects($this->once())
             ->method('overrideName')
             ->with($this->stringStartsWith($resultStartsWith));
@@ -198,7 +199,7 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
             ->method('request')
             ->with('unique_name', 'DELETE');
         // Not an annotation: we do not want a RuntimeException until now.
-        $this->setExpectedException('RuntimeException');
+        $this->expectException(\RuntimeException::class);
 
         $this->processor->switchIndexAlias($indexConfig, $index, true);
     }
@@ -213,13 +214,9 @@ class AliasProcessorTest extends \PHPUnit_Framework_TestCase
 
     private function getMockedIndex($name)
     {
-        $index = $this->getMockBuilder('FOS\\ElasticaBundle\\Elastica\\Index')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $index = $this->createMock(Index::class);
 
-        $client = $this->getMockBuilder('Elastica\\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $client = $this->createMock(Client::class);
         $index->expects($this->any())
             ->method('getClient')
             ->willReturn($client);

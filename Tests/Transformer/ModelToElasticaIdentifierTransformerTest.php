@@ -11,7 +11,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Transformer\ModelToElasticaIdentifierTransformer;
 
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class POPO
@@ -30,7 +32,7 @@ class POPO
     }
 }
 
-class ModelToElasticaIdentifierTransformerTest extends \PHPUnit_Framework_TestCase
+class ModelToElasticaIdentifierTransformerTest extends TestCase
 {
     public function testGetDocumentWithIdentifierOnly()
     {
@@ -38,7 +40,7 @@ class ModelToElasticaIdentifierTransformerTest extends \PHPUnit_Framework_TestCa
         $document = $transformer->transform(new POPO(), []);
         $data = $document->getData();
 
-        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertInstanceOf(Document::class, $document);
         $this->assertSame(123, $document->getId());
         $this->assertCount(0, $data);
     }
@@ -49,7 +51,7 @@ class ModelToElasticaIdentifierTransformerTest extends \PHPUnit_Framework_TestCa
         $document = $transformer->transform(new POPO(), ['name' => []]);
         $data = $document->getData();
 
-        $this->assertInstanceOf('Elastica\Document', $document);
+        $this->assertInstanceOf(Document::class, $document);
         $this->assertSame(123, $document->getId());
         $this->assertCount(0, $data);
     }

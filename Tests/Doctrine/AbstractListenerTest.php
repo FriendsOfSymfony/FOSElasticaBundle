@@ -11,12 +11,18 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
+use Elastica\Index;
+use Elastica\Type;
+use FOS\ElasticaBundle\Persister\ObjectPersister;
+use FOS\ElasticaBundle\Provider\IndexableInterface;
+use PHPUnit\Framework\TestCase;
+
 /**
  * See concrete MongoDB/ORM instances of this abstract test.
  *
  * @author Richard Miller <info@limethinking.co.uk>
  */
-abstract class ListenerTest extends \PHPUnit_Framework_TestCase
+abstract class ListenerTest extends TestCase
 {
     public function testObjectInsertedOnPersist()
     {
@@ -245,16 +251,12 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
 
     private function getMockClassMetadata()
     {
-        return $this->getMockBuilder($this->getClassMetadataClass())
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock($this->getClassMetadataClass());
     }
 
     private function getMockObjectManager()
     {
-        return $this->getMockBuilder($this->getObjectManagerClass())
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock($this->getObjectManagerClass());
     }
 
     /**
@@ -264,20 +266,18 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockPersister($object, $indexName, $typeName)
     {
-        $mock = $this->getMockBuilder('FOS\ElasticaBundle\Persister\ObjectPersister')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mock = $this->createMock(ObjectPersister::class);
 
         $mock->expects($this->any())
             ->method('handlesObject')
             ->with($object)
             ->will($this->returnValue(true));
 
-        $index = $this->getMockBuilder('Elastica\Index')->disableOriginalConstructor()->getMock();
+        $index = $this->createMock(Index::class);
         $index->expects($this->any())
             ->method('getName')
             ->will($this->returnValue($indexName));
-        $type = $this->getMockBuilder('Elastica\Type')->disableOriginalConstructor()->getMock();
+        $type = $this->createMock(Type::class);
         $type->expects($this->any())
             ->method('getName')
             ->will($this->returnValue($typeName));
@@ -300,7 +300,7 @@ abstract class ListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockIndexable($indexName, $typeName, $object, $return = null)
     {
-        $mock = $this->getMockBuilder('FOS\ElasticaBundle\Provider\IndexableInterface')->getMock();
+        $mock = $this->createMock(IndexableInterface::class);
 
         if (null !== $return) {
             $mock->expects($this->once())

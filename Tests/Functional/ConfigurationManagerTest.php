@@ -20,7 +20,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
-use Symfony\Bundle\FrameworkBundle\Client;
+use FOS\ElasticaBundle\Configuration\TypeConfig;
 
 /**
  * @group functional
@@ -36,8 +36,8 @@ class ConfigurationManagerTest extends WebTestCase
 
         $this->assertSame('index', $index->getName());
         $this->assertGreaterThanOrEqual(2, count($index->getTypes()));
-        $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('type'));
-        $this->assertInstanceOf('FOS\\ElasticaBundle\\Configuration\\TypeConfig', $index->getType('parent'));
+        $this->assertInstanceOf(TypeConfig::class, $index->getType('type'));
+        $this->assertInstanceOf(TypeConfig::class, $index->getType('parent'));
     }
 
     /**

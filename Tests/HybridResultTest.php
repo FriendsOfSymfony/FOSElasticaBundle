@@ -13,8 +13,9 @@ namespace FOS\ElasticaBundle\Tests;
 
 use Elastica\Result;
 use FOS\ElasticaBundle\HybridResult;
+use PHPUnit\Framework\TestCase;
 
-class HybridResultTest extends \PHPUnit_Framework_TestCase
+class HybridResultTest extends TestCase
 {
     public function testTransformedResultDefaultsToNull()
     {

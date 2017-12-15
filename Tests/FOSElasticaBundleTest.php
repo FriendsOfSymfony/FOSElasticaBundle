@@ -12,19 +12,18 @@
 namespace FOS\ElasticaBundle\Tests;
 
 use FOS\ElasticaBundle\FOSElasticaBundle;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class FOSElasticaBundleTest extends \PHPUnit_Framework_TestCase
+class FOSElasticaBundleTest extends TestCase
 {
     public function testCompilerPassesAreRegistered()
     {
-        $container = $this
-            ->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')
-            ->getMock();
+        $container = $this->createMock(ContainerBuilder::class);
 
         $container
             ->expects($this->atLeastOnce())
-            ->method('addCompilerPass')
-            ->with($this->isInstanceOf('Symfony\\Component\\DependencyInjection\\Compiler\\CompilerPassInterface'));
+            ->method('addCompilerPass');
 
         $bundle = new FOSElasticaBundle();
         $bundle->build($container);

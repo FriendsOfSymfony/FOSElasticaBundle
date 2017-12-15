@@ -17,9 +17,10 @@ use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class FilterObjectsListenerTest extends \PHPUnit_Framework_TestCase
+class FilterObjectsListenerTest extends TestCase
 {
     public function testShouldImplementEventSubscriberInterface()
     {
@@ -127,7 +128,7 @@ class FilterObjectsListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function createObjectPersisterMock()
     {
-        return $this->getMock(ObjectPersisterInterface::class);
+        return $this->createMock(ObjectPersisterInterface::class);
     }
 
     /**
@@ -135,7 +136,7 @@ class FilterObjectsListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function createPagerMock()
     {
-        return $this->getMock(PagerInterface::class);
+        return $this->createMock(PagerInterface::class);
     }
 
     /**
@@ -143,6 +144,6 @@ class FilterObjectsListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function createIndexableMock()
     {
-        return $this->getMock(IndexableInterface::class);
+        return $this->createMock(IndexableInterface::class);
     }
 }

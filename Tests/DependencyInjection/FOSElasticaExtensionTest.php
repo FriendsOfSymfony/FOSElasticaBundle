@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\DependencyInjection;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
 use FOS\ElasticaBundle\DependencyInjection\FOSElasticaExtension;
 use FOS\ElasticaBundle\Doctrine\RegisterListenersService;
 use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
@@ -21,12 +20,13 @@ use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
 use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use FOS\ElasticaBundle\Propel\Propel1PagerProvider;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Yaml\Yaml;
 
-class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
+class FOSElasticaExtensionTest extends TestCase
 {
     public function testShouldAddParentParamToObjectPersisterCall()
     {
@@ -124,7 +124,7 @@ class FOSElasticaExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldRegisterDoctrineMongoDBPagerProviderIfEnabled()
     {
-        if (!class_exists(DocumentManager::class)) {
+        if (!class_exists(\Doctrine\ODM\MongoDB\DocumentManager::class)) {
             $this->markTestSkipped('Doctrine MongoDB ODM is not available.');
         }
 

@@ -15,9 +15,10 @@ use FOS\ElasticaBundle\Persister\Event\PrePersistEvent;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
+class InPlacePagerPersisterTest extends TestCase
 {
     public function testShouldImplementPagerPersisterInterface()
     {
@@ -378,7 +379,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
      */
     private function createObjectPersisterMock()
     {
-        return $this->getMock(ObjectPersisterInterface::class, [], [], '', false);
+        return $this->createMock(ObjectPersisterInterface::class);
     }
 
     /**
@@ -386,7 +387,7 @@ class InPlacePagerPersisterTest extends \PHPUnit_Framework_TestCase
      */
     private function createPersisterRegistryMock()
     {
-        return $this->getMock(PersisterRegistry::class, [], [], '', false);
+        return $this->createMock(PersisterRegistry::class);
     }
 
     /**

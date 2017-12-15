@@ -11,9 +11,11 @@
 
 namespace FOS\ElasticaBundle\Tests\Persister;
 
+use Elastica\Type;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use FOS\ElasticaBundle\Tests\Mocks\ObjectPersisterPOPO as POPO;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class InvalidObjectPersister extends ObjectPersister
@@ -24,16 +26,13 @@ class InvalidObjectPersister extends ObjectPersister
     }
 }
 
-class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
+class ObjectPersisterTest extends TestCase
 {
     public function testThatCanReplaceObject()
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->once())
             ->method('updateDocuments');
 
@@ -50,10 +49,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->never())
             ->method('deleteById');
         $typeMock->expects($this->never())
@@ -69,10 +65,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->never())
             ->method('deleteById');
         $typeMock->expects($this->once())
@@ -91,10 +84,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->never())
             ->method('deleteById');
         $typeMock->expects($this->never())
@@ -110,10 +100,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->once())
             ->method('deleteDocuments');
         $typeMock->expects($this->never())
@@ -132,10 +119,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->never())
             ->method('deleteById');
         $typeMock->expects($this->never())
@@ -151,10 +135,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->never())
             ->method('deleteById');
         $typeMock->expects($this->never())
@@ -175,10 +156,7 @@ class ObjectPersisterTest extends \PHPUnit_Framework_TestCase
     {
         $transformer = $this->getTransformer();
 
-        /** @var $typeMock \PHPUnit_Framework_MockObject_MockObject|\Elastica\Type */
-        $typeMock = $this->getMockBuilder('Elastica\Type')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $typeMock = $this->createMock(Type::class);
         $typeMock->expects($this->never())
             ->method('deleteById');
         $typeMock->expects($this->never())

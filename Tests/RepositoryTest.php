@@ -11,12 +11,14 @@
 
 namespace FOS\ElasticaBundle\Tests;
 
+use FOS\ElasticaBundle\Finder\TransformedFinder;
 use FOS\ElasticaBundle\Repository;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
-class RepositoryTest extends \PHPUnit_Framework_TestCase
+class RepositoryTest extends TestCase
 {
     public function testThatFindCallsFindOnFinder()
     {
@@ -64,18 +66,9 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $repository->findHybrid($testQuery);
     }
 
-    /**
-     * @param string $testQuery
-     * @param mixed  $testLimit
-     * @param string $method
-     *
-     * @return \FOS\ElasticaBundle\Finder\TransformedFinder
-     */
     private function getFinderMock($testQuery, $testLimit = null, $method = 'find')
     {
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $finderMock = $this->createMock(TransformedFinder::class);
         $finderMock->expects($this->once())
             ->method($method)
             ->with($this->equalTo($testQuery), $this->equalTo($testLimit));

@@ -11,15 +11,21 @@
 
 namespace FOS\ElasticaBundle\Tests\Index;
 
-use Elastica\Type;
+use Elastica\Client;
+use FOS\ElasticaBundle\Configuration\ConfigManager;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\TypeConfig;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
+use FOS\ElasticaBundle\Index\AliasProcessor;
+use FOS\ElasticaBundle\Index\IndexManager;
+use FOS\ElasticaBundle\Index\MappingBuilder;
 use FOS\ElasticaBundle\Index\Resetter;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class ResetterTest extends \PHPUnit_Framework_TestCase
+class ResetterTest extends TestCase
 {
     /**
      * @var Resetter
@@ -35,23 +41,12 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->aliasProcessor = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\AliasProcessor')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->configManager = $this->getMockBuilder('FOS\\ElasticaBundle\\Configuration\\ConfigManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->dispatcher = $this->getMockBuilder('Symfony\\Component\\EventDispatcher\\EventDispatcherInterface')
-            ->getMock();
-        $this->elasticaClient = $this->getMockBuilder('Elastica\\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->indexManager = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\IndexManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->mappingBuilder = $this->getMockBuilder('FOS\\ElasticaBundle\\Index\\MappingBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->aliasProcessor = $this->createMock(AliasProcessor::class);
+        $this->configManager = $this->createMock(ConfigManager::class);
+        $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->elasticaClient = $this->createMock(Client::class);
+        $this->indexManager = $this->createMock(IndexManager::class);
+        $this->mappingBuilder = $this->createMock(MappingBuilder::class);
 
         $this->resetter = new Resetter(
             $this->configManager,
@@ -73,8 +68,8 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue([$indexName]));
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
+            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -89,8 +84,8 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $this->mockIndex('index1', $indexConfig);
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
+            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -106,8 +101,8 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         ]);
         $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
+            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -124,8 +119,8 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         ]);
         $index = $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
+            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
         ]);
 
         $this->aliasProcessor->expects($this->once())
@@ -161,10 +156,10 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
         $this->mockType('type', 'index', $typeConfig, $indexConfig);
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\IndexResetEvent')],
-            [TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent')],
-            [TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf('FOS\\ElasticaBundle\\Event\\TypeResetEvent')],
+            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf(TypeResetEvent::class)],
+            [TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf(TypeResetEvent::class)],
         ]);
 
         $this->elasticaClient->expects($this->exactly(3))

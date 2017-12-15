@@ -11,14 +11,20 @@
 
 namespace FOS\ElasticaBundle\Tests\Doctrine;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Elastica\Result;
+use FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
+use FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer;
+use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
+class AbstractElasticaToModelTransformerTest extends TestCase
 {
     /**
-     * @var \Doctrine\Common\Persistence\ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
@@ -29,9 +35,7 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->registry = $this->createMock(ManagerRegistry::class);
     }
 
     /**
@@ -39,7 +43,7 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function testIgnoreMissingOptionDuringTransformHybrid()
     {
-        $transformer = $this->getMockBuilder('FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer')
+        $transformer = $this->getMockBuilder(ElasticaToModelTransformer::class)
             ->setMethods(['findByIdentifiers'])
             ->setConstructorArgs([$this->registry, $this->objectClass, ['ignore_missing' => true]])
             ->getMock();
@@ -71,7 +75,7 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
     public function testObjectClassCanBeSet()
     {
         $transformer = $this->createMockTransformer();
-        $this->assertSame('FOS\ElasticaBundle\Tests\Doctrine\Foo', $transformer->getObjectClass());
+        $this->assertSame(Foo::class, $transformer->getObjectClass());
     }
 
     public function resultsWithMatchingObjects()
@@ -120,10 +124,8 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo([1, 2, 3]), $this->isType('boolean'))
             ->will($this->returnValue([]));
 
-        $this->setExpectedException(
-            '\RuntimeException',
-            'Cannot find corresponding Doctrine objects (0) for all Elastica results (3). IDs: 1, 2, 3'
-        );
+        $this->expectExceptionMessage(\RuntimeException::class);
+        $this->expectExceptionMessage('Cannot find corresponding Doctrine objects (0) for all Elastica results (3). IDs: 1, 2, 3');
 
         $transformer->transform($elasticaResults);
     }
@@ -209,7 +211,7 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($results);
 
         foreach ($results as $key => $result) {
-            $this->assertInstanceOf('FOS\ElasticaBundle\HybridResult', $result);
+            $this->assertInstanceOf(HybridResult::class, $result);
             $this->assertSame($elasticaResults[$key], $result->getResult());
             $this->assertSame($doctrineObjects[$key], $result->getTransformed());
         }
@@ -227,7 +229,7 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
             return $object->$identifier;
         };
 
-        $propertyAccessor = $this->getMockBuilder('Symfony\Component\PropertyAccess\PropertyAccessorInterface')->getMock();
+        $propertyAccessor = $this->createMock(PropertyAccessorInterface::class);
         $propertyAccessor
             ->expects($this->any())
             ->method('getValue')
@@ -238,17 +240,15 @@ class AbstractElasticaToModelTransformerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param array $options
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer
+     * @return \PHPUnit_Framework_MockObject_MockObject|AbstractElasticaToModelTransformer
      */
     private function createMockTransformer($options = [])
     {
-        $objectClass = 'FOS\ElasticaBundle\Tests\Doctrine\Foo';
+        $objectClass = Foo::class;
         $propertyAccessor = $this->createMockPropertyAccessor();
 
         $transformer = $this->getMockForAbstractClass(
-            'FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer',
+            AbstractElasticaToModelTransformer::class,
             [$this->registry, $objectClass, $options]
         );
 

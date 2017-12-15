@@ -5,11 +5,12 @@ namespace FOS\ElasticaBundle\Tests\DependencyInjection\Compiler;
 use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterPagerProvidersPass;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class RegisterPagerProvidersPassTest extends \PHPUnit_Framework_TestCase
+class RegisterPagerProvidersPassTest extends TestCase
 {
     public function testShouldImplementCompilerPassInterface()
     {
@@ -73,7 +74,8 @@ class RegisterPagerProvidersPassTest extends \PHPUnit_Framework_TestCase
 
         $container->setDefinition('a_provider', $this->createProviderDefinition([]));
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Elastica provider "a_provider" must specify the "type" attribute.');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Elastica provider "a_provider" must specify the "type" attribute.');
 
         $pass->process($container);
     }
@@ -89,7 +91,8 @@ class RegisterPagerProvidersPassTest extends \PHPUnit_Framework_TestCase
         $container->setDefinition('a_foo_provider', $this->createProviderDefinition(['index' => 'foo', 'type' => 'bar']));
         $container->setDefinition('a_bar_provider', $this->createProviderDefinition(['index' => 'foo', 'type' => 'bar']));
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Cannot register provider "a_bar_provider". The provider "a_foo_provider" has been registered for same index "foo" and type "bar"');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot register provider "a_bar_provider". The provider "a_foo_provider" has been registered for same index "foo" and type "bar"');
         $pass->process($container);
     }
 
@@ -106,7 +109,8 @@ class RegisterPagerProvidersPassTest extends \PHPUnit_Framework_TestCase
 
         $container->setDefinition('a_foo_provider', $provider);
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Elastica provider "a_foo_provider" with class "stdClass" must implement "FOS\ElasticaBundle\Provider\PagerProviderInterface".');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Elastica provider "a_foo_provider" with class "stdClass" must implement "FOS\ElasticaBundle\Provider\PagerProviderInterface".');
 
         $pass->process($container);
     }

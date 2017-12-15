@@ -11,7 +11,10 @@
 
 namespace FOS\ElasticaBundle\Tests\Manager;
 
+use FOS\ElasticaBundle\Finder\TransformedFinder;
 use FOS\ElasticaBundle\Manager\RepositoryManager;
+use FOS\ElasticaBundle\Repository;
+use PHPUnit\Framework\TestCase;
 
 class CustomRepository
 {
@@ -24,36 +27,30 @@ class Entity
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
-class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
+class RepositoryManagerTest extends TestCase
 {
     public function testThatGetRepositoryReturnsDefaultRepository()
     {
-        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $finderMock = $this->createMock(TransformedFinder::class);
 
         $typeName = 'index/type';
 
         $manager = new RepositoryManager();
         $manager->addType($typeName, $finderMock);
         $repository = $manager->getRepository($typeName);
-        $this->assertInstanceOf('FOS\ElasticaBundle\Repository', $repository);
+        $this->assertInstanceOf(Repository::class, $repository);
     }
 
     public function testThatGetRepositoryReturnsCustomRepository()
     {
-        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $finderMock = $this->createMock(TransformedFinder::class);
 
         $typeName = 'index/type';
 
         $manager = new RepositoryManager();
-        $manager->addType($typeName, $finderMock, 'FOS\ElasticaBundle\Tests\Manager\CustomRepository');
+        $manager->addType($typeName, $finderMock, CustomRepository::class);
         $repository = $manager->getRepository($typeName);
-        $this->assertInstanceOf('FOS\ElasticaBundle\Tests\Manager\CustomRepository', $repository);
+        $this->assertInstanceOf(CustomRepository::class, $repository);
     }
 
     /**
@@ -61,10 +58,7 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testThatGetRepositoryThrowsExceptionIfEntityNotConfigured()
     {
-        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $finderMock = $this->createMock(TransformedFinder::class);
 
         $typeName = 'index/type';
 
@@ -78,10 +72,7 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testThatGetRepositoryThrowsExceptionIfCustomRepositoryNotFound()
     {
-        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
-        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $finderMock = $this->createMock(TransformedFinder::class);
 
         $typeName = 'index/type';
 

@@ -11,10 +11,11 @@
 
 namespace FOS\ElasticaBundle\Persister;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
-class PagerPersisterRegistryTest extends \PHPUnit_Framework_TestCase
+class PagerPersisterRegistryTest extends TestCase
 {
     public function testShouldImplementContainerAwareInterface()
     {
@@ -44,7 +45,8 @@ class PagerPersisterRegistryTest extends \PHPUnit_Framework_TestCase
         ]);
         $registry->setContainer($container);
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'No pager persister was registered for the give name "the_other_name".');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('No pager persister was registered for the give name "the_other_name".');
         $registry->getPagerPersister('the_other_name');
     }
 
@@ -58,7 +60,8 @@ class PagerPersisterRegistryTest extends \PHPUnit_Framework_TestCase
         ]);
         $registry->setContainer($container);
 
-        $this->setExpectedException(\LogicException::class, 'The pager provider service "the_service_id" must implement "FOS\ElasticaBundle\Persister\PagerPersisterInterface" interface but it is an instance of "stdClass" class.');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('The pager provider service "the_service_id" must implement "FOS\ElasticaBundle\Persister\PagerPersisterInterface" interface but it is an instance of "stdClass" class.');
         $registry->getPagerPersister('the_name');
     }
 
@@ -71,7 +74,8 @@ class PagerPersisterRegistryTest extends \PHPUnit_Framework_TestCase
         ]);
         $registry->setContainer($container);
 
-        $this->setExpectedException(\LogicException::class, 'You have requested a non-existent service "the_service_id".');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('You have requested a non-existent service "the_service_id".');;
         $registry->getPagerPersister('the_name');
     }
 
@@ -97,6 +101,6 @@ class PagerPersisterRegistryTest extends \PHPUnit_Framework_TestCase
      */
     private function createPagerPersisterMock()
     {
-        return $this->getMock(PagerPersisterInterface::class);
+        return $this->createMock(PagerPersisterInterface::class);
     }
 }

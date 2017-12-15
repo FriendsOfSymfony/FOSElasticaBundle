@@ -20,6 +20,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
+use FOS\ElasticaBundle\Tests\Functional\app\AppKernel;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase as BaseKernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -32,7 +33,7 @@ class WebTestCase extends BaseKernelTestCase
     {
         require_once __DIR__.'/app/AppKernel.php';
 
-        return 'FOS\ElasticaBundle\Tests\Functional\app\AppKernel';
+        return AppKernel::class;
     }
 
     public static function setUpBeforeClass()
