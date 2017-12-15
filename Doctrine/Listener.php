@@ -222,7 +222,12 @@ class Listener
      */
     private function scheduleForDeletion($object)
     {
-        if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
+        $identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier']);
+        if ($identifierValue && !is_scalar($identifierValue)) {
+            $identifierValue = (string) $identifierValue;
+        }
+
+        if ($identifierValue) {
             $this->scheduledForDeletion[] = $identifierValue;
         }
     }
