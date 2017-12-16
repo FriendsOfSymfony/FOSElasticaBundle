@@ -16,6 +16,9 @@ use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Pagerfanta\Adapter\PropelAdapter;
 use Pagerfanta\Pagerfanta;
 
+/**
+ * @deprecated since 4.1 will be removed in 5.x.
+ */
 final class Propel1PagerProvider implements PagerProviderInterface
 {
     /**

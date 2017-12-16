@@ -16,7 +16,7 @@ Documentation
 
 Documentation for FOSElasticaBundle is in `Resources/doc/index.md`
 
-[Read the documentation for 4.x](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Resources/doc/index.md)
+[Read the documentation for 4.x](Resources/doc/index.md)
 
 [Read the documentation for 3.2.x](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/3.2.x/Resources/doc/index.md)
 

@@ -714,6 +714,10 @@ class FOSElasticaExtension extends Extension
             return;
         }
 
+        if ('propel' === $driver) {
+            @trigger_error('Support for Propel is deprecated since version 4.1 and will be removed in 5.0.', E_USER_DEPRECATED);
+        }
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load($driver.'.xml');
         $this->loadedDrivers[] = $driver;

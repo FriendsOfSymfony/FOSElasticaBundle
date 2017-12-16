@@ -11,6 +11,7 @@ in 4.0 versions.
 * Introduce InPlacePagerPersister.
 * Add new options to populate command: --first-page, last-page, --max-per-page. They work only if you use v5 providers API.
 * Deprecate some options of populate command: --batch-size and --offset.
+* Deprecate Propel support
 
 ### 4.0.1 (2017-08-10)
 
