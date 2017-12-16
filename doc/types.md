@@ -304,7 +304,7 @@ Declare that you want to update the index in real time:
 ```yaml
                 user:
                     persistence:
-                        driver: orm #the driver can be orm, mongodb, phpcr or propel
+                        driver: orm #the driver can be orm, mongodb or phpcr
                         model: Application\UserBundle\Entity\User
                         listener: ~ # by default, listens to "insert", "update" and "delete"
 ```
@@ -321,8 +321,6 @@ You can also choose to only listen for some of the events:
                             update: false
                             delete: true
 ```
-
-> **Propel** doesn't support this feature yet.
 
 ### Asynchronous index update
 

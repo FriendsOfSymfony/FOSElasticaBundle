@@ -12,7 +12,6 @@
 namespace FOS\ElasticaBundle\Tests\Unit\DependencyInjection;
 
 use FOS\ElasticaBundle\DependencyInjection\FOSElasticaExtension;
-use FOS\ElasticaBundle\Doctrine\Listener;
 use FOS\ElasticaBundle\Doctrine\RegisterListenersService;
 use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
 use FOS\ElasticaBundle\Doctrine\ORMPagerProvider;
@@ -20,7 +19,6 @@ use FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider;
 use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
 use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
-use FOS\ElasticaBundle\Propel\Propel1PagerProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -243,62 +241,6 @@ class FOSElasticaExtensionTest extends TestCase
         );
     }
 
-    public function testShouldRegisterPropel1PagerProviderIfEnabled()
-    {
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.debug', true);
-
-        $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
-                ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'propel',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
-
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
-
-        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
-        $this->assertInstanceOf(ChildDefinition::class, $definition);
-        $this->assertSame('fos_elastica.pager_provider.prototype.propel', $definition->getParent());
-        $this->assertSame('theModelClass', $definition->getArgument(0));
-        $this->assertSame([
-            'batch_size' => 100,
-            'clear_object_manager' => true,
-            'debug_logging' => true,
-            'query_builder_method' => 'createQueryBuilder',
-        ], $definition->getArgument(1));
-
-        $this->assertSame([
-            'fos_elastica.pager_provider' => [
-                ['index' => 'acme_index', 'type' => 'acme_type'],
-            ]
-        ], $definition->getTags());
-
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.prototype.propel'));
-        $this->assertSame(
-            Propel1PagerProvider::class,
-            $container->getDefinition('fos_elastica.pager_provider.prototype.propel')->getClass()
-        );
-    }
-
     public function testShouldRegisterInPlacePagerPersister()
     {
         $container = new ContainerBuilder();
@@ -316,7 +258,7 @@ class FOSElasticaExtensionTest extends TestCase
                             'acme_type' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
-                                    'driver' => 'propel',
+                                    'driver' => 'orm',
                                     'model' => 'theModelClass',
                                     'provider' => null,
                                     'listener' => null,
@@ -384,39 +326,6 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertSame('event_dispatcher', (string) $definition->getArgument(0));
     }
 
-    public function testShouldNotRegisterRegisterListenersServiceForNotDoctrineProvider()
-    {
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.debug', true);
-
-        $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
-                ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'propel',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
-
-        $this->assertFalse($container->hasDefinition('fos_elastica.doctrine.register_listeners'));
-    }
-
     public function testShouldRegisterFilterObjectsListener()
     {
         $container = new ContainerBuilder();
@@ -434,7 +343,7 @@ class FOSElasticaExtensionTest extends TestCase
                             'acme_type' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
-                                    'driver' => 'propel',
+                                    'driver' => 'orm',
                                     'model' => 'theModelClass',
                                     'provider' => null,
                                     'listener' => null,
@@ -475,7 +384,7 @@ class FOSElasticaExtensionTest extends TestCase
                             'acme_type' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
-                                    'driver' => 'propel',
+                                    'driver' => 'orm',
                                     'model' => 'theModelClass',
                                     'provider' => null,
                                     'listener' => null,

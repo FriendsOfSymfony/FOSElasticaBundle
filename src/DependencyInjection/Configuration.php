@@ -17,12 +17,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * Stores supported database drivers.
-     *
-     * @var array
-     */
-    private $supportedDrivers = ['orm', 'mongodb', 'propel', 'phpcr'];
+    const SUPPORTED_DRIVERS = ['orm', 'mongodb', 'phpcr'];
 
     /**
      * If the kernel is running in debug mode.
@@ -288,14 +283,6 @@ class Configuration implements ConfigurationInterface
         $node
             ->validate()
                 ->ifTrue(function ($v) {
-                    return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['listener']);
-                })
-                    ->thenInvalid('Propel doesn\'t support listeners')
-                ->ifTrue(function ($v) {
-                    return isset($v['driver']) && 'propel' === $v['driver'] && isset($v['repository']);
-                })
-                    ->thenInvalid('Propel doesn\'t support the "repository" parameter')
-                ->ifTrue(function ($v) {
                     return isset($v['driver']) && 'orm' !== $v['driver'] && !empty($v['elastica_to_model_transformer']['hints']);
                 })
                     ->thenInvalid('Hints are only supported by the "orm" driver')
@@ -304,8 +291,8 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('driver')
                     ->defaultValue('orm')
                     ->validate()
-                    ->ifNotInArray($this->supportedDrivers)
-                        ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($this->supportedDrivers))
+                    ->ifNotInArray(self::SUPPORTED_DRIVERS)
+                        ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode(self::SUPPORTED_DRIVERS))
                     ->end()
                 ->end()
                 ->scalarNode('model')->defaultValue(null)->end()

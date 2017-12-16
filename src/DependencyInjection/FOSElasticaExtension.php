@@ -397,11 +397,8 @@ class FOSElasticaExtension extends Extension
         $serviceDef = new ChildDefinition($abstractId);
         $serviceDef->addTag('fos_elastica.elastica_to_model_transformer', ['type' => $typeName, 'index' => $indexName]);
 
-        // Doctrine has a mandatory service as first argument
-        $argPos = ('propel' === $typeConfig['driver']) ? 0 : 1;
-
-        $serviceDef->replaceArgument($argPos, $typeConfig['model']);
-        $serviceDef->replaceArgument($argPos + 1, array_merge($typeConfig['elastica_to_model_transformer'], [
+        $serviceDef->replaceArgument(1, $typeConfig['model']);
+        $serviceDef->replaceArgument(2, array_merge($typeConfig['elastica_to_model_transformer'], [
             'identifier' => $typeConfig['identifier'],
         ]));
         $container->setDefinition($serviceId, $serviceDef);
@@ -528,12 +525,6 @@ class FOSElasticaExtension extends Extension
                 $providerDef = new ChildDefinition('fos_elastica.pager_provider.prototype.'.$driver);
                 $providerDef->replaceArgument(2, $typeConfig['model']);
                 $providerDef->replaceArgument(3, $baseConfig);
-
-                break;
-            case 'propel':
-                $providerDef = new ChildDefinition('fos_elastica.pager_provider.prototype.'.$driver);
-                $providerDef->replaceArgument(0, $typeConfig['model']);
-                $providerDef->replaceArgument(1, $baseConfig);
 
                 break;
             default:
