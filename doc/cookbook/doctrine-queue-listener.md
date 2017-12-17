@@ -2,7 +2,7 @@
 
 FOSElasticaBundle subscribes on Doctrine events, such as insert, update, remove to adjust the index accordingly.
 The listener might start consuming more and more resources, most importantly time of http response.
-Or, Sometimes it fails, bringing the whole your app down too, because of ElasticSearch server is out of order or some bug in the code.
+Or, Sometimes it fails, bringing the whole your app down too, because of Elasticsearch server is out of order or some bug in the code.
 Keep reading if you want to improve http response time or strive for better fault tolerance.
 
 Instead of doing everything in one single process the listener just sends a message to a worker (via [message queue](https://en.wikipedia.org/wiki/Message_queue)).
