@@ -1,7 +1,7 @@
 Manual pager provider
 ====================
 
-Create a service with the tag "fos_elastica.provider" and attributes for the
+Create a service with the tag "fos_elastica.pager_provider" and attributes for the
 index and type for which the service will provide.
 
 ```yaml
