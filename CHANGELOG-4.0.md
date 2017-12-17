@@ -12,6 +12,7 @@ in 4.0 versions.
 * Add new options to populate command: --first-page, last-page, --max-per-page. They work only if you use v5 providers API.
 * Deprecate some options of populate command: --batch-size and --offset.
 * Deprecate Propel support
+* Cast value objects used as identifier in Elasticsearch to string
 
 ### 4.0.1 (2017-08-10)
 
