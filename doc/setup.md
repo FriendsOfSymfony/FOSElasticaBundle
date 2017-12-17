@@ -48,9 +48,7 @@ C: Basic Bundle Configuration
 -----------------------------
 
 The basic minimal configuration for FOSElasticaBundle is one client with one Elasticsearch
-index. In almost all cases, an application will only need a single index. An index can
-be considered comparable to a Doctrine Entity Manager, where the index will hold multiple
-type definitions.
+index.
 
 ```yaml
 #app/config/config.yml
