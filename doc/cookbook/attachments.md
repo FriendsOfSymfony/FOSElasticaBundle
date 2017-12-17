@@ -6,7 +6,7 @@ This is just a quick overview of how to handle attachment mappings, searching, a
 Mappings
 -----------------------------
 
-You can set up the FOSElasticaBundle to use attachments in the mappings. An overview of the ElasticSearch attachment plugin
+You can set up the FOSElasticaBundle to use attachments in the mappings. An overview of the Elasticsearch attachment plugin
 can be viewed here - https://github.com/elastic/elasticsearch-mapper-attachments. Installation instructions can be found
 on the github page. If you want to highlight content from the document, then you will need to add `"store": true` AND
 `"term_vector":"with_positions_offsets"` to the attachment field.

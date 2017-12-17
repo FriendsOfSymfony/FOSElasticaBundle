@@ -64,7 +64,7 @@ fos_elastica:
 In this example, an Elastica index (an instance of `Elastica\Index`) is available as a
 service with the key `fos_elastica.index.app`.
 
-You may want the index `app` to be named something else on ElasticSearch depending on
+You may want the index `app` to be named something else on Elasticsearch depending on
 if your application is running in a different env or other conditions that suit your
 application. To set your customer index to a name that depends on the environment of your
 Symfony application, use the example below:
@@ -77,7 +77,7 @@ fos_elastica:
             index_name: app_%kernel.environment%
 ```
 
-In this case, the service `fos_elastica.index.app` will relate to an ElasticSearch index
+In this case, the service `fos_elastica.index.app` will relate to an Elasticsearch index
 that varies depending on your kernel's environment. For example, in dev it will relate to
 `app_dev`.
 

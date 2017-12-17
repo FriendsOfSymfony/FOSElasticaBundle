@@ -338,7 +338,7 @@ only fire after the `kernel.terminate` and `console.terminate` events.
 Logging Errors
 --------------
 
-By default FOSElasticaBundle will not catch errors thrown by Elastica/ElasticSearch.
+By default FOSElasticaBundle will not catch errors thrown by Elastica/Elasticsearch.
 Configure a logger per listener if you would rather catch and log these.
 
 ```yaml
