@@ -9,5 +9,4 @@ return array(
     new FrameworkBundle(),
     new FOSElasticaBundle(),
     new DoctrineBundle(),
-    new JMSSerializerBundle(),
 );

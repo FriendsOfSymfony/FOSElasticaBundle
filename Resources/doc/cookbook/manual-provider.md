@@ -1,7 +1,7 @@
 Manual pager provider
 ====================
 
-Create a service with the tag "fos_elastica.provider" and attributes for the
+Create a service with the tag "fos_elastica.pager_provider" and attributes for the
 index and type for which the service will provide.
 
 ```yaml
@@ -35,10 +35,10 @@ class UserPagerProvider implements PagerProviderInterface
 
 There are some examples:
 
-* [DoctrineORMPagerProvider](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Doctrine/DoctrineORMPagerProvider.php)
-* [DoctrinePHPCRPagerProvider](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Doctrine/DoctrinePHPCRPagerProvider.php)
-* [DoctrineMongoDBPagerProvider](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Doctrine/DoctrineMongoDBPagerProvider.php)
-* [Propel1PagerProvider](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Propel/Propel1PagerProvider.php)
+* [ORMPagerProvider](../../../Doctrine/ORMPagerProvider.php)
+* [PHPCRPagerProvider](../../../Doctrine/PHPCRPagerProvider.php)
+* [MongoDBPagerProvider](../../../Doctrine/MongoDBPagerProvider.php)
+* [Propel1PagerProvider](../../../Propel/Propel1PagerProvider.php)
 
 
 Manual Provider (DEPRECATED)

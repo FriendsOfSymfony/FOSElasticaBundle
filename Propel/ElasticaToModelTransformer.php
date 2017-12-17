@@ -9,6 +9,8 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
+ * @deprecated since 4.1 will be removed in 5.x.
+ *
  * Maps Elastica documents with Propel objects.
  *
  * This mapper assumes an exact match between Elastica document IDs and Propel

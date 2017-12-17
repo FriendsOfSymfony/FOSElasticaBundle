@@ -1,7 +1,7 @@
 {
     "name": "friendsofsymfony/elastica-bundle",
     "type": "symfony-bundle",
-    "description": "Elasticsearch PHP integration for your Symfony2 project using Elastica",
+    "description": "Elasticsearch PHP integration for your Symfony project using Elastica",
     "keywords": ["doctrine2", "elastica", "elasticsearch", "mongodb", "propel", "search"],
     "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle",
     "license": "MIT",
@@ -13,46 +13,36 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "symfony/framework-bundle": "^2.8|^3.4",
-        "symfony/console": "^2.8|^3.4",
-        "symfony/form": "^2.8|^3.4",
-        "symfony/property-access": "^2.8|^3.4",
-        "symfony/asset": "^2.8|^3.4",
-        "symfony/templating": "^2.8|^3.4",
-        "symfony/translation": "^2.8|^3.4",
-        "psr/log": "~1.0",
+        "symfony/framework-bundle": "^2.8|^3.2",
+        "symfony/console": "^2.8|^3.2",
+        "symfony/dependency-injection": "^2.8|^3.2",
+        "symfony/options-resolver" : "^2.8|^3.2",
+        "symfony/property-access": "^2.8|^3.2",
+        "psr/log": "^1.0",
         "ruflin/elastica": "3.2.*"
     },
     "require-dev":{
-        "doctrine/orm": "~2.4",
-        "doctrine/doctrine-bundle": "~1.6",
-        "doctrine/phpcr-bundle": "~1.2",
-        "doctrine/phpcr-odm": "^1",
-        "jackalope/jackalope-doctrine-dbal": "~1.1",
-        "jms/serializer-bundle": "~1.1",
-        "phpunit/phpunit": "~4.8|~5.0",
+        "doctrine/orm": "^2.5",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/phpcr-bundle": "^1.3",
+        "doctrine/phpcr-odm": "^1.4",
+        "jackalope/jackalope-doctrine-dbal": "^1.2",
+        "jms/serializer-bundle": "^2.2",
+        "phpunit/phpunit": "^4.8|^5.0",
         "propel/propel1": "^1.7",
         "pagerfanta/pagerfanta": "^1.0.5",
-        "knplabs/knp-components": "~1.2",
-        "knplabs/knp-paginator-bundle": "~2.4",
-        "symfony/browser-kit" : "^2.8|^3.4",
-        "symfony/expression-language" : "^2.8|^3.4",
+        "knplabs/knp-components": "^1.2",
+        "symfony/browser-kit": "^2.8|^3.2",
+        "symfony/expression-language" : "^2.8|^3.2",
         "symfony/twig-bundle": "^2.8|^3.4",
-        "symfony/serializer": "^2.8|^3.4",
-        "symfony/yaml": "^2.8|^3.4",
-        "symfony/dependency-injection": "^2.8|^3.4",
-        "symfony/validator": "^2.8|^3.4",
-        "symfony/stopwatch": "^2.8|^3.4"
+        "symfony/serializer": "^2.8|^3.2",
+        "symfony/yaml": "^2.8|^3.2",
+        "symfony/stopwatch": "^2.8|^3.2"
     },
     "suggest": {
         "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
     },
     "autoload": {
         "psr-4": { "FOS\\ElasticaBundle\\": "" }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "4.0.x-dev"
-        }
     }
 }

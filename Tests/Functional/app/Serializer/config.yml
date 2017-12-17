@@ -25,7 +25,8 @@ fos_elastica:
     clients:
         default:
             url: http://localhost:9200
-    serializer: ~
+    serializer:
+        serializer: jms_serializer
     indexes:
         index:
             index_name: foselastica_ser_test_%kernel.environment%
