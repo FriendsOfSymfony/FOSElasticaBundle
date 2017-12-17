@@ -2,7 +2,7 @@
     "name": "friendsofsymfony/elastica-bundle",
     "type": "symfony-bundle",
     "description": "Elasticsearch PHP integration for your Symfony project using Elastica",
-    "keywords": ["doctrine2", "elastica", "elasticsearch", "mongodb", "propel", "search"],
+    "keywords": ["doctrine2", "elastica", "elasticsearch", "mongodb", "search"],
     "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle",
     "license": "MIT",
     "authors": [
@@ -15,6 +15,7 @@
         "php": ">=5.6.0",
         "symfony/framework-bundle": "^3.2|^4",
         "symfony/console": "^3.2|^4",
+        "symfony/dependency-injection": "^3.3|^4",
         "symfony/options-resolver" : "^3.2|^4",
         "symfony/property-access": "^3.2|^4",
         "pagerfanta/pagerfanta": "^1.0.5",
@@ -29,16 +30,12 @@
         "jackalope/jackalope-doctrine-dbal": "^1.2",
         "jms/serializer-bundle": "^2.2",
         "phpunit/phpunit": "^5.7.11|^6.5",
-        "propel/propel1": "^1.7",
         "knplabs/knp-components": "^1.2",
         "symfony/expression-language" : "^3.2|^4",
         "symfony/twig-bundle": "^3.2|^4",
         "symfony/serializer": "^3.2|^4",
         "symfony/yaml": "^3.2|^4",
         "friendsofphp/php-cs-fixer": "^2.2"
-    },
-    "conflict": {
-        "symfony/dependency-injection": "<3.3"
     },
     "suggest": {
         "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."

@@ -108,8 +108,7 @@ Each defined type is made available as a service, and in this case the service k
 `fos_elastica.index.app.user` and is an instance of `Elastica\Type`.
 
 FOSElasticaBundle requires a provider for each type that will notify when an object
-that maps to a type has been modified. The bundle ships with support for Doctrine and
-Propel objects.
+that maps to a type has been modified. The bundle ships with support for Doctrine objects.
 
 Below is an example for the Doctrine ORM.
 
@@ -121,9 +120,7 @@ Below is an example for the Doctrine ORM.
                         lastName: ~
                         email: ~
                     persistence:
-                        # the driver can be orm, mongodb, phpcr or propel
-                        # listener and finder are not supported by
-                        # propel and should be removed
+                        # the driver can be orm, mongodb or phpcr
                         driver: orm
                         model: Acme\ApplicationBundle\Entity\User
                         provider: ~

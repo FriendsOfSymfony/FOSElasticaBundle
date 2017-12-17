@@ -8,8 +8,6 @@ Symfony. Features include:
 - Automatically generate mappings using a serializer
 - Listeners for Doctrine events for automatic indexing
 
-> **Note** Propel support is limited and contributions fixing issues are welcome!
-
 [![Build Status](https://secure.travis-ci.org/FriendsOfSymfony/FOSElasticaBundle.png?branch=master)](http://travis-ci.org/FriendsOfSymfony/FOSElasticaBundle) [![Total Downloads](https://poser.pugx.org/FriendsOfSymfony/elastica-bundle/downloads.png)](https://packagist.org/packages/FriendsOfSymfony/elastica-bundle) [![Latest Stable Version](https://poser.pugx.org/FriendsOfSymfony/elastica-bundle/v/stable.png)](https://packagist.org/packages/FriendsOfSymfony/elastica-bundle) [![Latest Unstable Version](https://poser.pugx.org/friendsofsymfony/elastica-bundle/v/unstable.svg)](https://packagist.org/packages/friendsofsymfony/elastica-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FriendsOfSymfony/FOSElasticaBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/FriendsOfSymfony/FOSElasticaBundle/?branch=master)
 

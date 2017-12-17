@@ -35,9 +35,8 @@ class UserPagerProvider implements PagerProviderInterface
 
 There are some examples:
 
-* [DoctrineORMPagerProvider](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Doctrine/DoctrineORMPagerProvider.php)
-* [DoctrinePHPCRPagerProvider](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Doctrine/DoctrinePHPCRPagerProvider.php)
-* [DoctrineMongoDBPagerProvider](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Doctrine/DoctrineMongoDBPagerProvider.php)
-* [Propel1PagerProvider](https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Propel/Propel1PagerProvider.php)
+* [ORMPagerProvider](../../src/Doctrine/ORMPagerProvider.php)
+* [PHPCRPagerProvider](../../src/Doctrine/PHPCRPagerProvider.php)
+* [MongoDBPagerProvider](../../src/Doctrine/MongoDBPagerProvider.php)
 
 [Back to index](../index.md)

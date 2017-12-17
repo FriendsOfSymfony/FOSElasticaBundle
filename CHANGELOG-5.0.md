@@ -6,7 +6,7 @@ in 5.0 versions.
 
 ### 5.0.0 (2017-xx-xx)
 
-* Add `ruflin/elastica` 5.x support.
+* Add `ruflin/elastica` 5.x and 6.x support.
 * Add asnychronous index update option.
 * Add ability to close an index.
 * Add support for HTTP authentication.
@@ -21,3 +21,4 @@ in 5.0 versions.
 * [BC break] Removed deprecated config options `servers`, `mappings` and `is_indexable_callback`.
 * [BC break] Add `PaginatedFinderInterface::createRawPaginatorAdapter`.
 * [BC break] Add `PaginatorAdapterInterface::getMaxScore`.
+* [BC break] Removed Propel support.
