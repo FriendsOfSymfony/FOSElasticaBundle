@@ -542,7 +542,7 @@ class ModelToElasticaAutoTransformerTest extends \PHPUnit_Framework_TestCase
         $transformer = $this->getTransformer();
         $document = $transformer->transform($object, []);
 
-        $this->assertSame('string', gettype($document->getId()));
+        $this->assertSame('00000000-0000-0000-0000-000000000000', $document->getId());
     }
 
     /**
