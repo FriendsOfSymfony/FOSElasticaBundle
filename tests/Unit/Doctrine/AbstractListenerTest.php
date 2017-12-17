@@ -306,7 +306,7 @@ abstract class ListenerTest extends TestCase
         return $mock;
     }
 
-    private function getMockIndexable($indexName, $typeName, Entity $object, $return = null)
+    private function getMockIndexable($indexName, $typeName, Entity $object = null, $return = null)
     {
         $mock = $this->createMock(IndexableInterface::class);
 

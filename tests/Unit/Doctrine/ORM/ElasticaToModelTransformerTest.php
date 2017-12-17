@@ -22,6 +22,8 @@ use PHPUnit\Framework\TestCase;
 
 class ElasticaToModelTransformerTest extends TestCase
 {
+    const OBJECT_CLASS = \stdClass::class;
+
     /**
      * @var \Doctrine\Common\Persistence\ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -37,11 +39,6 @@ class ElasticaToModelTransformerTest extends TestCase
      */
     protected $repository;
 
-    /**
-     * @var string
-     */
-    protected $objectClass = 'stdClass';
-
     protected function setUp()
     {
         $this->registry = $this->createMock(ManagerRegistry::class);
@@ -49,7 +46,7 @@ class ElasticaToModelTransformerTest extends TestCase
 
         $this->registry->expects($this->any())
             ->method('getManagerForClass')
-            ->with($this->objectClass)
+            ->with(self::OBJECT_CLASS)
             ->will($this->returnValue($this->manager));
 
         $this->repository = $this
@@ -66,7 +63,7 @@ class ElasticaToModelTransformerTest extends TestCase
 
         $this->manager->expects($this->any())
             ->method('getRepository')
-            ->with($this->objectClass)
+            ->with(self::OBJECT_CLASS)
             ->will($this->returnValue($this->repository));
     }
 
@@ -85,7 +82,7 @@ class ElasticaToModelTransformerTest extends TestCase
         $this->repository->expects($this->never())
             ->method('createQueryBuilder');
 
-        $transformer = new ElasticaToModelTransformer($this->registry, $this->objectClass, [
+        $transformer = new ElasticaToModelTransformer($this->registry, self::OBJECT_CLASS, [
             'query_builder_method' => 'customQueryBuilderCreator',
         ]);
 
@@ -111,7 +108,7 @@ class ElasticaToModelTransformerTest extends TestCase
             ->with($this->equalTo(ElasticaToModelTransformer::ENTITY_ALIAS))
             ->will($this->returnValue($qb));
 
-        $transformer = new ElasticaToModelTransformer($this->registry, $this->objectClass);
+        $transformer = new ElasticaToModelTransformer($this->registry, self::OBJECT_CLASS);
 
         $class = new \ReflectionClass(ElasticaToModelTransformer::class);
         $method = $class->getMethod('getEntityQueryBuilder');
@@ -145,7 +142,7 @@ class ElasticaToModelTransformerTest extends TestCase
             ->with($this->equalTo(ElasticaToModelTransformer::ENTITY_ALIAS))
             ->will($this->returnValue($qb));
 
-        $transformer = new ElasticaToModelTransformer($this->registry, $this->objectClass, [
+        $transformer = new ElasticaToModelTransformer($this->registry, self::OBJECT_CLASS, [
             'hints' => [
                 ['name' => 'customHintName', 'value' => 'Custom\Hint\Class'],
             ],
