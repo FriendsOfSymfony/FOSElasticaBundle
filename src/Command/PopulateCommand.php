@@ -94,9 +94,7 @@ class PopulateCommand extends Command
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
             ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
             ->addOption('no-delete', null, InputOption::VALUE_NONE, 'Do not delete index after populate')
-            ->addOption('offset', null, InputOption::VALUE_REQUIRED, '[DEPRECATED] Start indexing at offset', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
-            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, '[DEPRECATED] Index packet size (overrides provider config option)')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->addOption('no-overwrite-format', null, InputOption::VALUE_NONE, 'Prevent this command from overwriting ProgressBar\'s formats')
 
@@ -132,7 +130,6 @@ class PopulateCommand extends Command
             'delete' => $delete,
             'reset' => $reset,
             'ignore_errors' => $input->getOption('ignore-errors'),
-            'offset' => $input->getOption('offset'),
             'sleep' => $input->getOption('sleep'),
             'first_page' => $input->getOption('first-page'),
             'max_per_page' => $input->getOption('max-per-page'),
@@ -142,11 +139,7 @@ class PopulateCommand extends Command
             $options['last_page'] = $input->getOption('last-page');
         }
 
-        if ($input->getOption('batch-size')) {
-            $options['batch_size'] = (int) $input->getOption('batch-size');
-        }
-
-        if ($input->isInteractive() && $reset && $input->getOption('offset')) {
+        if ($input->isInteractive() && $reset && 1 < $input->getOption('first_page')) {
             /** @var QuestionHelper $dialog */
             $dialog = $this->getHelperSet()->get('question');
             if (!$dialog->ask($input, $output, new Question('<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>'))) {
@@ -220,35 +213,33 @@ class PopulateCommand extends Command
             $this->resetter->resetIndexType($index, $type);
         }
 
-        $offset = $options['offset'];
+        $offset = 1 < $options['first_page'] ? ($options['first_page'] - 1) * $options['max_per_page'] : 0;
         $loggerClosure = ProgressClosureBuilder::build($output, 'Populating', $index, $type, $offset);
 
-        if ($loggerClosure) {
-            $this->dispatcher->addListener(
-                Events::ON_EXCEPTION,
-                function(OnExceptionEvent $event) use ($loggerClosure, $options) {
-                    $loggerClosure(
-                        $options['batch_size'],
-                        count($event->getObjects()),
-                        sprintf('<error>%s</error>', $event->getException()->getMessage())
-                    );
-                }
-            );
+        $this->dispatcher->addListener(
+            Events::ON_EXCEPTION,
+            function(OnExceptionEvent $event) use ($loggerClosure) {
+                $loggerClosure(
+                    count($event->getObjects()),
+                    $event->getPager()->getNbResults(),
+                    sprintf('<error>%s</error>', $event->getException()->getMessage())
+                );
+            }
+        );
 
-            $this->dispatcher->addListener(
-                Events::POST_INSERT_OBJECTS,
-                function(PostInsertObjectsEvent $event) use ($loggerClosure) {
-                    $loggerClosure(count($event->getObjects()), $event->getPager()->getNbResults());
-                }
-            );
+        $this->dispatcher->addListener(
+            Events::POST_INSERT_OBJECTS,
+            function(PostInsertObjectsEvent $event) use ($loggerClosure) {
+                $loggerClosure(count($event->getObjects()), $event->getPager()->getNbResults());
+            }
+        );
 
-            $this->dispatcher->addListener(
-                Events::POST_ASYNC_INSERT_OBJECTS,
-                function(PostAsyncInsertObjectsEvent $event) use ($loggerClosure) {
-                    $loggerClosure($event->getObjectsCount(), $event->getPager()->getNbResults(), $event->getErrorMessage());
-                }
-            );
-        }
+        $this->dispatcher->addListener(
+            Events::POST_ASYNC_INSERT_OBJECTS,
+            function(PostAsyncInsertObjectsEvent $event) use ($loggerClosure) {
+                $loggerClosure($event->getObjectsCount(), $event->getPager()->getNbResults(), $event->getErrorMessage());
+            }
+        );
 
         if ($options['ignore_errors']) {
             $this->dispatcher->addListener(Events::ON_EXCEPTION, function(OnExceptionEvent $event) {

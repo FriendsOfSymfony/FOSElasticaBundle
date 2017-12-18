@@ -22,3 +22,5 @@ in 5.0 versions.
 * [BC break] Add `PaginatedFinderInterface::createRawPaginatorAdapter`.
 * [BC break] Add `PaginatorAdapterInterface::getMaxScore`.
 * [BC break] Removed Propel support.
+* [BC break] Removed `offset` and `batch-size` options of the populate command.
+    Use `first-page`, `last-page` and `max-per-page` instead.
