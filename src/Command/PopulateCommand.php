@@ -139,7 +139,7 @@ class PopulateCommand extends Command
             $options['last_page'] = $input->getOption('last-page');
         }
 
-        if ($input->isInteractive() && $reset && 1 < $input->getOption('first_page')) {
+        if ($input->isInteractive() && $reset && 1 < $options['first_page']) {
             /** @var QuestionHelper $dialog */
             $dialog = $this->getHelperSet()->get('question');
             if (!$dialog->ask($input, $output, new Question('<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>'))) {
