@@ -260,6 +260,13 @@ class PopulateCommand extends ContainerAwareCommand
 
             $this->pagerPersister->insert($pager, $options);
         } else {
+            unset(
+                $options['first_page'],
+                $options['last_page'],
+                $options['max_per_page'],
+                $options['pager_provider']
+            );
+
             $provider = $this->providerRegistry->getProvider($index, $type);
             $provider->populate($loggerClosure, $options);
         }
