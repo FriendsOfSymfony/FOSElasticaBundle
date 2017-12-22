@@ -4,7 +4,16 @@ CHANGELOG for 5.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 5.0 versions.
 
-### 5.0.0 (2017-xx-xx)
+### 5.0.2 (2017-12-xx)
+
+* Fixed Doctrine registry in `MongoDB` and `PHPCR` pager providers.
+* Unset options of new provider API when an old one is used.
+
+### 5.0.1 (2017-12-20)
+
+* Fix typo in populate command: option first-page.
+
+### 5.0.0 (2017-12-18)
 
 * Add `ruflin/elastica` 5.x and 6.x support.
 * Add asnychronous index update option.
