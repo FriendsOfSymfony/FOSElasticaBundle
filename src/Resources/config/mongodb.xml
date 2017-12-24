@@ -8,7 +8,7 @@
         <defaults public="false" />
 
         <service id="fos_elastica.pager_provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider" public="true" abstract="true">
-            <argument type="service" id="doctrine" /> <!-- manager registry -->
+            <argument type="service" id="doctrine_mongodb" /> <!-- manager registry -->
             <argument type="service" id="fos_elastica.doctrine.register_listeners" />
             <argument /> <!-- model -->
             <argument type="collection" /> <!-- options -->
