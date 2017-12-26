@@ -8,6 +8,7 @@ in 5.0 versions.
 
 * Fixed Doctrine registry in `MongoDB` and `PHPCR` pager providers.
 * Unset options of new provider API when an old one is used.
+* Fixed `fos_elastica.paginator.subscriber` service to be public
 
 ### 5.0.1 (2017-12-20)
 
