@@ -137,7 +137,7 @@ externally, the Elasticsearch index must be updated manually. This can be achiev
 running the console command:
 
 ```bash
-$ php app/console fos:elastica:populate
+$ php bin/console fos:elastica:populate
 ```
 
 _**Note:** Consider reading [speed up populate command](cookbook/speed-up-populate-command.md) if you are going to deal with big data set._
