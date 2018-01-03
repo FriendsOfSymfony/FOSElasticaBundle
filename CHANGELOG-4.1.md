@@ -4,7 +4,7 @@ CHANGELOG for 4.1.x
 This changelog references the relevant changes (bug and security fixes) done
 in 4.1 versions.
 
-## 4.1.2 (2017-12-xx)
+## 4.1.2 (2018-01-03)
 
 * Fixed Doctrine registry in `MongoDB` and `PHPCR` pager providers.
 
