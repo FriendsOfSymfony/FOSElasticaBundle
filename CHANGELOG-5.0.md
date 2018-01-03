@@ -4,11 +4,11 @@ CHANGELOG for 5.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 5.0 versions.
 
-### 5.0.2 (2017-12-xx)
+### 5.0.2 (2018-01-03)
 
 * Fixed Doctrine registry in `MongoDB` and `PHPCR` pager providers.
 * Unset options of new provider API when an old one is used.
-* Fixed `fos_elastica.paginator.subscriber` service to be public
+* Fixed `fos_elastica.paginator.subscriber` service to be public.
 
 ### 5.0.1 (2017-12-20)
 
