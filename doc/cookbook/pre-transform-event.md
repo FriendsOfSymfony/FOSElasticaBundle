@@ -1,7 +1,7 @@
 ##### Pre transform event
 
 Since FOSElasticaBundle 3.2.0, we now dispatch an event before an object is
-transformed into an Elastica document. It allows yout to do some necessary
+transformed into an Elastica document. It allows you to do some necessary
 operation before indexing.
 
 For example, you have a backoffice which is exclusively used in a certain locale.
