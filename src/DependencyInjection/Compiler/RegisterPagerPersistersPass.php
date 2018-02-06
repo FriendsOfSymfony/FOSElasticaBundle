@@ -47,10 +47,10 @@ final class RegisterPagerPersistersPass implements CompilerPassInterface
                 }
 
                 $persisterDef = $container->getDefinition($id);
-                if (!$persisterDef->getFactory()) {
+                if (!$persisterDef->getFactory() && $persisterDef->getClass()) {
                     // You are on your own if you use a factory to create a persister.
                     // It would fail in runtime if the factory does not return a proper persister.
-                    $this->assertClassImplementsPagerPersisterInterface($id, $persisterDef->getClass());
+                    $this->assertClassImplementsPagerPersisterInterface($id, $container->getParameterBag()->resolveValue($persisterDef->getClass()));
                 }
 
                 $nameToServiceIdMap[$persisterName] = $id;

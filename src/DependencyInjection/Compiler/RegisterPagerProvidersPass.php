@@ -50,10 +50,10 @@ final class RegisterPagerProvidersPass implements CompilerPassInterface
                 }
 
                 $providerDef = $container->getDefinition($id);
-                if (!$providerDef->getFactory()) {
+                if (!$providerDef->getFactory() && $providerDef->getClass()) {
                     // You are on your own if you use a factory to create a provider.
                     // It would fail in runtime if the factory does not return a proper provider.
-                    $this->assertClassImplementsPagerProviderInterface($id, $providerDef->getClass());
+                    $this->assertClassImplementsPagerProviderInterface($id, $container->getParameterBag()->resolveValue($providerDef->getClass()));
                 }
 
                 $registeredProviders[$index][$type] = $id;
