@@ -4,6 +4,11 @@ CHANGELOG for 5.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 5.0 versions.
 
+### 5.0.3 (2018-02-07)
+
+* Fixed support for decorating object persister services. The refactoring done in 5.0.0 was breaking in such case.
+* Added compile-time validation that necessary services are public
+
 ### 5.0.2 (2018-01-03)
 
 * Fixed Doctrine registry in `MongoDB` and `PHPCR` pager providers.
