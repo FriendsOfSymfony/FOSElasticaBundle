@@ -29,7 +29,7 @@ final class RegisterPagerPersistersPass implements CompilerPassInterface
         $registry = $container->getDefinition('fos_elastica.pager_persister_registry');
 
         $nameToServiceIdMap = [];
-        foreach ($container->findTaggedServiceIds('fos_elastica.pager_persister') as $id => $attributes) {
+        foreach ($container->findTaggedServiceIds('fos_elastica.pager_persister', true) as $id => $attributes) {
             foreach ($attributes as $attribute) {
                 if (!isset($attribute['persisterName'])) {
                     throw new \InvalidArgumentException(sprintf('Elastica pager persister "%s" must specify the "persisterName" attribute.', $id));
@@ -47,10 +47,14 @@ final class RegisterPagerPersistersPass implements CompilerPassInterface
                 }
 
                 $persisterDef = $container->getDefinition($id);
-                if (!$persisterDef->getFactory()) {
+                if (!$persisterDef->getFactory() && $persisterDef->getClass()) {
                     // You are on your own if you use a factory to create a persister.
                     // It would fail in runtime if the factory does not return a proper persister.
-                    $this->assertClassImplementsPagerPersisterInterface($id, $persisterDef->getClass());
+                    $this->assertClassImplementsPagerPersisterInterface($id, $container->getParameterBag()->resolveValue($persisterDef->getClass()));
+                }
+
+                if (!$persisterDef->isPublic()) {
+                    throw new \InvalidArgumentException(sprintf('Elastica pager persister "%s" must be a public service', $id));
                 }
 
                 $nameToServiceIdMap[$persisterName] = $id;

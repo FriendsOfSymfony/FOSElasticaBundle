@@ -30,7 +30,7 @@ final class RegisterPagerProvidersPass implements CompilerPassInterface
         $registry = $container->getDefinition('fos_elastica.pager_provider_registry');
 
         $registeredProviders = [];
-        foreach ($container->findTaggedServiceIds('fos_elastica.pager_provider') as $id => $attributes) {
+        foreach ($container->findTaggedServiceIds('fos_elastica.pager_provider', true) as $id => $attributes) {
             foreach ($attributes as $attribute) {
                 if (!isset($attribute['type'])) {
                     throw new \InvalidArgumentException(sprintf('Elastica provider "%s" must specify the "type" attribute.', $id));
@@ -50,10 +50,14 @@ final class RegisterPagerProvidersPass implements CompilerPassInterface
                 }
 
                 $providerDef = $container->getDefinition($id);
-                if (!$providerDef->getFactory()) {
+                if (!$providerDef->getFactory() && $providerDef->getClass()) {
                     // You are on your own if you use a factory to create a provider.
                     // It would fail in runtime if the factory does not return a proper provider.
-                    $this->assertClassImplementsPagerProviderInterface($id, $providerDef->getClass());
+                    $this->assertClassImplementsPagerProviderInterface($id, $container->getParameterBag()->resolveValue($providerDef->getClass()));
+                }
+
+                if (!$providerDef->isPublic()) {
+                    throw new \InvalidArgumentException(sprintf('Elastica persister "%s" must be a public service', $id));
                 }
 
                 $registeredProviders[$index][$type] = $id;
