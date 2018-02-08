@@ -11,9 +11,11 @@
 
 namespace FOS\ElasticaBundle\DependencyInjection;
 
+use Elastica\Client as ElasticaClient;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -80,6 +82,7 @@ class FOSElasticaExtension extends Extension
         $this->loadClients($config['clients'], $container);
         $container->setAlias('fos_elastica.client', sprintf('fos_elastica.client.%s', $config['default_client']));
         $container->getAlias('fos_elastica.client')->setPublic(true);
+        $container->setAlias(ElasticaClient::class, new Alias('fos_elastica.client', false));
         $container->setAlias(Client::class, 'fos_elastica.client');
         $container->getAlias(Client::class)->setPublic(false);
 
