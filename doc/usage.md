@@ -46,6 +46,15 @@ $options = [
 $pagination = $paginator->paginate($results, $page, 10, $options);
 ```
 
+When searching with a finder, parameters can be passed which influence the Elasticsearch query in general.
+
+For example, the `search_type` parameter (see [the Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-search-type.html))
+can be set as follows:
+
+```php
+$results = $finder->findHybrid('example.net', null, ['search_type' => 'dfs_query_then_fetch']);
+```
+
 Aggregations
 -----------------
 
