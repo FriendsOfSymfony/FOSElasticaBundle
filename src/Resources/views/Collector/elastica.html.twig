@@ -53,6 +53,23 @@
 {% endblock %}
 
 {% block panel %}
+    <h2>Query Metrics</h2>
+
+    <div class="metrics">
+        <div class="metric">
+            <span class="value">{{ collector.querycount }}</span>
+            <span class="label">Database Queries</span>
+        </div>
+        <div class="metric">
+            <span class="value">{{ '%0.2f'|format(collector.executionTime) }} <span class="unit">ms</span></span>
+            <span class="label">Execution Time</span>
+        </div>
+        <div class="metric">
+            <span class="value">{{ '%0.2f'|format(collector.time) }} <span class="unit">ms</span></span>
+            <span class="label">Query Time</span>
+        </div>
+    </div>
+
     <h2>Queries</h2>
 
     {% if not collector.querycount %}
@@ -60,60 +77,98 @@
             <p>No queries were performed.</p>
         </div>
     {% else %}
-        <ul class="alt">
-            {% for key, query in collector.queries %}
-                <li class="{{ cycle(['odd', 'even'], loop.index) }}">
-                    <strong>Path</strong>: {{ query.path }}<br />
-                    <strong>Query</strong>: {{ query.queryString|url_encode }}<br />
-                    <strong>Method</strong>: {{ query.method }} <small>({{ query.connection.transport }} on {{ query.connection.host }}:{{ query.connection.port }})</small>
-                    <div>
-                        <code>{{ query.data|json_encode }}</code>
-                    </div>
-                    <strong>Query time</strong>: {{ query.engineMS }} ms<br />
-                    <strong>Item count</strong>: {{ query.itemCount }}<br />
-                    <small>
-                        <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS) }} ms
-                    </small>
-                    {% if query.connection.transport in ['Http', 'Https'] %}{# cURL support only HTTP #}
-                        &nbsp;
-                        <a href="#elastica_curl_query_{{ key }}" onclick="return toggle_details(this);" class="link-inverse sf-toggle-off" title="Get the cURL repeatable query"><small>Display cURL query</small></a>
-                    {% endif %}
-                    {% if query.backtrace is defined %}
-                        &nbsp;
-                        <a href="#elastica_query_backtrace_{{ key }}" onclick="return toggle_details(this);" class="link-inverse sf-toggle-off" title="Display backtrace of query execution"><small>Display query backtrace</small></a>
-                    {% endif %}
 
-                    {% if query.connection.transport in ['Http', 'Https'] %}{# cURL support only HTTP #}
-                        <div style="display: none;" id="elastica_curl_query_{{ key }}">
-                            <code>curl -X{{ query.method }} '{{ query.connection.transport|lower }}://{{ query.connection.host }}:{{ query.connection.port }}/{{ query.path }}{% if query.queryString|length %}?{{ query.queryString|url_encode }}{% endif %}' -d '{{ query.data|json_encode }}'</code>
+        <table class="alt queries-table">
+            <thead>
+            <tr>
+                <th class="nowrap" onclick="javascript:sortTable(this, 0, 'queries')" data-sort-direction="-1" style="cursor: pointer;">#<span class="text-muted">&#9650;</span></th>
+                <th class="nowrap" onclick="javascript:sortTable(this, 1, 'queries')" style="cursor: pointer;">Execution Time<span></span></th>
+                <th class="nowrap" onclick="javascript:sortTable(this, 2, 'queries')" style="cursor: pointer;">Query Time<span></span></th>
+                <th style="width: 100%">Info</th>
+            </tr>
+            </thead>
+            <tbody id="queries">
+            {% for key, query in collector.queries %}
+                <tr id="queryNo-{{ key }}">
+                    <td class="nowrap">{{ loop.index }}</td>
+                    <td class="nowrap">{{ '%0.2f'|format(query.executionMS) }}&nbsp;ms</td>
+                    <td class="nowrap">{{ '%0.2f'|format(query.engineMS) }}&nbsp;ms</td>
+                    <td>
+                        <div>
+                            <pre>{{ query.data|json_encode }}</pre>
                         </div>
-                    {% endif %}
-                    {% if query.backtrace is defined %}
-                        <div style="display: none;" id="elastica_query_backtrace_{{ key }}">
-                            <code><pre>{{ query.backtrace }}</pre></code>
+                        <div class="font-normal text-small">
+                            <strong>Path</strong>: {{ query.path }}<br />
+                            <strong>Query</strong>: {{ query.queryString|url_encode }}<br />
+                            <strong>Method</strong>: {{ query.method }} ({{ query.connection.transport }} on {{ query.connection.host }}:{{ query.connection.port }})<br />
+                            <strong>Item count</strong>: {{ query.itemCount }}<br />
+
+                            <a href="#" class="sf-toggle link-inverse" data-toggle-selector="#formatted-query-{{ key }}" data-toggle-alt-content="Hide formatted query">View formatted query</a>
+
+                            {% if query.connection.transport in ['Http', 'Https'] %}{# cURL support only HTTP #}
+                                &nbsp;
+                                <a href="#" class="sf-toggle link-inverse" data-toggle-selector="#elastica-curl-query-{{ key }}" data-toggle-alt-content="Hide cURL query">View cURL query</a>
+                            {% endif %}
+                            {% if query.backtrace is defined %}
+                                &nbsp;
+                                <a href="#" class="sf-toggle link-inverse" data-toggle-selector="#elastica-query-backtrace-{{ key }}" data-toggle-alt-content="Hide query backtrace">View query backtrace</a>
+                            {% endif %}
                         </div>
-                    {% endif %}
-                </li>
+
+                        <div id="formatted-query-{{ key }}" class="sql-runnable hidden">
+                            <code><pre>{{ query.data|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre></code>
+                        </div>
+
+                        {% if query.connection.transport in ['Http', 'Https'] %}{# cURL support only HTTP #}
+                            <div id="elastica-curl-query-{{ key }}" class="sql-runnable hidden">
+                                <code>curl -X{{ query.method }} '{{ query.connection.transport|lower }}://{{ query.connection.host }}:{{ query.connection.port }}/{{ query.path }}{% if query.queryString|length %}?{{ query.queryString|url_encode }}{% endif %}' -d '{{ query.data|json_encode }}'</code>
+                            </div>
+                        {% endif %}
+                        {% if query.backtrace is defined %}
+                            <div id="elastica-query-backtrace-{{ key }}" class="sql-runnable hidden">
+                                <code><pre>{{ query.backtrace }}</pre></code>
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
             {% endfor %}
-        </ul>
+            </tbody>
+        </table>
 
         <script>//<![CDATA[
-            function toggle_details(link) {
+            function sortTable(header, column) {
                 "use strict";
 
-                if (link.classList.contains('sf-toggle-off')) {
-                    link.classList.remove('sf-toggle-off');
-                    link.classList.add('sf-toggle-on');
+                var direction = parseInt(header.getAttribute('data-sort-direction')) || 1,
+                    items = [],
+                    target = document.getElementById('queries'),
+                    rows = target.children,
+                    headers = header.parentElement.children,
+                    i;
 
-                    document.getElementById(link.hash.replace("#", "")).style.display = 'block';
-                } else {
-                    link.classList.remove('sf-toggle-on');
-                    link.classList.add('sf-toggle-off');
-
-                    document.getElementById(link.hash.replace("#", "")).style.display = 'none';
+                for (i = 0; i < rows.length; ++i) {
+                    items.push(rows[i]);
                 }
 
-                return false;
+                for (i = 0; i < headers.length; ++i) {
+                    headers[i].removeAttribute('data-sort-direction');
+                    if (headers[i].children.length > 0) {
+                        headers[i].children[0].innerHTML = '';
+                    }
+                }
+
+                header.setAttribute('data-sort-direction', (-1*direction).toString());
+                header.children[0].innerHTML = direction > 0 ? '<span class="text-muted">&#9650;</span>' : '<span class="text-muted">&#9660;</span>';
+
+                items.sort(function(a, b) {
+                    return direction * (parseFloat(a.children[column].innerHTML) - parseFloat(b.children[column].innerHTML));
+                });
+
+                for (i = 0; i < items.length; ++i) {
+                    Sfjs.removeClass(items[i], i % 2 ? 'even' : 'odd');
+                    Sfjs.addClass(items[i], i % 2 ? 'odd' : 'even');
+                    target.appendChild(items[i]);
+                }
             }
         </script>
     {% endif %}
