@@ -54,14 +54,17 @@ class ProfilerTest extends WebTestCase
         $this->twig->addRuntimeLoader($loader);
     }
 
-    public function testRender()
+    /**
+     * @dataProvider queryProvider
+     */
+    public function testRender($query)
     {
         $connection = [
             'host' => 'localhost',
             'port' => '9200',
             'transport' => 'http',
         ];
-        $this->logger->logQuery('index/_search', 'GET', json_decode('{"query":{"match_all":{}}}'), 1, $connection);
+        $this->logger->logQuery('index/_search', 'GET', $query, 1, $connection);
         $this->collector->collect($request = new Request(), new Response());
 
         $output = $this->twig->render('elastica.html.twig', [
@@ -75,5 +78,13 @@ class ProfilerTest extends WebTestCase
         $this->assertContains('{"query":{"match_all":{}}}', $output);
         $this->assertContains('index/_search', $output);
         $this->assertContains('localhost:9200', $output);
+    }
+
+    public function queryProvider()
+    {
+        return [
+            [json_decode('{"query":{"match_all":{}}}', true)],
+            ['{"query":{"match_all":{}}}'],
+        ];
     }
 }
