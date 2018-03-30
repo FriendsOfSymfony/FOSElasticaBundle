@@ -28,7 +28,7 @@ class UserPagerProvider implements PagerProviderInterface
 {
     public function provide(array $options = array())
     {
-        new PagerfantaPager(new Pagerfanta(new ArrayAdapter([ /* an array of objects */ ])));
+        return new PagerfantaPager(new Pagerfanta(new ArrayAdapter([ /* an array of objects */ ])));
     }
 }
 ```
