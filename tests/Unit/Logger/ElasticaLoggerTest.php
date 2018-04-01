@@ -58,9 +58,10 @@ class ElasticaLoggerTest extends TestCase
             'connection' => $connection,
             'queryString' => $query,
             'itemCount' => 0,
+            'exceptionMessage' => 'foo',
         ];
 
-        $elasticaLogger->logQuery($path, $method, $data, $time, $connection, $query);
+        $elasticaLogger->logQuery($path, $method, $data, $time, $connection, $query, 0, 0, new \Exception('foo'));
         $returnedQueries = $elasticaLogger->getQueries();
         $this->assertArrayHasKey('backtrace', $returnedQueries[0]);
         $this->assertNotEmpty($returnedQueries[0]['backtrace']);
