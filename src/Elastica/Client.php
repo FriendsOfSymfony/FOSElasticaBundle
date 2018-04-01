@@ -47,17 +47,32 @@ class Client extends BaseClient
             $this->stopwatch->start('es_request', 'fos_elastica');
         }
 
-        $response = parent::request($path, $method, $data, $query, $contentType);
-        $responseData = $response->getData();
+        $exception = null;
+        $responseData = [];
+        $queryTime = 0;
+        $engineTime = 0;
+
+        try {
+            $response = parent::request($path, $method, $data, $query, $contentType);
+            $responseData = $response->getData();
+            $queryTime = $response->getQueryTime();
+            $engineTime = $response->getEngineTime();
+        } catch (\Exception $e) {
+            $exception = $e;
+        }
 
         if (isset($responseData['took']) && isset($responseData['hits'])) {
-            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']);
+            $this->logQuery($path, $method, $data, $query, $queryTime, $engineTime, $responseData['hits']['total'], $exception);
         } else {
-            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), 0, 0);
+            $this->logQuery($path, $method, $data, $query, $queryTime, 0, 0, $exception);
         }
 
         if ($this->stopwatch) {
             $this->stopwatch->stop('es_request');
+        }
+
+        if ($exception) {
+            throw $exception;
         }
 
         return $response;
@@ -90,15 +105,16 @@ class Client extends BaseClient
     /**
      * Log the query if we have an instance of ElasticaLogger.
      *
-     * @param string $path
-     * @param string $method
-     * @param array  $data
-     * @param array  $query
-     * @param int    $queryTime
-     * @param int    $engineMS
-     * @param int    $itemCount
+     * @param string          $path
+     * @param string          $method
+     * @param array           $data
+     * @param array           $query
+     * @param int             $queryTime
+     * @param int             $engineMS
+     * @param int             $itemCount
+     * @oaram \Exception|null $exception
      */
-    private function logQuery($path, $method, $data, array $query, $queryTime, $engineMS = 0, $itemCount = 0)
+    private function logQuery($path, $method, $data, array $query, $queryTime, $engineMS = 0, $itemCount = 0, \Exception $exception = null)
     {
         if (!$this->_logger or !$this->_logger instanceof ElasticaLogger) {
             return;
@@ -115,6 +131,6 @@ class Client extends BaseClient
 
         /** @var ElasticaLogger $logger */
         $logger = $this->_logger;
-        $logger->logQuery($path, $method, $data, $queryTime, $connectionArray, $query, $engineMS, $itemCount);
+        $logger->logQuery($path, $method, $data, $queryTime, $connectionArray, $query, $engineMS, $itemCount, $exception);
     }
 }

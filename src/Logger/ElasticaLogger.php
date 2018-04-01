@@ -54,16 +54,17 @@ class ElasticaLogger extends AbstractLogger
     /**
      * Logs a query.
      *
-     * @param string $path       Path to call
-     * @param string $method     Rest method to use (GET, POST, DELETE, PUT)
-     * @param array  $data       Arguments
-     * @param float  $queryTime  Execution time (in seconds)
-     * @param array  $connection Host, port, transport, and headers of the query
-     * @param array  $query      Arguments
-     * @param int    $engineTime
-     * @param int    $itemCount
+     * @param string          $path       Path to call
+     * @param string          $method     Rest method to use (GET, POST, DELETE, PUT)
+     * @param array           $data       Arguments
+     * @param float           $queryTime  Execution time (in seconds)
+     * @param array           $connection Host, port, transport, and headers of the query
+     * @param array           $query      Arguments
+     * @param int             $engineTime
+     * @param int             $itemCount
+     * @param \Exception|null $exception
      */
-    public function logQuery($path, $method, $data, $queryTime, $connection = [], $query = [], $engineTime = 0, $itemCount = 0)
+    public function logQuery($path, $method, $data, $queryTime, $connection = [], $query = [], $engineTime = 0, $itemCount = 0, \Exception $exception = null)
     {
         $executionMS = $queryTime * 1000;
 
@@ -79,6 +80,7 @@ class ElasticaLogger extends AbstractLogger
                 'queryString' => $query,
                 'itemCount' => $itemCount,
                 'backtrace' => $e->getTraceAsString(),
+                'exceptionMessage' => $exception ? $exception->getMessage() : null,
             ];
         }
 

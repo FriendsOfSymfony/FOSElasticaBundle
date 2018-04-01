@@ -88,4 +88,19 @@ class ElasticaDataCollector extends DataCollector
         $this->logger->reset();
         $this->data = [];
     }
+
+    /**
+     * @return int
+     */
+    public function getErrorCount()
+    {
+        $errors = 0;
+        foreach ($this->data['queries'] as $query) {
+            if ($query['exceptionMessage']) {
+                $errors++;
+            }
+        }
+
+        return $errors;
+    }
 }
