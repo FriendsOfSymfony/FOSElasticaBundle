@@ -69,6 +69,18 @@ class ElasticaLogger extends AbstractLogger
 
         if ($this->debug) {
             $e = new \Exception();
+            if (is_string($data)) {
+                $jsonStrings = explode("\n", $data);
+                $data = [];
+                foreach ($jsonStrings as $json) {
+                    if ($json != '') {
+                        $data[] = json_decode($json, true);
+                    }
+                }
+            } else {
+                $data = [$data];
+            }
+
             $this->queries[] = [
                 'path' => $path,
                 'method' => $method,

@@ -75,7 +75,7 @@ class ProfilerTest extends WebTestCase
 
         $output = str_replace("&quot;", '"', $output);
 
-        $this->assertContains('{"query":{"match_all":{}}}', $output);
+        $this->assertContains('{"query":{"match_all":', $output);
         $this->assertContains('index/_search', $output);
         $this->assertContains('localhost:9200', $output);
     }
