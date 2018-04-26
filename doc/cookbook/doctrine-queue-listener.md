@@ -49,6 +49,14 @@ enqueue_elastica:
               model_class: 'AppBundle\Entity\Blog'
 ```
 
+You'll probably want to enable clearing the entitymanager in the queue consumer to avoid sending cached entities to elastisearch:
+
+```
+enqueue:
+    extensions:
+        doctrine_clear_identity_map_extension: true
+```
+
 Don't forget to run some queue consumers (the more you run the better performance you might get):
 
 ```bash
