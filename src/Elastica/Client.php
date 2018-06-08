@@ -92,7 +92,7 @@ class Client extends BaseClient
      *
      * @param string $path
      * @param string $method
-     * @param array  $data
+     * @param array|string $data
      * @param array  $query
      * @param int    $queryTime
      * @param int    $engineMS

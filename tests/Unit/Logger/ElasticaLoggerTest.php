@@ -52,7 +52,7 @@ class ElasticaLoggerTest extends TestCase
         $expected = [
             'path' => $path,
             'method' => $method,
-            'data' => $data,
+            'data' => [$data],
             'executionMS' => $time * 1000,
             'engineMS' => 0,
             'connection' => $connection,
@@ -152,6 +152,26 @@ class ElasticaLoggerTest extends TestCase
         $elasticaLogger = new ElasticaLogger($loggerMock);
 
         $elasticaLogger->log($level, $message, $context);
+    }
+
+    public function testQueryCanBeMultilineStrings()
+    {
+        $elasticaLogger = new ElasticaLogger(null, true);
+
+        $data = "{\"foo\": \"bar\"}\n{\"foo\": \"baz\"}\n";
+        $elasticaLogger->logQuery('path', 'method', $data, 0);
+        $this->assertCount(2, $elasticaLogger->getQueries()[0]['data']);
+        $this->assertEquals(['foo' => 'bar'], $elasticaLogger->getQueries()[0]['data'][0]);
+    }
+
+    public function testQueryCanBeAnArray()
+    {
+        $elasticaLogger = new ElasticaLogger(null, true);
+
+        $data = ['foo' => 'bar'];
+        $elasticaLogger->logQuery('path', 'method', $data, 0);
+        $this->assertCount(1, $elasticaLogger->getQueries()[0]['data']);
+        $this->assertEquals(['foo' => 'bar'], $elasticaLogger->getQueries()[0]['data'][0]);
     }
 
     /**

@@ -56,7 +56,7 @@ class ElasticaLogger extends AbstractLogger
      *
      * @param string $path       Path to call
      * @param string $method     Rest method to use (GET, POST, DELETE, PUT)
-     * @param array  $data       Arguments
+     * @param array|string $data Arguments
      * @param float  $queryTime  Execution time (in seconds)
      * @param array  $connection Host, port, transport, and headers of the query
      * @param array  $query      Arguments
@@ -69,6 +69,18 @@ class ElasticaLogger extends AbstractLogger
 
         if ($this->debug) {
             $e = new \Exception();
+            if (is_string($data)) {
+                $jsonStrings = explode("\n", $data);
+                $data = [];
+                foreach ($jsonStrings as $json) {
+                    if ($json != '') {
+                        $data[] = json_decode($json, true);
+                    }
+                }
+            } else {
+                $data = [$data];
+            }
+
             $this->queries[] = [
                 'path' => $path,
                 'method' => $method,
