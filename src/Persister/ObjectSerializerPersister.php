@@ -32,9 +32,9 @@ class ObjectSerializerPersister extends ObjectPersister
      * @param string                              $objectClass
      * @param callable                            $serializer
      */
-    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, $serializer)
+    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, $serializer, array $options = [])
     {
-        parent::__construct($type, $transformer, $objectClass, []);
+        parent::__construct($type, $transformer, $objectClass, [], $options);
 
         $this->serializer = $serializer;
     }
