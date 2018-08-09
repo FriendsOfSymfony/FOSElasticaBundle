@@ -332,7 +332,7 @@ class FOSElasticaExtension extends Extension
             }
 
             return [$classOrServiceRef, $indexCallback[1]];
-        };
+        }
 
         if (is_string($indexCallback)) {
             return $this->transformServiceReference($indexCallback);
@@ -476,6 +476,8 @@ class FOSElasticaExtension extends Extension
             }
             $arguments[] = $argument;
         }
+
+        $arguments[] = array_intersect_key($typeConfig['persister'], array_flip(['refresh']));
 
         $serviceId = sprintf('fos_elastica.object_persister.%s.%s', $indexName, $typeName);
         $serviceDef = new ChildDefinition($abstractId);

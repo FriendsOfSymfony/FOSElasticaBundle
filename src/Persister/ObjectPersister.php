@@ -30,6 +30,7 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $objectClass;
     protected $fields;
     protected $logger;
+    private $options;
 
     /**
      * @param Type                                $type
@@ -37,12 +38,13 @@ class ObjectPersister implements ObjectPersisterInterface
      * @param string                              $objectClass
      * @param array                               $fields
      */
-    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields)
+    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields, array $options = [])
     {
         $this->type = $type;
         $this->transformer = $transformer;
         $this->objectClass = $objectClass;
         $this->fields = $fields;
+        $this->options = $options;
     }
 
     /**
@@ -103,7 +105,7 @@ class ObjectPersister implements ObjectPersisterInterface
             $documents[] = $this->transformToElasticaDocument($object);
         }
         try {
-            $this->type->addDocuments($documents);
+            $this->type->addDocuments($documents, $this->options);
         } catch (BulkException $e) {
             $this->log($e);
         }
@@ -122,7 +124,7 @@ class ObjectPersister implements ObjectPersisterInterface
         }
 
         try {
-            $this->type->updateDocuments($documents);
+            $this->type->updateDocuments($documents, $this->options);
         } catch (BulkException $e) {
             $this->log($e);
         }
