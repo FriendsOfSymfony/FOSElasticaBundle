@@ -53,9 +53,10 @@ interface ObjectPersisterInterface
     /**
      * Deletes one object in the type by id.
      *
-     * @param mixed $id
+     * @param mixed       $id
+     * @param string|bool $routing
      */
-    public function deleteById($id);
+    public function deleteById($id, $routing = false);
 
     /**
      * Bulk inserts an array of objects in the type.
@@ -81,7 +82,8 @@ interface ObjectPersisterInterface
     /**
      * Bulk deletes records from an array of identifiers.
      *
-     * @param array $identifiers array of domain model object identifiers
+     * @param array       $identifiers array of domain model object identifiers
+     * @param string|bool $routing     optional routing key for all identifiers
      */
-    public function deleteManyByIdentifiers(array $identifiers);
+    public function deleteManyByIdentifiers(array $identifiers, $routing = false);
 }
