@@ -149,7 +149,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected function transformObjectToDocument($object, array $fields, $identifier = '')
     {
-        $document = new Document($identifier);
+        $document = new Document($identifier, [], '', $this->options['index']);
 
         if ($this->dispatcher) {
             $event = new TransformEvent($document, $fields, $object);

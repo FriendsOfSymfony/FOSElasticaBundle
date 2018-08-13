@@ -433,6 +433,7 @@ class FOSElasticaExtension extends Extension
         $serviceDef = new ChildDefinition($abstractId);
         $serviceDef->replaceArgument(0, [
             'identifier' => $typeConfig['identifier'],
+            'index' => $indexName
         ]);
         $container->setDefinition($serviceId, $serviceDef);
 
