@@ -35,6 +35,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected $options = [
         'identifier' => 'id',
+        'index' => ''
     ];
 
     /**
