@@ -152,7 +152,7 @@ class ObjectPersister implements ObjectPersisterInterface
     public function deleteManyByIdentifiers(array $identifiers, $routing = false)
     {
         try {
-            $this->type->deleteIds($identifiers, $this->type->getIndex(), $this->type, $routing);
+            $this->type->deleteIds($identifiers, $routing);
         } catch (BulkException $e) {
             $this->log($e);
         }
