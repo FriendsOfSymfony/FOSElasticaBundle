@@ -11,7 +11,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Client;
 
+use Elastica\Client as BaseClient;
 use Elastica\Connection;
+use Elastica\JSON;
 use Elastica\Request;
 use Elastica\Response;
 use Elastica\Transport\NullTransport;
@@ -21,14 +23,28 @@ use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
 {
-    public function testRequestsAreLogged()
+    private function getClientMock(Response $response = null)
     {
         $transport = new NullTransport();
+        if ($response) {
+            $transport->setResponse($response);
+        }
 
         $connection = $this->createMock(Connection::class);
         $connection->expects($this->any())->method('getTransportObject')->will($this->returnValue($transport));
         $connection->expects($this->any())->method('toArray')->will($this->returnValue([]));
 
+        $client = $this->getMockBuilder(Client::class)
+            ->setMethods(['getConnection'])
+            ->getMock();
+
+        $client->expects($this->any())->method('getConnection')->will($this->returnValue($connection));
+        return $client;
+    }
+
+    public function testRequestsAreLogged()
+    {
+        $client = $this->getClientMock();
         $logger = $this->createMock(ElasticaLogger::class);
         $logger
             ->expects($this->once())
@@ -44,17 +60,29 @@ class ClientTest extends TestCase
                 $this->isType('array'),
                 $this->isType('array')
             );
-
-        $client = $this->getMockBuilder(Client::class)
-            ->setMethods(['getConnection'])
-            ->getMock();
-
-        $client->expects($this->any())->method('getConnection')->will($this->returnValue($connection));
-
         $client->setLogger($logger);
 
         $response = $client->request('foo');
 
         $this->assertInstanceOf(Response::class, $response);
+    }
+
+    public function testRequestsWithTransportInfoErrorsRaiseExceptions()
+    {
+        $httpCode = 403;
+        $responseString = JSON::stringify(['message' => 'some AWS error']);
+        $transferInfo = [
+            'request_header' => 'bar',
+            'http_code' => $httpCode,
+        ];
+        $response = new Response($responseString);
+        $response->setTransferInfo($transferInfo);
+
+        $client = $this->getClientMock($response);
+
+        $exceptionMessage = sprintf('Error reaching to elasticsercah host, code %d', $httpCode);
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage($exceptionMessage);
+        $response = $client->request('foo');
     }
 }

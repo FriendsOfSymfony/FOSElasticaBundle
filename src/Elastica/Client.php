@@ -24,6 +24,8 @@ use Symfony\Component\Stopwatch\Stopwatch;
  */
 class Client extends BaseClient
 {
+    private $forbiddenHttpCodes = [403, 404, 400];
+
     /**
      * Stores created indexes to avoid recreation.
      *
@@ -48,8 +50,13 @@ class Client extends BaseClient
         }
 
         $response = parent::request($path, $method, $data, $query, $contentType);
-        $responseData = $response->getData();
 
+        $transportInfo = $response->getTransferInfo();
+        if (isset($transportInfo['http_code']) && in_array($transportInfo['http_code'], $this->forbiddenHttpCodes)) {
+            throw new \Exception(sprintf('Error reaching to elasticsercah host, code %s', $transportInfo['http_code']));
+        }
+
+        $responseData = $response->getData();
         if (isset($responseData['took']) && isset($responseData['hits'])) {
             $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']);
         } else {
