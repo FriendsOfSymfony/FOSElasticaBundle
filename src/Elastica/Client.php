@@ -53,7 +53,9 @@ class Client extends BaseClient
 
         $transportInfo = $response->getTransferInfo();
         if (isset($transportInfo['http_code']) && in_array($transportInfo['http_code'], $this->forbiddenHttpCodes)) {
-            throw new \Exception(sprintf('Error reaching to elasticsercah host, code %s', $transportInfo['http_code']));
+            $body = isset($transportInfo['body']) ? $transportInfo['body'] : 'blank';
+            $message = sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $body);
+            throw new \Exception($message);
         }
 
         $responseData = $response->getData();

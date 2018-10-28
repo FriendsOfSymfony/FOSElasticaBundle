@@ -74,15 +74,16 @@ class ClientTest extends TestCase
         $transferInfo = [
             'request_header' => 'bar',
             'http_code' => $httpCode,
+            'body' => $responseString,
         ];
         $response = new Response($responseString);
         $response->setTransferInfo($transferInfo);
 
         $client = $this->getClientMock($response);
 
-        $exceptionMessage = sprintf('Error reaching to elasticsercah host, code %d', $httpCode);
+        $desiredMessage = sprintf('Error in transportInfo: response code is %d, response body is %s', $httpCode, $responseString);
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage($exceptionMessage);
+        $this->expectExceptionMessage($desiredMessage);
         $response = $client->request('foo');
     }
 }

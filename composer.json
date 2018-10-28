@@ -19,7 +19,7 @@
         "symfony/property-access": "^3.2|^4",
         "pagerfanta/pagerfanta": "^1.0.5|^2.0",
         "psr/log": "^1.0",
-        "ruflin/elastica": "dev-master#b11ef729af333e24d565cca49f4e0cb15356ac41"
+        "ruflin/elastica": "dev-master#c211a1bfd2a62a54223201022396ac5b52374552"
     },
     "require-dev": {
         "doctrine/orm": "^2.5",
