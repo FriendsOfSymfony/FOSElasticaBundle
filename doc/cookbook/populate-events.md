@@ -100,4 +100,4 @@ Declare your listener and register event(s):
 
 and pretty much that's it!
 
-Other events that were indroduced: `PRE_INDEX_RESET`, `POST_INDEX_RESET`, `PRE_TYPE_RESET` and `POST_TYPE_RESET` are working in similar way
+Other events that were introduced: `PRE_INDEX_RESET`, `POST_INDEX_RESET`, `PRE_TYPE_RESET` and `POST_TYPE_RESET` are working in similar way

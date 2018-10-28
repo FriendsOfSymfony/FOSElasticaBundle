@@ -49,7 +49,7 @@ enqueue_elastica:
               model_class: 'AppBundle\Entity\Blog'
 ```
 
-You'll probably want to enable clearing the entitymanager in the queue consumer to avoid sending cached entities to elastisearch:
+You'll probably want to enable clearing the entitymanager in the queue consumer to avoid sending cached entities to elasticsearch:
 
 ```
 enqueue:
