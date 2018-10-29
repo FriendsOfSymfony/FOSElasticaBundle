@@ -16,7 +16,7 @@ class UserRepository extends Repository
     public function findWithCustomQuery($searchText)
     {
         // build $query with Elastica objects
-        $this->find($query);
+        return $this->find($query);
     }
 }
 ```

@@ -12,7 +12,7 @@ on the github page. If you want to highlight content from the document, then you
 `"term_vector":"with_positions_offsets"` to the attachment field.
 
 > *Note*: Metadata mappings can be added as needed to the mappings file for attachments. More information can be seen
->       at the Github page for Elasicsearch mapper attachments.
+>       at the Github page for Elasticsearch mapper attachments.
 
 
 ```yaml
