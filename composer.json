@@ -19,7 +19,7 @@
         "symfony/property-access": "^3.2|^4",
         "pagerfanta/pagerfanta": "^1.0.5|^2.0",
         "psr/log": "^1.0",
-        "ruflin/elastica": "dev-master#c211a1bfd2a62a54223201022396ac5b52374552"
+        "ruflin/elastica": "dev-master"
     },
     "require-dev": {
         "doctrine/orm": "^2.5",
@@ -37,12 +37,6 @@
         "friendsofphp/php-cs-fixer": "^2.2",
         "symfony/web-profiler-bundle": "^3.0|^4.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/Labstep/Elastica"
-        }
-    ],
     "suggest": {
         "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
     },
