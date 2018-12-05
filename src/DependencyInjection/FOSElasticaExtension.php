@@ -319,7 +319,7 @@ class FOSElasticaExtension extends Extension
     {
         if (is_array($indexCallback)) {
             if (!isset($indexCallback[0])) {
-                throw new \InvalidArgumentException(sprintf('Invalid indexable_callback for type %s'), $typeName);
+                throw new \InvalidArgumentException(sprintf('Invalid indexable_callback for type %s', $typeName));
             }
 
             $classOrServiceRef = $this->transformServiceReference($indexCallback[0]);
@@ -328,7 +328,7 @@ class FOSElasticaExtension extends Extension
             }
 
             if (!isset($indexCallback[1])) {
-                throw new \InvalidArgumentException(sprintf('Invalid indexable_callback for type %s'), $typeName);
+                throw new \InvalidArgumentException(sprintf('Invalid indexable_callback for type %s', $typeName));
             }
 
             return [$classOrServiceRef, $indexCallback[1]];
@@ -338,7 +338,7 @@ class FOSElasticaExtension extends Extension
             return $this->transformServiceReference($indexCallback);
         }
 
-        throw new \InvalidArgumentException(sprintf('Invalid indexable_callback for type %s'), $typeName);
+        throw new \InvalidArgumentException(sprintf('Invalid indexable_callback for type %s', $typeName));
     }
 
     private function transformServiceReference($classOrService)
