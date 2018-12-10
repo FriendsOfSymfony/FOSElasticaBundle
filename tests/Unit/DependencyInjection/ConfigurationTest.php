@@ -310,6 +310,30 @@ class ConfigurationTest extends TestCase
         $this->assertTrue($connection['ssl']);
     }
 
+    public function testHttpErrorCodesConfig()
+    {
+        // test defaults
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'default' => [
+                ],
+            ],
+        ]);
+        $connection = $configuration['clients']['default']['connections'][0];
+        $this->assertSame([400, 403, 404], $connection['http_error_codes']);
+        
+        // test custom
+        $configuration = $this->getConfigs([
+            'clients' => [
+                'default' => [
+                    'http_error_codes' => ['HTTP_ERROR_CODE']
+                ],
+            ],
+        ]);
+        $connection = $configuration['clients']['default']['connections'][0];
+        $this->assertSame(['HTTP_ERROR_CODE'], $connection['http_error_codes']);
+    }
+
     private function getConfigs(array $configArray)
     {
         $configuration = new Configuration(true);

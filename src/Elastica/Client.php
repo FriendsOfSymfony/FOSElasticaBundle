@@ -24,8 +24,6 @@ use Symfony\Component\Stopwatch\Stopwatch;
  */
 class Client extends BaseClient
 {
-    private $forbiddenHttpCodes = [403, 404, 400];
-
     /**
      * Stores created indexes to avoid recreation.
      *
@@ -52,7 +50,11 @@ class Client extends BaseClient
         $response = parent::request($path, $method, $data, $query, $contentType);
 
         $transportInfo = $response->getTransferInfo();
-        if (isset($transportInfo['http_code']) && in_array($transportInfo['http_code'], $this->forbiddenHttpCodes)) {
+
+        $connection = $this->getLastRequest()->getConnection();
+        $forbiddenHttpCodes = $connection->hasConfig('http_error_codes') ? $connection->getConfig('http_error_codes') : [];
+
+        if (isset($transportInfo['http_code']) && in_array($transportInfo['http_code'], $forbiddenHttpCodes, true)) {
             $body = isset($transportInfo['body']) ? $transportInfo['body'] : 'blank';
             $message = sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $body);
             throw new \Exception($message);

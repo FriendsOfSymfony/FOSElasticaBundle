@@ -23,16 +23,24 @@ use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
 {
-    private function getClientMock(Response $response = null)
+    private function getConnectionMock()
+    {
+        $connection = $this->createMock(Connection::class);
+        $connection->expects($this->any())->method('toArray')->will($this->returnValue([]));
+        return $connection;
+    }
+
+    private function getClientMock(Response $response = null, $connection = null)
     {
         $transport = new NullTransport();
         if ($response) {
             $transport->setResponse($response);
         }
 
-        $connection = $this->createMock(Connection::class);
+        if (!$connection) {
+            $connection = $this->getConnectionMock();
+        }
         $connection->expects($this->any())->method('getTransportObject')->will($this->returnValue($transport));
-        $connection->expects($this->any())->method('toArray')->will($this->returnValue([]));
 
         $client = $this->getMockBuilder(Client::class)
             ->setMethods(['getConnection'])
@@ -79,7 +87,20 @@ class ClientTest extends TestCase
         $response = new Response($responseString);
         $response->setTransferInfo($transferInfo);
 
-        $client = $this->getClientMock($response);
+        $connection = $this->getConnectionMock();
+        $connection
+          ->expects($this->exactly(1))
+          ->method('hasConfig')
+          ->with('http_error_codes')
+          ->willReturn(true)
+        ;
+        $connection
+          ->expects($this->exactly(1))
+          ->method('getConfig')
+          ->with('http_error_codes')
+          ->willReturn([400, 403, 404])
+        ;
+        $client = $this->getClientMock($response, $connection);
 
         $desiredMessage = sprintf('Error in transportInfo: response code is %d, response body is %s', $httpCode, $responseString);
         $this->expectException(\Exception::class);
