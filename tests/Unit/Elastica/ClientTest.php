@@ -20,6 +20,7 @@ use Elastica\Transport\NullTransport;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use PHPUnit\Framework\TestCase;
+use Elastica\Exception\ClientException;
 
 class ClientTest extends TestCase
 {
@@ -103,7 +104,7 @@ class ClientTest extends TestCase
         $client = $this->getClientMock($response, $connection);
 
         $desiredMessage = sprintf('Error in transportInfo: response code is %d, response body is %s', $httpCode, $responseString);
-        $this->expectException(\Exception::class);
+        $this->expectException(ClientException::class);
         $this->expectExceptionMessage($desiredMessage);
         $response = $client->request('foo');
     }
