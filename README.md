@@ -1,7 +1,8 @@
 FOSElasticaBundle
 =================
 
-This bundle provides integration with [Elasticsearch](http://www.elasticsearch.org) and [Elastica](https://github.com/ruflin/Elastica) with
+This bundle provides integration with [Elasticsearch](http://www.elasticsearch.org)
+and [Elastica](https://github.com/ruflin/Elastica) with
 Symfony. Features include:
 
 - Integrates the Elastica library into a Symfony environment
