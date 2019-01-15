@@ -4,6 +4,10 @@ CHANGELOG for 5.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 5.0 versions.
 
+### 5.1.0 (2019-xx-xx)
+
+* Added compatibility with Symfony 4.2.
+
 ### 5.0.3 (2018-02-07)
 
 * Fixed support for decorating object persister services. The refactoring done in 5.0.0 was breaking in such case.
