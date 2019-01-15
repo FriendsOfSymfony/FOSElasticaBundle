@@ -15,25 +15,18 @@ matrix:
   fast_finish: true
   include:
     # Minimum supported dependencies with min and max PHP version
-    - php: 5.6
-      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-    - php: 7.2
-      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-    - php: 7.3
+    - php: 7.1
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
 
     # Latest supported dependencies with each PHP version
-    - php: 5.6
-    - php: 7.0
     - php: 7.1
     - php: 7.2
-      env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover=coverage.clover"
     - php: 7.3
       env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover=coverage.clover"
 
     # Install all SF components in the same major version, see https://github.com/dunglas/symfony-lock
-    - php: 7.2
-      env: SYMFONY_VERSION="^3"
+    - php: 7.3
+      env: SYMFONY_VERSION="^4"
 
 before_install:
   - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
@@ -51,9 +44,6 @@ install:
 
 before_script:
   - phpenv config-add .travis/php.ini
-  - if [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;
-  - if [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then composer require --dev --no-update doctrine/mongodb-odm=^1; fi;
-  - if [ "$TRAVIS_PHP_VERSION" = "7.0" ]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;
   - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;
 
 script:
