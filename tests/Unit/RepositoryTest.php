@@ -20,59 +20,67 @@ use PHPUnit\Framework\TestCase;
  */
 class RepositoryTest extends TestCase
 {
-    public function testThatFindCallsFindOnFinder()
+    public function testFind()
     {
         $testQuery = 'Test Query';
 
-        $finderMock = $this->getFinderMock($testQuery);
+        $finderMock = $this->mockTransformedFinder('find', [$testQuery]);
         $repository = new Repository($finderMock);
         $repository->find($testQuery);
     }
 
-    public function testThatFindCallsFindOnFinderWithLimit()
+    public function testFindWithLimit()
     {
         $testQuery = 'Test Query';
         $testLimit = 20;
 
-        $finderMock = $this->getFinderMock($testQuery, $testLimit);
+        $finderMock = $this->mockTransformedFinder('find', [$testQuery, $testLimit]);
         $repository = new Repository($finderMock);
         $repository->find($testQuery, $testLimit);
     }
 
-    public function testThatFindPaginatedCallsFindPaginatedOnFinder()
+    public function testFindPaginated()
     {
         $testQuery = 'Test Query';
 
-        $finderMock = $this->getFinderMock($testQuery, [], 'findPaginated');
+        $finderMock = $this->mockTransformedFinder('findPaginated', [$testQuery, []]);
         $repository = new Repository($finderMock);
         $repository->findPaginated($testQuery);
     }
 
-    public function testThatCreatePaginatorCreatesAPaginatorViaFinder()
+    public function testCreatePagitatorAdapter()
     {
         $testQuery = 'Test Query';
 
-        $finderMock = $this->getFinderMock($testQuery, [], 'createPaginatorAdapter');
+        $finderMock = $this->mockTransformedFinder('createPaginatorAdapter', [$testQuery, []]);
         $repository = new Repository($finderMock);
         $repository->createPaginatorAdapter($testQuery);
     }
 
-    public function testThatFindHybridCallsFindHybridOnFinder()
+    public function testCreateHybridPaginatorAdapter()
     {
         $testQuery = 'Test Query';
 
-        $finderMock = $this->getFinderMock($testQuery, null, 'findHybrid');
+        $finderMock = $this->mockTransformedFinder('createHybridPaginatorAdapter', [$testQuery]);
+        $repository = new Repository($finderMock);
+        $repository->createHybridPaginatorAdapter($testQuery);
+    }
+
+    public function testFindHybrid()
+    {
+        $testQuery = 'Test Query';
+
+        $finderMock = $this->mockTransformedFinder('findHybrid', [$testQuery, null, []]);
         $repository = new Repository($finderMock);
         $repository->findHybrid($testQuery);
     }
 
-    private function getFinderMock($testQuery, $testLimit = null, $method = 'find')
+    private function mockTransformedFinder($name, $arguments)
     {
         $finderMock = $this->createMock(TransformedFinder::class);
         $finderMock->expects($this->once())
-            ->method($method)
-            ->with($this->equalTo($testQuery), $this->equalTo($testLimit));
-
+            ->method($name)
+            ->withConsecutive($arguments);
         return $finderMock;
     }
 }
