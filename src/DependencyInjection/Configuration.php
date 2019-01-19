@@ -38,8 +38,14 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('fos_elastica', 'array');
+        $treeBuilder = new TreeBuilder('fos_elastica');
+
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root('fos_elastica');
+        }
 
         $this->addClientsSection($rootNode);
         $this->addIndexesSection($rootNode);
@@ -71,8 +77,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getDynamicTemplateNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('dynamic_templates');
+        $node = $this->createTreeBuilderNode('dynamic_templates');
 
         $node
             ->prototype('array')
@@ -102,8 +107,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function getTypesNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('types');
+        $node = $this->createTreeBuilderNode('types');
 
         $node
             ->useAttributeAsKey('name')
@@ -162,8 +166,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function getPropertiesNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('properties');
+        $node = $this->createTreeBuilderNode('properties');
 
         $node
             ->useAttributeAsKey('name')
@@ -178,8 +181,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function getIdNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('_id');
+        $node = $this->createTreeBuilderNode('_id');
 
         $node
             ->children()
@@ -195,8 +197,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function getSourceNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('_source');
+        $node = $this->createTreeBuilderNode('_source');
 
         $node
             ->children()
@@ -222,8 +223,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function getRoutingNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('_routing');
+        $node = $this->createTreeBuilderNode('_routing');
 
         $node
             ->children()
@@ -240,8 +240,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function getParentNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('_parent');
+        $node = $this->createTreeBuilderNode('_parent');
 
         $node
             ->children()
@@ -259,8 +258,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function getAllNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('_all');
+        $node = $this->createTreeBuilderNode('_all');
 
         $node
             ->children()
@@ -277,8 +275,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function getPersistenceNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('persistence');
+        $node = $this->createTreeBuilderNode('persistence');
 
         $node
             ->validate()
@@ -381,8 +378,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function getSerializerNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('serializer');
+        $node = $this->createTreeBuilderNode('serializer');
 
         $node
             ->addDefaultsIfNotSet()
@@ -540,5 +536,22 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
+    }
+
+    /**
+     * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
+     */
+    private function createTreeBuilderNode($name)
+    {
+        $builder = new TreeBuilder($name);
+
+        if (method_exists($builder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root($name);
+        }
+
+        return $node;
     }
 }

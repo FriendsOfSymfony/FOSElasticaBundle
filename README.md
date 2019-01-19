@@ -31,9 +31,10 @@ The following table shows the compatibilities of different versions of the bundl
 
 | FOSElasticaBundle                                                                       | Elastica | Elasticsearch | Symfony    | PHP   |
 | --------------------------------------------------------------------------------------- | ---------| ------------- | ---------- | ----- |
-| [5.x](https://github.com/FriendsOfSymfony/FOSElasticaBundle/tree/master)                | ^5.2\|^6 | 5.\*\|6.\*    | ^3.2\|^4   | >=5.6 |
-| [4.x](https://github.com/FriendsOfSymfony/FOSElasticaBundle/tree/4.x) (unmaintained)    | 3.2.\*   | 2.\*          | ^2.8\|^3.2 | >=5.5 |
-| [3.2.x](https://github.com/FriendsOfSymfony/FOSElasticaBundle/tree/3.2.x) (unmaintained)| ^2.1     | 1.\*          | ^2.3\|^3   | >=5.3 |
+| [5.1] (master)                                                                          | ^5.3\|^6 | 5.\*\|6.\*    | ^3.4\|^4   | >=7.1 |
+| [5.0] (unmaintained)                                                                    | ^5.2\|^6 | 5.\*\|6.\*    | ^3.2\|^4   | >=5.6 |
+| [4.x] (unmaintained)                                                                    | 3.2.\*   | 2.\*          | ^2.8\|^3.2 | >=5.5 |
+| [3.2.x] (unmaintained)                                                                  | ^2.1     | 1.\*          | ^2.3\|^3   | >=5.3 |
 
 License
 -------

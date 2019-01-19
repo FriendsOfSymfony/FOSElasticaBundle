@@ -19,7 +19,7 @@ fos_elastica:
     serializer: ~
 ```
 
-Alternativly the JMS serializer can be used as follows:
+Alternatively the JMS serializer can be used as follows:
 
 ```yaml
 #app/config/config.yml
