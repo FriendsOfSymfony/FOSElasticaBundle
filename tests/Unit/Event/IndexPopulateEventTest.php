@@ -33,7 +33,19 @@ class IndexPopulateEventTest extends TestCase
         $this->assertTrue($this->event->isReset());
     }
 
-    public function testOption()
+    public function testOptions()
+    {
+        $this->event->setOption('name', 'value');
+        $this->assertEquals(['name' => 'value'], $this->event->getOptions());
+    }
+
+    public function testOptionValid()
+    {
+        $this->event->setOption('name', 'value');
+        $this->assertEquals('value', $this->event->getOption('name'));
+    }
+
+    public function testOptionInvalid()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->event->getOption('name');
