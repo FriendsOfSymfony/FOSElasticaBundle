@@ -49,19 +49,18 @@ class Client extends BaseClient
         }
 
         $response = parent::request($path, $method, $data, $query, $contentType);
+        $responseData = $response->getData();
 
         $transportInfo = $response->getTransferInfo();
-
         $connection = $this->getLastRequest()->getConnection();
         $forbiddenHttpCodes = $connection->hasConfig('http_error_codes') ? $connection->getConfig('http_error_codes') : [];
 
         if (isset($transportInfo['http_code']) && in_array($transportInfo['http_code'], $forbiddenHttpCodes, true)) {
-            $body = isset($transportInfo['body']) ? $transportInfo['body'] : 'blank';
-            $message = sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $body);
+            $message = sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $responseData);
             throw new ClientException($message);
         }
 
-        $responseData = $response->getData();
+
         if (isset($responseData['took']) && isset($responseData['hits'])) {
             $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']);
         } else {
