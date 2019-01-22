@@ -13,14 +13,14 @@ namespace FOS\ElasticaBundle\Tests\Unit\DataCollector;
 
 use FOS\ElasticaBundle\DataCollector\ElasticaDataCollector;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
-use PHPUnit\Framework\TestCase;
+use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
  */
-class ElasticaDataCollectorTest extends TestCase
+class ElasticaDataCollectorTest extends UnitTestHelper
 {
     public function testCorrectAmountOfQueries()
     {
@@ -102,5 +102,18 @@ class ElasticaDataCollectorTest extends TestCase
         $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
 
         $this->assertSame('elastica', $elasticaDataCollector->getName());
+    }
+
+    public function testReset()
+    {
+        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        $loggerMock = $this->createMock(ElasticaLogger::class);
+        $loggerMock->expects($this->once())
+            ->method('reset')
+            ->willReturn('foo');
+
+        $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
+        $elasticaDataCollector->reset();
+        $this->assertSame([], $this->getProtectedProperty($elasticaDataCollector, 'data'));
     }
 }
