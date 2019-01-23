@@ -23,6 +23,9 @@ class IndexResetEventTest extends TestCase
 
         $event = new IndexResetEvent('index', false, false);
         $this->assertFalse($event->isForce());
+
+        $event->setForce(true);
+        $this->assertTrue($event->isForce());
     }
 
     public function testPopulating()
