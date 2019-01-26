@@ -60,7 +60,6 @@ class Client extends BaseClient
             throw new ClientException($message);
         }
 
-
         if (isset($responseData['took']) && isset($responseData['hits'])) {
             $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']);
         } else {
