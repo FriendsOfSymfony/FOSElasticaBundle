@@ -56,7 +56,8 @@ class Client extends BaseClient
         $forbiddenHttpCodes = $connection->hasConfig('http_error_codes') ? $connection->getConfig('http_error_codes') : [];
 
         if (isset($transportInfo['http_code']) && in_array($transportInfo['http_code'], $forbiddenHttpCodes, true)) {
-            $message = sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $responseData);
+            $body = is_array($responseData) ? json_encode($responseData) : $responseData;
+            $message = sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $body);
             throw new ClientException($message);
         }
 
