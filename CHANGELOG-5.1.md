@@ -13,6 +13,7 @@ in 5.1 versions.
 * Added refresh options for persisters.
 * Added index name to `TransformEvent` document.
 * Added many unit tests.
+* Change method visibility in `Configuration` to private.
 * Handle multiline strings in `ElasticaLogger`.
 * Fixed pagination of ORM queries when populating.
 * Profile panel redesign.
