@@ -5,7 +5,8 @@ This bundle provides integration with [Elasticsearch](http://www.elasticsearch.o
 Symfony. Features include:
 
 - Integrates the Elastica library into a Symfony environment
-- Automatically generate mappings using a serializer
+- Use JmsSerializer or Symfony Serializer to convert between PHP objects and Elasticsearch data
+- Index configuration for Elasticsearch, or send data without configuration to use the dynamic mapping feature of Elasticsearch
 - Listeners for Doctrine events for automatic indexing
 
 [![Build Status](https://secure.travis-ci.org/FriendsOfSymfony/FOSElasticaBundle.png?branch=master)](http://travis-ci.org/FriendsOfSymfony/FOSElasticaBundle) [![Total Downloads](https://poser.pugx.org/FriendsOfSymfony/elastica-bundle/downloads.png)](https://packagist.org/packages/FriendsOfSymfony/elastica-bundle) [![Latest Stable Version](https://poser.pugx.org/FriendsOfSymfony/elastica-bundle/v/stable.png)](https://packagist.org/packages/FriendsOfSymfony/elastica-bundle) [![Latest Unstable Version](https://poser.pugx.org/friendsofsymfony/elastica-bundle/v/unstable.svg)](https://packagist.org/packages/friendsofsymfony/elastica-bundle)
