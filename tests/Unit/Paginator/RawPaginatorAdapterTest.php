@@ -16,25 +16,17 @@ use Elastica\Query;
 use Elastica\ResultSet;
 use Elastica\SearchableInterface;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 
-class RawPaginatorAdapterTest extends TestCase
+class RawPaginatorAdapterTest extends UnitTestHelper
 {
-    private function mockResultSet()
+    protected function mockResultSet()
     {
         $methods = ['getTotalHits', 'getAggregations', 'getSuggests', 'getMaxScore'];
         $mock = $this
             ->getMockBuilder(ResultSet::class)
             ->disableOriginalConstructor()
             ->setMethods($methods)
-            ->getMock();
-        return $mock;
-    }
-
-    private function mockSearchable()
-    {
-        $mock = $this
-            ->getMockBuilder(SearchableInterface::class)
             ->getMock();
         return $mock;
     }

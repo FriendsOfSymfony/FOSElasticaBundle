@@ -11,6 +11,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit;
 
+use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use Elastica\SearchableInterface;
+use Elastica\ResultSet;
 use PHPUnit\Framework\TestCase;
 
 class UnitTestHelper extends TestCase
@@ -28,5 +31,30 @@ class UnitTestHelper extends TestCase
         $reflectionProperty->setAccessible(true);
 
         return $reflectionProperty->getValue($object);
+    }
+
+    protected function mockElasticaToModelTransformer()
+    {
+        $mock = $this
+            ->getMockBuilder(ElasticaToModelTransformerInterface::class)
+            ->getMock();
+        return $mock;
+    }
+
+    protected function mockSearchable()
+    {
+        $mock = $this
+            ->getMockBuilder(SearchableInterface::class)
+            ->getMock();
+        return $mock;
+    }
+
+    protected function mockResultSet()
+    {
+        $mock = $this
+            ->getMockBuilder(ResultSet::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        return $mock;
     }
 }
