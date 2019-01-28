@@ -75,7 +75,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "dynamic_templates".
      */
-    public function getDynamicTemplateNode()
+    private function getDynamicTemplateNode()
     {
         $node = $this->createTreeBuilderNode('dynamic_templates');
 
@@ -105,7 +105,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "types".
      */
-    protected function getTypesNode()
+    private function getTypesNode()
     {
         $node = $this->createTreeBuilderNode('types');
 
@@ -164,7 +164,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "properties".
      */
-    protected function getPropertiesNode()
+    private function getPropertiesNode()
     {
         $node = $this->createTreeBuilderNode('properties');
 
@@ -179,7 +179,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "_id".
      */
-    protected function getIdNode()
+    private function getIdNode()
     {
         $node = $this->createTreeBuilderNode('_id');
 
@@ -195,7 +195,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "_source".
      */
-    protected function getSourceNode()
+    private function getSourceNode()
     {
         $node = $this->createTreeBuilderNode('_source');
 
@@ -221,7 +221,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "_routing".
      */
-    protected function getRoutingNode()
+    private function getRoutingNode()
     {
         $node = $this->createTreeBuilderNode('_routing');
 
@@ -238,7 +238,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "_parent".
      */
-    protected function getParentNode()
+    private function getParentNode()
     {
         $node = $this->createTreeBuilderNode('_parent');
 
@@ -256,7 +256,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "_all".
      */
-    protected function getAllNode()
+    private function getAllNode()
     {
         $node = $this->createTreeBuilderNode('_all');
 
@@ -273,7 +273,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
      */
-    protected function getPersistenceNode()
+    private function getPersistenceNode()
     {
         $node = $this->createTreeBuilderNode('persistence');
 
@@ -376,7 +376,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
      */
-    protected function getSerializerNode()
+    private function getSerializerNode()
     {
         $node = $this->createTreeBuilderNode('serializer');
 
