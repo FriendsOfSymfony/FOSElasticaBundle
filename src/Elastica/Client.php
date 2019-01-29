@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Elastica;
 
 use Elastica\Client as BaseClient;
+use Elastica\Exception\ClientException;
 use Elastica\Request;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -49,6 +50,16 @@ class Client extends BaseClient
 
         $response = parent::request($path, $method, $data, $query, $contentType);
         $responseData = $response->getData();
+
+        $transportInfo = $response->getTransferInfo();
+        $connection = $this->getLastRequest()->getConnection();
+        $forbiddenHttpCodes = $connection->hasConfig('http_error_codes') ? $connection->getConfig('http_error_codes') : [];
+
+        if (isset($transportInfo['http_code']) && in_array($transportInfo['http_code'], $forbiddenHttpCodes, true)) {
+            $body = is_array($responseData) ? json_encode($responseData) : $responseData;
+            $message = sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $body);
+            throw new ClientException($message);
+        }
 
         if (isset($responseData['took']) && isset($responseData['hits'])) {
             $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']);
