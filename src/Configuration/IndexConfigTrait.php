@@ -22,7 +22,7 @@ trait IndexConfigTrait
      *
      * @var string
      */
-    protected $elasticSearchName;
+    private $elasticSearchName;
 
     /**
      * The internal name of the index. May not be the same as the name used in ElasticSearch,
@@ -30,21 +30,21 @@ trait IndexConfigTrait
      *
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
      * An array of settings sent to ElasticSearch when creating the index.
      *
      * @var array
      */
-    protected $settings;
+    private $settings;
 
     /**
      * All types that belong to this index.
      *
      * @var TypeConfig[]
      */
-    protected $types;
+    private $types;
 
     /**
      * @return string

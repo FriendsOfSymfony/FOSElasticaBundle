@@ -27,12 +27,14 @@ class IndexTemplateConfig implements IndexConfigInterface
      */
     public function __construct($name, array $types, array $config)
     {
-        $this->elasticSearchName = isset($config['elasticSearchName']) ? $config['elasticSearchName'] : $name;
+        $this->elasticSearchName = $config['elasticSearchName'] ?? $name;
         $this->name = $name;
-        $this->settings = isset($config['settings']) ? $config['settings'] : array();
+        $this->settings = $config['settings'] ?? array();
+
         if (!isset($config['template'])) {
             throw new \InvalidArgumentException('Index template value must be set');
         }
+
         $this->template = $config['template'];
         $this->types = $types;
     }

@@ -25,11 +25,7 @@ final class ResetTemplatesCommand extends Command
 {
     protected static $defaultName = 'fos:elastica:reset-templates';
 
-    /**
-     * Resetter
-     *
-     * @var TemplateResetter
-     */
+    /** @var TemplateResetter */
     private $resetter;
 
     public function __construct(
@@ -40,6 +36,9 @@ final class ResetTemplatesCommand extends Command
         $this->resetter = $resetter;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -47,9 +46,8 @@ final class ResetTemplatesCommand extends Command
             ->addOption(
                 'index',
                 null,
-                InputOption::VALUE_OPTIONAL,
-                'The index template to reset. If no index template name specified than all templates will be reset',
-                true
+                InputOption::VALUE_REQUIRED,
+                'The index template to reset. If no index template name specified than all templates will be reset'
             )
             ->addOption(
                 'force-delete',
@@ -62,25 +60,31 @@ final class ResetTemplatesCommand extends Command
         ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $indexTemplate = $input->hasParameterOption('--index') ? $input->getOption('index') : null;
-        $deleteByPattern = (bool) $input->getOption('force-delete');
+        $indexTemplate = $input->getOption('index');
+        $deleteByPattern = $input->getOption('force-delete');
 
         if ($deleteByPattern) {
             $helper = $this->getHelper('question');
             $question = new ConfirmationQuestion('You are going to remove all template indexes. Are you sure?', false);
+
             if (!$helper->ask($input, $output, $question)) {
-                return;
+                return 1;
             }
         }
 
-        if (is_string($indexTemplate)) {
+        if (null !== $indexTemplate) {
             $output->writeln(sprintf('<info>Resetting template</info> <comment>%s</comment>', $indexTemplate));
             $this->resetter->resetIndex($indexTemplate, $deleteByPattern);
         } else {
             $output->writeln('<info>Resetting all templates</info>');
             $this->resetter->resetAllIndexes($deleteByPattern);
         }
+
+        return 0;
     }
 }

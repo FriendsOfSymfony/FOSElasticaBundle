@@ -56,6 +56,7 @@ class MappingBuilder
     {
         $mapping = $this->buildIndexMapping($indexTemplateConfig);
         $mapping['template'] = $indexTemplateConfig->getTemplate();
+
         return $mapping;
     }
 
