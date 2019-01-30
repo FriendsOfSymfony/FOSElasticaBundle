@@ -30,6 +30,11 @@
             <argument type="service" id="fos_elastica.resetter" />
         </service>
 
+        <service id="fos_elastica.command.templates_reset" class="FOS\ElasticaBundle\Command\ResetTemplatesCommand">
+            <tag name="console.command" />
+            <argument type="service" id="fos_elastica.template_resetter" />
+        </service>
+
         <service id="fos_elastica.command.search" class="FOS\ElasticaBundle\Command\SearchCommand">
             <tag name="console.command" />
             <argument type="service" id="fos_elastica.index_manager" />

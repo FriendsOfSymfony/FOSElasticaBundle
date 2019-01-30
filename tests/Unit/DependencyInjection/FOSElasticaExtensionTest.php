@@ -471,4 +471,49 @@ class FOSElasticaExtensionTest extends TestCase
 
         $this->assertFalse($container->hasDefinition('fos_elastica.listener.acme_index.acme_type'));
     }
+
+    public function testIndexTemplates()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load([
+            'fos_elastica' => [
+                'clients' => [
+                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                ],
+                'indexes' => [
+                    'some_index' => [
+                        'types' => [],
+                    ],
+                ],
+                'index_templates' => [
+                    'some_index_template' => [
+                        'template' => 'some_index_template_*',
+                        'client' => 'default',
+                        'types' => [
+                            'some_type' => [
+                                'properties' => ['text' => null],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $container);
+
+        $this->assertTrue($container->hasDefinition('fos_elastica.index_template.some_index_template'));
+        $definition = $container->getDefinition('fos_elastica.index_template.some_index_template');
+        $this->assertTrue($definition->hasTag('fos_elastica.index_template'));
+        $tag = $definition->getTag('fos_elastica.index_template');
+        $this->assertSame(
+            [
+                [
+                    'name' => 'some_index_template',
+                ],
+            ],
+            $tag
+        );
+        $this->assertTrue($container->hasDefinition('fos_elastica.index_template.some_index_template.some_type'));
+    }
 }

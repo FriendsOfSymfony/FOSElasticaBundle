@@ -11,5 +11,10 @@
             <argument type="collection" /> <!-- index configs -->
             <tag name="fos_elastica.config_source" />
         </service>
+
+        <service id="fos_elastica.config_source.template_container" class="FOS\ElasticaBundle\Configuration\Source\TemplateContainerSource">
+            <argument type="collection" /> <!-- index configs -->
+            <tag name="fos_elastica.config_source" source="index_template" />
+        </service>
     </services>
 </container>

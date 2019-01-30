@@ -12,9 +12,9 @@
 namespace FOS\ElasticaBundle\Index;
 
 use Elastica\Exception\ResponseException;
-use Elastica\Index;
 use Elastica\Type\Mapping;
 use FOS\ElasticaBundle\Configuration\ManagerInterface;
+use Elastica\Client;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -22,7 +22,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * Deletes and recreates indexes.
  */
-class Resetter
+class Resetter implements ResetterInterface
 {
     /**
      * @var AliasProcessor
@@ -55,6 +55,7 @@ class Resetter
      * @param AliasProcessor           $aliasProcessor
      * @param MappingBuilder           $mappingBuilder
      * @param EventDispatcherInterface $eventDispatcher
+     * @param Client                   $client
      */
     public function __construct(
         ManagerInterface $configManager,

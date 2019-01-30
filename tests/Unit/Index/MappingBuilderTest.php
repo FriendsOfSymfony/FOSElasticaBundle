@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
+use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Configuration\TypeConfig;
 use FOS\ElasticaBundle\Index\MappingBuilder;
 use PHPUnit\Framework\TestCase;
@@ -18,18 +19,41 @@ use PHPUnit\Framework\TestCase;
 class MappingBuilderTest extends TestCase
 {
     /**
+     * @var TypeConfig
+     */
+    private $typeConfig;
+
+    /**
      * @var MappingBuilder
      */
     private $builder;
 
+    /**
+     * @var array
+     */
+    private $typeMapping;
+
     protected function setUp()
     {
-        $this->builder = new MappingBuilder();
-    }
-
-    public function testMappingBuilderStoreProperty()
-    {
-        $typeConfig = new TypeConfig('typename', [
+        $this->typeMapping = [
+            'properties' => [
+                'storeless' => [
+                    'type' => 'text',
+                ],
+                'stored' => [
+                    'type' => 'text',
+                    'store' => true,
+                ],
+                'unstored' => [
+                    'type' => 'text',
+                    'store' => false,
+                ],
+            ],
+            '_parent' => [
+                'type' => 'parent_type',
+            ],
+        ];
+        $this->typeConfig = new TypeConfig('typename', [
             'properties' => [
                 'storeless' => [
                     'type' => 'text',
@@ -49,8 +73,12 @@ class MappingBuilderTest extends TestCase
                 'property' => 'parent_property',
             ],
         ]);
+        $this->builder = new MappingBuilder();
+    }
 
-        $mapping = $this->builder->buildTypeMapping($typeConfig);
+    public function testMappingBuilderStoreProperty()
+    {
+        $mapping = $this->builder->buildTypeMapping($this->typeConfig);
 
         $this->assertArrayNotHasKey('store', $mapping['properties']['storeless']);
         $this->assertArrayHasKey('store', $mapping['properties']['stored']);
@@ -61,5 +89,25 @@ class MappingBuilderTest extends TestCase
         $this->assertArrayHasKey('_parent', $mapping);
         $this->assertArrayNotHasKey('identifier', $mapping['_parent']);
         $this->assertArrayNotHasKey('property', $mapping['_parent']);
+    }
+
+    public function testBuildIndexTemplateMapping()
+    {
+        $config = new IndexTemplateConfig(
+            'some_template',
+            [
+                $this->typeConfig
+            ],
+            ['template' => 'index_template_*']
+        );
+        $this->assertEquals(
+            [
+                'template' => 'index_template_*',
+                'mappings' => [
+                    'typename' => $this->typeMapping
+                ]
+            ],
+            $this->builder->buildIndexTemplateMapping($config)
+        );
     }
 }

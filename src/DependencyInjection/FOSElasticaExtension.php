@@ -40,6 +40,13 @@ class FOSElasticaExtension extends Extension
     private $indexConfigs = [];
 
     /**
+     * An array of index templates as configured by the extension.
+     *
+     * @var array
+     */
+    private $indexTemplateConfigs = array();
+
+    /**
      * If we've encountered a type mapped to a specific persistence driver, it will be loaded
      * here.
      *
@@ -91,9 +98,23 @@ class FOSElasticaExtension extends Extension
         $container->getAlias('fos_elastica.index')->setPublic(true);
         $container->setParameter('fos_elastica.default_index', $config['default_index']);
 
+        if ($usedIndexNames = \array_intersect_key($config['indexes'], $config['index_templates'])) {
+            throw new \DomainException(
+                \sprintf(
+                    'Index names "%s" are already in use and can not be used for index templates names',
+                    \implode('","', \array_keys($usedIndexNames))
+                )
+            );
+        }
+        $this->loadIndexTemplates($config['index_templates'], $container);
+
         $container->getDefinition('fos_elastica.config_source.container')->replaceArgument(0, $this->indexConfigs);
+        $container
+            ->getDefinition('fos_elastica.config_source.template_container')
+            ->replaceArgument(0, $this->indexTemplateConfigs);
 
         $this->loadIndexManager($container);
+        $this->loadIndexTemplateManager($container);
 
         $this->createDefaultManagerAlias($config['default_manager'], $container);
     }
@@ -196,6 +217,59 @@ class FOSElasticaExtension extends Extension
     }
 
     /**
+     * Loads the configured indexes.
+     *
+     * @param array            $indexTemplates   An array of indexes configurations
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return void
+     */
+    private function loadIndexTemplates(array $indexTemplates, ContainerBuilder $container)
+    {
+        $indexableCallbacks = array();
+        foreach ($indexTemplates as $name => $indexTemplate) {
+            $indexId = sprintf('fos_elastica.index_template.%s', $name);
+            $indexTemplateName = isset($indexTemplate['template_name']) ? $indexTemplate['template_name'] : $name;
+
+            $indexDef = new ChildDefinition('fos_elastica.index_template_prototype');
+            $indexDef->setFactory([new Reference('fos_elastica.client'), 'getIndexTemplate']);
+            $indexDef->replaceArgument(0, $indexTemplateName);
+            $indexDef->addTag('fos_elastica.index_template', array(
+                'name' => $name,
+            ));
+
+            if (isset($indexTemplate['client'])) {
+                $client = $this->getClient($indexTemplate['client']);
+                $indexDef->setFactory([$client, 'getIndexTemplate']);
+            }
+
+            $container->setDefinition($indexId, $indexDef);
+            $reference = new Reference($indexId);
+
+            $this->indexTemplateConfigs[$name] = array(
+                'elasticsearch_name' => $indexTemplateName,
+                'reference' => $reference,
+                'name' => $name,
+                'settings' => $indexTemplate['settings'],
+                'template' => $indexTemplate['template'],
+            );
+
+            $this->loadTypes(
+                (array) $indexTemplate['types'],
+                $container,
+                $this->indexTemplateConfigs[$name],
+                $indexableCallbacks
+            );
+        }
+
+        if ($indexableCallbacks) {
+            throw new \RuntimeException('`indexable_callback` option is not supported by index templates');
+        }
+    }
+
+    /**
      * Loads the configured index finders.
      *
      * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
@@ -229,7 +303,7 @@ class FOSElasticaExtension extends Extension
      * @param array            $indexConfig
      * @param array            $indexableCallbacks
      */
-    private function loadTypes(array $types, ContainerBuilder $container, array $indexConfig, array &$indexableCallbacks)
+    private function loadTypes(array $types, ContainerBuilder $container, array &$indexConfig, array &$indexableCallbacks)
     {
         foreach ($types as $name => $type) {
             $indexName = $indexConfig['name'];
@@ -276,7 +350,7 @@ class FOSElasticaExtension extends Extension
                     null;
             }
 
-            $this->indexConfigs[$indexName]['types'][$name] = $typeConfig;
+            $indexConfig['types'][$name] = $typeConfig;
 
             if (isset($type['persistence'])) {
                 $this->loadTypePersistenceIntegration($type['persistence'], $container, new Reference($typeId), $indexName, $name);
@@ -710,6 +784,23 @@ class FOSElasticaExtension extends Extension
 
         $managerDef = $container->getDefinition('fos_elastica.index_manager');
         $managerDef->replaceArgument(0, $indexRefs);
+    }
+
+    /**
+     * Load index template manager
+     *
+     * @param ContainerBuilder $container
+     *
+     * @return void
+     */
+    private function loadIndexTemplateManager(ContainerBuilder $container)
+    {
+        $indexTemplateRefs = array_map(function ($index) {
+            return $index['reference'];
+        }, $this->indexTemplateConfigs);
+
+        $managerDef = $container->getDefinition('fos_elastica.index_template_manager');
+        $managerDef->replaceArgument(0, $indexTemplateRefs);
     }
 
     /**
