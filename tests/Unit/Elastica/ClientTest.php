@@ -77,35 +77,41 @@ class ClientTest extends TestCase
     }
 
     public function testRequestsWithTransportInfoErrorsRaiseExceptions()
+
     {
-        $httpCode = 403;
+        $httpCode       = 403;
         $responseString = JSON::stringify(['message' => 'some AWS error']);
-        $transferInfo = [
+        $transferInfo   = [
             'request_header' => 'bar',
-            'http_code' => $httpCode,
-            'body' => $responseString,
+            'http_code'      => $httpCode,
+            'body'           => $responseString,
         ];
-        $response = new Response($responseString);
+        $response       = new Response($responseString);
         $response->setTransferInfo($transferInfo);
 
         $connection = $this->getConnectionMock();
         $connection
-          ->expects($this->exactly(1))
-          ->method('hasConfig')
-          ->with('http_error_codes')
-          ->willReturn(true)
-        ;
+            ->expects($this->exactly(1))
+            ->method('hasConfig')
+            ->with('http_error_codes')
+            ->willReturn(true);
         $connection
-          ->expects($this->exactly(1))
-          ->method('getConfig')
-          ->with('http_error_codes')
-          ->willReturn([400, 403, 404])
-        ;
+            ->expects($this->exactly(1))
+            ->method('getConfig')
+            ->with('http_error_codes')
+            ->willReturn([400, 403, 404]);
         $client = $this->getClientMock($response, $connection);
 
         $desiredMessage = sprintf('Error in transportInfo: response code is %d, response body is %s', $httpCode, $responseString);
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage($desiredMessage);
         $response = $client->request('foo');
+    }
+
+    public function testGetIndexTemplate()
+    {
+        $client = new Client();
+        $template = $client->getIndexTemplate('some_index');
+        $this->assertSame($template, $client->getIndexTemplate('some_index'));
     }
 }

@@ -22,6 +22,7 @@ use FOS\ElasticaBundle\Index\AliasProcessor;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\MappingBuilder;
 use FOS\ElasticaBundle\Index\Resetter;
+use FOS\ElasticaBundle\Index\ResetterInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -282,5 +283,10 @@ class ResetterTest extends TestCase
             ->willReturn($mapping);
 
         return $index;
+    }
+
+    public function testResetterImplementsResetterInterface()
+    {
+        $this->assertInstanceOf(ResetterInterface::class, $this->resetter);
     }
 }

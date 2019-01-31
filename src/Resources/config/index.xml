@@ -20,6 +20,11 @@
             <!-- tagged with fos_elastica.index in the Extension -->
         </service>
 
+        <service id="fos_elastica.index_template_prototype" class="FOS\ElasticaBundle\Elastica\IndexTemplate" public="true" abstract="true">
+            <argument /> <!-- index template name -->
+            <!-- tagged with fos_elastica.index_template in the Extension -->
+        </service>
+
         <service id="fos_elastica.type_prototype" class="Elastica\Type" public="true" abstract="true">
             <argument /> <!-- type name -->
         </service>
@@ -30,6 +35,11 @@
         </service>
         <service id="FOS\ElasticaBundle\Index\IndexManager" alias="fos_elastica.index_manager"/>
 
+        <service id="fos_elastica.index_template_manager" class="FOS\ElasticaBundle\Index\IndexTemplateManager" public="true">
+            <argument /> <!-- indexes templates -->
+        </service>
+        <service id="FOS\ElasticaBundle\Index\IndexTemplateManager" alias="fos_elastica.index_template_manager"/>
+
         <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter" public="true">
             <argument type="service" id="fos_elastica.config_manager" />
             <argument type="service" id="fos_elastica.index_manager" />
@@ -38,6 +48,14 @@
             <argument type="service" id="event_dispatcher"/>
         </service>
         <service id="FOS\ElasticaBundle\Index\Resetter" alias="fos_elastica.resetter" />
+
+        <service id="fos_elastica.template_resetter" class="FOS\ElasticaBundle\Index\TemplateResetter" public="true">
+            <argument type="service" id="fos_elastica.config_manager.index_templates" />
+            <argument type="service" id="fos_elastica.mapping_builder" />
+            <argument type="service" id="fos_elastica.client"/>
+            <argument type="service" id="fos_elastica.index_template_manager"/>
+        </service>
+        <service id="FOS\ElasticaBundle\Index\TemplateResetter" alias="fos_elastica.resetter" />
 
         <!-- Abstract definition for all finders. -->
         <service id="fos_elastica.finder" class="FOS\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">

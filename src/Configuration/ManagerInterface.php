@@ -19,7 +19,7 @@ interface ManagerInterface
     /**
      * Returns configuration for an index.
      *
-     * @param $index
+     * @param string $index
      *
      * @return IndexConfig
      */

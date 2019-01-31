@@ -94,3 +94,29 @@ fos_elastica:
                 null_mappings:
                     properties: ~
         empty_index: ~
+
+    index_templates:
+        index_template_example_1:
+            client: 'default'
+            template_name: 'index_template_1_name'
+            template: 'index_template_1_name_*'
+            settings:
+                # templates should accept custom settings
+                number_of_shards: 2
+                number_of_replicas: 0
+            types:
+                some_type:
+                    properties:
+                        document_name_field_1: { type: string, index: not_analyzed }
+        index_template_example_2:
+            client: 'default'
+            template_name: 'index_template_2_name'
+            template: 'index_template_2_name_*'
+            settings:
+                # templates should accept custom settings
+                number_of_shards: 2
+                number_of_replicas: 0
+            types:
+                some_type:
+                    properties:
+                        document_name_field_2: { type: string, index: not_analyzed }

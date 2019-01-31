@@ -34,6 +34,7 @@ class ConfigurationTest extends TestCase
         $this->assertSame([
             'clients' => [],
             'indexes' => [],
+            'index_templates' => [],
             'default_manager' => 'orm',
         ], $configuration);
     }
@@ -332,6 +333,32 @@ class ConfigurationTest extends TestCase
         ]);
         $connection = $configuration['clients']['default']['connections'][0];
         $this->assertSame(['HTTP_ERROR_CODE'], $connection['http_error_codes']);
+    }
+
+    public function testIndexTemplates()
+    {
+        $configuration = $this->getConfigs(
+            [
+                'index_templates' => [
+                    'some_template' => [
+                        'template' => 'some_template_*',
+                        'client'   => 'default',
+                        'types'    => [
+                            'some_type' => [
+                                'properties'  => [
+                                    'some_field' => [],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $indexTemplate = $configuration['index_templates']['some_template'];
+        $this->assertSame('some_template_*', $indexTemplate['template']);
+        $this->assertSame('default', $indexTemplate['client']);
+        $this->assertSame([], $indexTemplate['settings']);
+        $this->assertArrayHasKey('some_field', $indexTemplate['types']['some_type']['properties']);
     }
 
     private function getConfigs(array $configArray)
