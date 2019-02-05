@@ -488,6 +488,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('retryOnConflict')
                                             ->defaultValue(0)
                                         ->end()
+                                        ->booleanNode('persistent')->defaultValue(true)->end()
                                     ->end()
                                 ->end()
                             ->end()
