@@ -92,7 +92,7 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     public function deleteById($id, $routing = false)
     {
-        $this->deleteManyByIdentifiers([$id]);
+        $this->deleteManyByIdentifiers([$id], $routing);
     }
 
     /**
