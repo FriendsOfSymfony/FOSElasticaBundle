@@ -4,7 +4,7 @@ CHANGELOG for 5.1.x
 This changelog references the relevant changes (bug and security fixes) done
 in 5.1 versions.
 
-### 5.1.0 (2019-xx-xx)
+### 5.1.0 (2019-05-03)
 
 * Added compatibility with Symfony 4.2.
 * Added autowiring support for `Elastica\Client`.
