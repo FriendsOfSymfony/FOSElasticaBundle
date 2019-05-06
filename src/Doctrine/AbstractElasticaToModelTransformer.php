@@ -95,12 +95,16 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
         $objectsCnt = count($objects);
         $elasticaObjectsCnt = count($elasticaObjects);
-        if (!$this->options['ignore_missing'] && $objectsCnt < $elasticaObjectsCnt) {
-            throw new \RuntimeException(sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%d). IDs: %s', $objectsCnt, $elasticaObjectsCnt, implode(', ', $ids)));
-        }
-
         $propertyAccessor = $this->propertyAccessor;
         $identifier = $this->options['identifier'];
+        if (!$this->options['ignore_missing'] && $objectsCnt < $elasticaObjectsCnt) {
+            $missingIds = array_diff($ids, array_map(function ($object) use ($propertyAccessor, $identifier) {
+                return $propertyAccessor->getValue($object, $identifier);
+            }, $objects));
+
+            throw new \RuntimeException(sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%d). Missing IDs: %s. IDs: %s', $objectsCnt, $elasticaObjectsCnt, implode(', ', $missingIds), implode(', ', $ids)));
+        }
+
         foreach ($objects as $object) {
             if ($object instanceof HighlightableModelInterface) {
                 $id = $propertyAccessor->getValue($object, $identifier);
