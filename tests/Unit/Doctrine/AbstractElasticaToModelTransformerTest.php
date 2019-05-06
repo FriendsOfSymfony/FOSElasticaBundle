@@ -125,7 +125,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
             ->will($this->returnValue([]));
 
         $this->expectExceptionMessage(\RuntimeException::class);
-        $this->expectExceptionMessage('Cannot find corresponding Doctrine objects (0) for all Elastica results (3). IDs: 1, 2, 3');
+        $this->expectExceptionMessage('Cannot find corresponding Doctrine objects (0) for all Elastica results (3). Missing IDs: 1, 2, 3. IDs: 1, 2, 3');
 
         $transformer->transform($elasticaResults);
     }
