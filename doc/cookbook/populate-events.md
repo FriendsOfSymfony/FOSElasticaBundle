@@ -7,7 +7,7 @@ But in case of production Elasticsearch, you may suffer of high load on data-nod
 because Elasticsearch performs async refresh of shard(s).
 
 According to [official documentation about bulk indexing](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-update-settings.html#bulk)
-to squeeze out more performance out of bulk indexing, you must set `refresh_interval` to `-1` be executing:
+to squeeze out more performance out of bulk indexing, you must set `refresh_interval` to `-1` by executing:
 
 ```bash
 curl -XPUT localhost:9200/test/_settings -d '{
