@@ -40,7 +40,7 @@ fos_elastica:
 ```
 
 ```bash
-$ curl -XPOST 'http://localhost:9200/_aliases' -d '
+$ curl -XPOST 'http://localhost:9200/_aliases' -H 'Content-Type: application/json' -d '
 {
     "actions" : [
         { "add" : { "index" : "app", "alias" : "app_prod" } }
