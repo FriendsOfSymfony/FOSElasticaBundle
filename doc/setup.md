@@ -105,6 +105,26 @@ fos_elastica:
 Each defined type is made available as a service, and in this case the service key is
 `fos_elastica.index.app.user` and is an instance of `Elastica\Type`.
 
+If you are using Elasticsearch 6.x, you have to create separate index for each type:
+```yaml
+fos_elastica:
+    indexes:
+        app_user:
+            types:
+                user:
+                    properties:
+                        username: ~
+                        firstName: ~
+                        lastName: ~
+                        email: ~
+        app_post:
+            types:
+                post:
+                    properties:
+                        title: ~
+                        content: ~                       
+```
+
 FOSElasticaBundle requires a provider for each type that will notify when an object
 that maps to a type has been modified. The bundle ships with support for Doctrine objects.
 
