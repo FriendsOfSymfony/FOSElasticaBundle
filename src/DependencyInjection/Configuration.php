@@ -458,7 +458,7 @@ class Configuration implements ConfigurationInterface
                                                 ->ifTrue(function ($v) { return !is_array($v); })
                                                 ->then(function ($v) { return array($v); })
                                             ->end()
-                                            ->cannotBeEmpty()
+                                            ->requiresAtLeastOneElement()
                                             ->defaultValue([400, 403, 404])
                                             ->prototype('scalar')->end()
                                         ->end()
