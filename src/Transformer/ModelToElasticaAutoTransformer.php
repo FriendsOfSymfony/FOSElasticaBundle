@@ -154,7 +154,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         if ($this->dispatcher) {
             $event = new TransformEvent($document, $fields, $object);
-            $this->dispatcher->dispatch(TransformEvent::PRE_TRANSFORM, $event);
+            $this->dispatcher->dispatch($event, TransformEvent::PRE_TRANSFORM);
 
             $document = $event->getDocument();
         }
@@ -204,7 +204,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         if ($this->dispatcher) {
             $event = new TransformEvent($document, $fields, $object);
-            $this->dispatcher->dispatch(TransformEvent::POST_TRANSFORM, $event);
+            $this->dispatcher->dispatch($event, TransformEvent::POST_TRANSFORM);
 
             $document = $event->getDocument();
         }
