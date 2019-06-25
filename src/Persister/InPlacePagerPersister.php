@@ -11,6 +11,7 @@ use FOS\ElasticaBundle\Persister\Event\PreInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\Event\PrePersistEvent;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 
 final class InPlacePagerPersister implements PagerPersisterInterface
 {
@@ -34,6 +35,10 @@ final class InPlacePagerPersister implements PagerPersisterInterface
     {
         $this->registry = $registry;
         $this->dispatcher = $dispatcher;
+
+        if (class_exists(LegacyEventDispatcherProxy::class)) {
+            $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
+        }
     }
 
     /**

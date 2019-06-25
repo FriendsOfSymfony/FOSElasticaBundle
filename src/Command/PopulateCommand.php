@@ -32,6 +32,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 
 /**
  * Populate the search index.
@@ -80,6 +81,11 @@ class PopulateCommand extends Command
         parent::__construct();
 
         $this->dispatcher = $dispatcher;
+
+        if (class_exists(LegacyEventDispatcherProxy::class)) {
+            $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
+        }
+
         $this->indexManager = $indexManager;
         $this->pagerProviderRegistry = $pagerProviderRegistry;
         $this->pagerPersisterRegistry = $pagerPersisterRegistry;
