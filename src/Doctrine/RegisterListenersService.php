@@ -19,7 +19,11 @@ class RegisterListenersService
 
     public function __construct(EventDispatcherInterface $dispatcher)
     {
-        $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
+        $this->dispatcher = $dispatcher;
+
+        if (class_exists(LegacyEventDispatcherProxy::class)) {
+            $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
+        }
     }
 
     public function register(ObjectManager $manager, PagerInterface $pager, array $options)

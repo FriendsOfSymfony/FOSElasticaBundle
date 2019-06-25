@@ -55,7 +55,11 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     public function __construct(array $options = [], EventDispatcherInterface $dispatcher = null)
     {
         $this->options = array_merge($this->options, $options);
-        $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
+        $this->dispatcher = $dispatcher;
+
+        if (class_exists(LegacyEventDispatcherProxy::class)) {
+            $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
+        }
     }
 
     /**
@@ -155,7 +159,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         if ($this->dispatcher) {
             $event = new TransformEvent($document, $fields, $object);
-            $this->dispatcher->dispatch($event, TransformEvent::PRE_TRANSFORM);
+            $this->dispatcher->dispatch(TransformEvent::PRE_TRANSFORM, $event);
 
             $document = $event->getDocument();
         }
@@ -205,7 +209,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         if ($this->dispatcher) {
             $event = new TransformEvent($document, $fields, $object);
-            $this->dispatcher->dispatch($event, TransformEvent::POST_TRANSFORM);
+            $this->dispatcher->dispatch(TransformEvent::POST_TRANSFORM, $event);
 
             $document = $event->getDocument();
         }

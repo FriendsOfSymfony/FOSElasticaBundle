@@ -67,7 +67,12 @@ class Resetter implements ResetterInterface
     ) {
         $this->aliasProcessor = $aliasProcessor;
         $this->configManager = $configManager;
-        $this->dispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
+        $this->dispatcher = $eventDispatcher;
+
+        if (class_exists(LegacyEventDispatcherProxy::class)) {
+            $this->dispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
+        }
+
         $this->indexManager = $indexManager;
         $this->mappingBuilder = $mappingBuilder;
     }
@@ -105,7 +110,7 @@ class Resetter implements ResetterInterface
         }
 
         $event = new IndexResetEvent($indexName, $populating, $force);
-        $this->dispatcher->dispatch($event, IndexResetEvent::PRE_INDEX_RESET);
+        $this->dispatcher->dispatch(IndexResetEvent::PRE_INDEX_RESET, $event);
 
         $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
         $index->create($mapping, true);
@@ -114,7 +119,7 @@ class Resetter implements ResetterInterface
             $this->aliasProcessor->switchIndexAlias($indexConfig, $index, $force);
         }
 
-        $this->dispatcher->dispatch($event, IndexResetEvent::POST_INDEX_RESET);
+        $this->dispatcher->dispatch(IndexResetEvent::POST_INDEX_RESET, $event);
     }
 
     /**
@@ -136,7 +141,7 @@ class Resetter implements ResetterInterface
         $type = $index->getType($typeName);
 
         $event = new TypeResetEvent($indexName, $typeName);
-        $this->dispatcher->dispatch($event, TypeResetEvent::PRE_TYPE_RESET);
+        $this->dispatcher->dispatch(TypeResetEvent::PRE_TYPE_RESET, $event);
 
         $mapping = new Mapping();
         foreach ($this->mappingBuilder->buildTypeMapping($typeConfig) as $name => $field) {
@@ -145,7 +150,7 @@ class Resetter implements ResetterInterface
 
         $type->setMapping($mapping);
 
-        $this->dispatcher->dispatch($event, TypeResetEvent::POST_TYPE_RESET);
+        $this->dispatcher->dispatch(TypeResetEvent::POST_TYPE_RESET, $event);
     }
 
     /**
