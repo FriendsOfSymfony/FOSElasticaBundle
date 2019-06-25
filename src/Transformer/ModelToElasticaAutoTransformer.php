@@ -14,6 +14,7 @@ namespace FOS\ElasticaBundle\Transformer;
 use Elastica\Document;
 use FOS\ElasticaBundle\Event\TransformEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
@@ -54,7 +55,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     public function __construct(array $options = [], EventDispatcherInterface $dispatcher = null)
     {
         $this->options = array_merge($this->options, $options);
-        $this->dispatcher = $dispatcher;
+        $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
     }
 
     /**
