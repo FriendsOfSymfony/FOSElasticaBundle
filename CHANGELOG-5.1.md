@@ -4,6 +4,13 @@ CHANGELOG for 5.1.x
 This changelog references the relevant changes (bug and security fixes) done
 in 5.1 versions.
 
+### 5.1.1 (2019-08-23)
+
+* Added `LegacyEventDispatcherProxy` for Symfony 4.3 compatibility.
+* Fixed `cannotBeEmpty` deprecation notice in `Configuration`.
+* Improved exception message in `AbstractElasticaToModelTransformer`.
+* Improved some documentation.
+
 ### 5.1.0 (2019-05-03)
 
 * Added compatibility with Symfony 4.2.
