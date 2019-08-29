@@ -26,6 +26,17 @@ I am going to install the bundle and filesystem transport by way of example.
 $ composer require enqueue/elastica-bundle:^0.8.1 enqueue/fs:^0.8
 ```
 
+Default `enqueue.yaml`:
+```enqueue:
+    default:
+        transport:
+            dsn: '%env(resolve:ENQUEUE_DSN)%'
+        client: ~
+enqueue_elastica:
+    transport: '%enqueue.default_transport%'
+    doctrine: ~
+```
+
 _**Note:** As long as you are on Symfony Flex you are done. If not, you have to do some extra things, like registering the bundle in your `AppKernel` class._  
  
 ## Usage
