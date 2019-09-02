@@ -14,7 +14,7 @@
 
         <service id="fos_elastica.client_prototype" class="FOS\ElasticaBundle\Elastica\Client" public="true" abstract="true">
             <argument type="collection" /> <!-- configuration -->
-            <argument /> <!-- callback -->
+            <argument>null</argument> <!-- callback -->
 
             <call method="setStopwatch">
                 <argument type="service" id="debug.stopwatch" on-invalid="null" />
