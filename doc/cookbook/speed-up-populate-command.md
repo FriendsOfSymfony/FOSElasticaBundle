@@ -27,7 +27,8 @@ $ composer require enqueue/elastica-bundle:^0.8.1 enqueue/fs:^0.8
 ```
 
 Default `enqueue.yaml`:
-```enqueue:
+```
+enqueue:
     default:
         transport:
             dsn: '%env(resolve:ENQUEUE_DSN)%'
