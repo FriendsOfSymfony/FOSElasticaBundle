@@ -173,12 +173,12 @@ class ModelToElasticaAutoTransformerTest extends TestCase
             ->method('dispatch')
             ->withConsecutive(
                 [
-                    TransformEvent::PRE_TRANSFORM,
                     $this->isInstanceOf(TransformEvent::class),
+                    TransformEvent::PRE_TRANSFORM
                 ],
                 [
-                    TransformEvent::POST_TRANSFORM,
                     $this->isInstanceOf(TransformEvent::class),
+                    TransformEvent::POST_TRANSFORM
                 ]
             );
 

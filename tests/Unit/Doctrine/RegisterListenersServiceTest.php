@@ -39,8 +39,8 @@ class RegisterListenersServiceTest extends TestCase
         $service->register($manager, $pager, []);
 
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
+            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
     }
 
@@ -63,8 +63,8 @@ class RegisterListenersServiceTest extends TestCase
         ]);
 
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
+            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
     }
 
@@ -88,8 +88,8 @@ class RegisterListenersServiceTest extends TestCase
         ]);
 
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], [])
+            new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
     }
 
@@ -130,8 +130,8 @@ class RegisterListenersServiceTest extends TestCase
 
         $time = microtime(true);
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
+            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
 
         $this->assertGreaterThan(1.5, microtime(true) - $time);
@@ -155,8 +155,8 @@ class RegisterListenersServiceTest extends TestCase
 
         $time = microtime(true);
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], [])
+            new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
 
         $this->assertLessThan(1, microtime(true) - $time);
