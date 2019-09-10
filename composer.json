@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": "^7.1",
-        "symfony/framework-bundle": "^3.4|^4",
+        "symfony/framework-bundle": "^4",
         "symfony/console": "^3.4|^4",
         "symfony/dependency-injection": "^3.4|^4",
         "symfony/property-access": "^3.4|^4",
