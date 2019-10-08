@@ -271,6 +271,22 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         ], $query->toArray());
     }
 
+    public function testShouldDoNothingIfNoRequest()
+    {
+        $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack());
+
+        $adapter = $this->getAdapterMock();
+        $adapter->expects($this->never())
+            ->method('getQuery');
+        $adapter->method('getResults')
+            ->willReturn($this->getResultSetMock());
+
+        $event = new ItemsEvent(0, 10);
+        $event->target = $adapter;
+
+        $subscriber->items($event);
+    }
+
     protected function getAdapterMock()
     {
         return $this->createMock(RawPaginatorAdapter::class);
