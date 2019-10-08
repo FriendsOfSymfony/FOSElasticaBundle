@@ -68,7 +68,7 @@ final class ResetTemplatesCommand extends Command
         $indexTemplate = $input->getOption('index');
         $deleteByPattern = $input->getOption('force-delete');
 
-        if ($deleteByPattern) {
+        if ($input->isInteractive() && $deleteByPattern) {
             $helper = $this->getHelper('question');
             $question = new ConfirmationQuestion('You are going to remove all template indexes. Are you sure?', false);
 

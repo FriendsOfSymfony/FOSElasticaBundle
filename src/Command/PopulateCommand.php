@@ -279,5 +279,6 @@ class PopulateCommand extends Command
     {
         $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
         $this->indexManager->getIndex($index)->refresh();
+        $output->writeln("");
     }
 }
