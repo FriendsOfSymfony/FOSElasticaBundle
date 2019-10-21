@@ -42,12 +42,12 @@ class PopulateCommand extends Command
     protected static $defaultName = 'fos:elastica:populate';
 
     /**
-     * @var EventDispatcherInterface 
+     * @var EventDispatcherInterface
      */
     private $dispatcher;
 
     /**
-     * @var IndexManager 
+     * @var IndexManager
      */
     private $indexManager;
 
@@ -183,7 +183,7 @@ class PopulateCommand extends Command
     private function populateIndex(OutputInterface $output, $index, $reset, $options)
     {
         $event = new IndexPopulateEvent($index, $reset, $options);
-        $this->dispatcher->dispatch(IndexPopulateEvent::PRE_INDEX_POPULATE, $event);
+        $this->dispatcher->dispatch($event, IndexPopulateEvent::PRE_INDEX_POPULATE);
 
         if ($event->isReset()) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
@@ -195,7 +195,7 @@ class PopulateCommand extends Command
             $this->populateIndexType($output, $index, $type, false, $event->getOptions());
         }
 
-        $this->dispatcher->dispatch(IndexPopulateEvent::POST_INDEX_POPULATE, $event);
+        $this->dispatcher->dispatch($event, IndexPopulateEvent::POST_INDEX_POPULATE);
 
         $this->refreshIndex($output, $index);
     }
@@ -212,7 +212,7 @@ class PopulateCommand extends Command
     private function populateIndexType(OutputInterface $output, $index, $type, $reset, $options)
     {
         $event = new TypePopulateEvent($index, $type, $reset, $options);
-        $this->dispatcher->dispatch(TypePopulateEvent::PRE_TYPE_POPULATE, $event);
+        $this->dispatcher->dispatch($event, TypePopulateEvent::PRE_TYPE_POPULATE);
 
         if ($event->isReset()) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
@@ -264,7 +264,7 @@ class PopulateCommand extends Command
 
         $this->pagerPersister->insert($pager, $options);
 
-        $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
+        $this->dispatcher->dispatch($event, TypePopulateEvent::POST_TYPE_POPULATE);
 
         $this->refreshIndex($output, $index);
     }
