@@ -63,18 +63,17 @@ class Resetter implements ResetterInterface
         IndexManager $indexManager,
         AliasProcessor $aliasProcessor,
         MappingBuilder $mappingBuilder,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $dispatcher
     ) {
         $this->aliasProcessor = $aliasProcessor;
         $this->configManager = $configManager;
-        $this->dispatcher = $eventDispatcher;
-
-        if (class_exists(LegacyEventDispatcherProxy::class)) {
-            $this->dispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
-        }
-
+        $this->dispatcher = $dispatcher;
         $this->indexManager = $indexManager;
         $this->mappingBuilder = $mappingBuilder;
+
+        if (class_exists(LegacyEventDispatcherProxy::class)) {
+            $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
+        }
     }
 
     /**

@@ -35,7 +35,6 @@ final class InPlacePagerPersister implements PagerPersisterInterface
     {
         $this->registry = $registry;
         $this->dispatcher = $dispatcher;
-
         if (class_exists(LegacyEventDispatcherProxy::class)) {
             $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
         }

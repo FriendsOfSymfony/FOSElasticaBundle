@@ -81,15 +81,14 @@ class PopulateCommand extends Command
         parent::__construct();
 
         $this->dispatcher = $dispatcher;
-
-        if (class_exists(LegacyEventDispatcherProxy::class)) {
-            $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
-        }
-
         $this->indexManager = $indexManager;
         $this->pagerProviderRegistry = $pagerProviderRegistry;
         $this->pagerPersisterRegistry = $pagerPersisterRegistry;
         $this->resetter = $resetter;
+
+        if (class_exists(LegacyEventDispatcherProxy::class)) {
+            $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
+        }
     }
 
     protected function configure()
