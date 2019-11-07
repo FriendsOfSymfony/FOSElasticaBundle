@@ -32,7 +32,7 @@ class TemplateContainerSourceTest extends TestCase
                                 'some_field' => [],
                             ],
                             'config' => [
-                                'date_detection' => 'date_detection_value',
+                                'date_detection' => false,
                             ],
                         ],
                     ],
@@ -59,6 +59,6 @@ class TemplateContainerSourceTest extends TestCase
         $this->assertInstanceOf(TypeConfig::class, $type = $templateConfig->getType('some_type'));
         $this->assertEquals('some_type', $type->getName());
         $this->assertEquals(['some_field' => []], $type->getMapping());
-        $this->assertEquals('date_detection_value', $type->getDateDetection());
+        $this->assertEquals(false, $type->getDateDetection());
     }
 }

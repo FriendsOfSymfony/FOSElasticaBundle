@@ -27,28 +27,6 @@ use Symfony\Component\Yaml\Yaml;
 
 class FOSElasticaExtensionTest extends TestCase
 {
-    public function testShouldAddParentParamToObjectPersisterCall()
-    {
-        $config = Yaml::parse(file_get_contents(__DIR__.'/fixtures/config.yml'));
-
-        $containerBuilder = new ContainerBuilder();
-        $containerBuilder->setParameter('kernel.debug', true);
-
-        $extension = new FOSElasticaExtension();
-
-        $extension->load($config, $containerBuilder);
-
-        $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index.child_field'));
-
-        $persisterCallDefinition = $containerBuilder->getDefinition('fos_elastica.object_persister.test_index.child_field');
-
-        $arguments = $persisterCallDefinition->getArguments();
-        $arguments = $arguments['index_3'];
-
-        $this->assertArrayHasKey('_parent', $arguments);
-        $this->assertSame('parent_field', $arguments['_parent']['type']);
-    }
-
     public function testExtensionSupportsDriverlessTypePersistence()
     {
         $config = Yaml::parse(file_get_contents(__DIR__.'/fixtures/driverless_type.yml'));
@@ -60,9 +38,8 @@ class FOSElasticaExtensionTest extends TestCase
         $extension->load($config, $containerBuilder);
 
         $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.index.test_index'));
-        $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.index.test_index.driverless'));
-        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.elastica_to_model_transformer.test_index.driverless'));
-        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index.driverless'));
+        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.elastica_to_model_transformer.test_index'));
+        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index'));
     }
 
     public function testShouldRegisterDoctrineORMPagerProviderIfEnabled()
@@ -79,7 +56,7 @@ class FOSElasticaExtensionTest extends TestCase
                 'indexes' => [
                     'acme_index' => [
                         'types' => [
-                            'acme_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
                                     'driver' => 'orm',
@@ -95,9 +72,9 @@ class FOSElasticaExtensionTest extends TestCase
             ]
         ], $container);
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index'));
 
-        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
+        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index');
         $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.orm', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
@@ -110,7 +87,7 @@ class FOSElasticaExtensionTest extends TestCase
 
         $this->assertSame([
             'fos_elastica.pager_provider' => [
-                ['index' => 'acme_index', 'type' => 'acme_type'],
+                ['index' => 'acme_index'],
             ]
         ], $definition->getTags());
 
@@ -139,7 +116,7 @@ class FOSElasticaExtensionTest extends TestCase
                 'indexes' => [
                     'acme_index' => [
                         'types' => [
-                            'acme_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
                                     'driver' => 'mongodb',
@@ -155,9 +132,9 @@ class FOSElasticaExtensionTest extends TestCase
             ]
         ], $container);
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index'));
 
-        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
+        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index');
         $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.mongodb', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
@@ -170,7 +147,7 @@ class FOSElasticaExtensionTest extends TestCase
 
         $this->assertSame([
             'fos_elastica.pager_provider' => [
-                ['index' => 'acme_index', 'type' => 'acme_type'],
+                ['index' => 'acme_index'],
             ]
         ], $definition->getTags());
 
@@ -199,7 +176,7 @@ class FOSElasticaExtensionTest extends TestCase
                 'indexes' => [
                     'acme_index' => [
                         'types' => [
-                            'acme_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
                                     'driver' => 'phpcr',
@@ -215,9 +192,9 @@ class FOSElasticaExtensionTest extends TestCase
             ]
         ], $container);
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index'));
 
-        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
+        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index');
         $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.phpcr', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
@@ -230,7 +207,7 @@ class FOSElasticaExtensionTest extends TestCase
 
         $this->assertSame([
             'fos_elastica.pager_provider' => [
-                ['index' => 'acme_index', 'type' => 'acme_type'],
+                ['index' => 'acme_index',],
             ]
         ], $definition->getTags());
 
@@ -255,7 +232,7 @@ class FOSElasticaExtensionTest extends TestCase
                 'indexes' => [
                     'acme_index' => [
                         'types' => [
-                            'acme_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
                                     'driver' => 'orm',
@@ -301,7 +278,7 @@ class FOSElasticaExtensionTest extends TestCase
                 'indexes' => [
                     'acme_index' => [
                         'types' => [
-                            'acme_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
                                     'driver' => 'orm',
@@ -340,7 +317,7 @@ class FOSElasticaExtensionTest extends TestCase
                 'indexes' => [
                     'acme_index' => [
                         'types' => [
-                            'acme_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
                                     'driver' => 'orm',
@@ -381,7 +358,7 @@ class FOSElasticaExtensionTest extends TestCase
                 'indexes' => [
                     'acme_index' => [
                         'types' => [
-                            'acme_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
                                     'driver' => 'orm',
@@ -418,7 +395,7 @@ class FOSElasticaExtensionTest extends TestCase
                 'indexes' => [
                     'acme_index' => [
                         'types' => [
-                            'acme_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
                                     'driver' => 'orm',
@@ -434,7 +411,7 @@ class FOSElasticaExtensionTest extends TestCase
             ]
         ], $container);
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.listener.acme_index.acme_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.listener.acme_index'));
     }
 
     public function testShouldNotRegisterDoctrineORMListenerIfDisabled()
@@ -451,7 +428,7 @@ class FOSElasticaExtensionTest extends TestCase
                 'indexes' => [
                     'acme_index' => [
                         'types' => [
-                            'acme_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                                 'persistence' => [
                                     'driver' => 'orm',
@@ -469,7 +446,7 @@ class FOSElasticaExtensionTest extends TestCase
             ]
         ], $container);
 
-        $this->assertFalse($container->hasDefinition('fos_elastica.listener.acme_index.acme_type'));
+        $this->assertFalse($container->hasDefinition('fos_elastica.listener.acme_index'));
     }
 
     public function testIndexTemplates()
@@ -493,7 +470,7 @@ class FOSElasticaExtensionTest extends TestCase
                         'template' => 'some_index_template_*',
                         'client' => 'default',
                         'types' => [
-                            'some_type' => [
+                            '_doc' => [
                                 'properties' => ['text' => null],
                             ],
                         ],
@@ -514,6 +491,6 @@ class FOSElasticaExtensionTest extends TestCase
             ],
             $tag
         );
-        $this->assertTrue($container->hasDefinition('fos_elastica.index_template.some_index_template.some_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.index_template.some_index_template'));
     }
 }

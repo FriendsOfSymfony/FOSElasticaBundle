@@ -32,19 +32,9 @@ fos_elastica:
                         my_ngram:
                             type: "nGram"
                             min_gram: 3
-                            max_gram: 5
+                            max_gram: 4
             types:
-                parent:
-                    dynamic: false
-                    dynamic_templates:
-                        dates:
-                            match: "date_*"
-                            mapping:
-                                type: date
-                    properties:
-                        field1: ~
-                        field2: ~
-                type:
+                _doc:
                     dynamic: strict
                     date_detection: false
                     dynamic_date_formats: [ 'yyyy-MM-dd' ]
@@ -87,11 +77,10 @@ fos_elastica:
                         lastlogin: { type: date, format: basic_date_time }
                         birthday: { type: date, format: "yyyy-MM-dd" }
                         dynamic_allowed: { type: object, dynamic: true }
-                    _parent:
-                        type: "parent"
-                        property: "parent"
-                        identifier: "id"
-                null_mappings:
+        null_mappings_index:
+            index_name: 'foselastica_basic_test_%kernel.environment%'
+            types:
+                _doc:
                     properties: ~
         empty_index: ~
 
@@ -105,9 +94,9 @@ fos_elastica:
                 number_of_shards: 2
                 number_of_replicas: 0
             types:
-                some_type:
+                _doc:
                     properties:
-                        document_name_field_1: { type: string, index: not_analyzed }
+                        document_name_field_1: { type: text, index: false }
         index_template_example_2:
             client: 'default'
             template_name: 'index_template_2_name'
@@ -117,6 +106,6 @@ fos_elastica:
                 number_of_shards: 2
                 number_of_replicas: 0
             types:
-                some_type:
+                _doc:
                     properties:
-                        document_name_field_2: { type: string, index: not_analyzed }
+                        document_name_field_2: { type: text, index: false }

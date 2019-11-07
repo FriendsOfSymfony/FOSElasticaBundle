@@ -33,7 +33,7 @@ class MappingBuilder
 
         $mapping = [];
         if (!empty($typeMappings)) {
-            $mapping['mappings'] = $typeMappings;
+            $mapping['mappings'] = $typeMappings['_doc'];
         }
         // 'warmers' => $indexConfig->getWarmers(),
 
@@ -103,8 +103,6 @@ class MappingBuilder
         if ($typeConfig->getModel()) {
             $mapping['_meta']['model'] = $typeConfig->getModel();
         }
-
-        unset($mapping['_parent']['identifier'], $mapping['_parent']['property']);
 
         if (empty($mapping)) {
             // Empty mapping, we want it encoded as a {} instead of a []

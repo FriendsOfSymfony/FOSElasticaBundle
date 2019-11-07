@@ -19,16 +19,6 @@ namespace FOS\ElasticaBundle\Event;
 class IndexResetEvent extends IndexEvent
 {
     /**
-     * @Event("FOS\ElasticaBundle\Event\IndexResetEvent")
-     */
-    const PRE_INDEX_RESET = 'elastica.index.pre_reset';
-
-    /**
-     * @Event("FOS\ElasticaBundle\Event\IndexResetEvent")
-     */
-    const POST_INDEX_RESET = 'elastica.index.post_reset';
-
-    /**
      * @var bool
      */
     private $force;
@@ -38,12 +28,7 @@ class IndexResetEvent extends IndexEvent
      */
     private $populating;
 
-    /**
-     * @param string $index
-     * @param bool   $populating
-     * @param bool   $force
-     */
-    public function __construct($index, $populating, $force)
+    public function __construct(string $index, bool $populating, bool $force)
     {
         parent::__construct($index);
 
@@ -51,26 +36,17 @@ class IndexResetEvent extends IndexEvent
         $this->populating = $populating;
     }
 
-    /**
-     * @return bool
-     */
-    public function isForce()
+    public function isForce(): bool
     {
         return $this->force;
     }
 
-    /**
-     * @return bool
-     */
-    public function isPopulating()
+    public function isPopulating(): bool
     {
         return $this->populating;
     }
 
-    /**
-     * @param bool $force
-     */
-    public function setForce($force)
+    public function setForce(bool $force)
     {
         $this->force = $force;
     }

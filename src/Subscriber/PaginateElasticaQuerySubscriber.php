@@ -25,17 +25,11 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
      */
     private $requestStack;
 
-    /**
-     * @param RequestStack $requestStack
-     */
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
     }
 
-    /**
-     * @param ItemsEvent $event
-     */
     public function items(ItemsEvent $event)
     {
         if ($event->target instanceof PaginatorAdapterInterface) {
@@ -128,23 +122,19 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
 
         // check if the requested sort field is in the sort whitelist
-        if (isset($options['sortFieldWhitelist']) && !in_array($sortField, $options['sortFieldWhitelist'])) {
+        if (isset($options['sortFieldWhitelist']) && !in_array($sortField, $options['sortFieldWhitelist'], true)) {
             throw new \UnexpectedValueException(sprintf('Cannot sort by: [%s] this field is not in whitelist', $sortField));
         }
 
         return $dir;
     }
 
-    /**
-     * @return Request|null
-     */
-    private function getRequest()
+    private function getRequest(): ?Request
     {
         return $this->requestStack->getCurrentRequest();
     }
 
     /**
-     * @param string|null $key
      * @return mixed|null
      */
     private function getFromRequest(?string $key)

@@ -212,7 +212,7 @@ class AliasProcessorTest extends TestCase
         ];
     }
 
-    private function getMockedIndex($name)
+    private function getMockedIndex(string $name)
     {
         $index = $this->createMock(Index::class);
 

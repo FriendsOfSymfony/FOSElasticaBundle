@@ -41,7 +41,7 @@ class ModelToElasticaIdentifierTransformerTest extends TestCase
         $data = $document->getData();
 
         $this->assertInstanceOf(Document::class, $document);
-        $this->assertSame(123, $document->getId());
+        $this->assertSame('123', $document->getId());
         $this->assertCount(0, $data);
     }
 
@@ -52,7 +52,7 @@ class ModelToElasticaIdentifierTransformerTest extends TestCase
         $data = $document->getData();
 
         $this->assertInstanceOf(Document::class, $document);
-        $this->assertSame(123, $document->getId());
+        $this->assertSame('123', $document->getId());
         $this->assertCount(0, $data);
     }
 

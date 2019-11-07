@@ -28,7 +28,7 @@ class SerializerTest extends WebTestCase
     public function testMappingIteratorToArrayField()
     {
         static::bootKernel(['test_case' => 'Serializer']);
-        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.index.type');
+        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.index');
 
         $object = new TypeObj();
         $object->id = 1;
@@ -49,8 +49,8 @@ class SerializerTest extends WebTestCase
         static::bootKernel(['test_case' => 'Serializer']);
         $container = static::$kernel->getContainer();
 
-        $disabledNullPersister = $container->get('fos_elastica.object_persister.index.type_serialize_null_disabled');
-        $enabledNullPersister = $container->get('fos_elastica.object_persister.index.type_serialize_null_enabled');
+        $disabledNullPersister = $container->get('fos_elastica.object_persister.index_serialize_null_disabled');
+        $enabledNullPersister = $container->get('fos_elastica.object_persister.index_serialize_null_enabled');
 
         $object = new TypeObj();
         $object->id = 1;
@@ -59,12 +59,12 @@ class SerializerTest extends WebTestCase
         $enabledNullPersister->insertOne($object);
 
         // Tests that attributes with null values are not persisted into an Elasticsearch type without the serialize_null option
-        $disabledNullType = $container->get('fos_elastica.index.index.type_serialize_null_disabled');
+        $disabledNullType = $container->get('fos_elastica.index.index_serialize_null_disabled');
         $documentData = $disabledNullType->getDocument(1)->getData();
         $this->assertArrayNotHasKey('field1', $documentData);
 
         // Tests that attributes with null values are persisted into an Elasticsearch type with the serialize_null option
-        $enabledNullType = $container->get('fos_elastica.index.index.type_serialize_null_enabled');
+        $enabledNullType = $container->get('fos_elastica.index.index_serialize_null_enabled');
         $documentData = $enabledNullType->getDocument(1)->getData();
         $this->assertArrayHasKey('field1', $documentData);
         $this->assertNull($documentData['field1']);

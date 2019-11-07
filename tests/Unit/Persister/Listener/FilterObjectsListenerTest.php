@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Persister\Listener;
 
-use FOS\ElasticaBundle\Persister\Event\Events;
 use FOS\ElasticaBundle\Persister\Event\PreInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
@@ -31,7 +30,7 @@ class FilterObjectsListenerTest extends TestCase
 
     public function testShouldSubscribeOnPreInsertObjectsEvent()
     {
-        $this->assertSame([Events::PRE_INSERT_OBJECTS => 'filterObjects'], FilterObjectsListener::getSubscribedEvents());
+        $this->assertSame([PreInsertObjectsEvent::class => 'filterObjects'], FilterObjectsListener::getSubscribedEvents());
     }
 
     public function testCouldBeConstructedWithIndexableAsFirstArgument()
@@ -48,9 +47,9 @@ class FilterObjectsListenerTest extends TestCase
             ->expects($this->exactly(3))
             ->method('isObjectIndexable')
             ->withConsecutive(
-                ['theIndex', 'theType', $this->identicalTo($objects[0])],
-                ['theIndex', 'theType', $this->identicalTo($objects[1])],
-                ['theIndex', 'theType', $this->identicalTo($objects[2])]
+                ['theIndex', $this->identicalTo($objects[0])],
+                ['theIndex', $this->identicalTo($objects[1])],
+                ['theIndex', $this->identicalTo($objects[2])]
             )
             ->willReturn(false)
         ;
@@ -61,7 +60,7 @@ class FilterObjectsListenerTest extends TestCase
             $this->createPagerMock(),
             $this->createObjectPersisterMock(),
             $objects,
-            ['indexName' => 'theIndex', 'typeName' => 'theType']
+            ['indexName' => 'theIndex']
         );
 
         $listener->filterObjects($event);
@@ -78,9 +77,9 @@ class FilterObjectsListenerTest extends TestCase
             ->expects($this->exactly(3))
             ->method('isObjectIndexable')
             ->withConsecutive(
-                ['theIndex', 'theType', $this->identicalTo($objects[0])],
-                ['theIndex', 'theType', $this->identicalTo($objects[1])],
-                ['theIndex', 'theType', $this->identicalTo($objects[2])]
+                ['theIndex', $this->identicalTo($objects[0])],
+                ['theIndex', $this->identicalTo($objects[1])],
+                ['theIndex', $this->identicalTo($objects[2])]
             )
             ->willReturnOnConsecutiveCalls(true, false, true)
         ;
@@ -91,7 +90,7 @@ class FilterObjectsListenerTest extends TestCase
             $this->createPagerMock(),
             $this->createObjectPersisterMock(),
             $objects,
-            ['indexName' => 'theIndex', 'typeName' => 'theType']
+            ['indexName' => 'theIndex']
         );
 
         $listener->filterObjects($event);
@@ -115,7 +114,7 @@ class FilterObjectsListenerTest extends TestCase
             $this->createPagerMock(),
             $this->createObjectPersisterMock(),
             $objects,
-            ['indexName' => 'theIndex', 'typeName' => 'theType', 'skip_indexable_check' => true]
+            ['indexName' => 'theIndex', 'skip_indexable_check' => true]
         );
 
         $listener->filterObjects($event);

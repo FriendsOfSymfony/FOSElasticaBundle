@@ -12,11 +12,12 @@
 namespace FOS\ElasticaBundle\Tests\Unit\Transformer;
 
 use Elastica\Document;
-use FOS\ElasticaBundle\Event\TransformEvent;
+use FOS\ElasticaBundle\Event\PostTransformEvent;
+use FOS\ElasticaBundle\Event\PreTransformEvent;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class POPO3
 {
@@ -173,12 +174,10 @@ class ModelToElasticaAutoTransformerTest extends TestCase
             ->method('dispatch')
             ->withConsecutive(
                 [
-                    TransformEvent::PRE_TRANSFORM,
-                    $this->isInstanceOf(TransformEvent::class),
+                    $this->isInstanceOf(PreTransformEvent::class),
                 ],
                 [
-                    TransformEvent::POST_TRANSFORM,
-                    $this->isInstanceOf(TransformEvent::class),
+                    $this->isInstanceOf(PostTransformEvent::class),
                 ]
             );
 
@@ -207,7 +206,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $data = $document->getData();
 
         $this->assertInstanceOf(Document::class, $document);
-        $this->assertSame(123, $document->getId());
+        $this->assertSame('123', $document->getId());
         $this->assertSame('someName', $data['name']);
     }
 
@@ -226,7 +225,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $data = $document->getData();
 
         $this->assertInstanceOf(Document::class, $document);
-        $this->assertSame(123, $document->getId());
+        $this->assertSame('123', $document->getId());
         $this->assertSame('someName', $data['name']);
         $this->assertSame(7.2, $data['float']);
         $this->assertTrue($data['bool']);
@@ -414,46 +413,6 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         );
     }
 
-    public function testParentMapping()
-    {
-        $transformer = $this->getTransformer();
-        $document = $transformer->transform(new POPO3(), [
-            '_parent' => ['type' => 'upper', 'property' => 'upper', 'identifier' => 'id'],
-        ]);
-
-        $this->assertSame('parent', $document->getParent());
-    }
-
-    public function testParentMappingWithCustomIdentifier()
-    {
-        $transformer = $this->getTransformer();
-        $document = $transformer->transform(new POPO3(), [
-            '_parent' => ['type' => 'upper', 'property' => 'upper', 'identifier' => 'name'],
-        ]);
-
-        $this->assertSame('a random name', $document->getParent());
-    }
-
-    public function testParentMappingWithNullProperty()
-    {
-        $transformer = $this->getTransformer();
-        $document = $transformer->transform(new POPO3(), [
-            '_parent' => ['type' => 'upper', 'property' => null, 'identifier' => 'id'],
-        ]);
-
-        $this->assertSame('parent', $document->getParent());
-    }
-
-    public function testParentMappingWithCustomProperty()
-    {
-        $transformer = $this->getTransformer();
-        $document = $transformer->transform(new POPO3(), [
-            '_parent' => ['type' => 'upper', 'property' => 'upperAlias', 'identifier' => 'id'],
-        ]);
-
-        $this->assertSame('parent', $document->getParent());
-    }
-
     public function testThatMappedObjectsDontNeedAnIdentifierField()
     {
         $transformer = $this->getTransformer();
@@ -561,7 +520,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
     }
 
     /**
-     * @param null|\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+     * @param null|EventDispatcherInterface $dispatcher
      *
      * @return ModelToElasticaAutoTransformer
      */

@@ -11,7 +11,8 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Persister;
 
-use Elastica\Type;
+use Elastica\Document;
+use Elastica\Index;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use FOS\ElasticaBundle\Tests\Unit\Mocks\ObjectPersisterPOPO as POPO;
@@ -20,7 +21,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class InvalidObjectPersister extends ObjectPersister
 {
-    public function transformToElasticaDocument($object)
+    public function transformToElasticaDocument(object $object): Document
     {
         throw new \BadMethodCallException('Invalid transformation');
     }
@@ -32,13 +33,13 @@ class ObjectPersisterTest extends TestCase
     {
         $transformer = $this->getTransformer();
 
-        $typeMock = $this->createMock(Type::class);
-        $typeMock->expects($this->once())
+        $indexMock = $this->createMock(Index::class);
+        $indexMock->expects($this->once())
             ->method('updateDocuments');
 
         $fields = ['name' => []];
 
-        $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister = new ObjectPersister($indexMock, $transformer, 'SomeClass', $fields);
         $objectPersister->replaceOne(new POPO());
     }
 
@@ -49,15 +50,15 @@ class ObjectPersisterTest extends TestCase
     {
         $transformer = $this->getTransformer();
 
-        $typeMock = $this->createMock(Type::class);
-        $typeMock->expects($this->never())
+        $indexMock = $this->createMock(Index::class);
+        $indexMock->expects($this->never())
             ->method('deleteById');
-        $typeMock->expects($this->never())
+        $indexMock->expects($this->never())
             ->method('addDocument');
 
         $fields = ['name' => []];
 
-        $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister = new InvalidObjectPersister($indexMock, $transformer, 'SomeClass', $fields);
         $objectPersister->replaceOne(new POPO());
     }
 
@@ -65,15 +66,15 @@ class ObjectPersisterTest extends TestCase
     {
         $transformer = $this->getTransformer();
 
-        $typeMock = $this->createMock(Type::class);
-        $typeMock->expects($this->never())
+        $indexMock = $this->createMock(Index::class);
+        $indexMock->expects($this->never())
             ->method('deleteById');
-        $typeMock->expects($this->once())
+        $indexMock->expects($this->once())
             ->method('addDocuments');
 
         $fields = ['name' => []];
 
-        $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister = new ObjectPersister($indexMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertOne(new POPO());
     }
 
@@ -84,15 +85,15 @@ class ObjectPersisterTest extends TestCase
     {
         $transformer = $this->getTransformer();
 
-        $typeMock = $this->createMock(Type::class);
-        $typeMock->expects($this->never())
+        $indexMock = $this->createMock(Index::class);
+        $indexMock->expects($this->never())
             ->method('deleteById');
-        $typeMock->expects($this->never())
+        $indexMock->expects($this->never())
             ->method('addDocument');
 
         $fields = ['name' => []];
 
-        $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister = new InvalidObjectPersister($indexMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertOne(new POPO());
     }
 
@@ -100,15 +101,15 @@ class ObjectPersisterTest extends TestCase
     {
         $transformer = $this->getTransformer();
 
-        $typeMock = $this->createMock(Type::class);
-        $typeMock->expects($this->once())
+        $indexMock = $this->createMock(Index::class);
+        $indexMock->expects($this->once())
             ->method('deleteDocuments');
-        $typeMock->expects($this->never())
+        $indexMock->expects($this->never())
             ->method('addDocument');
 
         $fields = ['name' => []];
 
-        $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister = new ObjectPersister($indexMock, $transformer, 'SomeClass', $fields);
         $objectPersister->deleteOne(new POPO());
     }
 
@@ -119,15 +120,15 @@ class ObjectPersisterTest extends TestCase
     {
         $transformer = $this->getTransformer();
 
-        $typeMock = $this->createMock(Type::class);
-        $typeMock->expects($this->never())
+        $indexMock = $this->createMock(Index::class);
+        $indexMock->expects($this->never())
             ->method('deleteById');
-        $typeMock->expects($this->never())
+        $indexMock->expects($this->never())
             ->method('addDocument');
 
         $fields = ['name' => []];
 
-        $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister = new InvalidObjectPersister($indexMock, $transformer, 'SomeClass', $fields);
         $objectPersister->deleteOne(new POPO());
     }
 
@@ -135,17 +136,17 @@ class ObjectPersisterTest extends TestCase
     {
         $transformer = $this->getTransformer();
 
-        $typeMock = $this->createMock(Type::class);
-        $typeMock->expects($this->never())
+        $indexMock = $this->createMock(Index::class);
+        $indexMock->expects($this->never())
             ->method('deleteById');
-        $typeMock->expects($this->never())
+        $indexMock->expects($this->never())
             ->method('addDocument');
-        $typeMock->expects($this->once())
+        $indexMock->expects($this->once())
             ->method('addDocuments');
 
         $fields = ['name' => []];
 
-        $objectPersister = new ObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister = new ObjectPersister($indexMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 
@@ -156,17 +157,17 @@ class ObjectPersisterTest extends TestCase
     {
         $transformer = $this->getTransformer();
 
-        $typeMock = $this->createMock(Type::class);
-        $typeMock->expects($this->never())
+        $indexMock = $this->createMock(Index::class);
+        $indexMock->expects($this->never())
             ->method('deleteById');
-        $typeMock->expects($this->never())
+        $indexMock->expects($this->never())
             ->method('addDocument');
-        $typeMock->expects($this->never())
+        $indexMock->expects($this->never())
             ->method('addDocuments');
 
         $fields = ['name' => []];
 
-        $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+        $objectPersister = new InvalidObjectPersister($indexMock, $transformer, 'SomeClass', $fields);
         $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 

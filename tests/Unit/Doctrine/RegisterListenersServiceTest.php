@@ -7,8 +7,9 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Doctrine\RegisterListenersService;
-use FOS\ElasticaBundle\Persister\Event\Events;
 use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
+use FOS\ElasticaBundle\Persister\Event\PreFetchObjectsEvent;
+use FOS\ElasticaBundle\Persister\Event\PreInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use PHPUnit\Framework\TestCase;
@@ -39,7 +40,6 @@ class RegisterListenersServiceTest extends TestCase
         $service->register($manager, $pager, []);
 
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
             new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
         );
     }
@@ -63,7 +63,6 @@ class RegisterListenersServiceTest extends TestCase
         ]);
 
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
             new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
         );
     }
@@ -88,7 +87,6 @@ class RegisterListenersServiceTest extends TestCase
         ]);
 
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
             new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], [])
         );
     }
@@ -99,7 +97,7 @@ class RegisterListenersServiceTest extends TestCase
         $dispatcher
             ->expects($this->never())
             ->method('addListener')
-            ->with(Events::POST_INSERT_OBJECTS, $this->isInstanceOf(\Closure::class))
+            ->with(PostInsertObjectsEvent::class, $this->isInstanceOf(\Closure::class))
         ;
 
         $service = new RegisterListenersService($dispatcher);
@@ -130,7 +128,6 @@ class RegisterListenersServiceTest extends TestCase
 
         $time = microtime(true);
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
             new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
         );
 
@@ -155,7 +152,6 @@ class RegisterListenersServiceTest extends TestCase
 
         $time = microtime(true);
         $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
             new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], [])
         );
 
@@ -168,11 +164,11 @@ class RegisterListenersServiceTest extends TestCase
         $dispatcher
             ->expects($this->at(0))
             ->method('addListener')
-            ->with(Events::PRE_FETCH_OBJECTS, $this->isInstanceOf(\Closure::class));
+            ->with(PreFetchObjectsEvent::class, $this->isInstanceOf(\Closure::class));
         $dispatcher
             ->expects($this->at(1))
             ->method('addListener')
-            ->with(Events::PRE_INSERT_OBJECTS, $this->isInstanceOf(\Closure::class));
+            ->with(PreInsertObjectsEvent::class, $this->isInstanceOf(\Closure::class));
 
         $service = new RegisterListenersService($dispatcher);
 
@@ -236,11 +232,11 @@ class RegisterListenersServiceTest extends TestCase
         $dispatcher
             ->expects($this->at(0))
             ->method('addListener')
-            ->with(Events::PRE_FETCH_OBJECTS, $this->isInstanceOf(\Closure::class));
+            ->with(PreFetchObjectsEvent::class, $this->isInstanceOf(\Closure::class));
         $dispatcher
             ->expects($this->at(1))
             ->method('addListener')
-            ->with(Events::PRE_INSERT_OBJECTS, $this->isInstanceOf(\Closure::class));
+            ->with(PreInsertObjectsEvent::class, $this->isInstanceOf(\Closure::class));
 
         $service = new RegisterListenersService($dispatcher);
 

@@ -238,7 +238,6 @@ class Listener
     {
         return $this->indexable->isObjectIndexable(
             $this->config['indexName'],
-            $this->config['typeName'],
             $object
         );
     }

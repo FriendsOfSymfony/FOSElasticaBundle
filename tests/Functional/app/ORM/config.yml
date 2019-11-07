@@ -24,13 +24,13 @@ fos_elastica:
     indexes:
         fos_elastica_orm_test:
             types:
-                type:
+                _doc:
                     properties:
                         field1: ~
         index:
             index_name: "foselastica_orm_test_%kernel.environment%"
             types:
-                type:
+                _doc:
                     properties:
                         field1: ~
                         coll: ~
@@ -41,7 +41,22 @@ fos_elastica:
                         provider:
                             debug_logging: true
                     indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
-                type2:
+        second_index:
+            index_name: "foselastica_orm_test_second_%kernel.environment%"
+            types:
+                _doc:
+                    properties:
+                        field1: ~
+                        coll: ~
+                    persistence:
+                        driver: orm
+                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+                        listener: ~
+                    indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
+        third_index:
+            index_name: "foselastica_orm_test_%kernel.environment%"
+            types:
+                _doc:
                     properties:
                         field1: ~
                     persistence:
@@ -49,7 +64,10 @@ fos_elastica:
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener: ~
                     indexable_callback: [ "@indexable_service", 'isIndexable' ]
-                type3:
+        fourth_index:
+            index_name: "foselastica_orm_test_%kernel.environment%"
+            types:
+                _doc:
                     properties:
                         field1: ~
                     persistence:
@@ -59,7 +77,10 @@ fos_elastica:
                         provider: ~
                         listener: ~
                     indexable_callback: 'isntIndexable'
-                type4:
+        fifth_index:
+            index_name: "foselastica_orm_test_%kernel.environment%"
+            types:
+                _doc:
                     properties:
                         field1: ~
                     persistence:
@@ -69,7 +90,10 @@ fos_elastica:
                         provider: ~
                         listener: ~
                     indexable_callback: [ 'FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService', 'isntIndexable' ]
-                property_paths_type:
+        property_paths_index:
+            index_name: "foselastica_orm_test_%kernel.environment%"
+            types:
+                _doc:
                     persistence:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
@@ -81,7 +105,10 @@ fos_elastica:
                             property_path: coll
                         dynamic:
                             property_path: false
-                type_with_repository:
+        with_repository_index:
+            index_name: "foselastica_orm_test_%kernel.environment%"
+            types:
+                _doc:
                     properties:
                         field1: ~
                         coll: ~
@@ -91,15 +118,3 @@ fos_elastica:
                         repository: FOS\ElasticaBundle\Tests\Functional\TypeObjectRepository
                         finder: ~
                         provider: ~
-        second_index:
-            index_name: "foselastica_orm_test_second_%kernel.environment%"
-            types:
-                type:
-                    properties:
-                        field1: ~
-                        coll: ~
-                    persistence:
-                        driver: orm
-                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
-                        listener: ~
-                    indexable_callback: 'object.isIndexable() && !object.isntIndexable()'

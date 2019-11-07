@@ -6,7 +6,7 @@ fos_elastica:
         test_index:
             client: default
             types:
-                driverless:
+                _doc:
                     properties:
                         text: ~
                     persistence:

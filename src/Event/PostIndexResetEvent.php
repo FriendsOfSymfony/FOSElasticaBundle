@@ -11,22 +11,6 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Symfony\Contracts\EventDispatcher\Event;
-
-class IndexEvent extends Event
+class PostIndexResetEvent extends IndexResetEvent
 {
-    /**
-     * @var string
-     */
-    private $index;
-
-    public function __construct(string $index)
-    {
-        $this->index = $index;
-    }
-
-    public function getIndex(): string
-    {
-        return $this->index;
-    }
 }

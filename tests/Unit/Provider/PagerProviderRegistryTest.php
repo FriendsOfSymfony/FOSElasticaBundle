@@ -11,71 +11,46 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Provider;
 
+use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
-use Symfony\Component\DependencyInjection\Container;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class PagerProviderRegistryTest extends TestCase
 {
-    protected function mockPagerProviderRegistry(array $providers, $service = null)
+    public function testGetProviders()
     {
-        $container = new Container();
-        $container->set('the_service_id', $service);
+        $service = $this->createMock(PagerProviderInterface::class);
+
+        $providers = new ServiceLocator([
+            'index' => static function () use ($service) {
+                return $service;
+            },
+        ]);
 
         $registry = new PagerProviderRegistry($providers);
-        $registry->setContainer($container);
-        return $registry;
-    }
-
-    public function testGetAllProviders()
-    {
-        $providers = [
-            'index' => [
-                'type' => 'the_service_id',
-            ],
-        ];
-        $service = new \stdClass();
-        $registry = $this->mockPagerProviderRegistry($providers, $service);
-        $this->assertEquals(['index/type' => $service], $registry->getAllProviders('index', 'type'));
-    }
-
-    public function testGetIndexProvidersValid()
-    {
-        $providers = [
-            'index' => [
-                'type' => 'the_service_id',
-            ],
-        ];
-        $service = new \stdClass();
-        $registry = $this->mockPagerProviderRegistry($providers, $service);
-        $this->assertEquals(['type' => $service], $registry->getIndexProviders('index', 'type'));
-    }
-
-    public function testGetIndexProvidersInvalid()
-    {
-        $registry = $this->mockPagerProviderRegistry([]);
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('No providers were registered for index "index".');
-        $registry->getIndexProviders('index');
+        $this->assertEquals(['index' => $service], $registry->getProviders());
     }
 
     public function testGetProviderValid()
     {
-        $providers = [
-            'index' => [
-                'type' => 'the_service_id',
-            ],
-        ];
-        $service = new \stdClass();
-        $registry = $this->mockPagerProviderRegistry($providers, $service);
-        $this->assertEquals($service, $registry->getProvider('index', 'type'));
+        $service = $this->createMock(PagerProviderInterface::class);
+
+        $providers = new ServiceLocator([
+            'index' => static function () use ($service) {
+                return $service;
+            },
+        ]);
+
+        $registry = new PagerProviderRegistry($providers);
+        $this->assertEquals($service, $registry->getProvider('index'));
     }
 
     public function testGetProviderInvalid()
     {
-        $registry = $this->mockPagerProviderRegistry([]);
+        $registry = new PagerProviderRegistry(new ServiceLocator([]));
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('No provider was registered for index "index" and type "type".');
-        $registry->getProvider('index', 'type');
+        $this->expectExceptionMessage('No provider was registered for index "index".');
+        $registry->getProvider('index');
     }
 }

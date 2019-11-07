@@ -19,7 +19,7 @@ class IndexableTest extends TestCase
     public function testIndexableUnknown()
     {
         $indexable = new Indexable([]);
-        $index = $indexable->isObjectIndexable('index', 'type', new Entity());
+        $index = $indexable->isObjectIndexable('index', new Entity());
 
         $this->assertTrue($index);
     }
@@ -30,9 +30,9 @@ class IndexableTest extends TestCase
     public function testValidIndexableCallbacks($callback, $return)
     {
         $indexable = new Indexable([
-            'index/type' => $callback,
+            'index' => $callback,
         ]);
-        $index = $indexable->isObjectIndexable('index', 'type', new Entity());
+        $index = $indexable->isObjectIndexable('index', new Entity());
 
         $this->assertSame($return, $index);
     }
@@ -44,9 +44,9 @@ class IndexableTest extends TestCase
     public function testInvalidIsIndexableCallbacks($callback)
     {
         $indexable = new Indexable([
-            'index/type' => $callback,
+            'index' => $callback,
         ]);
-        $indexable->isObjectIndexable('index', 'type', new Entity());
+        $indexable->isObjectIndexable('index', new Entity());
     }
 
     public function provideInvalidIsIndexableCallbacks()

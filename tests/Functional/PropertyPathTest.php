@@ -31,7 +31,7 @@ class PropertyPathTest extends WebTestCase
     {
         static::bootKernel(['test_case' => 'ORM']);
         /** @var \FOS\ElasticaBundle\Persister\ObjectPersister $persister */
-        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.index.property_paths_type');
+        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.property_paths_index');
         $obj = new TypeObj();
         $obj->coll = 'Hello';
         $persister->insertOne($obj);

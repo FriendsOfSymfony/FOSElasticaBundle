@@ -31,7 +31,7 @@ fos_elastica:
         index:
             index_name: "foselastica_ser_test_%kernel.environment%"
             types:
-                type:
+                _doc:
                     properties:
                         coll: ~
                         field1: ~
@@ -41,7 +41,9 @@ fos_elastica:
                     serializer:
                         groups: ['search', 'Default']
                         version: 1.1
-                type_serialize_null_disabled:
+        index_serialize_null_disabled:
+            types:
+                _doc:
                     properties:
                         field1: ~
                     persistence:
@@ -49,7 +51,9 @@ fos_elastica:
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                     serializer:
                         serialize_null: false
-                type_serialize_null_enabled:
+        index_serialize_null_enabled:
+            types:
+                _doc:
                     properties:
                         field1: ~
                     persistence:
@@ -57,7 +61,9 @@ fos_elastica:
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                     serializer:
                         serialize_null: true
-                unmapped:
+        index_unmapped:
+            types:
+                _doc:
                     persistence:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj

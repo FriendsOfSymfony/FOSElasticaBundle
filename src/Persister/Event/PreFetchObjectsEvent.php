@@ -3,7 +3,7 @@ namespace FOS\ElasticaBundle\Persister\Event;
 
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 final class PreFetchObjectsEvent extends Event implements PersistEvent
 {
@@ -29,49 +29,31 @@ final class PreFetchObjectsEvent extends Event implements PersistEvent
         $this->options = $options;
     }
 
-    /**
-     * @return PagerInterface
-     */
-    public function getPager()
+    public function getPager(): PagerInterface
     {
         return $this->pager;
     }
 
-    /**
-     * @param PagerInterface $pager
-     */
-    public function setPager($pager)
+    public function setPager(PagerInterface $pager)
     {
         $this->pager = $pager;
     }
 
-    /**
-     * @return array
-     */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
 
-    /**
-     * @param array $options
-     */
     public function setOptions(array $options)
     {
         $this->options = $options;
     }
 
-    /**
-     * @return ObjectPersisterInterface
-     */
-    public function getObjectPersister()
+    public function getObjectPersister(): ObjectPersisterInterface
     {
         return $this->objectPersister;
     }
 
-    /**
-     * @param ObjectPersisterInterface $objectPersister
-     */
     public function setObjectPersister(ObjectPersisterInterface $objectPersister)
     {
         $this->objectPersister = $objectPersister;

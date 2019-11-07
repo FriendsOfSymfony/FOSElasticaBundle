@@ -11,8 +11,8 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Event;
 
+use FOS\ElasticaBundle\Event\PostIndexPopulateEvent;
 use FOS\ElasticaBundle\EventListener\PopulateListener;
-use FOS\ElasticaBundle\Event\IndexPopulateEvent;
 use FOS\ElasticaBundle\Index\Resetter;
 use PHPUnit\Framework\TestCase;
 
@@ -42,7 +42,7 @@ class PopulateListenerTest extends TestCase
         $stub = $this->mockResetter(1, $indexName, $deleteOption);
         $listener = new PopulateListener($stub);
 
-        $event = new IndexPopulateEvent($indexName, true, ['delete' => $deleteOption]);
+        $event = new PostIndexPopulateEvent($indexName, true, ['delete' => $deleteOption]);
         $listener->onPostIndexPopulate($event);
     }
 
@@ -54,7 +54,7 @@ class PopulateListenerTest extends TestCase
         $stub = $this->mockResetter(0, $indexName, $deleteOption);
         $listener = new PopulateListener($stub);
 
-        $event = new IndexPopulateEvent($indexName, false, ['delete' => $deleteOption]);
+        $event = new PostIndexPopulateEvent($indexName, false, ['delete' => $deleteOption]);
         $listener->onPostIndexPopulate($event);
     }
 }

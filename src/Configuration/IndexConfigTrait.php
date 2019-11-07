@@ -49,7 +49,7 @@ trait IndexConfigTrait
     /**
      * @return string
      */
-    public function getElasticSearchName()
+    public function getElasticSearchName(): string
     {
         return $this->elasticSearchName;
     }
@@ -57,7 +57,7 @@ trait IndexConfigTrait
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -65,19 +65,15 @@ trait IndexConfigTrait
     /**
      * @return array
      */
-    public function getSettings()
+    public function getSettings(): array
     {
         return $this->settings;
     }
 
-    /**
-     * @param string $typeName
-     *
-     * @return TypeConfig
-     *
+    /**s
      * @throws \InvalidArgumentException
      */
-    public function getType($typeName)
+    public function getType(string $typeName): TypeConfig
     {
         if (!array_key_exists($typeName, $this->types)) {
             throw new \InvalidArgumentException(sprintf('Type "%s" does not exist on index "%s"', $typeName, $this->name));

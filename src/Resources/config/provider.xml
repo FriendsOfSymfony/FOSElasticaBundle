@@ -8,10 +8,7 @@
         <defaults public="false" />
 
         <service id="fos_elastica.pager_provider_registry" class="FOS\ElasticaBundle\Provider\PagerProviderRegistry" public="true">
-            <argument type="collection" /> <!-- providers -->
-            <call method="setContainer">
-                <argument type="service" id="service_container" />
-            </call>
+            <argument type="tagged_locator" tag="fos_elastica.pager_provider" index-by="index" />
         </service>
     </services>
 </container>

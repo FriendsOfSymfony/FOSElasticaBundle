@@ -77,22 +77,4 @@ class ResetCommandTest extends TestCase
             new NullOutput()
         );
     }
-
-    public function testResetIndexType()
-    {
-        $this->indexManager->expects($this->never())
-            ->method('getAllIndexes');
-
-        $this->resetter->expects($this->never())
-            ->method('resetIndex');
-
-        $this->resetter->expects($this->at(0))
-            ->method('resetIndexType')
-            ->with($this->equalTo('index1'), $this->equalTo('type1'));
-
-        $this->command->run(
-            new ArrayInput(['--index' => 'index1', '--type' => 'type1']),
-            new NullOutput()
-        );
-    }
 }

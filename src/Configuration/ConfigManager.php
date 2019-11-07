@@ -31,12 +31,7 @@ class ConfigManager implements ManagerInterface
         }
     }
 
-    /**
-     * @param string $indexName
-     *
-     * @return IndexConfig
-     */
-    public function getIndexConfiguration($indexName)
+    public function getIndexConfiguration(string $indexName): IndexConfigInterface
     {
         if (!$this->hasIndexConfiguration($indexName)) {
             throw new \InvalidArgumentException(sprintf('Index with name "%s" is not configured.', $indexName));
@@ -45,18 +40,12 @@ class ConfigManager implements ManagerInterface
         return $this->indexes[$indexName];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getIndexNames()
+    public function getIndexNames(): array
     {
         return array_keys($this->indexes);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTypeConfiguration($indexName, $typeName)
+    public function getTypeConfiguration(string $indexName, string $typeName): TypeConfig
     {
         $index = $this->getIndexConfiguration($indexName);
         $type = $index->getType($typeName);
@@ -68,12 +57,7 @@ class ConfigManager implements ManagerInterface
         return $type;
     }
 
-    /**
-     * @param string $indexName
-     *
-     * @return bool
-     */
-    public function hasIndexConfiguration($indexName)
+    public function hasIndexConfiguration(string $indexName): bool
     {
         return isset($this->indexes[$indexName]);
     }

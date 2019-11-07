@@ -54,7 +54,7 @@ class TemplateResetter implements ResetterInterface
         }
     }
 
-    public function resetIndex($indexName, $deleteIndexes = false)
+    public function resetIndex(string $indexName, bool $deleteIndexes = false)
     {
         $indexTemplateConfig = $this->configManager->getIndexConfiguration($indexName);
         if (!$indexTemplateConfig instanceof IndexTemplateConfig) {
@@ -72,9 +72,7 @@ class TemplateResetter implements ResetterInterface
     }
 
     /**
-     * Delete all template indexes
-     *
-     * @param IndexTemplateConfig $template
+     * Delete all template indexes.
      */
     public function deleteTemplateIndexes(IndexTemplateConfig $template)
     {

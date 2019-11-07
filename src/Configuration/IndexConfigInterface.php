@@ -12,26 +12,22 @@ interface IndexConfigInterface
     /**
      * @return string
      */
-    public function getElasticSearchName();
+    public function getElasticSearchName(): string;
 
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * @return array
      */
-    public function getSettings();
+    public function getSettings(): array;
 
     /**
-     * @param string $typeName
-     *
-     * @return TypeConfig
-     *
      * @throws \InvalidArgumentException
      */
-    public function getType($typeName);
+    public function getType(string $typeName): TypeConfig;
 
     /**
      * @return \FOS\ElasticaBundle\Configuration\TypeConfig[]
