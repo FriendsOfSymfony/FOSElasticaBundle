@@ -79,4 +79,9 @@ class RepositoryManager implements RepositoryManagerInterface
 
         return $this->repositoryManager->getRepository($realEntityName);
     }
+
+    public function hasRepository($typeName): bool
+    {
+        return $this->repositoryManager->hasRepository($typeName);
+    }
 }

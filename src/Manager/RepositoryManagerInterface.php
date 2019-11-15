@@ -43,4 +43,12 @@ interface RepositoryManagerInterface
      * @return Repository
      */
     public function getRepository($typeName);
+
+    /**
+     * Checks if repository exists for type
+     *
+     * @param $typeName
+     * @return bool
+     */
+    public function hasRepository($typeName): bool;
 }

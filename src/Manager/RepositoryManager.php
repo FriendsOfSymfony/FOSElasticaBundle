@@ -63,7 +63,7 @@ class RepositoryManager implements RepositoryManagerInterface
             return $this->repositories[$typeName];
         }
 
-        if (!isset($this->types[$typeName])) {
+        if (!$this->hasRepository($typeName)) {
             throw new RuntimeException(sprintf('No search finder configured for %s', $typeName));
         }
 
@@ -71,6 +71,17 @@ class RepositoryManager implements RepositoryManagerInterface
         $this->repositories[$typeName] = $repository;
 
         return $repository;
+    }
+
+    /**
+     * Checks if repository exists for type
+     *
+     * @param $typeName
+     * @return bool
+     */
+    public function hasRepository($typeName): bool
+    {
+        return isset($this->types[$typeName]);
     }
 
     /**
