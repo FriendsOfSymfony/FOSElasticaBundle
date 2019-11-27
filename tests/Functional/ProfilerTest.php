@@ -21,6 +21,9 @@ use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Twig\RuntimeLoader\RuntimeLoaderInterface;
 
 /**
  * @group functional
@@ -41,15 +44,15 @@ class ProfilerTest extends WebTestCase
         $this->logger = new ElasticaLogger($this->createMock(LoggerInterface::class), true);
         $this->collector = new ElasticaDataCollector($this->logger);
 
-        $twigLoaderFilesystem = new \Twig_Loader_Filesystem(__DIR__ . '/../../src/Resources/views/Collector');
-        $twigLoaderFilesystem->addPath(__DIR__ . '/../../vendor/symfony/web-profiler-bundle/Resources/views', 'WebProfiler');
-        $this->twig = new \Twig_Environment($twigLoaderFilesystem, ['debug' => true, 'strict_variables' => true]);
+        $twigLoaderFilesystem = new FilesystemLoader(__DIR__.'/../../src/Resources/views/Collector');
+        $twigLoaderFilesystem->addPath(__DIR__.'/../../vendor/symfony/web-profiler-bundle/Resources/views', 'WebProfiler');
+        $this->twig = new Environment($twigLoaderFilesystem, ['debug' => true, 'strict_variables' => true]);
 
         $this->twig->addExtension(new CodeExtension('', '', ''));
         $this->twig->addExtension(new RoutingExtension($this->getMockBuilder(UrlGeneratorInterface::class)->getMock()));
         $this->twig->addExtension(new HttpKernelExtension($this->getMockBuilder(FragmentHandler::class)->disableOriginalConstructor()->getMock()));
 
-        $loader = $this->getMockBuilder(\Twig_RuntimeLoaderInterface::class)->getMock();
+        $loader = $this->getMockBuilder(RuntimeLoaderInterface::class)->getMock();
         $loader->method('load')->willReturn($this->getMockBuilder(HttpKernelRuntime::class)->disableOriginalConstructor()->getMock());
         $this->twig->addRuntimeLoader($loader);
     }
