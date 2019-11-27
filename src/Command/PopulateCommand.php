@@ -170,6 +170,8 @@ class PopulateCommand extends Command
                 $this->populateIndex($output, $index, $reset, $options);
             }
         }
+
+        return 0;
     }
 
     /**
