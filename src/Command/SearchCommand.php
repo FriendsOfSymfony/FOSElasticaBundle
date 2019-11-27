@@ -69,6 +69,8 @@ class SearchCommand extends Command
         foreach ($resultSet->getResults() as $result) {
             $output->writeLn($this->formatResult($result, $input->getOption('show-field'), $input->getOption('show-source'), $input->getOption('show-id'), $input->getOption('explain')));
         }
+
+        return 0;
     }
 
     /**
