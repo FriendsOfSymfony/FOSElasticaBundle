@@ -70,6 +70,10 @@ class CreateCommand extends Command
             }
             $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
             $index->create($mapping, false);
+
+            if ($indexConfig->isUseAlias()) {
+                $index->addAlias($indexName);
+            }
         }
 
         return 0;
