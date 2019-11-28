@@ -79,16 +79,16 @@ class TransformedFinder implements PaginatedFinderInterface
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function findHybridPaginated(string $query)
+    public function findHybridPaginated($query)
     {
         $paginatorAdapter = $this->createHybridPaginatorAdapter($query);
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
-    }    
+    }
 
     /**
      * {@inheritdoc}
