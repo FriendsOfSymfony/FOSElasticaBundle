@@ -71,5 +71,7 @@ class CreateCommand extends Command
             $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
             $index->create($mapping, false);
         }
+
+        return 0;
     }
 }

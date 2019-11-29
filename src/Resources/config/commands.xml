@@ -15,6 +15,12 @@
             <argument type="service" id="fos_elastica.alias_processor" />
         </service>
 
+        <service id="fos_elastica.command.delete" class="FOS\ElasticaBundle\Command\DeleteCommand">
+            <tag name="console.command" />
+            <argument type="service" id="fos_elastica.client.default" />
+            <argument type="service" id="fos_elastica.index_manager" />
+        </service>
+
         <service id="fos_elastica.command.populate" class="FOS\ElasticaBundle\Command\PopulateCommand">
             <tag name="console.command" />
             <argument type="service" id="event_dispatcher" />

@@ -68,7 +68,7 @@ class Repository
     }
 
     /**
-     * @param string $query
+     * @param mixed $query
      * @param array  $options
      *
      * @return Paginator\PaginatorAdapterInterface

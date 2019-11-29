@@ -73,5 +73,7 @@ class ResetCommand extends Command
                 $this->resetter->resetIndex($index, false, $force);
             }
         }
+
+        return 0;
     }
 }
