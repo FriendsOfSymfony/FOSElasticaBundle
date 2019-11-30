@@ -25,17 +25,17 @@ Installation instructions can be found in the [documentation](doc/setup.md)
 Versions & Dependencies
 -----------------------
 
-Version 5 of the FOSElasticaBundle is compatible with Elasticsearch 5 and 6. It requires Symfony 3 or 4. When using
+Version 5 of the FOSElasticaBundle is compatible with Elasticsearch 5 and 6. It requires Symfony 3, 4 or 5. When using
 Symfony Flex there is also a [recipe to ease the setup](https://github.com/symfony/recipes-contrib/tree/master/friendsofsymfony/elastica-bundle/5.0).
 Earlier versions of the FOSElasticaBundle are not maintained anymore and only work with older versions of the dependencies.
 The following table shows the compatibilities of different versions of the bundle.
 
-| FOSElasticaBundle                                                                       | Elastica | Elasticsearch | Symfony    | PHP   |
-| --------------------------------------------------------------------------------------- | ---------| ------------- | ---------- | ----- |
-| [5.1] (master)                                                                          | ^5.3\|^6 | 5.\*\|6.\*    | ^3.4\|^4   | >=7.1 |
-| [5.0] (unmaintained)                                                                    | ^5.2\|^6 | 5.\*\|6.\*    | ^3.2\|^4   | >=5.6 |
-| [4.x] (unmaintained)                                                                    | 3.2.\*   | 2.\*          | ^2.8\|^3.2 | >=5.5 |
-| [3.2.x] (unmaintained)                                                                  | ^2.1     | 1.\*          | ^2.3\|^3   | >=5.3 |
+| FOSElasticaBundle                                                                       | Elastica | Elasticsearch | Symfony      | PHP   |
+| --------------------------------------------------------------------------------------- | ---------| ------------- | ------------ | ----- |
+| [5.1] (master)                                                                          | ^5.3\|^6 | 5.\*\|6.\*    | ^3.4\|^4\|^5 | >=7.1 |
+| [5.0] (unmaintained)                                                                    | ^5.2\|^6 | 5.\*\|6.\*    | ^3.2\|^4     | >=5.6 |
+| [4.x] (unmaintained)                                                                    | 3.2.\*   | 2.\*          | ^2.8\|^3.2   | >=5.5 |
+| [3.2.x] (unmaintained)                                                                  | ^2.1     | 1.\*          | ^2.3\|^3     | >=5.3 |
 
 License
 -------
