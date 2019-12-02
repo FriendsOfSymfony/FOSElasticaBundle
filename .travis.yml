@@ -28,6 +28,9 @@ matrix:
     - php: 7.3
       env: SYMFONY_VERSION="^4"
 
+    - php: 7.3
+      env: SYMFONY_VERSION="^5"
+
 before_install:
   - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
 
