@@ -11,26 +11,16 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-class IndexEvent extends ElasticaEvent
-{
-    /**
-     * @var string
-     */
-    private $index;
+use Symfony\Contracts\EventDispatcher\Event as BaseEvent;
+use Symfony\Component\EventDispatcher\Event as LegacyBaseEvent;
 
-    /**
-     * @param string $index
-     */
-    public function __construct($index)
+if (class_exists(BaseEvent::class)) {
+    class ElasticaEvent extends BaseEvent
     {
-        $this->index = $index;
     }
-
-    /**
-     * @return string
-     */
-    public function getIndex()
+} else {
+    // Support Symfony 4.2 and before
+    class ElasticaEvent extends LegacyBaseEvent
     {
-        return $this->index;
     }
 }

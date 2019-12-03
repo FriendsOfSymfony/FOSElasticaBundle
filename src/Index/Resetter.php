@@ -17,8 +17,8 @@ use FOS\ElasticaBundle\Configuration\ManagerInterface;
 use Elastica\Client;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
+use FOS\ElasticaBundle\EventDispatcher\LegacyEventDispatcherProxy;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 
 /**
  * Deletes and recreates indexes.
@@ -67,12 +67,7 @@ class Resetter implements ResetterInterface
     ) {
         $this->aliasProcessor = $aliasProcessor;
         $this->configManager = $configManager;
-        $this->dispatcher = $eventDispatcher;
-
-        if (class_exists(LegacyEventDispatcherProxy::class)) {
-            $this->dispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
-        }
-
+        $this->dispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
         $this->indexManager = $indexManager;
         $this->mappingBuilder = $mappingBuilder;
     }
