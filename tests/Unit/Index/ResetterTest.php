@@ -25,6 +25,7 @@ use FOS\ElasticaBundle\Index\Resetter;
 use FOS\ElasticaBundle\Index\ResetterInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as ContractsEventDispatcherInterface;
 
 class ResetterTest extends TestCase
 {
@@ -69,8 +70,8 @@ class ResetterTest extends TestCase
             ->will($this->returnValue([$indexName]));
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -85,8 +86,8 @@ class ResetterTest extends TestCase
         $this->mockIndex('index1', $indexConfig);
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -102,8 +103,8 @@ class ResetterTest extends TestCase
         ]);
         $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -120,8 +121,8 @@ class ResetterTest extends TestCase
         ]);
         $index = $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->aliasProcessor->expects($this->once())
@@ -157,10 +158,10 @@ class ResetterTest extends TestCase
         $this->mockType('type', 'index', $typeConfig, $indexConfig);
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf(TypeResetEvent::class)],
-            [TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf(TypeResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
+            [$this->isInstanceOf(TypeResetEvent::class), TypeResetEvent::PRE_TYPE_RESET],
+            [$this->isInstanceOf(TypeResetEvent::class), TypeResetEvent::POST_TYPE_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(3))
@@ -233,6 +234,11 @@ class ResetterTest extends TestCase
 
     private function dispatcherExpects(array $events)
     {
+        if (!is_a($this->dispatcher, ContractsEventDispatcherInterface::class)) {
+            // Before Symfony 4.2, the event name was expected before the event object.
+            $events = array_map('array_reverse', $events);
+        }
+
         $expectation = $this->dispatcher->expects($this->exactly(count($events)))
             ->method('dispatch');
 
