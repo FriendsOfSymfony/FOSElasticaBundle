@@ -20,7 +20,7 @@ services:
 fos_elastica:
     clients:
         default:
-            url: "http://localhost:9200"
+            url: "http://%fos_elastica.host%:%fos_elastica.port%"
     indexes:
         fos_elastica_orm_test:
             types:
