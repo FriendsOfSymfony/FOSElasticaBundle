@@ -4,6 +4,10 @@ CHANGELOG for 5.1.x
 This changelog references the relevant changes (bug and security fixes) done
 in 5.1 versions.
 
+### 5.1.2
+
+* Added the `findHybridPaginated` method in the `TransformedFinder` class.
+
 ### 5.1.1 (2019-08-23)
 
 * Added `LegacyEventDispatcherProxy` for Symfony 4.3 compatibility.
