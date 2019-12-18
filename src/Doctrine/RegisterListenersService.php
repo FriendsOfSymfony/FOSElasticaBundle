@@ -56,7 +56,7 @@ class RegisterListenersService
             });
         }
 
-        if (false == $options['debug_logging'] && $manager instanceof EntityManagerInterface) {
+        if (false === $options['debug_logging'] && $manager instanceof EntityManagerInterface) {
             $configuration = $manager->getConnection()->getConfiguration();
             $logger = $configuration->getSQLLogger();
 
@@ -69,7 +69,7 @@ class RegisterListenersService
             });
         }
 
-        if (false == $options['debug_logging'] && $manager instanceof DocumentManager) {
+        if (false === $options['debug_logging'] && $manager instanceof DocumentManager) {
             $configuration = $manager->getConnection()->getConfiguration();
             $logger = $configuration->getLoggerCallable();
 
