@@ -1,9 +1,19 @@
 <?php
+
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use FOS\ElasticaBundle\Persister\Event\Events;
 use FOS\ElasticaBundle\Persister\Event\PersistEvent;
 use FOS\ElasticaBundle\Provider\PagerInterface;
@@ -46,10 +56,10 @@ class RegisterListenersService
             });
         }
 
-        if (false == $options['debug_logging'] && $manager instanceof EntityManagerInterface) {
+        if (false === $options['debug_logging'] && $manager instanceof EntityManagerInterface) {
             $configuration = $manager->getConnection()->getConfiguration();
             $logger = $configuration->getSQLLogger();
-            
+
             $this->addListener($pager, Events::PRE_FETCH_OBJECTS, function() use ($configuration) {
                 $configuration->setSQLLogger(null);
             });
@@ -59,7 +69,7 @@ class RegisterListenersService
             });
         }
 
-        if (false == $options['debug_logging'] && $manager instanceof DocumentManager) {
+        if (false === $options['debug_logging'] && $manager instanceof DocumentManager) {
             $configuration = $manager->getConnection()->getConfiguration();
             $logger = $configuration->getLoggerCallable();
 

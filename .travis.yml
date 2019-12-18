@@ -25,8 +25,10 @@ matrix:
       env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover=coverage.clover"
 
     # Install all SF components in the same major version, see https://github.com/dunglas/symfony-lock
-    - php: 7.3
-      env: SYMFONY_VERSION="^4"
+    - php: 7.4
+      env: DEPENDENCIES="symfony/flex" SYMFONY_VERSION="^3.4"
+    - php: 7.4
+      env: DEPENDENCIES="symfony/flex" SYMFONY_VERSION="^4.4"
 
 before_install:
   - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
@@ -34,7 +36,8 @@ before_install:
 install:
   # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
   - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update dunglas/symfony-lock=$SYMFONY_VERSION; fi;
+  - if [ "$DEPENDENCIES" != "" ]; then composer require --no-update ${DEPENDENCIES}; fi;
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer config extra.symfony.require ${SYMFONY_VERSION}; fi;
   - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
   - mkdir /tmp/elasticsearch
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
@@ -44,7 +47,7 @@ install:
 
 before_script:
   - phpenv config-add .travis/php.ini
-  - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;
+  - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
   - vendor/bin/phpunit ${PHPUNIT_FLAGS}
