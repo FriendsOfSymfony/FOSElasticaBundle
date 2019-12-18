@@ -47,7 +47,7 @@ install:
 
 before_script:
   - phpenv config-add .travis/php.ini
-  - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;
+  - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
   - vendor/bin/phpunit ${PHPUNIT_FLAGS}
