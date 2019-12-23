@@ -1,11 +1,11 @@
 <?php
 namespace FOS\ElasticaBundle\Persister\Event;
 
+use FOS\ElasticaBundle\Event\AbstractEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
-use Symfony\Component\EventDispatcher\Event;
 
-final class OnExceptionEvent extends Event implements PersistEvent
+final class OnExceptionEvent extends AbstractEvent implements PersistEvent
 {
     /**
      * @var PagerInterface

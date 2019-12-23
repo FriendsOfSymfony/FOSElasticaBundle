@@ -11,48 +11,101 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\Event as LegacyEvent;
+use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * Type Populate Event.
- *
- * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
- */
-class TypePopulateEvent extends IndexPopulateEvent
-{
+if (!class_exists(Event::class)) {
     /**
-     * @Event("FOS\ElasticaBundle\Event\TypePopulateEvent")
+     * Symfony 3.4
      */
-    const PRE_TYPE_POPULATE = 'elastica.index.type_pre_populate';
 
     /**
-     * @Event("FOS\ElasticaBundle\Event\TypePopulateEvent")
+     * Type Populate Event.
+     *
+     * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
      */
-    const POST_TYPE_POPULATE = 'elastica.index.type_post_populate';
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * @param string $index
-     * @param string $type
-     * @param bool   $reset
-     * @param array  $options
-     */
-    public function __construct($index, $type, $reset, $options)
+    class TypePopulateEvent extends IndexPopulateEvent
     {
-        parent::__construct($index, $reset, $options);
+        /**
+         * @LegacyEvent("FOS\ElasticaBundle\Event\TypePopulateEvent")
+         */
+        const PRE_TYPE_POPULATE = 'elastica.index.type_pre_populate';
+        /**
+         * @LegacyEvent("FOS\ElasticaBundle\Event\TypePopulateEvent")
+         */
+        const POST_TYPE_POPULATE = 'elastica.index.type_post_populate';
+        /**
+         * @var string
+         */
+        private $type;
 
-        $this->type = $type;
+        /**
+         * @param string $index
+         * @param string $type
+         * @param bool   $reset
+         * @param array  $options
+         */
+        public function __construct($index, $type, $reset, $options)
+        {
+            parent::__construct($index, $reset, $options);
+
+            $this->type = $type;
+        }
+
+        /**
+         * @return string
+         */
+        public function getType()
+        {
+            return $this->type;
+        }
     }
+} else {
+    /**
+     * Symfony >= 4.3
+     */
 
     /**
-     * @return string
+     * Type Populate Event.
+     *
+     * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
      */
-    public function getType()
+    class TypePopulateEvent extends IndexPopulateEvent
     {
-        return $this->type;
+        /**
+         * @LegacyEvent("FOS\ElasticaBundle\Event\TypePopulateEvent")
+         */
+        const PRE_TYPE_POPULATE = 'elastica.index.type_pre_populate';
+
+        /**
+         * @LegacyEvent("FOS\ElasticaBundle\Event\TypePopulateEvent")
+         */
+        const POST_TYPE_POPULATE = 'elastica.index.type_post_populate';
+
+        /**
+         * @var string
+         */
+        private $type;
+
+        /**
+         * @param string $index
+         * @param string $type
+         * @param bool   $reset
+         * @param array  $options
+         */
+        public function __construct($index, $type, $reset, $options)
+        {
+            parent::__construct($index, $reset, $options);
+
+            $this->type = $type;
+        }
+
+        /**
+         * @return string
+         */
+        public function getType()
+        {
+            return $this->type;
+        }
     }
 }

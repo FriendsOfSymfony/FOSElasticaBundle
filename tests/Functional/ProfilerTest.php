@@ -20,6 +20,7 @@ use Symfony\Bridge\Twig\Extension\HttpKernelRuntime;
 use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
@@ -48,12 +49,18 @@ class ProfilerTest extends WebTestCase
         $twigLoaderFilesystem->addPath(__DIR__ . '/../../vendor/symfony/web-profiler-bundle/Resources/views', 'WebProfiler');
         $this->twig = new Environment($twigLoaderFilesystem, ['debug' => true, 'strict_variables' => true]);
 
+        $urlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        $urlGenerator->method('generate')->willReturn('');
+        $fragmentHandler = $this->createMock(FragmentHandler::class);
+        $fragmentHandler->method('render')->willReturn('');
+
         $this->twig->addExtension(new CodeExtension('', '', ''));
-        $this->twig->addExtension(new RoutingExtension($this->getMockBuilder(UrlGeneratorInterface::class)->getMock()));
-        $this->twig->addExtension(new HttpKernelExtension($this->getMockBuilder(FragmentHandler::class)->disableOriginalConstructor()->getMock()));
+        $this->twig->addExtension(new RoutingExtension($urlGenerator));
+        $this->twig->addExtension(new HttpKernelExtension($fragmentHandler));
 
         $loader = $this->getMockBuilder(RuntimeLoaderInterface::class)->getMock();
-        $loader->method('load')->willReturn($this->getMockBuilder(HttpKernelRuntime::class)->disableOriginalConstructor()->getMock());
+
+        $loader->method('load')->willReturn(new HttpKernelRuntime($fragmentHandler));
         $this->twig->addRuntimeLoader($loader);
     }
 

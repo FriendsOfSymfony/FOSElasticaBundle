@@ -17,8 +17,9 @@ use FOS\ElasticaBundle\Configuration\ManagerInterface;
 use Elastica\Client;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Deletes and recreates indexes.
@@ -36,7 +37,7 @@ class Resetter implements ResetterInterface
     private $configManager;
 
     /**
-     * @var EventDispatcherInterface
+     * @var EventDispatcherInterface|LegacyEventDispatcherInterface
      */
     private $dispatcher;
 
@@ -51,19 +52,19 @@ class Resetter implements ResetterInterface
     private $mappingBuilder;
 
     /**
-     * @param ManagerInterface         $configManager
-     * @param IndexManager             $indexManager
-     * @param AliasProcessor           $aliasProcessor
-     * @param MappingBuilder           $mappingBuilder
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param Client                   $client
+     * @param ManagerInterface                                        $configManager
+     * @param IndexManager                                            $indexManager
+     * @param AliasProcessor                                          $aliasProcessor
+     * @param MappingBuilder                                          $mappingBuilder
+     * @param EventDispatcherInterface|LegacyEventDispatcherInterface $eventDispatcher
+     * @param Client                                                  $client
      */
     public function __construct(
         ManagerInterface $configManager,
         IndexManager $indexManager,
         AliasProcessor $aliasProcessor,
         MappingBuilder $mappingBuilder,
-        EventDispatcherInterface $eventDispatcher
+        /* EventDispatcherInterface */ $eventDispatcher
     ) {
         $this->aliasProcessor = $aliasProcessor;
         $this->configManager = $configManager;
@@ -110,7 +111,7 @@ class Resetter implements ResetterInterface
         }
 
         $event = new IndexResetEvent($indexName, $populating, $force);
-        $this->dispatcher->dispatch(IndexResetEvent::PRE_INDEX_RESET, $event);
+        $this->dispatch($event, IndexResetEvent::PRE_INDEX_RESET);
 
         $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
         $index->create($mapping, true);
@@ -119,7 +120,7 @@ class Resetter implements ResetterInterface
             $this->aliasProcessor->switchIndexAlias($indexConfig, $index, $force);
         }
 
-        $this->dispatcher->dispatch(IndexResetEvent::POST_INDEX_RESET, $event);
+        $this->dispatch($event, IndexResetEvent::POST_INDEX_RESET);
     }
 
     /**
@@ -141,7 +142,7 @@ class Resetter implements ResetterInterface
         $type = $index->getType($typeName);
 
         $event = new TypeResetEvent($indexName, $typeName);
-        $this->dispatcher->dispatch(TypeResetEvent::PRE_TYPE_RESET, $event);
+        $this->dispatch($event, TypeResetEvent::PRE_TYPE_RESET);
 
         $mapping = new Mapping();
         foreach ($this->mappingBuilder->buildTypeMapping($typeConfig) as $name => $field) {
@@ -150,7 +151,7 @@ class Resetter implements ResetterInterface
 
         $type->setMapping($mapping);
 
-        $this->dispatcher->dispatch(TypeResetEvent::POST_TYPE_RESET, $event);
+        $this->dispatch($event, TypeResetEvent::POST_TYPE_RESET);
     }
 
     /**
@@ -180,6 +181,17 @@ class Resetter implements ResetterInterface
         if ($indexConfig->isUseAlias()) {
             $index = $this->indexManager->getIndex($indexName);
             $this->aliasProcessor->switchIndexAlias($indexConfig, $index, false, $delete);
+        }
+    }
+
+    private function dispatch($event, $eventName): void
+    {
+        if ($this->dispatcher instanceof EventDispatcherInterface) {
+            // Symfony >= 4.3
+            $this->dispatcher->dispatch($event, $eventName);
+        } else {
+            // Symfony 3.4
+            $this->dispatcher->dispatch($eventName, $event);
         }
     }
 }

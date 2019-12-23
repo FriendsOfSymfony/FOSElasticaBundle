@@ -11,46 +11,95 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\Event as LegacyEvent;
+use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * Type ResetEvent.
- *
- * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
- */
-class TypeResetEvent extends IndexEvent
-{
+if (!class_exists(Event::class)) {
     /**
-     * @Event("FOS\ElasticaBundle\Event\TypeResetEvent")
+     * Symfony 3.4
      */
-    const PRE_TYPE_RESET = 'elastica.index.type_pre_reset';
 
     /**
-     * @Event("FOS\ElasticaBundle\Event\TypeResetEvent")
+     * Type ResetEvent.
+     *
+     * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
      */
-    const POST_TYPE_RESET = 'elastica.index.type_post_reset';
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * @param string $index
-     * @param string $type
-     */
-    public function __construct($index, $type)
+    class TypeResetEvent extends IndexEvent
     {
-        parent::__construct($index);
+        /**
+         * @LegacyEvent("FOS\ElasticaBundle\Event\TypeResetEvent")
+         */
+        const PRE_TYPE_RESET = 'elastica.index.type_pre_reset';
+        /**
+         * @LegacyEvent("FOS\ElasticaBundle\Event\TypeResetEvent")
+         */
+        const POST_TYPE_RESET = 'elastica.index.type_post_reset';
+        /**
+         * @var string
+         */
+        private $type;
 
-        $this->type = $type;
+        /**
+         * @param string $index
+         * @param string $type
+         */
+        public function __construct($index, $type)
+        {
+            parent::__construct($index);
+
+            $this->type = $type;
+        }
+
+        /**
+         * @return string
+         */
+        public function getType()
+        {
+            return $this->type;
+        }
     }
+} else {
+    /**
+     * Symfony >= 4.3
+     */
 
     /**
-     * @return string
+     * Type ResetEvent.
+     *
+     * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
      */
-    public function getType()
+    class TypeResetEvent extends IndexEvent
     {
-        return $this->type;
+        /**
+         * @Event("FOS\ElasticaBundle\Event\TypeResetEvent")
+         */
+        const PRE_TYPE_RESET = 'elastica.index.type_pre_reset';
+        /**
+         * @Event("FOS\ElasticaBundle\Event\TypeResetEvent")
+         */
+        const POST_TYPE_RESET = 'elastica.index.type_post_reset';
+        /**
+         * @var string
+         */
+        private $type;
+
+        /**
+         * @param string $index
+         * @param string $type
+         */
+        public function __construct($index, $type)
+        {
+            parent::__construct($index);
+
+            $this->type = $type;
+        }
+
+        /**
+         * @return string
+         */
+        public function getType()
+        {
+            return $this->type;
+        }
     }
 }

@@ -24,7 +24,8 @@ use FOS\ElasticaBundle\Index\MappingBuilder;
 use FOS\ElasticaBundle\Index\Resetter;
 use FOS\ElasticaBundle\Index\ResetterInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ResetterTest extends TestCase
 {
@@ -44,7 +45,13 @@ class ResetterTest extends TestCase
     {
         $this->aliasProcessor = $this->createMock(AliasProcessor::class);
         $this->configManager = $this->createMock(ConfigManager::class);
-        $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
+        if (interface_exists(EventDispatcherInterface::class)) {
+            // Symfony >= 4.3
+            $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
+        } else {
+            // Symfony 3.4
+            $this->dispatcher = $this->createMock(LegacyEventDispatcherInterface::class);
+        }
         $this->elasticaClient = $this->createMock(Client::class);
         $this->indexManager = $this->createMock(IndexManager::class);
         $this->mappingBuilder = $this->createMock(MappingBuilder::class);
@@ -69,8 +76,8 @@ class ResetterTest extends TestCase
             ->will($this->returnValue([$indexName]));
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -85,8 +92,8 @@ class ResetterTest extends TestCase
         $this->mockIndex('index1', $indexConfig);
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -102,8 +109,8 @@ class ResetterTest extends TestCase
         ]);
         $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -120,8 +127,8 @@ class ResetterTest extends TestCase
         ]);
         $index = $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->aliasProcessor->expects($this->once())
@@ -157,10 +164,10 @@ class ResetterTest extends TestCase
         $this->mockType('type', 'index', $typeConfig, $indexConfig);
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf(TypeResetEvent::class)],
-            [TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf(TypeResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
+            [$this->isInstanceOf(TypeResetEvent::class), TypeResetEvent::PRE_TYPE_RESET],
+            [$this->isInstanceOf(TypeResetEvent::class), TypeResetEvent::POST_TYPE_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(3))
@@ -235,6 +242,13 @@ class ResetterTest extends TestCase
     {
         $expectation = $this->dispatcher->expects($this->exactly(count($events)))
             ->method('dispatch');
+
+        if ($this->dispatcher instanceof LegacyEventDispatcherInterface) {
+            // Symfony 3.4
+            $events = array_map(static function (array $event): array {
+                return array_reverse($event);
+            }, $events);
+        }
 
         call_user_func_array([$expectation, 'withConsecutive'], $events);
     }

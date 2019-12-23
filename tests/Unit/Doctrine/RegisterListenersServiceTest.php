@@ -12,8 +12,11 @@ use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\Event as LegacyEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class RegisterListenersServiceTest extends TestCase
 {
@@ -38,9 +41,10 @@ class RegisterListenersServiceTest extends TestCase
 
         $service->register($manager, $pager, []);
 
-        $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
+        $this->dispatch(
+            $dispatcher,
+            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
     }
 
@@ -62,9 +66,10 @@ class RegisterListenersServiceTest extends TestCase
             'clear_object_manager' => false
         ]);
 
-        $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
+        $this->dispatch(
+            $dispatcher,
+            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
     }
 
@@ -87,9 +92,10 @@ class RegisterListenersServiceTest extends TestCase
             'clear_object_manager' => true
         ]);
 
-        $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], [])
+        $this->dispatch(
+            $dispatcher,
+            new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
     }
 
@@ -129,9 +135,10 @@ class RegisterListenersServiceTest extends TestCase
         ]);
 
         $time = microtime(true);
-        $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
+        $this->dispatch(
+            $dispatcher,
+            new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
 
         $this->assertGreaterThan(1.5, microtime(true) - $time);
@@ -154,9 +161,10 @@ class RegisterListenersServiceTest extends TestCase
         ]);
 
         $time = microtime(true);
-        $dispatcher->dispatch(
-            Events::POST_INSERT_OBJECTS,
-            new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], [])
+        $this->dispatch(
+            $dispatcher,
+            new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], []),
+            Events::POST_INSERT_OBJECTS
         );
 
         $this->assertLessThan(1, microtime(true) - $time);
@@ -357,10 +365,26 @@ class RegisterListenersServiceTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|EventDispatcherInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|EventDispatcherInterface|LegacyEventDispatchernterface
      */
     private function createDispatcherMock()
     {
-        return $this->createMock(EventDispatcherInterface::class);
+        return $this->createMock(EventDispatcher::class);
+    }
+
+    /**
+     * @param EventDispatcherInterface|LegacyEventDispatcherInterface $dispatcher
+     * @param Event|LegacyEvent                                       $event
+     * @param string                                                  $eventName
+     */
+    private function dispatch($dispatcher, $event, $eventName): void
+    {
+        if ($dispatcher instanceof EventDispatcherInterface) {
+            // Symfony >= 4.3
+            $dispatcher->dispatch($event, $eventName);
+        } else {
+            // Symfony 3.4
+            $dispatcher->dispatch($eventName, $event);
+        }
     }
 }

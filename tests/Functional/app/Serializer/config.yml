@@ -19,7 +19,7 @@ jms_serializer:
         directories:
             type_obj:
                 namespace_prefix: "FOS\\ElasticaBundle\\Tests\\Functional"
-                path: "%kernel.root_dir%/Serializer"
+                path: "%kernel.project_dir%/tests/Functional/app/Serializer"
 
 fos_elastica:
     clients:

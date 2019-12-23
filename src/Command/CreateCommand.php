@@ -55,7 +55,7 @@ class CreateCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $indexName = $input->getOption('index');
         $indexes = null === $indexName ? array_keys($this->indexManager->getAllIndexes()) : [$indexName];
@@ -71,5 +71,7 @@ class CreateCommand extends Command
             $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
             $index->create($mapping, false);
         }
+
+        return 0;
     }
 }

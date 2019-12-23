@@ -18,6 +18,11 @@ class TypeObj
     public $field1;
     public $field2;
 
+    public function __construct()
+    {
+        $this->coll = new \ArrayIterator();
+    }
+
     public function isIndexable()
     {
         return true;

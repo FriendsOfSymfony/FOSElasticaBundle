@@ -29,6 +29,8 @@ matrix:
       env: DEPENDENCIES="symfony/flex" SYMFONY_VERSION="^3.4"
     - php: 7.4
       env: DEPENDENCIES="symfony/flex" SYMFONY_VERSION="^4.4"
+    - php: 7.4
+      env: DEPENDENCIES="symfony/flex" SYMFONY_VERSION="^5.0"
 
 before_install:
   - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
