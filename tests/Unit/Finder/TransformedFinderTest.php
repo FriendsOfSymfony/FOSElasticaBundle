@@ -65,6 +65,18 @@ class TransformedFinderTest extends TestCase
         $this->assertInternalType('array', $results);
     }
 
+    public function testFindHybridPaginatedReturnsAConfiguredPagerfantaObject()
+    {
+        $searchable = $this->createMock(SearchableInterface::class);
+        $transformer = $this->createMock(ElasticaToModelTransformerInterface::class);
+
+        $finder = new TransformedFinder($searchable, $transformer);
+
+        $pagerfanta = $finder->findHybridPaginated('');
+
+        $this->assertInstanceOf(Pagerfanta::class, $pagerfanta);
+    }
+
     public function testFindPaginatedReturnsAConfiguredPagerfantaObject()
     {
         $searchable = $this->createMock(SearchableInterface::class);
