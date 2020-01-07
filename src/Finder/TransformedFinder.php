@@ -74,7 +74,6 @@ class TransformedFinder implements PaginatedFinderInterface
      */
     public function findPaginated($query, $options = [])
     {
-        $queryObject = Query::create($query);
         $paginatorAdapter = $this->createPaginatorAdapter($queryObject, $options);
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
