@@ -54,7 +54,7 @@ or (use it only if you cannot use the solution above):
 $ ./bin/console enqueue:transport:consume enqueue_elastica.populate_processor -vvv 
 ``` 
  
-* Run populate command with `--pager-persiter=queue` option set:
+* Run populate command with `--pager-persister=queue` option set:
  
 ```bash
 $ ./bin/console fos:elastica:populate --pager-persister=queue 
