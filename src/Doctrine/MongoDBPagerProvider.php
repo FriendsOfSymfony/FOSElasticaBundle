@@ -28,7 +28,7 @@ final class MongoDBPagerProvider implements PagerProviderInterface
      * @var ManagerRegistry
      */
     private $doctrine;
-    
+
     /**
      * @var array
      */
