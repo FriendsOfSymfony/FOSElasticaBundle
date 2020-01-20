@@ -15,8 +15,9 @@ use Elastica\Document;
 use FOS\ElasticaBundle\Event\TransformEvent;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class POPO3
 {
@@ -167,20 +168,25 @@ class ModelToElasticaAutoTransformerTest extends TestCase
 {
     public function testTransformerDispatches()
     {
-        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $events = [
+            [$this->isInstanceOf(TransformEvent::class), TransformEvent::PRE_TRANSFORM],
+            [$this->isInstanceOf(TransformEvent::class), TransformEvent::POST_TRANSFORM],
+        ];
+
+        if (interface_exists(EventDispatcherInterface::class)) {
+            // Symfony >= 4.3
+            $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        } else {
+            // Symfony 3.4
+            $dispatcher = $this->createMock(LegacyEventDispatcherInterface::class);
+            $events = array_map(static function (array $event): array {
+                return array_reverse($event);
+            }, $events);
+        }
 
         $dispatcher->expects($this->exactly(2))
             ->method('dispatch')
-            ->withConsecutive(
-                [
-                    TransformEvent::PRE_TRANSFORM,
-                    $this->isInstanceOf(TransformEvent::class),
-                ],
-                [
-                    TransformEvent::POST_TRANSFORM,
-                    $this->isInstanceOf(TransformEvent::class),
-                ]
-            );
+            ->withConsecutive(...$events);
 
         $transformer = $this->getTransformer($dispatcher);
         $transformer->transform(new POPO3(), []);
@@ -561,7 +567,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
     }
 
     /**
-     * @param null|\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+     * @param null|LegacyEventDispatcherInterface|EventDispatcherInterface $dispatcher
      *
      * @return ModelToElasticaAutoTransformer
      */

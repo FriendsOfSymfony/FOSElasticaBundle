@@ -49,7 +49,7 @@ class ResetCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $index = $input->getOption('index');
         $type = $input->getOption('type');
@@ -73,5 +73,7 @@ class ResetCommand extends Command
                 $this->resetter->resetIndex($index, false, $force);
             }
         }
+
+        return 0;
     }
 }

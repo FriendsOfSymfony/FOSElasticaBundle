@@ -13,7 +13,8 @@ namespace FOS\ElasticaBundle\Transformer;
 
 use Elastica\Document;
 use FOS\ElasticaBundle\Event\TransformEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -25,7 +26,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var EventDispatcherInterface
+     * @var EventDispatcherInterface|LegacyEventDispatcherInterface
      */
     protected $dispatcher;
 
@@ -49,10 +50,10 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     /**
      * Instanciates a new Mapper.
      *
-     * @param array                    $options
-     * @param EventDispatcherInterface $dispatcher
+     * @param array                                                   $options
+     * @param EventDispatcherInterface|LegacyEventDispatcherInterface $dispatcher
      */
-    public function __construct(array $options = [], EventDispatcherInterface $dispatcher = null)
+    public function __construct(array $options = [], /* EventDispatcherInterface */ $dispatcher = null)
     {
         $this->options = array_merge($this->options, $options);
         $this->dispatcher = $dispatcher;
@@ -159,7 +160,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         if ($this->dispatcher) {
             $event = new TransformEvent($document, $fields, $object);
-            $this->dispatcher->dispatch(TransformEvent::PRE_TRANSFORM, $event);
+            $this->dispatch($event, TransformEvent::PRE_TRANSFORM);
 
             $document = $event->getDocument();
         }
@@ -209,11 +210,22 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         if ($this->dispatcher) {
             $event = new TransformEvent($document, $fields, $object);
-            $this->dispatcher->dispatch(TransformEvent::POST_TRANSFORM, $event);
+            $this->dispatch($event, TransformEvent::POST_TRANSFORM);
 
             $document = $event->getDocument();
         }
 
         return $document;
+    }
+
+    private function dispatch($event, $eventName): void
+    {
+        if ($this->dispatcher instanceof EventDispatcherInterface) {
+            // Symfony >= 4.3
+            $this->dispatcher->dispatch($event, $eventName);
+        } else {
+            // Symfony 3.4
+            $this->dispatcher->dispatch($eventName, $event);
+        }
     }
 }

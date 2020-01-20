@@ -6,7 +6,8 @@ use FOS\ElasticaBundle\Persister\Event\PersistEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\Event as LegacyEvent;
+use Symfony\Contracts\EventDispatcher\Event;
 
 final class OnExceptionEventTest extends TestCase
 {
@@ -14,7 +15,7 @@ final class OnExceptionEventTest extends TestCase
     {
         $rc = new \ReflectionClass(OnExceptionEvent::class);
 
-        $this->assertTrue($rc->isSubclassOf(Event::class));
+        $this->assertTrue($rc->isSubclassOf(class_exists(Event::class) ? Event::class : LegacyEvent::class));
     }
 
     public function testShouldImplementPersistEventInterface()
