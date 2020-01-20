@@ -11,7 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Elastica\Result;
 use FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
 use FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer;
