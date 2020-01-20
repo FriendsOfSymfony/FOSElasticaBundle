@@ -29,7 +29,7 @@ class ListenerTest extends BaseListenerTest
 
     protected function getLifecycleEventArgsClass()
     {
-        return \Doctrine\Common\Persistence\Event\LifecycleEventArgs::class;
+        return \Doctrine\Persistence\Event\LifecycleEventArgs::class;
     }
 
     protected function getListenerClass()

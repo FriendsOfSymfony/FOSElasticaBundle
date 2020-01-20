@@ -103,3 +103,5 @@ class RegisterListenersService
         });
     }
 }
+
+interface_exists(ObjectManager::class);
