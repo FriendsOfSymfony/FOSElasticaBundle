@@ -11,7 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Doctrine\RepositoryManager;
 use FOS\ElasticaBundle\Finder\TransformedFinder;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;

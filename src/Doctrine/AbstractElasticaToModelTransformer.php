@@ -11,7 +11,7 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\AbstractElasticaToModelTransformer as BaseTransformer;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
