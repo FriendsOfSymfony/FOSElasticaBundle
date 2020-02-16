@@ -45,6 +45,19 @@ class TransformedFinderTest extends TestCase
         $finder->findHybrid($query, $limit);
     }
 
+    public function testFindRawMethodTransformsSearchResults()
+    {
+        $transformer = $this->createMock(ElasticaToModelTransformerInterface::class);
+        $transformer->expects($this->never())
+            ->method($this->anything());
+        $query = Query::create('');
+        $limit = 10;
+
+        $finder = $this->createMockFinderForSearch($transformer, $query, $limit);
+
+        $finder->findRaw($query, $limit);
+    }
+
     public function testSearchMethodCreatesAQueryAndReturnsResultsFromSearchableDependency()
     {
         $searchable = $this->createMock(SearchableInterface::class);
