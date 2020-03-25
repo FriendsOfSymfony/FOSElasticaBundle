@@ -14,10 +14,6 @@ env:
 matrix:
   fast_finish: true
   include:
-    # Minimum supported dependencies with min and max PHP version
-    - php: 7.1
-      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-
     # Latest supported dependencies with each PHP version
     - php: 7.1
     - php: 7.2
