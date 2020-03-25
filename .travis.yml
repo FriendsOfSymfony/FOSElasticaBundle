@@ -26,7 +26,7 @@ matrix:
 
     # Install all SF components in the same major version, see https://github.com/dunglas/symfony-lock
     - php: 7.3
-      env: SYMFONY_VERSION="^4"
+      env: SYMFONY_REQUIRE="^4"
 
 before_install:
   - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
@@ -34,7 +34,7 @@ before_install:
 install:
   # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
   - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update dunglas/symfony-lock=$SYMFONY_VERSION; fi;
+  - if [ "$SYMFONY_REQUIRE" != "" ]; then composer global require --no-progress --no-scripts --no-plugins symfony/flex; fi;
   - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
   - mkdir /tmp/elasticsearch
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
