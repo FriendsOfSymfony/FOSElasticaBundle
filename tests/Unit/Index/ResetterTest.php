@@ -69,8 +69,8 @@ class ResetterTest extends TestCase
             ->will($this->returnValue([$indexName]));
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -85,8 +85,8 @@ class ResetterTest extends TestCase
         $this->mockIndex('index1', $indexConfig);
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -102,8 +102,8 @@ class ResetterTest extends TestCase
         ]);
         $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
@@ -120,8 +120,8 @@ class ResetterTest extends TestCase
         ]);
         $index = $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
         ]);
 
         $this->aliasProcessor->expects($this->once())
@@ -157,10 +157,10 @@ class ResetterTest extends TestCase
         $this->mockType('type', 'index', $typeConfig, $indexConfig);
 
         $this->dispatcherExpects([
-            [IndexResetEvent::PRE_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [IndexResetEvent::POST_INDEX_RESET, $this->isInstanceOf(IndexResetEvent::class)],
-            [TypeResetEvent::PRE_TYPE_RESET, $this->isInstanceOf(TypeResetEvent::class)],
-            [TypeResetEvent::POST_TYPE_RESET, $this->isInstanceOf(TypeResetEvent::class)],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::PRE_INDEX_RESET],
+            [$this->isInstanceOf(IndexResetEvent::class), IndexResetEvent::POST_INDEX_RESET],
+            [$this->isInstanceOf(TypeResetEvent::class), TypeResetEvent::PRE_TYPE_RESET],
+            [$this->isInstanceOf(TypeResetEvent::class), TypeResetEvent::POST_TYPE_RESET],
         ]);
 
         $this->elasticaClient->expects($this->exactly(3))
