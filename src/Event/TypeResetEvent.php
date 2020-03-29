@@ -11,7 +11,7 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Symfony\Contracts\EventDispatcher\Event;
+use FOS\ElasticaBundle\Event\FOSElasticaEvent as Event;
 
 /**
  * Type ResetEvent.

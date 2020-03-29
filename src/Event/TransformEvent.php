@@ -12,9 +12,8 @@
 namespace FOS\ElasticaBundle\Event;
 
 use Elastica\Document;
-use Symfony\Contracts\EventDispatcher\Event;
 
-class TransformEvent extends Event
+class TransformEvent extends FOSElasticaEvent
 {
     /**
      * @Event("FOS\ElasticaBundle\Event\TransformEvent")

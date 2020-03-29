@@ -11,9 +11,7 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Symfony\Contracts\EventDispatcher\Event;
-
-class IndexEvent extends Event
+class IndexEvent extends FOSElasticaEvent
 {
     /**
      * @var string
