@@ -22,14 +22,15 @@ class HybridPaginatorAdapter extends RawPaginatorAdapter
 {
     private $transformer;
 
-    /**
-     * @param SearchableInterface                 $searchable  the object to search in
-     * @param Query                               $query       the query to search
-     * @param ElasticaToModelTransformerInterface $transformer the transformer for fetching the results
-     */
-    public function __construct(SearchableInterface $searchable, Query $query, ElasticaToModelTransformerInterface $transformer)
+	/**
+	 * @param SearchableInterface $searchable the object to search in
+	 * @param Query $query the query to search
+	 * @param array $options
+	 * @param ElasticaToModelTransformerInterface $transformer the transformer for fetching the results
+	 */
+    public function __construct(SearchableInterface $searchable, Query $query, array $options, ElasticaToModelTransformerInterface $transformer)
     {
-        parent::__construct($searchable, $query);
+        parent::__construct($searchable, $query, $options);
 
         $this->transformer = $transformer;
     }

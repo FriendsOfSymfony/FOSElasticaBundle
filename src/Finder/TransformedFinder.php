@@ -83,12 +83,13 @@ class TransformedFinder implements PaginatedFinderInterface
      * Searches for query hybrid results and returns them wrapped in a paginator.
      *
      * @param mixed $query Can be a string, an array or an \Elastica\Query object
+	  * @param array $options
      *
      * @return Pagerfanta paginated hybrid results
      */
-    public function findHybridPaginated($query)
+    public function findHybridPaginated($query, array $options = [])
     {
-        $paginatorAdapter = $this->createHybridPaginatorAdapter($query);
+        $paginatorAdapter = $this->createHybridPaginatorAdapter($query, $options);
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
@@ -106,11 +107,11 @@ class TransformedFinder implements PaginatedFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function createHybridPaginatorAdapter($query)
+    public function createHybridPaginatorAdapter($query, $options = [])
     {
         $query = Query::create($query);
 
-        return new HybridPaginatorAdapter($this->searchable, $query, $this->transformer);
+        return new HybridPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
     }
 
     /**
