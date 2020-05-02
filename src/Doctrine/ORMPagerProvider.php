@@ -14,10 +14,8 @@ namespace FOS\ElasticaBundle\Doctrine;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\QueryBuilder;
-use FOS\ElasticaBundle\Provider\PagerfantaPager;
+use FOS\ElasticaBundle\Provider\DoctrinePaginatorPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
 
 final class ORMPagerProvider implements PagerProviderInterface
 {
@@ -92,7 +90,7 @@ final class ORMPagerProvider implements PagerProviderInterface
             }
         }
 
-        $pager = new PagerfantaPager(new Pagerfanta(new DoctrineORMAdapter($qb)));
+        $pager = new DoctrinePaginatorPager($qb->getQuery());
 
         $this->registerListenersService->register($manager, $pager, $options);
 
