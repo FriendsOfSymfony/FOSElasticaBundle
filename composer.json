@@ -40,7 +40,8 @@
         "symfony/web-profiler-bundle": "^4.4 || ^5.1"
     },
     "suggest": {
-        "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
+        "symfony/messenger": "For populating Elasticsearch indexes asynchronously and using significanly less resources.",
+        "enqueue/elastica-bundle": "For populating Elasticsearch indexes asynchronously and using significanly less resources. Uses Enqueue."
     },
     "autoload": {
         "psr-4": { "FOS\\ElasticaBundle\\": "src/" }
