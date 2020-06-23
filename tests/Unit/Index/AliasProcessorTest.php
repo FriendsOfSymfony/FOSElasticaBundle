@@ -26,6 +26,7 @@ use Elastica\Request;
 use Elastica\Response;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Exception\AliasIsIndexException;
 use FOS\ElasticaBundle\Index\AliasProcessor;
 use PHPUnit\Framework\TestCase;
 
@@ -36,7 +37,7 @@ class AliasProcessorTest extends TestCase
      */
     private $processor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->processor = new AliasProcessor();
     }
@@ -86,7 +87,7 @@ class AliasProcessorTest extends TestCase
             ->method('request')
             ->with('_aliases', 'GET')
             ->willReturn(new Response([
-                'old_unique_name' => ['aliases' => ['name']],
+                'old_unique_name' => ['aliases' => ['name' => []]],
             ]));
         $client->expects($this->at(1))
             ->method('request')
@@ -98,9 +99,6 @@ class AliasProcessorTest extends TestCase
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testSwitchAliasThrowsWhenMoreThanOneExists()
     {
         $indexConfig = new IndexConfig('name', [], []);
@@ -110,16 +108,14 @@ class AliasProcessorTest extends TestCase
             ->method('request')
             ->with('_aliases', 'GET')
             ->willReturn(new Response([
-                'old_unique_name' => ['aliases' => ['name']],
-                'another_old_unique_name' => ['aliases' => ['name']],
+                'old_unique_name' => ['aliases' => ['name' => []]],
+                'another_old_unique_name' => ['aliases' => ['name' => []]],
             ]));
 
+        $this->expectException(\RuntimeException::class);
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
 
-    /**
-     * @expectedException \FOS\ElasticaBundle\Exception\AliasIsIndexException
-     */
     public function testSwitchAliasThrowsWhenAliasIsAnIndex()
     {
         $indexConfig = new IndexConfig('name', [], []);
@@ -132,6 +128,7 @@ class AliasProcessorTest extends TestCase
                 'name' => [],
             ]));
 
+        $this->expectException(AliasIsIndexException::class);
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
 
@@ -162,7 +159,7 @@ class AliasProcessorTest extends TestCase
             ->method('request')
             ->with('_aliases', 'GET')
             ->willReturn(new Response([
-                'old_unique_name' => ['aliases' => ['name']],
+                'old_unique_name' => ['aliases' => ['name' => []]],
             ]));
         $client->expects($this->at(1))
             ->method('request')
@@ -186,7 +183,7 @@ class AliasProcessorTest extends TestCase
             ->method('request')
             ->with('_aliases', 'GET')
             ->willReturn(new Response([
-                'old_unique_name' => ['aliases' => ['name']],
+                'old_unique_name' => ['aliases' => ['name' => []]],
             ]));
         $client->expects($this->at(1))
             ->method('request')

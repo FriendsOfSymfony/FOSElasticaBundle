@@ -15,7 +15,7 @@ use FOS\ElasticaBundle\Tests\Unit\Doctrine\ListenerTest as BaseListenerTest;
 
 class ListenerTest extends BaseListenerTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists(\Doctrine\ODM\PHPCR\DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');

@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 class PHPCRPagerProviderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');
@@ -76,8 +76,7 @@ class PHPCRPagerProviderTest extends TestCase
 
         $adapter = $pager->getPagerfanta()->getAdapter();
         $this->assertInstanceOf(DoctrineODMPhpcrAdapter::class, $adapter);
-
-        $this->assertAttributeSame($expectedBuilder, 'queryBuilder', $adapter);
+        $this->assertSame($expectedBuilder, $adapter->getQueryBuilder());
     }
 
     public function testShouldAllowCallCustomRepositoryMethod()

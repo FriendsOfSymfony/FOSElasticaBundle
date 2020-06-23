@@ -32,11 +32,11 @@ class SerializerTest extends WebTestCase
 
         $object = new TypeObj();
         $object->id = 1;
-        $object->coll = new \ArrayIterator(['foo', 'bar']);
+        $object->coll = ['foo', 'bar'];
         $persister->insertOne($object);
 
-        $object->coll = new \ArrayIterator(['foo', 'bar', 'bazz']);
-        $object->coll->offsetUnset(1);
+        $object->coll = ['foo', 'bar', 'bazz'];
+        unset($object->coll[1]);
 
         $persister->replaceOne($object);
     }

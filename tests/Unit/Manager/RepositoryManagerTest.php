@@ -53,9 +53,6 @@ class RepositoryManagerTest extends TestCase
         $this->assertInstanceOf(CustomRepository::class, $repository);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testThatGetRepositoryThrowsExceptionIfEntityNotConfigured()
     {
         $finderMock = $this->createMock(TransformedFinder::class);
@@ -64,12 +61,11 @@ class RepositoryManagerTest extends TestCase
 
         $manager = new RepositoryManager();
         $manager->addType($typeName, $finderMock);
+
+        $this->expectException(\RuntimeException::class);
         $manager->getRepository('Missing type');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testThatGetRepositoryThrowsExceptionIfCustomRepositoryNotFound()
     {
         $finderMock = $this->createMock(TransformedFinder::class);
@@ -78,6 +74,8 @@ class RepositoryManagerTest extends TestCase
 
         $manager = new RepositoryManager();
         $manager->addType($typeName, $finderMock, 'FOS\ElasticaBundle\Tests\MissingRepository');
+
+        $this->expectException(\RuntimeException::class);
         $manager->getRepository($typeName);
     }
 }

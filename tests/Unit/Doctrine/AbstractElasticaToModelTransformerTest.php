@@ -33,7 +33,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
      */
     protected $objectClass = 'stdClass';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->registry = $this->createMock(ManagerRegistry::class);
     }
@@ -166,7 +166,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
         $results = $transformer->transform($elasticaResults);
 
         foreach ($results as $result) {
-            $this->assertInternalType('array', $result->highlights);
+            $this->assertIsArray($result->highlights);
             $this->assertNotEmpty($result->highlights);
         }
     }

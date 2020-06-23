@@ -24,7 +24,7 @@ class IndexManagerTest extends TestCase
      */
     private $indexManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         foreach (['index1', 'index2', 'index3'] as $indexName) {
             $index = $this->createMock(Index::class);
@@ -51,11 +51,9 @@ class IndexManagerTest extends TestCase
         $this->assertSame($this->indexes['index3'], $this->indexManager->getIndex('index3'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetIndexShouldThrowExceptionForInvalidName()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->indexManager->getIndex('index4');
     }
 

@@ -44,7 +44,7 @@ class TemplateResetterTest extends TestCase
      */
     private $resetter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->configManager = $this->prophesize(ManagerInterface::class);
         $this->mappingBuilder = $this->prophesize(MappingBuilder::class);

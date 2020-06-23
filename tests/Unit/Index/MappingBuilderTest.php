@@ -31,11 +31,11 @@ class MappingBuilderTest extends TestCase
     /**
      * @var array
      */
-    private $typeMapping;
+    private $mapping;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->typeMapping = [
+        $this->mapping = [
             'properties' => [
                 'storeless' => [
                     'type' => 'text',
@@ -91,9 +91,7 @@ class MappingBuilderTest extends TestCase
         $this->assertEquals(
             [
                 'template' => 'index_template_*',
-                'mappings' => [
-                    'typename' => $this->typeMapping
-                ]
+                'mappings' => $this->mapping
             ],
             $this->builder->buildIndexTemplateMapping($config)
         );

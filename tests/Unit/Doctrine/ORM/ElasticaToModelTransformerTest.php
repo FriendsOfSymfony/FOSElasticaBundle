@@ -39,7 +39,7 @@ class ElasticaToModelTransformerTest extends TestCase
      */
     protected $repository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->registry = $this->createMock(ManagerRegistry::class);
         $this->manager = $this->createMock(ObjectManager::class);

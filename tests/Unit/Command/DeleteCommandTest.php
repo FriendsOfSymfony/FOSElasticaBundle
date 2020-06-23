@@ -44,7 +44,7 @@ class DeleteCommandTest extends TestCase
      */
     private $indexMock;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->clientMock = $this->createMock(Client::class);
         $this->indexManagerMock = $this->createMock(IndexManager::class);
