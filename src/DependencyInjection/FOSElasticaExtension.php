@@ -210,7 +210,11 @@ class FOSElasticaExtension extends Extension
                 $this->loadIndexFinder($container, $name, $reference);
             }
 
-            $this->loadTypes((array) $index['types'], $container, $this->indexConfigs[$name], $indexableCallbacks);
+            if (isset($index['indexable_callback'])) {
+                $indexableCallbacks[$name] = $this->buildCallback($index['indexable_callback'], $name);
+            }
+
+            $this->loadTypes((array) $index['types'], $container, $this->indexConfigs[$name]);
         }
 
         $indexable = $container->getDefinition('fos_elastica.indexable');
@@ -229,7 +233,6 @@ class FOSElasticaExtension extends Extension
      */
     private function loadIndexTemplates(array $indexTemplates, ContainerBuilder $container)
     {
-        $indexableCallbacks = array();
         foreach ($indexTemplates as $name => $indexTemplate) {
             $indexId = sprintf('fos_elastica.index_template.%s', $name);
             $indexTemplateName = isset($indexTemplate['template_name']) ? $indexTemplate['template_name'] : $name;
@@ -260,13 +263,8 @@ class FOSElasticaExtension extends Extension
             $this->loadTypes(
                 (array) $indexTemplate['types'],
                 $container,
-                $this->indexTemplateConfigs[$name],
-                $indexableCallbacks
+                $this->indexTemplateConfigs[$name]
             );
-        }
-
-        if ($indexableCallbacks) {
-            throw new \RuntimeException('`indexable_callback` option is not supported by index templates');
         }
     }
 
@@ -292,7 +290,7 @@ class FOSElasticaExtension extends Extension
     /**
      * Loads the configured types.
      */
-    private function loadTypes(array $types, ContainerBuilder $container, array &$indexConfig, array &$indexableCallbacks): void
+    private function loadTypes(array $types, ContainerBuilder $container, array &$indexConfig): void
     {
         foreach ($types as $name => $type) {
             $indexName = $indexConfig['name'];
@@ -337,10 +335,6 @@ class FOSElasticaExtension extends Extension
                 $this->loadTypePersistenceIntegration($type['persistence'], $container, $indexConfig['reference'], $indexName);
 
                 $typeConfig['persistence'] = $type['persistence'];
-            }
-
-            if (isset($type['indexable_callback'])) {
-                $indexableCallbacks[$indexName] = $this->buildCallback($type['indexable_callback'], $indexName);
             }
 
             if ($container->hasDefinition('fos_elastica.serializer_callback_prototype')) {

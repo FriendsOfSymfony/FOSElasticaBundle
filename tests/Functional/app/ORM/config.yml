@@ -29,6 +29,7 @@ fos_elastica:
                         field1: ~
         index:
             index_name: "foselastica_orm_test_%kernel.environment%"
+            indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
             types:
                 _doc:
                     properties:
@@ -40,9 +41,9 @@ fos_elastica:
                         listener: ~
                         provider:
                             debug_logging: true
-                    indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
         second_index:
             index_name: "foselastica_orm_test_second_%kernel.environment%"
+            indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
             types:
                 _doc:
                     properties:
@@ -52,9 +53,9 @@ fos_elastica:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener: ~
-                    indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
         third_index:
             index_name: "foselastica_orm_test_%kernel.environment%"
+            indexable_callback: [ "@indexable_service", 'isIndexable' ]
             types:
                 _doc:
                     properties:
@@ -63,9 +64,9 @@ fos_elastica:
                         driver: orm
                         model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                         listener: ~
-                    indexable_callback: [ "@indexable_service", 'isIndexable' ]
         fourth_index:
             index_name: "foselastica_orm_test_%kernel.environment%"
+            indexable_callback: 'isntIndexable'
             types:
                 _doc:
                     properties:
@@ -76,9 +77,9 @@ fos_elastica:
                         finder: ~
                         provider: ~
                         listener: ~
-                    indexable_callback: 'isntIndexable'
         fifth_index:
             index_name: "foselastica_orm_test_%kernel.environment%"
+            indexable_callback: [ 'FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService', 'isntIndexable' ]
             types:
                 _doc:
                     properties:
@@ -89,7 +90,6 @@ fos_elastica:
                         finder: ~
                         provider: ~
                         listener: ~
-                    indexable_callback: [ 'FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService', 'isntIndexable' ]
         property_paths_index:
             index_name: "foselastica_orm_test_%kernel.environment%"
             types:
