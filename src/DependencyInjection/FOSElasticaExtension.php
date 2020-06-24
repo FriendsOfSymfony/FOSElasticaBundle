@@ -211,14 +211,16 @@ class FOSElasticaExtension extends Extension
                 $this->loadIndexFinder($container, $name, $reference);
             }
 
-            $this->loadTypes((array) $index['types'], $container, $this->indexConfigs[$name]);
+            $this->loadTypes((array) $index['types'], $this->indexConfigs[$name]);
 
             if (isset($index['indexable_callback'])) {
                 $indexableCallbacks[$name] = $this->buildCallback($index['indexable_callback'], $name);
             }
 
+            $this->loadIndexSerializerIntegration($index['serializer'] ?? [], $container, $reference);
+
             if (isset($index['persistence'])) {
-                $this->loadTypePersistenceIntegration($index['persistence'], $container, $reference, $name);
+                $this->loadIndexPersistenceIntegration($index['persistence'], $container, $reference, $name);
             }
         }
 
@@ -265,11 +267,7 @@ class FOSElasticaExtension extends Extension
                 'template' => $indexTemplate['template'],
             );
 
-            $this->loadTypes(
-                (array) $indexTemplate['types'],
-                $container,
-                $this->indexTemplateConfigs[$name]
-            );
+            $this->loadTypes((array) $indexTemplate['types'], $this->indexTemplateConfigs[$name]);
         }
     }
 
@@ -295,11 +293,9 @@ class FOSElasticaExtension extends Extension
     /**
      * Loads the configured types.
      */
-    private function loadTypes(array $types, ContainerBuilder $container, array &$indexConfig): void
+    private function loadTypes(array $types, array &$indexConfig): void
     {
         foreach ($types as $name => $type) {
-            $indexName = $indexConfig['name'];
-
             $typeConfig = [
                 'name' => $name,
                 'mapping' => [], // An array containing anything that gets sent directly to ElasticSearch
@@ -320,7 +316,6 @@ class FOSElasticaExtension extends Extension
             }
 
             foreach ([
-                'serializer',
                 'analyzer',
                 'search_analyzer',
                 'dynamic',
@@ -334,25 +329,6 @@ class FOSElasticaExtension extends Extension
             }
 
             $indexConfig['types'][$name] = $typeConfig;
-
-            if ($container->hasDefinition('fos_elastica.serializer_callback_prototype')) {
-                $indexSerializerId = sprintf('%s.serializer.callback', $indexConfig['reference']);
-                $indexSerializerDef = new ChildDefinition('fos_elastica.serializer_callback_prototype');
-
-                if (isset($type['serializer']['groups'])) {
-                    $indexSerializerDef->addMethodCall('setGroups', [$type['serializer']['groups']]);
-                }
-
-                if (isset($type['serializer']['serialize_null'])) {
-                    $indexSerializerDef->addMethodCall('setSerializeNull', [$type['serializer']['serialize_null']]);
-                }
-
-                if (isset($type['serializer']['version'])) {
-                    $indexSerializerDef->addMethodCall('setVersion', [$type['serializer']['version']]);
-                }
-
-                $container->setDefinition($indexSerializerId, $indexSerializerDef);
-            }
         }
     }
 
@@ -387,10 +363,32 @@ class FOSElasticaExtension extends Extension
         return 0 === strpos($classOrService, '@') ? new Reference(substr($classOrService, 1)) : $classOrService;
     }
 
+    private function loadIndexSerializerIntegration(array $config, ContainerBuilder $container, Reference $indexRef): void
+    {
+        if ($container->hasDefinition('fos_elastica.serializer_callback_prototype')) {
+            $indexSerializerId = sprintf('%s.serializer.callback', $indexRef);
+            $indexSerializerDef = new ChildDefinition('fos_elastica.serializer_callback_prototype');
+
+            if (isset($config['groups'])) {
+                $indexSerializerDef->addMethodCall('setGroups', [$config['groups']]);
+            }
+
+            if (isset($config['serialize_null'])) {
+                $indexSerializerDef->addMethodCall('setSerializeNull', [$config['serialize_null']]);
+            }
+
+            if (isset($config['version'])) {
+                $indexSerializerDef->addMethodCall('setVersion', [$config['version']]);
+            }
+
+            $container->setDefinition($indexSerializerId, $indexSerializerDef);
+        }
+    }
+
     /**
      * Loads the optional provider and finder for a type.
      */
-    private function loadTypePersistenceIntegration(array $config, ContainerBuilder $container, Reference $indexRef, string $indexName): void
+    private function loadIndexPersistenceIntegration(array $config, ContainerBuilder $container, Reference $indexRef, string $indexName): void
     {
         if (isset($config['driver'])) {
             $this->loadDriver($container, $config['driver']);
@@ -478,7 +476,7 @@ class FOSElasticaExtension extends Extension
 
         if ($container->hasDefinition('fos_elastica.serializer_callback_prototype')) {
             $abstractId = 'fos_elastica.object_serializer_persister';
-            $callbackId = sprintf('%s.serializer.callback', $this->indexConfigs[$indexName]['reference']);
+            $callbackId = sprintf('%s.serializer.callback', $indexRef);
             $arguments[] = [new Reference($callbackId), 'serialize'];
         } else {
             $abstractId = 'fos_elastica.object_persister';

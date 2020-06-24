@@ -33,40 +33,40 @@ fos_elastica:
             persistence:
                 driver: orm
                 model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+            serializer:
+                groups: ['search', 'Default']
+                version: 1.1
             types:
                 _doc:
                     properties:
                         coll: ~
                         field1: ~
-                    serializer:
-                        groups: ['search', 'Default']
-                        version: 1.1
         index_serialize_null_disabled:
             persistence:
                 driver: orm
                 model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+            serializer:
+                serialize_null: false
             types:
                 _doc:
                     properties:
                         field1: ~
-                    serializer:
-                        serialize_null: false
         index_serialize_null_enabled:
             persistence:
                 driver: orm
                 model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+            serializer:
+                serialize_null: true
             types:
                 _doc:
                     properties:
                         field1: ~
-                    serializer:
-                        serialize_null: true
         index_unmapped:
             persistence:
                 driver: orm
                 model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+            serializer:
+                groups: ['search', 'Default']
+                version: 1.1
             types:
                 _doc:
-                    serializer:
-                        groups: ['search', 'Default']
-                        version: 1.1
