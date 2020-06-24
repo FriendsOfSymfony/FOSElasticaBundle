@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
+use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Configuration\TypeConfig;
 use FOS\ElasticaBundle\Index\MappingBuilder;
@@ -70,7 +71,7 @@ class MappingBuilderTest extends TestCase
 
     public function testMappingBuilderStoreProperty()
     {
-        $mapping = $this->builder->buildTypeMapping($this->typeConfig);
+        $mapping = $this->builder->buildTypeMapping(null, $this->typeConfig);
 
         $this->assertArrayNotHasKey('store', $mapping['properties']['storeless']);
         $this->assertArrayHasKey('store', $mapping['properties']['stored']);

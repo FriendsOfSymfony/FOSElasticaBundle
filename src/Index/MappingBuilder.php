@@ -28,7 +28,7 @@ class MappingBuilder
     {
         $typeMappings = [];
         foreach ($indexConfig->getTypes() as $typeConfig) {
-            $typeMappings[$typeConfig->getName()] = $this->buildTypeMapping($typeConfig);
+            $typeMappings[$typeConfig->getName()] = $this->buildTypeMapping($indexConfig->getModel(), $typeConfig);
         }
 
         $mapping = [];
@@ -67,7 +67,7 @@ class MappingBuilder
      *
      * @return array
      */
-    public function buildTypeMapping(TypeConfig $typeConfig)
+    public function buildTypeMapping(?string $model, TypeConfig $typeConfig)
     {
         $mapping = $typeConfig->getMapping();
 
@@ -100,8 +100,8 @@ class MappingBuilder
             unset($mapping['properties']);
         }
 
-        if ($typeConfig->getModel()) {
-            $mapping['_meta']['model'] = $typeConfig->getModel();
+        if ($model) {
+            $mapping['_meta']['model'] = $model;
         }
 
         if (empty($mapping)) {

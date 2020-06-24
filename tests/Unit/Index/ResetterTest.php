@@ -60,7 +60,7 @@ class ResetterTest extends TestCase
     public function testResetAllIndexes()
     {
         $indexName = 'index1';
-        $indexConfig = new IndexConfig($indexName, [], []);
+        $indexConfig = new IndexConfig($indexName, null, [], []);
         $this->mockIndex($indexName, $indexConfig);
 
         $this->configManager->expects($this->once())
@@ -80,7 +80,7 @@ class ResetterTest extends TestCase
 
     public function testResetIndex()
     {
-        $indexConfig = new IndexConfig('index1', [], []);
+        $indexConfig = new IndexConfig('index1', null, [], []);
         $this->mockIndex('index1', $indexConfig);
 
         $this->dispatcherExpects([
@@ -96,7 +96,7 @@ class ResetterTest extends TestCase
 
     public function testResetIndexWithDifferentName()
     {
-        $indexConfig = new IndexConfig('index1', [], [
+        $indexConfig = new IndexConfig('index1', null, [], [
             'elasticSearchName' => 'notIndex1',
         ]);
         $this->mockIndex('index1', $indexConfig);
@@ -113,7 +113,7 @@ class ResetterTest extends TestCase
 
     public function testResetIndexWithDifferentNameAndAlias()
     {
-        $indexConfig = new IndexConfig('index1', [], [
+        $indexConfig = new IndexConfig('index1', null, [], [
             'elasticSearchName' => 'notIndex1',
             'useAlias' => true,
         ]);
@@ -149,7 +149,7 @@ class ResetterTest extends TestCase
 
     public function testPostPopulateWithoutAlias()
     {
-        $this->mockIndex('index', new IndexConfig('index', [], []));
+        $this->mockIndex('index', new IndexConfig('index', null, [], []));
 
         $this->indexManager->expects($this->never())
             ->method('getIndex');
@@ -161,7 +161,7 @@ class ResetterTest extends TestCase
 
     public function testPostPopulate()
     {
-        $indexConfig = new IndexConfig('index', [], ['useAlias' => true]);
+        $indexConfig = new IndexConfig('index', null, [], ['useAlias' => true]);
         $index = $this->mockIndex('index', $indexConfig);
 
         $this->aliasProcessor->expects($this->once())

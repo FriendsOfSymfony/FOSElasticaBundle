@@ -39,7 +39,7 @@ class IndexConfig implements IndexConfigInterface
      * @param TypeConfig[] $types
      * @param array        $config
      */
-    public function __construct(string $name, array $types, array $config)
+    public function __construct(string $name, ?string $model, array $types, array $config)
     {
         $this->elasticSearchName = $config['elasticSearchName'] ?? $name;
         $this->name = $name;

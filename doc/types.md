@@ -44,10 +44,11 @@ The error you're likely to see is something like:
 To solve this issue, each type can be configured to ignore the missing results:
 
 ```yaml
+            persistence:
+                elastica_to_model_transformer:
+                    ignore_missing: true
+            types:
                 user:
-                    persistence:
-                        elastica_to_model_transformer:
-                            ignore_missing: true
 ```
 
 Dynamic templates
@@ -209,9 +210,9 @@ In the example below, we're checking the enabled property on the user to only
 index enabled users.
 
 ```yaml
-    types:
-        users:
             indexable_callback: 'enabled'
+            types:
+                users:
 ```
 
 The callback option supports multiple approaches:
@@ -248,10 +249,11 @@ When populating an index, it may be required to use a different query builder me
 to define which entities should be queried.
 
 ```yaml
+            persistence:
+                provider:
+                    query_builder_method: createIsActiveQueryBuilder
+            types:
                 user:
-                    persistence:
-                        provider:
-                            query_builder_method: createIsActiveQueryBuilder
 ```
 
 ### Populating batch size
@@ -260,10 +262,11 @@ By default, ElasticaBundle will index documents by packets of 100.
 You can change this value in the provider configuration.
 
 ```yaml
+            persistence:
+                provider:
+                    batch_size: 10
+            types:
                 user:
-                    persistence:
-                        provider:
-                            batch_size: 10
 ```
 
 ### Changing the document identifier
@@ -273,9 +276,10 @@ the Elasticsearch document identifier. You can change this value in the
 persistence configuration.
 
 ```yaml
+            persistence:
+                identifier: searchId
+            types:
                 user:
-                    persistence:
-                        identifier: searchId
 ```
 
 ### Turning on the persistence backend logger in production
@@ -286,10 +290,11 @@ logging by setting debug_logging to false, to leave logging alone by setting it 
 or leave it set to its default value which will mirror %kernel.debug%.
 
 ```yaml
+            persistence:
+                provider:
+                    debug_logging: false
+            types:
                 user:
-                    persistence:
-                        provider:
-                            debug_logging: false
 ```
 
 Listener Configuration
@@ -302,11 +307,12 @@ when an object is added, updated or removed. It uses Doctrine lifecycle events.
 Declare that you want to update the index in real time:
 
 ```yaml
+            persistence:
+                driver: orm #the driver can be orm, mongodb or phpcr
+                model: Application\UserBundle\Entity\User
+                listener: ~ # by default, listens to "insert", "update" and "delete"
+            types:
                 user:
-                    persistence:
-                        driver: orm #the driver can be orm, mongodb or phpcr
-                        model: Application\UserBundle\Entity\User
-                        listener: ~ # by default, listens to "insert", "update" and "delete"
 ```
 
 Now the index is automatically updated each time the state of the bound Doctrine repository changes.
@@ -315,11 +321,11 @@ No need to repopulate the whole "user" index when a new `User` is created.
 You can also choose to only listen for some of the events:
 
 ```yaml
-                    persistence:
-                        listener:
-                            insert: true
-                            update: false
-                            delete: true
+            persistence:
+                listener:
+                    insert: true
+                    update: false
+                    delete: true
 ```
 
 ### Asynchronous index update
@@ -330,9 +336,9 @@ trips to your Elasticsearch instance. All updates to Elasticsearch will be batch
 only fire after the `kernel.terminate` and `console.terminate` events.
 
 ```yaml
-                    persistence:
-                        listener:
-                            defer: true
+            persistence:
+                listener:
+                    defer: true
 ```
 
 Logging Errors
@@ -342,9 +348,9 @@ By default FOSElasticaBundle will not catch errors thrown by Elastica/Elasticsea
 Configure a logger per listener if you would rather catch and log these.
 
 ```yaml
-                    persistence:
-                        listener:
-                            logger: true
+            persistence:
+                listener:
+                    logger: true
 ```
 
 Specifying `true` will use the default Elastica logger.  Alternatively define your own

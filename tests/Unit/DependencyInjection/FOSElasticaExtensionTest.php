@@ -55,16 +55,16 @@ class FOSElasticaExtensionTest extends TestCase
                 ],
                 'indexes' => [
                     'acme_index' => [
+                        'persistence' => [
+                            'driver' => 'orm',
+                            'model' => 'theModelClass',
+                            'provider' => null,
+                            'listener' => null,
+                            'finder' => null,
+                        ],
                         'types' => [
                             '_doc' => [
                                 'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
                             ]
                         ]
                     ]
@@ -115,16 +115,16 @@ class FOSElasticaExtensionTest extends TestCase
                 ],
                 'indexes' => [
                     'acme_index' => [
+                        'persistence' => [
+                            'driver' => 'mongodb',
+                            'model' => 'theModelClass',
+                            'provider' => null,
+                            'listener' => null,
+                            'finder' => null,
+                        ],
                         'types' => [
                             '_doc' => [
                                 'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'mongodb',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
                             ]
                         ]
                     ]
@@ -175,16 +175,16 @@ class FOSElasticaExtensionTest extends TestCase
                 ],
                 'indexes' => [
                     'acme_index' => [
+                        'persistence' => [
+                            'driver' => 'phpcr',
+                            'model' => 'theModelClass',
+                            'provider' => null,
+                            'listener' => null,
+                            'finder' => null,
+                        ],
                         'types' => [
                             '_doc' => [
                                 'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'phpcr',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
                             ]
                         ]
                     ]
@@ -231,16 +231,16 @@ class FOSElasticaExtensionTest extends TestCase
                 ],
                 'indexes' => [
                     'acme_index' => [
+                        'persistence' => [
+                            'driver' => 'orm',
+                            'model' => 'theModelClass',
+                            'provider' => null,
+                            'listener' => null,
+                            'finder' => null,
+                        ],
                         'types' => [
                             '_doc' => [
                                 'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
                             ]
                         ]
                     ]
@@ -277,16 +277,16 @@ class FOSElasticaExtensionTest extends TestCase
                 ],
                 'indexes' => [
                     'acme_index' => [
+                        'persistence' => [
+                            'driver' => 'orm',
+                            'model' => 'theModelClass',
+                            'provider' => null,
+                            'listener' => null,
+                            'finder' => null,
+                        ],
                         'types' => [
                             '_doc' => [
                                 'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
                             ]
                         ]
                     ]
@@ -316,16 +316,16 @@ class FOSElasticaExtensionTest extends TestCase
                 ],
                 'indexes' => [
                     'acme_index' => [
+                        'persistence' => [
+                            'driver' => 'orm',
+                            'model' => 'theModelClass',
+                            'provider' => null,
+                            'listener' => null,
+                            'finder' => null,
+                        ],
                         'types' => [
                             '_doc' => [
                                 'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
                             ]
                         ]
                     ]
@@ -357,16 +357,16 @@ class FOSElasticaExtensionTest extends TestCase
                 ],
                 'indexes' => [
                     'acme_index' => [
+                        'persistence' => [
+                            'driver' => 'orm',
+                            'model' => 'theModelClass',
+                            'provider' => null,
+                            'listener' => null,
+                            'finder' => null,
+                        ],
                         'types' => [
                             '_doc' => [
                                 'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
                             ]
                         ]
                     ]
@@ -394,16 +394,16 @@ class FOSElasticaExtensionTest extends TestCase
                 ],
                 'indexes' => [
                     'acme_index' => [
+                        'persistence' => [
+                            'driver' => 'orm',
+                            'model' => 'theModelClass',
+                            'provider' => null,
+                            'listener' => null,
+                            'finder' => null,
+                        ],
                         'types' => [
                             '_doc' => [
                                 'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
                             ]
                         ]
                     ]
@@ -427,18 +427,18 @@ class FOSElasticaExtensionTest extends TestCase
                 ],
                 'indexes' => [
                     'acme_index' => [
+                        'persistence' => [
+                            'driver' => 'orm',
+                            'model' => 'theModelClass',
+                            'provider' => null,
+                            'listener' => [
+                                'enabled' => false,
+                            ],
+                            'finder' => null,
+                        ],
                         'types' => [
                             '_doc' => [
                                 'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => [
-                                        'enabled' => false,
-                                    ],
-                                    'finder' => null,
-                                ]
                             ]
                         ]
                     ]

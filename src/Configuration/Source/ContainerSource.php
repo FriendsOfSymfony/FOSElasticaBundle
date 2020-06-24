@@ -44,7 +44,7 @@ class ContainerSource implements SourceInterface
         $indexes = [];
         foreach ($this->configArray as $config) {
             $types = $this->getTypes($config);
-            $index = new IndexConfig($config['name'], $types, [
+            $index = new IndexConfig($config['name'], $config['model'], $types, [
                 'elasticSearchName' => $config['elasticsearch_name'],
                 'settings' => $config['settings'],
                 'useAlias' => $config['use_alias'],

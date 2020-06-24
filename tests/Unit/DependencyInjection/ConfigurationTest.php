@@ -138,17 +138,17 @@ class ConfigurationTest extends TestCase
                             'serialize_null' => false,
                         ],
                     ],
+                    'persistence' => [
+                        'listener' => [
+                            'logger' => true,
+                        ],
+                    ],
                     'types' => [
                         'test' => [
                             'properties' => [
                                 'title' => [],
                                 'published' => ['type' => 'datetime'],
                                 'body' => null,
-                            ],
-                            'persistence' => [
-                                'listener' => [
-                                    'logger' => true,
-                                ],
                             ],
                         ],
                         'test2' => [
@@ -205,12 +205,12 @@ class ConfigurationTest extends TestCase
             ],
             'indexes' => [
                 'test' => [
+                    'persistence' => [],
                     'types' => [
                         'user' => [
                             'properties' => [
                                 'field1' => [],
                             ],
-                            'persistence' => [],
                         ],
                         'user_profile' => [
                             'properties' => [

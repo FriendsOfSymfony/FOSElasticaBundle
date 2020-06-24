@@ -9,19 +9,12 @@ namespace FOS\ElasticaBundle\Configuration;
  */
 interface IndexConfigInterface
 {
-    /**
-     * @return string
-     */
     public function getElasticSearchName(): string;
 
-    /**
-     * @return string
-     */
+    public function getModel(): ?string;
+
     public function getName(): string;
 
-    /**
-     * @return array
-     */
     public function getSettings(): array;
 
     /**

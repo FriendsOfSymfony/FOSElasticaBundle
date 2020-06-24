@@ -25,6 +25,13 @@ trait IndexConfigTrait
     private $elasticSearchName;
 
     /**
+     * The model of the index
+     *
+     * @var string|null
+     */
+    private $model;
+
+    /**
      * The internal name of the index. May not be the same as the name used in ElasticSearch,
      * especially if aliases are enabled.
      *
@@ -52,6 +59,11 @@ trait IndexConfigTrait
     public function getElasticSearchName(): string
     {
         return $this->elasticSearchName;
+    }
+
+    public function getModel(): ?string
+    {
+        return $this->model;
     }
 
     /**

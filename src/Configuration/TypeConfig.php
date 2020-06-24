@@ -55,11 +55,6 @@ class TypeConfig
         return $this->mapping;
     }
 
-    public function getModel(): ?string
-    {
-        return $this->config['persistence']['model'] ?? null;
-    }
-
     public function getNumericDetection(): ?bool
     {
         return $this->config['numeric_detection'] ?? null;
