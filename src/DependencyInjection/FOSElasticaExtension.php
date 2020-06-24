@@ -305,7 +305,6 @@ class FOSElasticaExtension extends Extension
             foreach ([
                 'dynamic_templates',
                 'properties',
-                '_all',
                 '_id',
                 '_routing',
                 '_source',

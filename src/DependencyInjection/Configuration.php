@@ -145,7 +145,6 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getDynamicTemplateNode())
                 ->append($this->getSourceNode())
                 ->append($this->getRoutingNode())
-                ->append($this->getAllNode())
             ->end()
         ;
 
@@ -220,23 +219,6 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('required')->end()
                 ->scalarNode('path')->end()
-            ->end()
-        ;
-
-        return $node;
-    }
-
-    /**
-     * Returns the array node used for "_all".
-     */
-    private function getAllNode()
-    {
-        $node = $this->createTreeBuilderNode('_all');
-
-        $node
-            ->children()
-            ->scalarNode('enabled')->defaultValue(true)->end()
-            ->scalarNode('analyzer')->end()
             ->end()
         ;
 
