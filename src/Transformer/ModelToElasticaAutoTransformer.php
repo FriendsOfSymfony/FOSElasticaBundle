@@ -12,10 +12,12 @@
 namespace FOS\ElasticaBundle\Transformer;
 
 use Elastica\Document;
+use FOS\ElasticaBundle\Event\FOSElasticaEvent;
 use FOS\ElasticaBundle\Event\TransformEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as ContractsEventDispatcherInterface;
 
 /**
  * Maps Elastica documents with Doctrine objects
@@ -159,7 +161,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         if ($this->dispatcher) {
             $event = new TransformEvent($document, $fields, $object);
-            $this->dispatcher->dispatch($event, TransformEvent::PRE_TRANSFORM);
+            $this->dispatchWithBC($event, TransformEvent::PRE_TRANSFORM);
 
             $document = $event->getDocument();
         }
@@ -209,11 +211,26 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
         if ($this->dispatcher) {
             $event = new TransformEvent($document, $fields, $object);
-            $this->dispatcher->dispatch($event, TransformEvent::POST_TRANSFORM);
+            $this->dispatchWithBC($event, TransformEvent::POST_TRANSFORM);
 
             $document = $event->getDocument();
         }
 
         return $document;
+    }
+
+    /**
+     * BC layer for Symfony < 4.3
+     *
+     * @param FOSElasticaEvent $event
+     * @param string $eventName
+     */
+    private function dispatchWithBC(FOSElasticaEvent $event, $eventName)
+    {
+        if ($this->dispatcher instanceof ContractsEventDispatcherInterface) {
+            $this->dispatcher->dispatch($event, $eventName);
+        } else {
+            $this->dispatcher->dispatch($eventName, $event);
+        }
     }
 }

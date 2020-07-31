@@ -17,6 +17,7 @@ use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as ContractsEventDispatcherInterface;
 
 class POPO3
 {
@@ -169,9 +170,12 @@ class ModelToElasticaAutoTransformerTest extends TestCase
     {
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
 
-        $dispatcher->expects($this->exactly(2))
-            ->method('dispatch')
-            ->withConsecutive(
+        $dispatcherExpectations = $dispatcher->expects($this->exactly(2))
+            ->method('dispatch');
+
+        // BC for Symfony < 4.3
+        if ($dispatcher instanceof ContractsEventDispatcherInterface) {
+            $dispatcherExpectations->withConsecutive(
                 [
                     $this->isInstanceOf(TransformEvent::class),
                     TransformEvent::PRE_TRANSFORM,
@@ -181,6 +185,18 @@ class ModelToElasticaAutoTransformerTest extends TestCase
                     TransformEvent::POST_TRANSFORM,
                 ]
             );
+        } else {
+            $dispatcherExpectations->withConsecutive(
+                [
+                    TransformEvent::PRE_TRANSFORM,
+                    $this->isInstanceOf(TransformEvent::class),
+                ],
+                [
+                    TransformEvent::POST_TRANSFORM,
+                    $this->isInstanceOf(TransformEvent::class),
+                ]
+            );
+        }
 
         $transformer = $this->getTransformer($dispatcher);
         $transformer->transform(new POPO3(), []);

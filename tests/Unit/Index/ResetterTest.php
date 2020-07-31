@@ -25,6 +25,7 @@ use FOS\ElasticaBundle\Index\Resetter;
 use FOS\ElasticaBundle\Index\ResetterInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as ContractsEventDispatcherInterface;
 
 class ResetterTest extends TestCase
 {
@@ -236,7 +237,16 @@ class ResetterTest extends TestCase
         $expectation = $this->dispatcher->expects($this->exactly(count($events)))
             ->method('dispatch');
 
-        call_user_func_array([$expectation, 'withConsecutive'], $events);
+        // BC for Symfony < 4.3
+        if ($this->dispatcher instanceof ContractsEventDispatcherInterface) {
+            call_user_func_array([$expectation, 'withConsecutive'], $events);
+        } else {
+            $events = array_map(function ($event) {
+                return [$event[1], $event[0]];
+            }, $events);
+
+            call_user_func_array([$expectation, 'withConsecutive'], $events);
+        }
     }
 
     private function mockIndex($indexName, IndexConfig $config, $mapping = [])

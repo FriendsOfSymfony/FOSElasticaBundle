@@ -1,12 +1,12 @@
 <?php
 namespace FOS\ElasticaBundle\Tests\Unit\Persister\Event;
 
+use FOS\ElasticaBundle\Event\FOSElasticaEvent;
 use FOS\ElasticaBundle\Persister\Event\PersistEvent;
 use FOS\ElasticaBundle\Persister\Event\PostPersistEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\Event;
 
 final class PostPersistEventTest extends TestCase
 {
@@ -14,7 +14,7 @@ final class PostPersistEventTest extends TestCase
     {
         $rc = new \ReflectionClass(PostPersistEvent::class);
 
-        $this->assertTrue($rc->isSubclassOf(Event::class));
+        $this->assertTrue($rc->isSubclassOf(FOSElasticaEvent::class));
     }
 
     public function testShouldImplementPersistEventInterface()

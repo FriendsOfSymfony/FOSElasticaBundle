@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Command;
 
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
+use FOS\ElasticaBundle\Event\FOSElasticaEvent;
 use FOS\ElasticaBundle\Event\IndexPopulateEvent;
 use FOS\ElasticaBundle\Event\TypePopulateEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
@@ -33,6 +34,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as ContractsEventDispatcherInterface;
 
 /**
  * Populate the search index.
@@ -149,7 +151,7 @@ class PopulateCommand extends Command
             /** @var QuestionHelper $dialog */
             $dialog = $this->getHelperSet()->get('question');
             if (!$dialog->ask($input, $output, new Question('<question>You chose to reset the index and start indexing with an offset. Do you really want to do that?</question>'))) {
-                return;
+                return 0;
             }
         }
 
@@ -185,7 +187,7 @@ class PopulateCommand extends Command
     private function populateIndex(OutputInterface $output, $index, $reset, $options)
     {
         $event = new IndexPopulateEvent($index, $reset, $options);
-        $this->dispatcher->dispatch($event, IndexPopulateEvent::PRE_INDEX_POPULATE);
+        $this->dispatchWithBC($event, IndexPopulateEvent::PRE_INDEX_POPULATE);
 
         if ($event->isReset()) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
@@ -197,7 +199,7 @@ class PopulateCommand extends Command
             $this->populateIndexType($output, $index, $type, false, $event->getOptions());
         }
 
-        $this->dispatcher->dispatch($event, IndexPopulateEvent::POST_INDEX_POPULATE);
+        $this->dispatchWithBC($event, IndexPopulateEvent::POST_INDEX_POPULATE);
 
         $this->refreshIndex($output, $index);
     }
@@ -214,7 +216,7 @@ class PopulateCommand extends Command
     private function populateIndexType(OutputInterface $output, $index, $type, $reset, $options)
     {
         $event = new TypePopulateEvent($index, $type, $reset, $options);
-        $this->dispatcher->dispatch($event, TypePopulateEvent::PRE_TYPE_POPULATE);
+        $this->dispatchWithBC($event, TypePopulateEvent::PRE_TYPE_POPULATE);
 
         if ($event->isReset()) {
             $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
@@ -266,7 +268,7 @@ class PopulateCommand extends Command
 
         $this->pagerPersister->insert($pager, $options);
 
-        $this->dispatcher->dispatch($event, TypePopulateEvent::POST_TYPE_POPULATE);
+        $this->dispatchWithBC($event, TypePopulateEvent::POST_TYPE_POPULATE);
 
         $this->refreshIndex($output, $index);
     }
@@ -282,5 +284,20 @@ class PopulateCommand extends Command
         $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
         $this->indexManager->getIndex($index)->refresh();
         $output->writeln("");
+    }
+
+    /**
+     * BC layer for Symfony < 4.3
+     *
+     * @param FOSElasticaEvent $event
+     * @param string $eventName
+     */
+    private function dispatchWithBC(FOSElasticaEvent $event, $eventName)
+    {
+        if ($this->dispatcher instanceof ContractsEventDispatcherInterface) {
+            $this->dispatcher->dispatch($event, $eventName);
+        } else {
+            $this->dispatcher->dispatch($eventName, $event);
+        }
     }
 }

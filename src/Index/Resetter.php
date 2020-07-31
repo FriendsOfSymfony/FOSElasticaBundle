@@ -15,10 +15,12 @@ use Elastica\Exception\ResponseException;
 use Elastica\Type\Mapping;
 use FOS\ElasticaBundle\Configuration\ManagerInterface;
 use Elastica\Client;
+use FOS\ElasticaBundle\Event\FOSElasticaEvent;
 use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as ContractsEventDispatcherInterface;
 
 /**
  * Deletes and recreates indexes.
@@ -110,7 +112,7 @@ class Resetter implements ResetterInterface
         }
 
         $event = new IndexResetEvent($indexName, $populating, $force);
-        $this->dispatcher->dispatch($event, IndexResetEvent::PRE_INDEX_RESET);
+        $this->dispatchWithBC($event, IndexResetEvent::PRE_INDEX_RESET);
 
         $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
         $index->create($mapping, true);
@@ -119,7 +121,7 @@ class Resetter implements ResetterInterface
             $this->aliasProcessor->switchIndexAlias($indexConfig, $index, $force);
         }
 
-        $this->dispatcher->dispatch($event, IndexResetEvent::POST_INDEX_RESET);
+        $this->dispatchWithBC($event, IndexResetEvent::POST_INDEX_RESET);
     }
 
     /**
@@ -141,7 +143,7 @@ class Resetter implements ResetterInterface
         $type = $index->getType($typeName);
 
         $event = new TypeResetEvent($indexName, $typeName);
-        $this->dispatcher->dispatch($event, TypeResetEvent::PRE_TYPE_RESET);
+        $this->dispatchWithBC($event, TypeResetEvent::PRE_TYPE_RESET);
 
         $mapping = new Mapping();
         foreach ($this->mappingBuilder->buildTypeMapping($typeConfig) as $name => $field) {
@@ -150,7 +152,7 @@ class Resetter implements ResetterInterface
 
         $type->setMapping($mapping);
 
-        $this->dispatcher->dispatch($event, TypeResetEvent::POST_TYPE_RESET);
+        $this->dispatchWithBC($event, TypeResetEvent::POST_TYPE_RESET);
     }
 
     /**
@@ -180,6 +182,21 @@ class Resetter implements ResetterInterface
         if ($indexConfig->isUseAlias()) {
             $index = $this->indexManager->getIndex($indexName);
             $this->aliasProcessor->switchIndexAlias($indexConfig, $index, false, $delete);
+        }
+    }
+
+    /**
+     * BC layer for Symfony < 4.3
+     *
+     * @param FOSElasticaEvent $event
+     * @param string $eventName
+     */
+    private function dispatchWithBC(FOSElasticaEvent $event, $eventName)
+    {
+        if ($this->dispatcher instanceof ContractsEventDispatcherInterface) {
+            $this->dispatcher->dispatch($event, $eventName);
+        } else {
+            $this->dispatcher->dispatch($eventName, $event);
         }
     }
 }

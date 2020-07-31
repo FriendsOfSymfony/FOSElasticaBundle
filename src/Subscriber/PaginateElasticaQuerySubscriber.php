@@ -74,7 +74,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     protected function setSorting(ItemsEvent $event)
     {
         $options = $event->options;
-        $sortField = $this->getFromRequest($options['sortFieldParameterName']);
+        $sortField = $this->getFromRequest($options['sortFieldParameterName'] ?? null);
 
         if (!$sortField && isset($options['defaultSortFieldName'])) {
             $sortField = $options['defaultSortFieldName'];
