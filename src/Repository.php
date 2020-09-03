@@ -80,7 +80,7 @@ class Repository
 
     /**
      * @param mixed $query
-	  * @param array $options
+     * @param array $options
      *
      * @return Paginator\HybridPaginatorAdapter
      */

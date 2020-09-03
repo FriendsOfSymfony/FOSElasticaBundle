@@ -44,7 +44,7 @@ interface PaginatedFinderInterface extends FinderInterface
      * Creates a hybrid paginator adapter for this query.
      *
      * @param mixed $query
-	  * @param array $options
+     * @param array $options
      *
      * @return PaginatorAdapterInterface
      */
