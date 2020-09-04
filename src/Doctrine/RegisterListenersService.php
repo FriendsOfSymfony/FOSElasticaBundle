@@ -1,9 +1,9 @@
 <?php
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use FOS\ElasticaBundle\Persister\Event\PersistEvent;
 use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\Event\PreFetchObjectsEvent;

@@ -11,7 +11,7 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\IndexableInterface;

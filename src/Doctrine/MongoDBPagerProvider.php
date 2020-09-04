@@ -11,7 +11,7 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
