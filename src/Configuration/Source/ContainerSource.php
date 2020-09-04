@@ -12,7 +12,6 @@
 namespace FOS\ElasticaBundle\Configuration\Source;
 
 use FOS\ElasticaBundle\Configuration\IndexConfig;
-use FOS\ElasticaBundle\Configuration\TypeConfig;
 
 /**
  * Returns index and type configuration from the container.
@@ -43,41 +42,11 @@ class ContainerSource implements SourceInterface
     {
         $indexes = [];
         foreach ($this->configArray as $config) {
-            $types = $this->getTypes($config);
-            $index = new IndexConfig($config['name'], $config['model'], $types, [
-                'elasticSearchName' => $config['elasticsearch_name'],
-                'settings' => $config['settings'],
-                'useAlias' => $config['use_alias'],
-            ]);
 
+            $index = new IndexConfig($config);
             $indexes[$config['name']] = $index;
         }
 
         return $indexes;
-    }
-
-    /**
-     * Builds TypeConfig objects for each type.
-     *
-     * @param array $config
-     *
-     * @return array
-     */
-    protected function getTypes($config)
-    {
-        $types = [];
-
-        if (isset($config['types'])) {
-            foreach ($config['types'] as $typeConfig) {
-                $types[$typeConfig['name']] = new TypeConfig(
-                    $typeConfig['name'],
-                    $typeConfig['mapping'],
-                    $typeConfig['config']
-                );
-                // TODO: handle prototypes..
-            }
-        }
-
-        return $types;
     }
 }

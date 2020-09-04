@@ -45,13 +45,12 @@ class AliasProcessorTest extends TestCase
     /**
      * @dataProvider getSetRootNameData
      *
-     * @param string $name
      * @param array  $configArray
      * @param string $resultStartsWith
      */
-    public function testSetRootName($name, $configArray, $resultStartsWith)
+    public function testSetRootName($configArray, $resultStartsWith)
     {
-        $indexConfig = new IndexConfig($name, null, [], $configArray);
+        $indexConfig = new IndexConfig($configArray);
         $index = $this->createMock(Index::class);
         $index->expects($this->once())
             ->method('overrideName')
@@ -62,7 +61,7 @@ class AliasProcessorTest extends TestCase
 
     public function testSwitchAliasNoAliasSet()
     {
-        $indexConfig = new IndexConfig('name', null, [], []);
+        $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
@@ -80,7 +79,7 @@ class AliasProcessorTest extends TestCase
 
     public function testSwitchAliasExistingAliasSet()
     {
-        $indexConfig = new IndexConfig('name', null, [], []);
+        $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
@@ -101,7 +100,7 @@ class AliasProcessorTest extends TestCase
 
     public function testSwitchAliasThrowsWhenMoreThanOneExists()
     {
-        $indexConfig = new IndexConfig('name', null, [], []);
+        $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
@@ -118,7 +117,7 @@ class AliasProcessorTest extends TestCase
 
     public function testSwitchAliasThrowsWhenAliasIsAnIndex()
     {
-        $indexConfig = new IndexConfig('name', null, [], []);
+        $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
@@ -134,7 +133,7 @@ class AliasProcessorTest extends TestCase
 
     public function testSwitchAliasDeletesIndexCollisionIfForced()
     {
-        $indexConfig = new IndexConfig('name', null, [], []);
+        $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
@@ -152,7 +151,7 @@ class AliasProcessorTest extends TestCase
 
     public function testSwitchAliasDeletesOldIndex()
     {
-        $indexConfig = new IndexConfig('name', null, [], []);
+        $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
@@ -176,7 +175,7 @@ class AliasProcessorTest extends TestCase
 
     public function testSwitchAliasCleansUpOnRenameFailure()
     {
-        $indexConfig = new IndexConfig('name', null, [], []);
+        $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
         list($index, $client) = $this->getMockedIndex('unique_name');
 
         $client->expects($this->at(0))
@@ -204,8 +203,8 @@ class AliasProcessorTest extends TestCase
     public function getSetRootNameData()
     {
         return [
-            ['name', [], 'name_'],
-            ['name', ['elasticSearchName' => 'notname'], 'notname_'],
+            [['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null], 'name_'],
+            [['elasticsearch_name' => 'notname', 'name' => 'name', 'config' => [], 'mapping' => [], 'model' => null], 'notname_'],
         ];
     }
 

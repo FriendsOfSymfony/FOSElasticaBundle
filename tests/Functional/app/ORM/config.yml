@@ -23,10 +23,8 @@ fos_elastica:
             url: "http://%fos_elastica.host%:%fos_elastica.port%"
     indexes:
         fos_elastica_orm_test:
-            types:
-                _doc:
-                    properties:
-                        field1: ~
+            properties:
+                field1: ~
         index:
             index_name: "foselastica_orm_test_%kernel.environment%"
             indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
@@ -36,11 +34,9 @@ fos_elastica:
                 listener: ~
                 provider:
                     debug_logging: true
-            types:
-                _doc:
-                    properties:
-                        field1: ~
-                        coll: ~
+            properties:
+                field1: ~
+                coll: ~
         second_index:
             index_name: "foselastica_orm_test_second_%kernel.environment%"
             indexable_callback: 'object.isIndexable() && !object.isntIndexable()'
@@ -48,11 +44,9 @@ fos_elastica:
                 driver: orm
                 model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                 listener: ~
-            types:
-                _doc:
-                    properties:
-                        field1: ~
-                        coll: ~
+            properties:
+                field1: ~
+                coll: ~
         third_index:
             index_name: "foselastica_orm_test_third_%kernel.environment%"
             indexable_callback: [ "@indexable_service", 'isIndexable' ]
@@ -60,10 +54,8 @@ fos_elastica:
                 driver: orm
                 model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                 listener: ~
-            types:
-                _doc:
-                    properties:
-                        field1: ~
+            properties:
+                field1: ~
         fourth_index:
             index_name: "foselastica_orm_test_fourth_%kernel.environment%"
             indexable_callback: 'isntIndexable'
@@ -73,10 +65,8 @@ fos_elastica:
                 finder: ~
                 provider: ~
                 listener: ~
-            types:
-                _doc:
-                    properties:
-                        field1: ~
+            properties:
+                field1: ~
         fifth_index:
             index_name: "foselastica_orm_test_fifth_%kernel.environment%"
             indexable_callback: [ 'FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService', 'isntIndexable' ]
@@ -86,25 +76,21 @@ fos_elastica:
                 finder: ~
                 provider: ~
                 listener: ~
-            types:
-                _doc:
-                    properties:
-                        field1: ~
+            properties:
+                field1: ~
         property_paths_index:
             index_name: "foselastica_orm_test_%kernel.environment%"
             persistence:
                 driver: orm
                 model: FOS\ElasticaBundle\Tests\Functional\TypeObj
                 provider: ~
-            types:
-                _doc:
-                    properties:
-                        field1:
-                            property_path: field2
-                        something:
-                            property_path: coll
-                        dynamic:
-                            property_path: false
+            properties:
+                field1:
+                    property_path: field2
+                something:
+                    property_path: coll
+                dynamic:
+                    property_path: false
         with_repository_index:
             index_name: "foselastica_orm_test_%kernel.environment%"
             persistence:
@@ -113,8 +99,6 @@ fos_elastica:
                 repository: FOS\ElasticaBundle\Tests\Functional\TypeObjectRepository
                 finder: ~
                 provider: ~
-            types:
-                _doc:
-                    properties:
-                        field1: ~
-                        coll: ~
+            properties:
+                field1: ~
+                coll: ~

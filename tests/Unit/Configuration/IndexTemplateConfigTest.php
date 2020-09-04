@@ -11,27 +11,40 @@ class IndexTemplateConfigTest extends TestCase
     {
         $name = 'index_template1';
         $config = array(
-            'elasticSearchName' => 'index_template_elastic_name1',
+            'elasticsearch_name' => 'index_template_elastic_name1',
+            'name' => 'index_template1',
             'settings' => array(1),
             'template' => 't*',
+            'config' => [],
+            'mapping' => [],
         );
-        $indexTemplate = new IndexTemplateConfig($name, array(), $config);
+        $indexTemplate = new IndexTemplateConfig($config);
         $this->assertEquals($name, $indexTemplate->getName());
         $this->assertEquals(
             $config,
             array(
-                'elasticSearchName' => $indexTemplate->getElasticSearchName(),
+                'elasticsearch_name' => $indexTemplate->getElasticSearchName(),
+                'name' => $indexTemplate->getName(),
                 'settings' => $indexTemplate->getSettings(),
                 'template' => $indexTemplate->getTemplate(),
+                'config' => [],
+                'mapping' => [],
             )
         );
     }
 
     public function testIncorrectInstantiate()
     {
-        $name = 'index_template1';
+        $config = array(
+            'elasticsearch_name' => 'index_template1',
+            'name' => 'index_template_elastic_name1',
+            'settings' => array(1),
+            'config' => [],
+            'mapping' => [],
+        );
 
         $this->expectException(\InvalidArgumentException::class);
-        new IndexTemplateConfig($name, array(), array());
+
+        new IndexTemplateConfig($config);
     }
 }

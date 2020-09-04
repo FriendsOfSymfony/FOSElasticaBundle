@@ -47,11 +47,14 @@ trait IndexConfigTrait
     private $settings;
 
     /**
-     * All types that belong to this index.
-     *
-     * @var TypeConfig[]
+     * @var array
      */
-    private $types;
+    private $config;
+
+    /**
+     * @var array
+     */
+    private $mapping;
 
     /**
      * @return string
@@ -82,23 +85,33 @@ trait IndexConfigTrait
         return $this->settings;
     }
 
-    /**s
-     * @throws \InvalidArgumentException
-     */
-    public function getType(string $typeName): TypeConfig
+    public function getDateDetection(): ?bool
     {
-        if (!array_key_exists($typeName, $this->types)) {
-            throw new \InvalidArgumentException(sprintf('Type "%s" does not exist on index "%s"', $typeName, $this->name));
-        }
-
-        return $this->types[$typeName];
+        return $this->config['date_detection'] ?? null;
     }
 
-    /**
-     * @return \FOS\ElasticaBundle\Configuration\TypeConfig[]
-     */
-    public function getTypes()
+    public function getDynamicDateFormats(): ?array
     {
-        return $this->types;
+        return $this->config['dynamic_date_formats'] ?? null;
+    }
+
+    public function getAnalyzer(): ?string
+    {
+        return $this->config['analyzer'] ?? null;
+    }
+
+    public function getMapping(): array
+    {
+        return $this->mapping;
+    }
+
+    public function getNumericDetection(): ?bool
+    {
+        return $this->config['numeric_detection'] ?? null;
+    }
+
+    public function getDynamic()
+    {
+        return $this->config['dynamic'] ?? null;
     }
 }

@@ -20,7 +20,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
-use FOS\ElasticaBundle\Configuration\TypeConfig;
+use FOS\ElasticaBundle\Configuration\IndexConfig;
 
 /**
  * @group functional
@@ -35,8 +35,7 @@ class ConfigurationManagerTest extends WebTestCase
         $index = $manager->getIndexConfiguration('index');
 
         $this->assertSame('index', $index->getName());
-        $this->assertSame(1, count($index->getTypes()));
-        $this->assertInstanceOf(TypeConfig::class, $index->getType('_doc'));
+        $this->assertInstanceOf(IndexConfig::class, $index);
         //$this->assertInstanceOf(TypeConfig::class, $index->getType('parent'));
     }
 

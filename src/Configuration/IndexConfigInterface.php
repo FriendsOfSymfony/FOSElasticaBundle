@@ -17,13 +17,18 @@ interface IndexConfigInterface
 
     public function getSettings(): array;
 
-    /**
-     * @throws \InvalidArgumentException
-     */
-    public function getType(string $typeName): TypeConfig;
+    public function getDateDetection(): ?bool;
+
+    public function getDynamicDateFormats(): ?array;
+
+    public function getAnalyzer(): ?string;
+
+    public function getMapping(): array;
+
+    public function getNumericDetection(): ?bool;
 
     /**
-     * @return \FOS\ElasticaBundle\Configuration\TypeConfig[]
+     * @return string|bool|null
      */
-    public function getTypes();
+    public function getDynamic();
 }

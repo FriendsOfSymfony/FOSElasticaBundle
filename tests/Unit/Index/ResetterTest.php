@@ -60,7 +60,12 @@ class ResetterTest extends TestCase
     public function testResetAllIndexes()
     {
         $indexName = 'index1';
-        $indexConfig = new IndexConfig($indexName, null, [], []);
+        $indexConfig = new IndexConfig([
+            'name' => $indexName,
+            'config' => [],
+            'mapping' => [],
+            'model' => [],
+        ]);
         $this->mockIndex($indexName, $indexConfig);
 
         $this->configManager->expects($this->once())
@@ -80,7 +85,12 @@ class ResetterTest extends TestCase
 
     public function testResetIndex()
     {
-        $indexConfig = new IndexConfig('index1', null, [], []);
+        $indexConfig = new IndexConfig([
+            'name' => 'index1',
+            'config' => [],
+            'mapping' => [],
+            'model' => [],
+        ]);
         $this->mockIndex('index1', $indexConfig);
 
         $this->dispatcherExpects([
@@ -96,8 +106,11 @@ class ResetterTest extends TestCase
 
     public function testResetIndexWithDifferentName()
     {
-        $indexConfig = new IndexConfig('index1', null, [], [
-            'elasticSearchName' => 'notIndex1',
+        $indexConfig = new IndexConfig([
+            'name' => 'index1',
+            'config' => [],
+            'mapping' => [],
+            'model' => [],
         ]);
         $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
@@ -113,9 +126,13 @@ class ResetterTest extends TestCase
 
     public function testResetIndexWithDifferentNameAndAlias()
     {
-        $indexConfig = new IndexConfig('index1', null, [], [
+        $indexConfig = new IndexConfig([
+            'name' => 'index1',
             'elasticSearchName' => 'notIndex1',
-            'useAlias' => true,
+            'use_alias' => true,
+            'config' => [],
+            'mapping' => [],
+            'model' => [],
         ]);
         $index = $this->mockIndex('index1', $indexConfig);
         $this->dispatcherExpects([
@@ -149,7 +166,12 @@ class ResetterTest extends TestCase
 
     public function testPostPopulateWithoutAlias()
     {
-        $this->mockIndex('index', new IndexConfig('index', null, [], []));
+        $this->mockIndex('index', new IndexConfig([
+            'name' => 'index',
+            'config' => [],
+            'mapping' => [],
+            'model' => [],
+        ]));
 
         $this->indexManager->expects($this->never())
             ->method('getIndex');
@@ -161,7 +183,13 @@ class ResetterTest extends TestCase
 
     public function testPostPopulate()
     {
-        $indexConfig = new IndexConfig('index', null, [], ['useAlias' => true]);
+        $indexConfig = new IndexConfig([
+            'name' => 'index1',
+            'use_alias' => true,
+            'config' => [],
+            'mapping' => [],
+            'model' => [],
+        ]);
         $index = $this->mockIndex('index', $indexConfig);
 
         $this->aliasProcessor->expects($this->once())

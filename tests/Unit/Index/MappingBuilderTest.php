@@ -13,17 +13,11 @@ namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
-use FOS\ElasticaBundle\Configuration\TypeConfig;
 use FOS\ElasticaBundle\Index\MappingBuilder;
 use PHPUnit\Framework\TestCase;
 
 class MappingBuilderTest extends TestCase
 {
-    /**
-     * @var TypeConfig
-     */
-    private $typeConfig;
-
     /**
      * @var MappingBuilder
      */
@@ -34,44 +28,58 @@ class MappingBuilderTest extends TestCase
      */
     private $mapping;
 
+    /**
+     * @var IndexConfig
+     */
+    private $indexConfig;
+
     protected function setUp(): void
     {
         $this->mapping = [
-            'properties' => [
-                'storeless' => [
-                    'type' => 'text',
-                ],
-                'stored' => [
-                    'type' => 'text',
-                    'store' => true,
-                ],
-                'unstored' => [
-                    'type' => 'text',
-                    'store' => false,
+            'mapping' => [
+                'properties' => [
+                    'storeless' => [
+                        'type' => 'text',
+                    ],
+                    'stored' => [
+                        'type' => 'text',
+                        'store' => true,
+                    ],
+                    'unstored' => [
+                        'type' => 'text',
+                        'store' => false,
+                    ],
                 ],
             ],
         ];
-        $this->typeConfig = new TypeConfig('_doc', [
-            'properties' => [
-                'storeless' => [
-                    'type' => 'text',
+        $this->indexConfig = new IndexConfig(
+            [
+                'name' => 'name',
+                'config' => [],
+                'model' => null,
+                'mapping' => [
+                    'properties' => [
+                        'storeless' => [
+                            'type' => 'text',
+                        ],
+                        'stored' => [
+                            'type' => 'text',
+                            'store' => true,
+                        ],
+                        'unstored' => [
+                            'type' => 'text',
+                            'store' => false,
+                        ],
+                    ],
                 ],
-                'stored' => [
-                    'type' => 'text',
-                    'store' => true,
-                ],
-                'unstored' => [
-                    'type' => 'text',
-                    'store' => false,
-                ],
-            ],
-        ]);
+            ]
+        );
         $this->builder = new MappingBuilder();
     }
 
     public function testMappingBuilderStoreProperty()
     {
-        $mapping = $this->builder->buildTypeMapping(null, $this->typeConfig);
+        $mapping = $this->builder->buildMapping(null, $this->indexConfig);
 
         $this->assertArrayNotHasKey('store', $mapping['properties']['storeless']);
         $this->assertArrayHasKey('store', $mapping['properties']['stored']);
@@ -83,16 +91,12 @@ class MappingBuilderTest extends TestCase
     public function testBuildIndexTemplateMapping()
     {
         $config = new IndexTemplateConfig(
-            'some_template',
-            [
-                $this->typeConfig
-            ],
-            ['template' => 'index_template_*']
+            ['template' => 'index_template_*', 'name' => 'some_template', 'config' => [], 'mapping' => $this->indexConfig->getMapping()]
         );
         $this->assertEquals(
             [
                 'template' => 'index_template_*',
-                'mappings' => $this->mapping
+                'mappings' => $this->indexConfig->getMapping()
             ],
             $this->builder->buildIndexTemplateMapping($config)
         );

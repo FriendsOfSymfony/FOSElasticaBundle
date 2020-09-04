@@ -468,6 +468,32 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('indexes')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
+                        ->treatNullLike([])
+                        ->beforeNormalization()
+                        ->ifNull()
+                        ->thenEmptyArray()
+                        ->end()
+                        // Support multiple dynamic_template formats to match the old bundle style
+                        // and the way ElasticSearch expects them
+                        ->beforeNormalization()
+                        ->ifTrue(function ($v) {
+                            return isset($v['dynamic_templates']);
+                        })
+                        ->then(function ($v) {
+                            $dt = [];
+                            foreach ($v['dynamic_templates'] as $key => $type) {
+                                if (is_int($key)) {
+                                    $dt[] = $type;
+                                } else {
+                                    $dt[][$key] = $type;
+                                }
+                            }
+
+                            $v['dynamic_templates'] = $dt;
+
+                            return $v;
+                        })
+                        ->end()
                         ->children()
                             ->scalarNode('index_name')
                                 ->info('Defaults to the name of the index, but can be modified if the index name is different in ElasticSearch')
@@ -489,8 +515,17 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                             ->variableNode('settings')->defaultValue([])->end()
+                            ->booleanNode('date_detection')->end()
+                            ->arrayNode('dynamic_date_formats')->prototype('scalar')->end()->end()
+                            ->scalarNode('analyzer')->end()
+                            ->booleanNode('numeric_detection')->end()
+                            ->scalarNode('dynamic')->end()
                         ->end()
-                        ->append($this->getTypesNode())
+                        ->append($this->getIdNode())
+                        ->append($this->getPropertiesNode())
+                        ->append($this->getDynamicTemplateNode())
+                        ->append($this->getSourceNode())
+                        ->append($this->getRoutingNode())
                     ->end()
                 ->end()
             ->end()
@@ -520,6 +555,32 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('index_templates')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
+                        ->treatNullLike([])
+                        ->beforeNormalization()
+                        ->ifNull()
+                        ->thenEmptyArray()
+                        ->end()
+                        // Support multiple dynamic_template formats to match the old bundle style
+                        // and the way ElasticSearch expects them
+                        ->beforeNormalization()
+                        ->ifTrue(function ($v) {
+                            return isset($v['dynamic_templates']);
+                        })
+                        ->then(function ($v) {
+                            $dt = [];
+                            foreach ($v['dynamic_templates'] as $key => $type) {
+                                if (is_int($key)) {
+                                    $dt[] = $type;
+                                } else {
+                                    $dt[][$key] = $type;
+                                }
+                            }
+
+                            $v['dynamic_templates'] = $dt;
+
+                            return $v;
+                        })
+                        ->end()
                         ->children()
                             ->scalarNode('template_name')
                                 ->info('Defaults to the name of the index template, but can be modified if the index name is different in ElasticSearch')
@@ -527,8 +588,17 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('template')->isRequired()->end()
                             ->scalarNode('client')->end()
                             ->variableNode('settings')->defaultValue([])->end()
+                            ->booleanNode('date_detection')->end()
+                            ->arrayNode('dynamic_date_formats')->prototype('scalar')->end()->end()
+                            ->scalarNode('analyzer')->end()
+                            ->booleanNode('numeric_detection')->end()
+                            ->scalarNode('dynamic')->end()
                         ->end()
-                        ->append($this->getTypesNode())
+                        ->append($this->getIdNode())
+                        ->append($this->getPropertiesNode())
+                        ->append($this->getDynamicTemplateNode())
+                        ->append($this->getSourceNode())
+                        ->append($this->getRoutingNode())
                     ->end()
                 ->end()
             ->end()

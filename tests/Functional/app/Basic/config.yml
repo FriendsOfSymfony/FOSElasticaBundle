@@ -33,55 +33,51 @@ fos_elastica:
                             type: "nGram"
                             min_gram: 3
                             max_gram: 4
-            types:
-                _doc:
-                    dynamic: strict
-                    date_detection: false
-                    dynamic_date_formats: [ 'yyyy-MM-dd' ]
-                    dynamic_templates:
-                        - dates:
-                            match: "date_*"
-                            mapping:
-                                type: date
-                        - strings:
-                            match: "*"
-                            mapping:
-                                analyzer: english
-                                type: text
-                    numeric_detection: true
+            dynamic: strict
+            date_detection: false
+            dynamic_date_formats: [ 'yyyy-MM-dd' ]
+            dynamic_templates:
+                - dates:
+                    match: "date_*"
+                    mapping:
+                        type: date
+                - strings:
+                    match: "*"
+                    mapping:
+                        analyzer: english
+                        type: text
+            numeric_detection: true
+            properties:
+                field1: ~
+                field2:
+                    store: false
+                date: { boost: 5 }
+                completion:
+                    type: completion
+                title: { boost: 8, analyzer: my_analyzer }
+                content: ~
+                comments:
+                    type: "nested"
                     properties:
-                        field1: ~
-                        field2:
-                            store: false
                         date: { boost: 5 }
-                        completion:
-                            type: completion
-                        title: { boost: 8, analyzer: my_analyzer }
                         content: ~
-                        comments:
-                            type: "nested"
-                            properties:
-                                date: { boost: 5 }
-                                content: ~
-                        multiple:
-                            type: text
-                            fields:
-                                name: { type: text }
-                                position: { type: text }
-                        user:
-                            type: "object"
-                        approver:
-                            type: "object"
-                            properties:
-                                date: { boost: 5 }
-                        lastlogin: { type: date, format: basic_date_time }
-                        birthday: { type: date, format: "yyyy-MM-dd" }
-                        dynamic_allowed: { type: object, dynamic: true }
+                multiple:
+                    type: text
+                    fields:
+                        name: { type: text }
+                        position: { type: text }
+                user:
+                    type: "object"
+                approver:
+                    type: "object"
+                    properties:
+                        date: { boost: 5 }
+                lastlogin: { type: date, format: basic_date_time }
+                birthday: { type: date, format: "yyyy-MM-dd" }
+                dynamic_allowed: { type: object, dynamic: true }
         null_mappings_index:
             index_name: 'foselastica_basic_test_%kernel.environment%'
-            types:
-                _doc:
-                    properties: ~
+            properties: ~
         empty_index: ~
 
     index_templates:
@@ -93,10 +89,8 @@ fos_elastica:
                 # templates should accept custom settings
                 number_of_shards: 2
                 number_of_replicas: 0
-            types:
-                _doc:
-                    properties:
-                        document_name_field_1: { type: text, index: false }
+            properties:
+                document_name_field_1: { type: text, index: false }
         index_template_example_2:
             client: 'default'
             template_name: 'index_template_2_name'
@@ -105,7 +99,5 @@ fos_elastica:
                 # templates should accept custom settings
                 number_of_shards: 2
                 number_of_replicas: 0
-            types:
-                _doc:
-                    properties:
-                        document_name_field_2: { type: text, index: false }
+            properties:
+                document_name_field_2: { type: text, index: false }

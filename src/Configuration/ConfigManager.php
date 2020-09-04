@@ -45,18 +45,6 @@ class ConfigManager implements ManagerInterface
         return array_keys($this->indexes);
     }
 
-    public function getTypeConfiguration(string $indexName, string $typeName): TypeConfig
-    {
-        $index = $this->getIndexConfiguration($indexName);
-        $type = $index->getType($typeName);
-
-        if (!$type) {
-            throw new \InvalidArgumentException(sprintf('Type with name "%s" on index "%s" is not configured', $typeName, $indexName));
-        }
-
-        return $type;
-    }
-
     public function hasIndexConfiguration(string $indexName): bool
     {
         return isset($this->indexes[$indexName]);

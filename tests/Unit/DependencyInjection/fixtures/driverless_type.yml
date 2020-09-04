@@ -10,7 +10,5 @@ fos_elastica:
                     service: 'custom.transformer.service'
                 persister:
                     service: 'custom.persist.service'
-            types:
-                _doc:
-                    properties:
-                        text: ~
+            properties:
+                text: ~
