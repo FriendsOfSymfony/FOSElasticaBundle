@@ -11,7 +11,7 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\QueryBuilder;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
