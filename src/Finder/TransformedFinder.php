@@ -70,6 +70,18 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
+     * @param $query
+     * @param null|int $limit
+     * @param array    $options
+     *
+     * @return array
+     */
+    public function findRaw($query, ?int $limit = null, array $options = []): array
+    {
+        return $this->search($query, $limit, $options);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function findPaginated($query, $options = [])
