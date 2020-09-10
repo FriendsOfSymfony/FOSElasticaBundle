@@ -27,28 +27,6 @@ use Symfony\Component\Yaml\Yaml;
 
 class FOSElasticaExtensionTest extends TestCase
 {
-    public function testShouldAddParentParamToObjectPersisterCall()
-    {
-        $config = Yaml::parse(file_get_contents(__DIR__.'/fixtures/config.yml'));
-
-        $containerBuilder = new ContainerBuilder();
-        $containerBuilder->setParameter('kernel.debug', true);
-
-        $extension = new FOSElasticaExtension();
-
-        $extension->load($config, $containerBuilder);
-
-        $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index.child_field'));
-
-        $persisterCallDefinition = $containerBuilder->getDefinition('fos_elastica.object_persister.test_index.child_field');
-
-        $arguments = $persisterCallDefinition->getArguments();
-        $arguments = $arguments['index_3'];
-
-        $this->assertArrayHasKey('_parent', $arguments);
-        $this->assertSame('parent_field', $arguments['_parent']['type']);
-    }
-
     public function testExtensionSupportsDriverlessTypePersistence()
     {
         $config = Yaml::parse(file_get_contents(__DIR__.'/fixtures/driverless_type.yml'));
@@ -60,9 +38,8 @@ class FOSElasticaExtensionTest extends TestCase
         $extension->load($config, $containerBuilder);
 
         $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.index.test_index'));
-        $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.index.test_index.driverless'));
-        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.elastica_to_model_transformer.test_index.driverless'));
-        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index.driverless'));
+        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.elastica_to_model_transformer.test_index'));
+        $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index'));
     }
 
     public function testShouldRegisterDoctrineORMPagerProviderIfEnabled()
@@ -71,48 +48,53 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
                 ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
+            ],
+            $container
+        );
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index'));
 
-        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
+        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index');
         $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.orm', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
-        $this->assertSame([
-            'batch_size' => 100,
-            'clear_object_manager' => true,
-            'debug_logging' => true,
-            'query_builder_method' => 'createQueryBuilder',
-        ], $definition->getArgument(3));
+        $this->assertSame(
+            [
+                'batch_size' => 100,
+                'clear_object_manager' => true,
+                'debug_logging' => true,
+                'query_builder_method' => 'createQueryBuilder',
+            ],
+            $definition->getArgument(3)
+        );
 
-        $this->assertSame([
-            'fos_elastica.pager_provider' => [
-                ['index' => 'acme_index', 'type' => 'acme_type'],
-            ]
-        ], $definition->getTags());
+        $this->assertSame(
+            [
+                'fos_elastica.pager_provider' => [
+                    ['index' => 'acme_index'],
+                ],
+            ],
+            $definition->getTags()
+        );
 
         $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.prototype.orm'));
         $this->assertSame(
@@ -131,48 +113,57 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'mongodb',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                            ],
+                            'types' => [
+                                '_doc' => [
+                                    'properties' => ['text' => null],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'mongodb',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
+            ],
+            $container
+        );
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index'));
 
-        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
+        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index');
         $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.mongodb', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
-        $this->assertSame([
-            'batch_size' => 100,
-            'clear_object_manager' => true,
-            'debug_logging' => true,
-            'query_builder_method' => 'createQueryBuilder',
-        ], $definition->getArgument(3));
+        $this->assertSame(
+            [
+                'batch_size' => 100,
+                'clear_object_manager' => true,
+                'debug_logging' => true,
+                'query_builder_method' => 'createQueryBuilder',
+            ],
+            $definition->getArgument(3)
+        );
 
-        $this->assertSame([
-            'fos_elastica.pager_provider' => [
-                ['index' => 'acme_index', 'type' => 'acme_type'],
-            ]
-        ], $definition->getTags());
+        $this->assertSame(
+            [
+                'fos_elastica.pager_provider' => [
+                    ['index' => 'acme_index'],
+                ],
+            ],
+            $definition->getTags()
+        );
 
         $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.prototype.mongodb'));
         $this->assertSame(
@@ -191,48 +182,53 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'phpcr',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
                 ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'phpcr',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
+            ],
+            $container
+        );
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index.acme_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.acme_index'));
 
-        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index.acme_type');
+        $definition = $container->getDefinition('fos_elastica.pager_provider.acme_index');
         $this->assertInstanceOf(ChildDefinition::class, $definition);
         $this->assertSame('fos_elastica.pager_provider.prototype.phpcr', $definition->getParent());
         $this->assertSame('theModelClass', $definition->getArgument(2));
-        $this->assertSame([
-            'batch_size' => 100,
-            'clear_object_manager' => true,
-            'debug_logging' => true,
-            'query_builder_method' => 'createQueryBuilder',
-        ], $definition->getArgument(3));
+        $this->assertSame(
+            [
+                'batch_size' => 100,
+                'clear_object_manager' => true,
+                'debug_logging' => true,
+                'query_builder_method' => 'createQueryBuilder',
+            ],
+            $definition->getArgument(3)
+        );
 
-        $this->assertSame([
-            'fos_elastica.pager_provider' => [
-                ['index' => 'acme_index', 'type' => 'acme_type'],
-            ]
-        ], $definition->getTags());
+        $this->assertSame(
+            [
+                'fos_elastica.pager_provider' => [
+                    ['index' => 'acme_index',],
+                ],
+            ],
+            $definition->getTags()
+        );
 
         $this->assertTrue($container->hasDefinition('fos_elastica.pager_provider.prototype.phpcr'));
         $this->assertSame(
@@ -247,29 +243,28 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
                 ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
+            ],
+            $container
+        );
 
         $this->assertTrue($container->hasDefinition('fos_elastica.in_place_pager_persister'));
 
@@ -277,14 +272,17 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertSame(InPlacePagerPersister::class, $definition->getClass());
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
-        $this->assertSame('fos_elastica.persister_registry', (string) $definition->getArgument(0));
+        $this->assertSame('fos_elastica.persister_registry', (string)$definition->getArgument(0));
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(1));
-        $this->assertSame('event_dispatcher', (string) $definition->getArgument(1));
+        $this->assertSame('event_dispatcher', (string)$definition->getArgument(1));
 
-        $this->assertSame([
-            'fos_elastica.pager_persister' => [['persisterName' => 'in_place']]
-        ], $definition->getTags());
+        $this->assertSame(
+            [
+                'fos_elastica.pager_persister' => [['persisterName' => 'in_place']],
+            ],
+            $definition->getTags()
+        );
     }
 
     public function testShouldRegisterRegisterListenersServiceForDoctrineProvider()
@@ -293,29 +291,28 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
                 ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
+            ],
+            $container
+        );
 
         $this->assertTrue($container->hasDefinition('fos_elastica.doctrine.register_listeners'));
 
@@ -323,7 +320,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertSame(RegisterListenersService::class, $definition->getClass());
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
-        $this->assertSame('event_dispatcher', (string) $definition->getArgument(0));
+        $this->assertSame('event_dispatcher', (string)$definition->getArgument(0));
     }
 
     public function testShouldRegisterFilterObjectsListener()
@@ -332,29 +329,28 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
                 ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
+            ],
+            $container
+        );
 
         $this->assertTrue($container->hasDefinition('fos_elastica.filter_objects_listener'));
 
@@ -363,7 +359,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertSame(FilterObjectsListener::class, $listener->getClass());
 
         $this->assertInstanceOf(Reference::class, $listener->getArgument(0));
-        $this->assertSame('fos_elastica.indexable', (string) $listener->getArgument(0));
+        $this->assertSame('fos_elastica.indexable', (string)$listener->getArgument(0));
         $this->assertEquals(['kernel.event_subscriber' => [[]]], $listener->getTags());
     }
 
@@ -373,29 +369,28 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
                 ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
+            ],
+            $container
+        );
 
         $this->assertTrue($container->hasDefinition('fos_elastica.pager_persister_registry'));
 
@@ -410,31 +405,30 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
                 ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => null,
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
+            ],
+            $container
+        );
 
-        $this->assertTrue($container->hasDefinition('fos_elastica.listener.acme_index.acme_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.listener.acme_index'));
     }
 
     public function testShouldNotRegisterDoctrineORMListenerIfDisabled()
@@ -443,33 +437,32 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => [
+                                    'enabled' => false,
+                                ],
+                                'finder' => null,
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
                 ],
-                'indexes' => [
-                    'acme_index' => [
-                        'types' => [
-                            'acme_type' => [
-                                'properties' => ['text' => null],
-                                'persistence' => [
-                                    'driver' => 'orm',
-                                    'model' => 'theModelClass',
-                                    'provider' => null,
-                                    'listener' => [
-                                        'enabled' => false,
-                                    ],
-                                    'finder' => null,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $container);
+            ],
+            $container
+        );
 
-        $this->assertFalse($container->hasDefinition('fos_elastica.listener.acme_index.acme_type'));
+        $this->assertFalse($container->hasDefinition('fos_elastica.listener.acme_index'));
     }
 
     public function testIndexTemplates()
@@ -478,29 +471,27 @@ class FOSElasticaExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
 
         $extension = new FOSElasticaExtension();
-        $extension->load([
-            'fos_elastica' => [
-                'clients' => [
-                    'default' => ['host' => 'a_host', 'port' => 'a_port'],
-                ],
-                'indexes' => [
-                    'some_index' => [
-                        'types' => [],
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
                     ],
-                ],
-                'index_templates' => [
-                    'some_index_template' => [
-                        'template' => 'some_index_template_*',
-                        'client' => 'default',
-                        'types' => [
-                            'some_type' => [
-                                'properties' => ['text' => null],
-                            ],
+                    'indexes' => [
+                        'some_index' => [
+                        ],
+                    ],
+                    'index_templates' => [
+                        'some_index_template' => [
+                            'template' => 'some_index_template_*',
+                            'client' => 'default',
+                            'properties' => ['text' => null],
                         ],
                     ],
                 ],
             ],
-        ], $container);
+            $container
+        );
 
         $this->assertTrue($container->hasDefinition('fos_elastica.index_template.some_index_template'));
         $definition = $container->getDefinition('fos_elastica.index_template.some_index_template');
@@ -514,6 +505,6 @@ class FOSElasticaExtensionTest extends TestCase
             ],
             $tag
         );
-        $this->assertTrue($container->hasDefinition('fos_elastica.index_template.some_index_template.some_type'));
+        $this->assertTrue($container->hasDefinition('fos_elastica.index_template.some_index_template'));
     }
 }

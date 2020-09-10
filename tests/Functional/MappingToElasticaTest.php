@@ -31,33 +31,20 @@ class MappingToElasticaTest extends WebTestCase
         $resetter = $this->getResetter();
         $resetter->resetIndex('index');
 
-        $type = $this->getType();
-        $mapping = $type->getMapping();
+        $index = $this->getIndex();
+        $mapping = $index->getMapping();
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
 
-        $type = $this->getType();
-        $mapping = $type->getMapping();
-        $this->assertSame('parent', $mapping['type']['_parent']['type']);
+        $index = $this->getIndex();
+        $mapping = $index->getMapping();
 
-        $this->assertSame('strict', $mapping['type']['dynamic']);
-        $this->assertArrayHasKey('dynamic', $mapping['type']['properties']['dynamic_allowed']);
-        $this->assertSame('true', $mapping['type']['properties']['dynamic_allowed']['dynamic']);
-    }
-
-    public function testResetType()
-    {
-        static::bootKernel(['test_case' => 'Basic']);
-        $resetter = $this->getResetter();
-        $resetter->resetIndexType('index', 'type');
-
-        $type = $this->getType();
-        $mapping = $type->getMapping();
-
-        $this->assertNotEmpty($mapping, 'Mapping was populated');
-        $this->assertFalse($mapping['type']['date_detection']);
-        $this->assertTrue($mapping['type']['numeric_detection']);
-        $this->assertSame(['yyyy-MM-dd'], $mapping['type']['dynamic_date_formats']);
+        $this->assertSame('strict', $mapping['dynamic']);
+        $this->assertFalse($mapping['date_detection']);
+        $this->assertTrue($mapping['numeric_detection']);
+        $this->assertSame(['yyyy-MM-dd'], $mapping['dynamic_date_formats']);
+        $this->assertArrayHasKey('dynamic', $mapping['properties']['dynamic_allowed']);
+        $this->assertSame('true', $mapping['properties']['dynamic_allowed']['dynamic']);
     }
 
     public function testORMResetIndexAddsMappings()
@@ -66,20 +53,8 @@ class MappingToElasticaTest extends WebTestCase
         $resetter = $this->getResetter();
         $resetter->resetIndex('index');
 
-        $type = $this->getType();
-        $mapping = $type->getMapping();
-
-        $this->assertNotEmpty($mapping, 'Mapping was populated');
-    }
-
-    public function testORMResetType()
-    {
-        static::bootKernel(['test_case' => 'ORM']);
-        $resetter = $this->getResetter();
-        $resetter->resetIndexType('index', 'type');
-
-        $type = $this->getType();
-        $mapping = $type->getMapping();
+        $index = $this->getIndex();
+        $mapping = $index->getMapping();
 
         $this->assertNotEmpty($mapping, 'Mapping was populated');
     }
@@ -87,7 +62,7 @@ class MappingToElasticaTest extends WebTestCase
     public function testMappingIteratorToArrayField()
     {
         static::bootKernel(['test_case' => 'ORM']);
-        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.index.type');
+        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.index');
 
         $object = new TypeObj();
         $object->id = 1;
@@ -108,13 +83,8 @@ class MappingToElasticaTest extends WebTestCase
         return static::$kernel->getContainer()->get('fos_elastica.resetter');
     }
 
-    /**
-     * @param string $type
-     *
-     * @return \Elastica\Type
-     */
-    private function getType($type = 'type')
+    private function getIndex(string $name = 'index'): \Elastica\Index
     {
-        return static::$kernel->getContainer()->get('fos_elastica.index.index.'.$type);
+        return static::$kernel->getContainer()->get('fos_elastica.index.'.$name);
     }
 }

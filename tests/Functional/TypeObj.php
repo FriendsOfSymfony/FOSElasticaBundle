@@ -27,9 +27,4 @@ class TypeObj
     {
         return false;
     }
-
-    public function getSerializableColl()
-    {
-        return iterator_to_array($this->coll, false);
-    }
 }

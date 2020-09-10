@@ -28,93 +28,48 @@ class TypeConfig
      */
     private $name;
 
-    /**
-     * @param string $name
-     * @param array  $mapping
-     * @param array  $config
-     */
-    public function __construct($name, array $mapping, array $config = [])
+    public function __construct(string $name, array $mapping, array $config = [])
     {
         $this->config = $config;
         $this->mapping = $mapping;
         $this->name = $name;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getDateDetection()
+    public function getDateDetection(): ?bool
     {
-        return $this->getConfig('date_detection');
+        return $this->config['date_detection'] ?? null;
     }
 
-    /**
-     * @return array
-     */
-    public function getDynamicDateFormats()
+    public function getDynamicDateFormats(): ?array
     {
-        return $this->getConfig('dynamic_date_formats');
+        return $this->config['dynamic_date_formats'] ?? null;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getAnalyzer()
+    public function getAnalyzer(): ?string
     {
-        return $this->getConfig('analyzer');
+        return $this->config['analyzer'] ?? null;
     }
 
-    /**
-     * @return array
-     */
-    public function getMapping()
+    public function getMapping(): array
     {
         return $this->mapping;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getModel()
+    public function getNumericDetection(): ?bool
     {
-        return isset($this->config['persistence']['model']) ?
-            $this->config['persistence']['model'] :
-            null;
+        return $this->config['numeric_detection'] ?? null;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getNumericDetection()
-    {
-        return $this->getConfig('numeric_detection');
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string|null
+    /*
+     * @return string|bool|null
      */
     public function getDynamic()
     {
-        return $this->getConfig('dynamic');
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return null|string
-     */
-    private function getConfig($key)
-    {
-        return isset($this->config[$key]) ?
-            $this->config[$key] :
-            null;
+        return $this->config['dynamic'] ?? null;
     }
 }

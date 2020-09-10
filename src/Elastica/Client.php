@@ -13,7 +13,9 @@ namespace FOS\ElasticaBundle\Elastica;
 
 use Elastica\Client as BaseClient;
 use Elastica\Exception\ClientException;
+use Elastica\Index as BaseIndex;
 use Elastica\Request;
+use Elastica\Response;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Symfony\Component\Stopwatch\Stopwatch;
 
@@ -49,7 +51,7 @@ class Client extends BaseClient
     /**
      * {@inheritdoc}
      */
-    public function request($path, $method = Request::GET, $data = [], array $query = [], $contentType = Request::DEFAULT_CONTENT_TYPE)
+    public function request($path, $method = Request::GET, $data = [], array $query = [], $contentType = Request::DEFAULT_CONTENT_TYPE): Response
     {
         if ($this->stopwatch) {
             $this->stopwatch->start('es_request', 'fos_elastica');
@@ -69,7 +71,7 @@ class Client extends BaseClient
         }
 
         if (isset($responseData['took']) && isset($responseData['hits'])) {
-            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']);
+            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0);
         } else {
             $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), 0, 0);
         }
@@ -81,12 +83,7 @@ class Client extends BaseClient
         return $response;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return Index|mixed
-     */
-    public function getIndex($name)
+    public function getIndex(string $name): BaseIndex
     {
         if (isset($this->indexCache[$name])) {
             return $this->indexCache[$name];
@@ -125,7 +122,7 @@ class Client extends BaseClient
      * @param int    $engineMS
      * @param int    $itemCount
      */
-    private function logQuery($path, $method, $data, array $query, $queryTime, $engineMS = 0, $itemCount = 0)
+    private function logQuery($path, $method, $data, array $query, $queryTime, $engineMS = 0, $itemCount = 0): void
     {
         if (!$this->_logger or !$this->_logger instanceof ElasticaLogger) {
             return;

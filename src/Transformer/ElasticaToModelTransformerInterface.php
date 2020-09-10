@@ -35,15 +35,11 @@ interface ElasticaToModelTransformerInterface
 
     /**
      * Returns the object class used by the transformer.
-     *
-     * @return string
      */
-    public function getObjectClass();
+    public function getObjectClass(): string;
 
     /**
      * Returns the identifier field from the options.
-     *
-     * @return string the identifier field
      */
-    public function getIdentifierField();
+    public function getIdentifierField(): string;
 }

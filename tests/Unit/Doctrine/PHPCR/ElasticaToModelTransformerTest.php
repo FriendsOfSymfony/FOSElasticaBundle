@@ -37,7 +37,7 @@ class ElasticaToModelTransformerTest extends TestCase
 
     protected $objectClass = 'stdClass';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');

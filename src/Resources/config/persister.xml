@@ -23,10 +23,7 @@
         </service>
 
         <service id="fos_elastica.persister_registry" class="FOS\ElasticaBundle\Persister\PersisterRegistry" public="true">
-            <argument type="collection" />
-            <call method="setContainer">
-                <argument type="service" id="service_container" />
-            </call>
+            <argument type="tagged_locator" tag="fos_elastica.persister" index-by="index" />
         </service>
 
         <service id="fos_elastica.filter_objects_listener" class="FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener" public="true">
@@ -36,7 +33,7 @@
         </service>
 
         <service id="fos_elastica.object_persister" class="FOS\ElasticaBundle\Persister\ObjectPersister" public="true" abstract="true">
-            <argument /> <!-- type -->
+            <argument /> <!-- index -->
             <argument /> <!-- model to elastica transformer -->
             <argument /> <!-- model -->
             <argument /> <!-- properties mapping -->

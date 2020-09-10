@@ -10,5 +10,4 @@ use Elastica\IndexTemplate as BaseIndexTemplate;
  */
 class IndexTemplate extends BaseIndexTemplate
 {
-
 }

@@ -25,10 +25,6 @@ class IndexManager
      */
     private $indexes;
 
-    /**
-     * @param array $indexes
-     * @param Index $defaultIndex
-     */
     public function __construct(array $indexes, Index $defaultIndex)
     {
         $this->defaultIndex = $defaultIndex;
@@ -37,24 +33,18 @@ class IndexManager
 
     /**
      * Gets all registered indexes.
-     *
-     * @return array
      */
-    public function getAllIndexes()
+    public function getAllIndexes(): array
     {
         return $this->indexes;
     }
 
     /**
-     * Gets an index by its name.
-     *
-     * @param string $name Index to return, or the default index if null
-     *
-     * @return Index
+     * Gets an index by its name or the default index.
      *
      * @throws \InvalidArgumentException if no index exists for the given name
      */
-    public function getIndex($name = null)
+    public function getIndex(?string $name = null): Index
     {
         if (null === $name) {
             return $this->defaultIndex;
@@ -69,10 +59,8 @@ class IndexManager
 
     /**
      * Gets the default index.
-     *
-     * @return Index
      */
-    public function getDefaultIndex()
+    public function getDefaultIndex(): Index
     {
         return $this->defaultIndex;
     }

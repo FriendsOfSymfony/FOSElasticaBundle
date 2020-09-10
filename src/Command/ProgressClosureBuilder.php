@@ -22,20 +22,12 @@ final class ProgressClosureBuilder
     /**
      * Builds a loggerClosure to be called from inside the Provider to update the command
      * line.
-     *
-     * @param OutputInterface $output
-     * @param string          $action
-     * @param string          $index
-     * @param string          $type
-     * @param int             $offset
-     *
-     * @return callable
      */
-    public static function build(OutputInterface $output, $action, $index, $type, $offset)
+    public static function build(OutputInterface $output, string $action, string $index, int $offset): \Closure
     {
         $progress = null;
 
-        return function ($increment, $totalObjects, $message = null) use (&$progress, $output, $action, $index, $type, $offset) {
+        return function ($increment, $totalObjects, $message = null) use (&$progress, $output, $action, $index, $offset) {
             if (null === $progress) {
                 $progress = new ProgressBar($output, $totalObjects);
                 $progress->start();
@@ -48,7 +40,7 @@ final class ProgressClosureBuilder
                 $progress->display();
             }
 
-            $progress->setMessage(sprintf('<info>%s</info> <comment>%s/%s</comment>', $action, $index, $type));
+            $progress->setMessage(sprintf('<info>%s</info> <comment>%s</comment>', $action, $index));
             $progress->advance($increment);
         };
     }

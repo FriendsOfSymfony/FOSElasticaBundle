@@ -13,7 +13,7 @@ namespace FOS\ElasticaBundle\Persister;
 
 use Elastica\Document;
 use Elastica\Exception\BulkException;
-use Elastica\Type;
+use Elastica\Index;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -25,22 +25,16 @@ use Psr\Log\LoggerInterface;
  */
 class ObjectPersister implements ObjectPersisterInterface
 {
-    protected $type;
+    protected $index;
     protected $transformer;
     protected $objectClass;
     protected $fields;
     protected $logger;
     private $options;
 
-    /**
-     * @param Type                                $type
-     * @param ModelToElasticaTransformerInterface $transformer
-     * @param string                              $objectClass
-     * @param array                               $fields
-     */
-    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, array $fields, array $options = [])
+    public function __construct(Index $index, ModelToElasticaTransformerInterface $transformer, string $objectClass, array $fields, array $options = [])
     {
-        $this->type = $type;
+        $this->index = $index;
         $this->transformer = $transformer;
         $this->objectClass = $objectClass;
         $this->fields = $fields;
@@ -55,9 +49,6 @@ class ObjectPersister implements ObjectPersisterInterface
         return $object instanceof $this->objectClass;
     }
 
-    /**
-     * @param LoggerInterface $logger
-     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -105,7 +96,7 @@ class ObjectPersister implements ObjectPersisterInterface
             $documents[] = $this->transformToElasticaDocument($object);
         }
         try {
-            $this->type->addDocuments($documents, $this->options);
+            $this->index->addDocuments($documents, $this->options);
         } catch (BulkException $e) {
             $this->log($e);
         }
@@ -124,7 +115,7 @@ class ObjectPersister implements ObjectPersisterInterface
         }
 
         try {
-            $this->type->updateDocuments($documents, $this->options);
+            $this->index->updateDocuments($documents, $this->options);
         } catch (BulkException $e) {
             $this->log($e);
         }
@@ -140,7 +131,7 @@ class ObjectPersister implements ObjectPersisterInterface
             $documents[] = $this->transformToElasticaDocument($object);
         }
         try {
-            $this->type->deleteDocuments($documents);
+            $this->index->deleteDocuments($documents);
         } catch (BulkException $e) {
             $this->log($e);
         }
@@ -152,7 +143,7 @@ class ObjectPersister implements ObjectPersisterInterface
     public function deleteManyByIdentifiers(array $identifiers, $routing = false)
     {
         try {
-            $this->type->deleteIds($identifiers, $routing);
+            $this->index->getClient()->deleteIds($identifiers, $this->index->getName(), $routing);
         } catch (BulkException $e) {
             $this->log($e);
         }
@@ -160,20 +151,14 @@ class ObjectPersister implements ObjectPersisterInterface
 
     /**
      * Transforms an object to an elastica document.
-     *
-     * @param object $object
-     *
-     * @return Document the elastica document
      */
-    public function transformToElasticaDocument($object)
+    public function transformToElasticaDocument(object $object): Document
     {
         return $this->transformer->transform($object, $this->fields);
     }
 
     /**
      * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw.
-     *
-     * @param BulkException $e
      *
      * @throws BulkException
      */

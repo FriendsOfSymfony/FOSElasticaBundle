@@ -191,17 +191,17 @@ fos_elastica:
                             my_analyzer:
                                 type: snowball
                                 language: English
+            persistence:
+                driver: orm
+                model: Acme\DemoBundle\Entity\Article
+                provider: ~
+                finder: ~
             types:
                 article:
                     properties:
                         title: { boost: 10, analyzer: my_analyzer }
                         tags:
                         categoryIds:
-                    persistence:
-                        driver: orm
-                        model: Acme\DemoBundle\Entity\Article
-                        provider: ~
-                        finder: ~
 ```
 
 The following code will execute a search against the Elasticsearch server:

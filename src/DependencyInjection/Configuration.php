@@ -17,7 +17,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    const SUPPORTED_DRIVERS = ['orm', 'mongodb', 'phpcr'];
+    private const SUPPORTED_DRIVERS = ['orm', 'mongodb', 'phpcr'];
 
     /**
      * If the kernel is running in debug mode.
@@ -39,13 +39,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('fos_elastica');
-
-        if (method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $rootNode = $treeBuilder->root('fos_elastica');
-        }
+        $rootNode = $treeBuilder->getRootNode();
 
         $this->addClientsSection($rootNode);
         $this->addIndexesSection($rootNode);
@@ -145,17 +139,12 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('analyzer')->end()
                     ->booleanNode('numeric_detection')->end()
                     ->scalarNode('dynamic')->end()
-                    ->variableNode('indexable_callback')->end()
-                    ->append($this->getPersistenceNode())
-                    ->append($this->getSerializerNode())
                 ->end()
                 ->append($this->getIdNode())
                 ->append($this->getPropertiesNode())
                 ->append($this->getDynamicTemplateNode())
                 ->append($this->getSourceNode())
                 ->append($this->getRoutingNode())
-                ->append($this->getParentNode())
-                ->append($this->getAllNode())
             ->end()
         ;
 
@@ -230,41 +219,6 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('required')->end()
                 ->scalarNode('path')->end()
-            ->end()
-        ;
-
-        return $node;
-    }
-
-    /**
-     * Returns the array node used for "_parent".
-     */
-    private function getParentNode()
-    {
-        $node = $this->createTreeBuilderNode('_parent');
-
-        $node
-            ->children()
-                ->scalarNode('type')->end()
-                ->scalarNode('property')->defaultValue(null)->end()
-                ->scalarNode('identifier')->defaultValue('id')->end()
-            ->end()
-        ;
-
-        return $node;
-    }
-
-    /**
-     * Returns the array node used for "_all".
-     */
-    private function getAllNode()
-    {
-        $node = $this->createTreeBuilderNode('_all');
-
-        $node
-            ->children()
-            ->scalarNode('enabled')->defaultValue(true)->end()
-            ->scalarNode('analyzer')->end()
             ->end()
         ;
 
@@ -514,16 +468,45 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('indexes')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
+                        ->treatNullLike([])
+                        ->beforeNormalization()
+                        ->ifNull()
+                        ->thenEmptyArray()
+                        ->end()
+                        // Support multiple dynamic_template formats to match the old bundle style
+                        // and the way ElasticSearch expects them
+                        ->beforeNormalization()
+                        ->ifTrue(function ($v) {
+                            return isset($v['dynamic_templates']);
+                        })
+                        ->then(function ($v) {
+                            $dt = [];
+                            foreach ($v['dynamic_templates'] as $key => $type) {
+                                if (is_int($key)) {
+                                    $dt[] = $type;
+                                } else {
+                                    $dt[][$key] = $type;
+                                }
+                            }
+
+                            $v['dynamic_templates'] = $dt;
+
+                            return $v;
+                        })
+                        ->end()
                         ->children()
                             ->scalarNode('index_name')
                                 ->info('Defaults to the name of the index, but can be modified if the index name is different in ElasticSearch')
                             ->end()
+                            ->variableNode('indexable_callback')->end()
                             ->booleanNode('use_alias')->defaultValue(false)->end()
                             ->scalarNode('client')->end()
                             ->scalarNode('finder')
                                 ->treatNullLike(true)
                                 ->defaultFalse()
                             ->end()
+                            ->append($this->getPersistenceNode())
+                            ->append($this->getSerializerNode())
                             ->arrayNode('type_prototype')
                                 ->children()
                                     ->scalarNode('analyzer')->end()
@@ -532,8 +515,17 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                             ->variableNode('settings')->defaultValue([])->end()
+                            ->booleanNode('date_detection')->end()
+                            ->arrayNode('dynamic_date_formats')->prototype('scalar')->end()->end()
+                            ->scalarNode('analyzer')->end()
+                            ->booleanNode('numeric_detection')->end()
+                            ->scalarNode('dynamic')->end()
                         ->end()
-                        ->append($this->getTypesNode())
+                        ->append($this->getIdNode())
+                        ->append($this->getPropertiesNode())
+                        ->append($this->getDynamicTemplateNode())
+                        ->append($this->getSourceNode())
+                        ->append($this->getRoutingNode())
                     ->end()
                 ->end()
             ->end()
@@ -545,16 +537,7 @@ class Configuration implements ConfigurationInterface
      */
     private function createTreeBuilderNode($name)
     {
-        $builder = new TreeBuilder($name);
-
-        if (method_exists($builder, 'getRootNode')) {
-            $node = $builder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $node = $builder->root($name);
-        }
-
-        return $node;
+        return (new TreeBuilder($name))->getRootNode();
     }
 
     /**
@@ -572,6 +555,32 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('index_templates')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
+                        ->treatNullLike([])
+                        ->beforeNormalization()
+                        ->ifNull()
+                        ->thenEmptyArray()
+                        ->end()
+                        // Support multiple dynamic_template formats to match the old bundle style
+                        // and the way ElasticSearch expects them
+                        ->beforeNormalization()
+                        ->ifTrue(function ($v) {
+                            return isset($v['dynamic_templates']);
+                        })
+                        ->then(function ($v) {
+                            $dt = [];
+                            foreach ($v['dynamic_templates'] as $key => $type) {
+                                if (is_int($key)) {
+                                    $dt[] = $type;
+                                } else {
+                                    $dt[][$key] = $type;
+                                }
+                            }
+
+                            $v['dynamic_templates'] = $dt;
+
+                            return $v;
+                        })
+                        ->end()
                         ->children()
                             ->scalarNode('template_name')
                                 ->info('Defaults to the name of the index template, but can be modified if the index name is different in ElasticSearch')
@@ -579,8 +588,17 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('template')->isRequired()->end()
                             ->scalarNode('client')->end()
                             ->variableNode('settings')->defaultValue([])->end()
+                            ->booleanNode('date_detection')->end()
+                            ->arrayNode('dynamic_date_formats')->prototype('scalar')->end()->end()
+                            ->scalarNode('analyzer')->end()
+                            ->booleanNode('numeric_detection')->end()
+                            ->scalarNode('dynamic')->end()
                         ->end()
-                        ->append($this->getTypesNode())
+                        ->append($this->getIdNode())
+                        ->append($this->getPropertiesNode())
+                        ->append($this->getDynamicTemplateNode())
+                        ->append($this->getSourceNode())
+                        ->append($this->getRoutingNode())
                     ->end()
                 ->end()
             ->end()

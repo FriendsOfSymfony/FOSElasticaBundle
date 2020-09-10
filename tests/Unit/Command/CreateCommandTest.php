@@ -62,7 +62,7 @@ class CreateCommandTest extends TestCase
      */
     private $index;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->indexManager = $this->createMock(IndexManager::class);
         $this->mappingBuilder = $this->createMock(MappingBuilder::class);

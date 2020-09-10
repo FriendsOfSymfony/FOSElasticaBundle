@@ -25,10 +25,6 @@
             <!-- tagged with fos_elastica.index_template in the Extension -->
         </service>
 
-        <service id="fos_elastica.type_prototype" class="Elastica\Type" public="true" abstract="true">
-            <argument /> <!-- type name -->
-        </service>
-
         <service id="fos_elastica.index_manager" class="FOS\ElasticaBundle\Index\IndexManager" public="true">
             <argument /> <!-- indexes -->
             <argument type="service" id="fos_elastica.index" /> <!-- default index -->

@@ -2,7 +2,5 @@ FOS\ElasticaBundle\Tests\Functional\TypeObj:
     properties:
         field1:
             type: text
-    virtualProperties:
-        getSerializableColl:
-            serializedName: coll
-            type: array
+        coll:
+            type: 'array<string>'

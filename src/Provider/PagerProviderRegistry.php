@@ -11,23 +11,17 @@
 
 namespace FOS\ElasticaBundle\Provider;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
- * References persistence providers for each index and type.
+ * References persistence providers for each index.
  */
-class PagerProviderRegistry implements ContainerAwareInterface
+class PagerProviderRegistry
 {
-    use ContainerAwareTrait;
-
-    /** @var array */
+    /** @var ServiceLocator */
     private $providers = [];
 
-    /**
-     * @param array $providers
-     */
-    public function __construct(array $providers)
+    public function __construct(ServiceLocator $providers)
     {
         $this->providers = $providers;
     }
@@ -35,64 +29,28 @@ class PagerProviderRegistry implements ContainerAwareInterface
     /**
      * Gets all registered providers.
      *
-     * Providers will be indexed by "index/type" strings in the returned array.
+     * Providers will be indexed by "index" strings in the returned array.
      *
      * @return PagerProviderInterface[]
      */
-    public function getAllProviders()
+    public function getProviders()
     {
-        $providers = [];
-
-        foreach ($this->providers as $index => $indexProviders) {
-            foreach ($indexProviders as $type => $providerId) {
-                $providers[sprintf('%s/%s', $index, $type)] = $this->container->get($providerId);
-            }
-        }
-
-        return $providers;
+        return \array_reduce(\array_keys($this->providers->getProvidedServices()), function ($carry, $index) {
+            return $carry + [$index => $this->providers->get($index)];
+        }, []);
     }
 
     /**
-     * Gets all providers for an index.
-     *
-     * Providers will be indexed by "type" strings in the returned array.
-     *
-     * @param string $index
-     *
-     * @return PagerProviderInterface[]|
-     *
-     * @throws \InvalidArgumentException if no providers were registered for the index
-     */
-    public function getIndexProviders($index)
-    {
-        if (!isset($this->providers[$index])) {
-            throw new \InvalidArgumentException(sprintf('No providers were registered for index "%s".', $index));
-        }
-
-        $providers = [];
-        foreach ($this->providers[$index] as $type => $providerId) {
-            $providers[$type] = $this->getProvider($index, $type);
-        }
-
-        return $providers;
-    }
-
-    /**
-     * Gets the provider for an index and type.
-     *
-     * @param string $index
-     * @param string $type
-     *
-     * @return PagerProviderInterface
+     * Gets the provider for an index.
      *
      * @throws \InvalidArgumentException if no provider was registered for the index and type
      */
-    public function getProvider($index, $type)
+    public function getProvider(string $index): ?PagerProviderInterface
     {
-        if (!isset($this->providers[$index][$type])) {
-            throw new \InvalidArgumentException(sprintf('No provider was registered for index "%s" and type "%s".', $index, $type));
+        if (!$this->providers->has($index)) {
+            throw new \InvalidArgumentException(sprintf('No provider was registered for index "%s".', $index));
         }
 
-        return $this->container->get($this->providers[$index][$type]);
+        return $this->providers->get($index);
     }
 }

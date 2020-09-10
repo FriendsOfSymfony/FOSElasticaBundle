@@ -9,18 +9,16 @@ namespace FOS\ElasticaBundle\Index;
 interface ResetterInterface
 {
     /**
-     * Reset all indexes
+     * Reset all indexes.
      *
      * @return void
      */
     public function resetAllIndexes();
 
     /**
-     * Reset index
-     *
-     * @param string $indexName
+     * Reset index.
      *
      * @return void
      */
-    public function resetIndex($indexName);
+    public function resetIndex(string $indexName);
 }

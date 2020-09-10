@@ -6,7 +6,7 @@
 
     <services>
         <service id="fos_elastica.populate_listener" class="FOS\ElasticaBundle\EventListener\PopulateListener">
-            <tag name="kernel.event_listener" event="elastica.index.index_post_populate" method="onPostIndexPopulate" priority="-9999"/>
+            <tag name="kernel.event_listener" event="FOS\ElasticaBundle\Event\PostIndexPopulateEvent" method="onPostIndexPopulate" priority="-9999"/>
             <argument type="service" id="fos_elastica.resetter"/>
         </service>
     </services>

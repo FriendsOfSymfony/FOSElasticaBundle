@@ -31,17 +31,17 @@ fos_elastica:
 B) Set up each defined type to support serialization
 ----------------------------------------------------
 
-A type does not need to have mappings defined when using a serializer. An example configuration
-for a type in this case:
+An index does not need to have mappings defined when using a serializer. An example configuration
+for an index in this case:
 
 ```yaml
 fos_elastica:
     indexes:
         app:
+            serializer:
+                groups: [elastica]
             types:
                 user:
-                    serializer:
-                        groups: [elastica]
 ```
 
 And inside the User class:
@@ -68,10 +68,10 @@ fos_elastica:
 
     indexes:
         app:
+            serializer:
+                groups: [elastica]
+                version: '1.1'
+                serialize_null: true
             types:
                 user:
-                    serializer:
-                        groups: [elastica]
-                        version: '1.1'
-                        serialize_null: true
 ```

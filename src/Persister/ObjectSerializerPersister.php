@@ -12,7 +12,7 @@
 namespace FOS\ElasticaBundle\Persister;
 
 use Elastica\Document;
-use Elastica\Type;
+use Elastica\Index;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 
 /**
@@ -27,14 +27,14 @@ class ObjectSerializerPersister extends ObjectPersister
     protected $serializer;
 
     /**
-     * @param Type                                $type
+     * @param Index                               $index
      * @param ModelToElasticaTransformerInterface $transformer
      * @param string                              $objectClass
      * @param callable                            $serializer
      */
-    public function __construct(Type $type, ModelToElasticaTransformerInterface $transformer, $objectClass, $serializer, array $options = [])
+    public function __construct(Index $index, ModelToElasticaTransformerInterface $transformer, string $objectClass, $serializer, array $options = [])
     {
-        parent::__construct($type, $transformer, $objectClass, [], $options);
+        parent::__construct($index, $transformer, $objectClass, [], $options);
 
         $this->serializer = $serializer;
     }
@@ -42,12 +42,8 @@ class ObjectSerializerPersister extends ObjectPersister
     /**
      * Transforms an object to an elastica document
      * with just the identifier set.
-     *
-     * @param object $object
-     *
-     * @return Document the elastica document
      */
-    public function transformToElasticaDocument($object)
+    public function transformToElasticaDocument(object $object): Document
     {
         $document = $this->transformer->transform($object, []);
 

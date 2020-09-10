@@ -14,12 +14,10 @@ Here's example on how to configure Doctrine ORM provider
 fos_elastica:
     indexes:
         theIndexName:
-            types:
-                theTypeName:
-                    persistence:
-                        driver: orm
-                        model: Application\UserBundle\Entity\User
-                        provider: ~
+            persistence:
+                driver: orm
+                model: Application\UserBundle\Entity\User
+                provider: ~
 ```
 
 There are other providers Doctrine MongoDB, Doctrine PHPCR available.

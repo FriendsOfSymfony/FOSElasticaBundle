@@ -46,14 +46,14 @@ class AppKernel extends Kernel
 
     public function registerBundles()
     {
-        if (!file_exists($filename = $this->getRootDir().'/'.$this->testCase.'/bundles.php')) {
+        if (!file_exists($filename = $this->getProjectDir().'/'.$this->testCase.'/bundles.php')) {
             throw new \RuntimeException(sprintf('The bundles file "%s" does not exist.', $filename));
         }
 
         return include $filename;
     }
 
-    public function getRootDir()
+    public function getProjectDir()
     {
         return __DIR__;
     }
@@ -75,16 +75,6 @@ class AppKernel extends Kernel
             $container->setParameter('fos_elastica.port', $_SERVER['FOS_ELASTICA_PORT']);
         });
         $loader->load($this->rootConfig);
-    }
-
-    public function serialize()
-    {
-        return serialize([$this->varDir, $this->testCase, $this->rootConfig, $this->getEnvironment(), $this->isDebug()]);
-    }
-
-    public function unserialize($str)
-    {
-        call_user_func_array([$this, '__construct'], unserialize($str));
     }
 
     protected function getKernelParameters()

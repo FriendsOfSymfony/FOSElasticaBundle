@@ -18,27 +18,11 @@ interface ManagerInterface
 {
     /**
      * Returns configuration for an index.
-     *
-     * @param string $index
-     *
-     * @return IndexConfig
      */
-    public function getIndexConfiguration($index);
+    public function getIndexConfiguration(string $index): IndexConfigInterface;
 
     /**
      * Returns an array of known index names.
-     *
-     * @return array
      */
-    public function getIndexNames();
-
-    /**
-     * Returns a type configuration.
-     *
-     * @param string $index
-     * @param string $type
-     *
-     * @return TypeConfig
-     */
-    public function getTypeConfiguration($index, $type);
+    public function getIndexNames(): array;
 }

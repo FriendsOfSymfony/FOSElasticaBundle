@@ -13,7 +13,6 @@ namespace FOS\ElasticaBundle\Index;
 
 use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
-use FOS\ElasticaBundle\Configuration\TypeConfig;
 
 class MappingBuilder
 {
@@ -26,23 +25,19 @@ class MappingBuilder
      */
     public function buildIndexMapping(IndexConfigInterface $indexConfig)
     {
-        $typeMappings = [];
-        foreach ($indexConfig->getTypes() as $typeConfig) {
-            $typeMappings[$typeConfig->getName()] = $this->buildTypeMapping($typeConfig);
-        }
+        $mapping = $this->buildMapping($indexConfig->getModel(), $indexConfig);
 
-        $mapping = [];
-        if (!empty($typeMappings)) {
-            $mapping['mappings'] = $typeMappings;
+        $mappingIndex = [];
+        if (!empty($mapping)) {
+            $mappingIndex['mappings'] = $mapping;
         }
-        // 'warmers' => $indexConfig->getWarmers(),
 
         $settings = $indexConfig->getSettings();
         if (!empty($settings)) {
-            $mapping['settings'] = $settings;
+            $mappingIndex['settings'] = $settings;
         }
 
-        return $mapping;
+        return $mappingIndex;
     }
 
     /**
@@ -63,32 +58,33 @@ class MappingBuilder
     /**
      * Builds mappings for a single type.
      *
-     * @param TypeConfig $typeConfig
+     * @param string|null $model
+     * @param IndexConfigInterface $indexConfig
      *
      * @return array
      */
-    public function buildTypeMapping(TypeConfig $typeConfig)
+    public function buildMapping(?string $model, IndexConfigInterface $indexConfig)
     {
-        $mapping = $typeConfig->getMapping();
+        $mapping = $indexConfig->getMapping();
 
-        if (null !== $typeConfig->getDynamicDateFormats()) {
-            $mapping['dynamic_date_formats'] = $typeConfig->getDynamicDateFormats();
+        if (null !== $indexConfig->getDynamicDateFormats()) {
+            $mapping['dynamic_date_formats'] = $indexConfig->getDynamicDateFormats();
         }
 
-        if (null !== $typeConfig->getDateDetection()) {
-            $mapping['date_detection'] = $typeConfig->getDateDetection();
+        if (null !== $indexConfig->getDateDetection()) {
+            $mapping['date_detection'] = $indexConfig->getDateDetection();
         }
 
-        if (null !== $typeConfig->getNumericDetection()) {
-            $mapping['numeric_detection'] = $typeConfig->getNumericDetection();
+        if (null !== $indexConfig->getNumericDetection()) {
+            $mapping['numeric_detection'] = $indexConfig->getNumericDetection();
         }
 
-        if ($typeConfig->getAnalyzer()) {
-            $mapping['analyzer'] = $typeConfig->getAnalyzer();
+        if ($indexConfig->getAnalyzer()) {
+            $mapping['analyzer'] = $indexConfig->getAnalyzer();
         }
 
-        if (null !== $typeConfig->getDynamic()) {
-            $mapping['dynamic'] = $typeConfig->getDynamic();
+        if (null !== $indexConfig->getDynamic()) {
+            $mapping['dynamic'] = $indexConfig->getDynamic();
         }
 
         if (isset($mapping['dynamic_templates']) and empty($mapping['dynamic_templates'])) {
@@ -100,11 +96,9 @@ class MappingBuilder
             unset($mapping['properties']);
         }
 
-        if ($typeConfig->getModel()) {
-            $mapping['_meta']['model'] = $typeConfig->getModel();
+        if ($model) {
+            $mapping['_meta']['model'] = $model;
         }
-
-        unset($mapping['_parent']['identifier'], $mapping['_parent']['property']);
 
         if (empty($mapping)) {
             // Empty mapping, we want it encoded as a {} instead of a []

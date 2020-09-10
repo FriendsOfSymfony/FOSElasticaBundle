@@ -40,7 +40,6 @@ class SearchCommand extends Command
     {
         $this
             ->setName('fos:elastica:search')
-            ->addArgument('type', InputArgument::REQUIRED, 'The type to search in')
             ->addArgument('query', InputArgument::REQUIRED, 'The text to search')
             ->addOption('index', null, InputOption::VALUE_REQUIRED, 'The index to search in')
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'The maximum number of documents to return', 20)
@@ -56,16 +55,15 @@ class SearchCommand extends Command
     {
         $indexName = $input->getOption('index');
         $index = $this->indexManager->getIndex($indexName ? $indexName : null);
-        $type = $index->getType($input->getArgument('type'));
         $query = Query::create($input->getArgument('query'));
         $query->setSize($input->getOption('limit'));
         if ($input->getOption('explain')) {
             $query->setExplain(true);
         }
 
-        $resultSet = $type->search($query);
+        $resultSet = $index->search($query);
 
-        $output->writeLn(sprintf('Found %d results', $type->count($query)));
+        $output->writeLn(sprintf('Found %d results', $index->count($query)));
         foreach ($resultSet->getResults() as $result) {
             $output->writeLn($this->formatResult($result, $input->getOption('show-field'), $input->getOption('show-source'), $input->getOption('show-id'), $input->getOption('explain')));
         }

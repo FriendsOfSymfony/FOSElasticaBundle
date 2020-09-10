@@ -23,30 +23,12 @@ class Index extends BaseIndex
     private $originalName;
 
     /**
-     * Stores created types to avoid recreation.
-     *
-     * @var array
-     */
-    private $typeCache = [];
-
-    /**
      * Returns the original name of the index if the index has been renamed for reindexing
      * or realiasing purposes.
-     *
-     * @return string
      */
-    public function getOriginalName()
+    public function getOriginalName(): string
     {
-        return $this->originalName ?: $this->_name;
-    }
-
-    public function getType($type)
-    {
-        if (isset($this->typeCache[$type])) {
-            return $this->typeCache[$type];
-        }
-
-        return $this->typeCache[$type] = parent::getType($type);
+        return $this->originalName ?? $this->_name;
     }
 
     /**
@@ -54,10 +36,8 @@ class Index extends BaseIndex
      *
      * While it's technically a regular setter for name property, it's specifically named overrideName, but not setName
      * since it's used for a very specific case and normally should not be used
-     *
-     * @param string $name Index name
      */
-    public function overrideName($name)
+    public function overrideName(string $name)
     {
         $this->originalName = $this->_name;
         $this->_name = $name;

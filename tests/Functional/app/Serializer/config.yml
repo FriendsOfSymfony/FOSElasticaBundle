@@ -19,7 +19,7 @@ jms_serializer:
         directories:
             type_obj:
                 namespace_prefix: "FOS\\ElasticaBundle\\Tests\\Functional"
-                path: "%kernel.root_dir%/Serializer"
+                path: "%kernel.project_dir%/Serializer"
 
 fos_elastica:
     clients:
@@ -30,37 +30,36 @@ fos_elastica:
     indexes:
         index:
             index_name: "foselastica_ser_test_%kernel.environment%"
-            types:
-                type:
-                    properties:
-                        coll: ~
-                        field1: ~
-                    persistence:
-                        driver: orm
-                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
-                    serializer:
-                        groups: ['search', 'Default']
-                        version: 1.1
-                type_serialize_null_disabled:
-                    properties:
-                        field1: ~
-                    persistence:
-                        driver: orm
-                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
-                    serializer:
-                        serialize_null: false
-                type_serialize_null_enabled:
-                    properties:
-                        field1: ~
-                    persistence:
-                        driver: orm
-                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
-                    serializer:
-                        serialize_null: true
-                unmapped:
-                    persistence:
-                        driver: orm
-                        model: FOS\ElasticaBundle\Tests\Functional\TypeObj
-                    serializer:
-                        groups: ['search', 'Default']
-                        version: 1.1
+            persistence:
+                driver: orm
+                model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+            serializer:
+                groups: ['search', 'Default']
+                version: 1.1
+            properties:
+                coll: ~
+                field1: ~
+        index_serialize_null_disabled:
+            persistence:
+                driver: orm
+                model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+            serializer:
+                serialize_null: false
+            properties:
+                field1: ~
+        index_serialize_null_enabled:
+            persistence:
+                driver: orm
+                model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+            serializer:
+                serialize_null: true
+            properties:
+                field1: ~
+        index_unmapped:
+            persistence:
+                driver: orm
+                model: FOS\ElasticaBundle\Tests\Functional\TypeObj
+            serializer:
+                groups: ['search', 'Default']
+                version: 1.1
+

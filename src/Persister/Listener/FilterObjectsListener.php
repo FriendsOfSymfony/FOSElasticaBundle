@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Persister\Listener;
 
-use FOS\ElasticaBundle\Persister\Event\Events;
 use FOS\ElasticaBundle\Persister\Event\PreInsertObjectsEvent;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -34,14 +33,13 @@ class FilterObjectsListener implements EventSubscriberInterface
         if (false == empty($options['skip_indexable_check'])) {
             return;
         }
-        
+
         $objects = $event->getObjects();
         $index = $options['indexName'];
-        $type = $options['typeName'];
 
         $filtered = array();
         foreach ($objects as $object) {
-            if (!$this->indexable->isObjectIndexable($index, $type, $object)) {
+            if (!$this->indexable->isObjectIndexable($index, $object)) {
                 continue;
             }
 
@@ -56,6 +54,6 @@ class FilterObjectsListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return [Events::PRE_INSERT_OBJECTS => 'filterObjects'];
+        return [PreInsertObjectsEvent::class => 'filterObjects'];
     }
 }

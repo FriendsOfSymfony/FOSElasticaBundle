@@ -46,11 +46,11 @@ abstract class ListenerTest extends TestCase
     public function testObjectInsertedOnPersist()
     {
         $entity = new Entity(1);
-        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $persister = $this->getMockPersister($entity, 'index');
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
-        $indexable = $this->getMockIndexable('index', 'type', $entity, true);
+        $indexable = $this->getMockIndexable('index', $entity, true);
 
-        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index', 'typeName' => 'type']);
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->postPersist($eventArgs);
 
         $this->assertSame($entity, current($listener->scheduledForInsertion));
@@ -65,11 +65,11 @@ abstract class ListenerTest extends TestCase
     public function testPersistDeferred()
     {
         $entity = new Entity(1);
-        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $persister = $this->getMockPersister($entity, 'index');
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
-        $indexable = $this->getMockIndexable('index', 'type', $entity, true);
+        $indexable = $this->getMockIndexable('index', $entity, true);
 
-        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index', 'typeName' => 'type', 'defer' => true]);
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index', 'defer' => true]);
         $listener->postPersist($eventArgs);
 
         $this->assertSame($entity, current($listener->scheduledForInsertion));
@@ -82,11 +82,11 @@ abstract class ListenerTest extends TestCase
     public function testNonIndexableObjectNotInsertedOnPersist()
     {
         $entity = new Entity(1);
-        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $persister = $this->getMockPersister($entity, 'index');
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
-        $indexable = $this->getMockIndexable('index', 'type', $entity, false);
+        $indexable = $this->getMockIndexable('index', $entity, false);
 
-        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index', 'typeName' => 'type']);
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->postPersist($eventArgs);
 
         $this->assertEmpty($listener->scheduledForInsertion);
@@ -102,11 +102,11 @@ abstract class ListenerTest extends TestCase
     public function testObjectReplacedOnUpdate()
     {
         $entity = new Entity(1);
-        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $persister = $this->getMockPersister($entity, 'index');
         $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
-        $indexable = $this->getMockIndexable('index', 'type', $entity, true);
+        $indexable = $this->getMockIndexable('index', $entity, true);
 
-        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index', 'typeName' => 'type']);
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->postUpdate($eventArgs);
 
         $this->assertSame($entity, current($listener->scheduledForUpdate));
@@ -126,9 +126,9 @@ abstract class ListenerTest extends TestCase
         $objectManager = $this->getMockObjectManager();
 
         $entity = new Entity(1);
-        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $persister = $this->getMockPersister($entity, 'index');
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
-        $indexable = $this->getMockIndexable('index', 'type', $entity, false);
+        $indexable = $this->getMockIndexable('index', $entity, false);
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
@@ -140,7 +140,7 @@ abstract class ListenerTest extends TestCase
             ->with($entity, 'id')
             ->will($this->returnValue($entity->getId()));
 
-        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index', 'typeName' => 'type']);
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->postUpdate($eventArgs);
 
         $this->assertEmpty($listener->scheduledForUpdate);
@@ -161,9 +161,9 @@ abstract class ListenerTest extends TestCase
         $objectManager = $this->getMockObjectManager();
 
         $entity = new Entity(1);
-        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $persister = $this->getMockPersister($entity, 'index');
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
-        $indexable = $this->getMockIndexable('index', 'type', $entity);
+        $indexable = $this->getMockIndexable('index', $entity);
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
@@ -175,7 +175,7 @@ abstract class ListenerTest extends TestCase
             ->with($entity, 'id')
             ->will($this->returnValue($entity->getId()));
 
-        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index', 'typeName' => 'type']);
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->preRemove($eventArgs);
 
         $this->assertSame($entity->getId(), current($listener->scheduledForDeletion));
@@ -194,9 +194,9 @@ abstract class ListenerTest extends TestCase
 
         $entity = new Entity(1);
         $entity->identifier = 'foo';
-        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $persister = $this->getMockPersister($entity, 'index');
         $eventArgs = $this->createLifecycleEventArgs($entity, $objectManager);
-        $indexable = $this->getMockIndexable('index', 'type', $entity);
+        $indexable = $this->getMockIndexable('index', $entity);
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
@@ -208,7 +208,7 @@ abstract class ListenerTest extends TestCase
             ->with($entity, 'identifier')
             ->will($this->returnValue($entity->getId()));
 
-        $listener = $this->createListener($persister, $indexable, ['identifier' => 'identifier', 'indexName' => 'index', 'typeName' => 'type']);
+        $listener = $this->createListener($persister, $indexable, ['identifier' => 'identifier', 'indexName' => 'index']);
         $listener->preRemove($eventArgs);
 
         $this->assertSame($entity->identifier, current($listener->scheduledForDeletion));
@@ -223,12 +223,12 @@ abstract class ListenerTest extends TestCase
     public function testShouldPersistOnKernelTerminateIfDeferIsTrue()
     {
         $entity = new Entity(1);
-        $persister = $this->getMockPersister($entity, 'index', 'type');
+        $persister = $this->getMockPersister($entity, 'index');
         $indexable = $this->getMockIndexable(null, null, null);
         $listener = $this->createListener(
             $persister,
             $indexable,
-            ['identifier' => 'identifier', 'indexName' => 'index', 'typeName' => 'type', 'defer' => true]
+            ['identifier' => 'identifier', 'indexName' => 'index', 'defer' => true]
         );
         $scheduledForInsertion = ['data'];
         $refListener = new \ReflectionObject($listener);
@@ -278,7 +278,7 @@ abstract class ListenerTest extends TestCase
         return $this->createMock($this->getObjectManagerClass());
     }
 
-    private function getMockPersister(Entity $object, $indexName, $typeName)
+    private function getMockPersister(Entity $object, $indexName)
     {
         $mock = $this->createMock(ObjectPersister::class);
 
@@ -291,29 +291,18 @@ abstract class ListenerTest extends TestCase
         $index->expects($this->any())
             ->method('getName')
             ->will($this->returnValue($indexName));
-        $type = $this->createMock(Type::class);
-        $type->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue($typeName));
-        $type->expects($this->any())
-            ->method('getIndex')
-            ->will($this->returnValue($index));
-
-        $index->expects($this->any())
-            ->method('getType')
-            ->will($this->returnValue($type));
 
         return $mock;
     }
 
-    private function getMockIndexable($indexName, $typeName, Entity $object = null, $return = null)
+    private function getMockIndexable($indexName, Entity $object = null, $return = null)
     {
         $mock = $this->createMock(IndexableInterface::class);
 
         if (null !== $return) {
             $mock->expects($this->once())
                 ->method('isObjectIndexable')
-                ->with($indexName, $typeName, $object)
+                ->with($indexName, $object)
                 ->will($this->returnValue($return));
         }
 

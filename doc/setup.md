@@ -131,18 +131,19 @@ that maps to a type has been modified. The bundle ships with support for Doctrin
 Below is an example for the Doctrine ORM.
 
 ```yaml
+            persistence:
+                # the driver can be orm, mongodb or phpcr
+                driver: orm
+                model: Acme\ApplicationBundle\Entity\User
+                provider: ~
+                finder: ~
+            types:
                 user:
                     properties:
                         username: ~
                         firstName: ~
                         lastName: ~
                         email: ~
-                    persistence:
-                        # the driver can be orm, mongodb or phpcr
-                        driver: orm
-                        model: Acme\ApplicationBundle\Entity\User
-                        provider: ~
-                        finder: ~
 ```
 
 There are a significant number of options available for types, that can be

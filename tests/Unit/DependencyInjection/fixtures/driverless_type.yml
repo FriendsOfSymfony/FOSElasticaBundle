@@ -5,12 +5,10 @@ fos_elastica:
     indexes:
         test_index:
             client: default
-            types:
-                driverless:
-                    properties:
-                        text: ~
-                    persistence:
-                        elastica_to_model_transformer:
-                            service: 'custom.transformer.service'
-                        persister:
-                            service: 'custom.persist.service'
+            persistence:
+                elastica_to_model_transformer:
+                    service: 'custom.transformer.service'
+                persister:
+                    service: 'custom.persist.service'
+            properties:
+                text: ~

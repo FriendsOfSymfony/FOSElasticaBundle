@@ -11,7 +11,7 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\AbstractElasticaToModelTransformer as BaseTransformer;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -57,7 +57,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      * @param string          $objectClass
      * @param array           $options
      */
-    public function __construct(ManagerRegistry $registry, $objectClass, array $options = [])
+    public function __construct(ManagerRegistry $registry, string $objectClass, array $options = [])
     {
         $this->registry = $registry;
         $this->objectClass = $objectClass;
@@ -66,10 +66,8 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 
     /**
      * Returns the object class that is used for conversion.
-     *
-     * @return string
      */
-    public function getObjectClass()
+    public function getObjectClass(): string
     {
         return $this->objectClass;
     }
@@ -156,7 +154,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
     /**
      * {@inheritdoc}
      */
-    public function getIdentifierField()
+    public function getIdentifierField(): string
     {
         return $this->options['identifier'];
     }
@@ -169,5 +167,5 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      *
      * @return array of objects or arrays
      */
-    abstract protected function findByIdentifiers(array $identifierValues, $hydrate);
+    abstract protected function findByIdentifiers(array $identifierValues, bool $hydrate);
 }
