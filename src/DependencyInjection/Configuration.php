@@ -98,60 +98,6 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Returns the array node used for "types".
-     */
-    private function getTypesNode()
-    {
-        $node = $this->createTreeBuilderNode('types');
-
-        $node
-            ->useAttributeAsKey('name')
-            ->prototype('array')
-                ->treatNullLike([])
-                ->beforeNormalization()
-                ->ifNull()
-                    ->thenEmptyArray()
-                ->end()
-                // Support multiple dynamic_template formats to match the old bundle style
-                // and the way ElasticSearch expects them
-                ->beforeNormalization()
-                ->ifTrue(function ($v) {
-                    return isset($v['dynamic_templates']);
-                })
-                ->then(function ($v) {
-                    $dt = [];
-                    foreach ($v['dynamic_templates'] as $key => $type) {
-                        if (is_int($key)) {
-                            $dt[] = $type;
-                        } else {
-                            $dt[][$key] = $type;
-                        }
-                    }
-
-                    $v['dynamic_templates'] = $dt;
-
-                    return $v;
-                })
-                ->end()
-                ->children()
-                    ->booleanNode('date_detection')->end()
-                    ->arrayNode('dynamic_date_formats')->prototype('scalar')->end()->end()
-                    ->scalarNode('analyzer')->end()
-                    ->booleanNode('numeric_detection')->end()
-                    ->scalarNode('dynamic')->end()
-                ->end()
-                ->append($this->getIdNode())
-                ->append($this->getPropertiesNode())
-                ->append($this->getDynamicTemplateNode())
-                ->append($this->getSourceNode())
-                ->append($this->getRoutingNode())
-            ->end()
-        ;
-
-        return $node;
-    }
-
-    /**
      * Returns the array node used for "properties".
      */
     private function getPropertiesNode()
