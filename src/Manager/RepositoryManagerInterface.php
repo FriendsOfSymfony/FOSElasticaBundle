@@ -27,10 +27,10 @@ interface RepositoryManagerInterface
      * Custom repository class name can also be added.
      *
      * @param string $indexName  The type name in "index/type" format
-     * @param        $finder
+     * @param FinderInterface $finder
      * @param string $repositoryName
      */
-    public function addIndex($indexName, FinderInterface $finder, $repositoryName = null);
+    public function addIndex(string $indexName, FinderInterface $finder, string $repositoryName = null): void;
 
     /**
      * Return repository for entity.
@@ -42,5 +42,7 @@ interface RepositoryManagerInterface
      *
      * @return Repository
      */
-    public function getRepository($indexName);
+    public function getRepository(string $indexName): Repository;
+
+    public function hasRepository(string $indexName): bool;
 }

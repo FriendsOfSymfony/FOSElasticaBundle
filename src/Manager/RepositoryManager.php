@@ -39,7 +39,7 @@ class RepositoryManager implements RepositoryManagerInterface
         $this->repositories = [];
     }
 
-    public function addIndex($indexName, FinderInterface $finder, $repositoryName = null)
+    public function addIndex(string $indexName, FinderInterface $finder, string $repositoryName = null): void
     {
         $this->indexes[$indexName] = [
             'finder' => $finder,
@@ -57,13 +57,13 @@ class RepositoryManager implements RepositoryManagerInterface
      *
      * @return Repository
      */
-    public function getRepository($indexName)
+    public function getRepository(string $indexName): Repository
     {
         if (isset($this->repositories[$indexName])) {
             return $this->repositories[$indexName];
         }
 
-        if (!isset($this->indexes[$indexName])) {
+        if (!$this->hasRepository($indexName)) {
             throw new RuntimeException(sprintf('No search finder configured for %s', $indexName));
         }
 
@@ -99,5 +99,10 @@ class RepositoryManager implements RepositoryManagerInterface
         }
 
         return new $repositoryName($this->indexes[$indexName]['finder']);
+    }
+
+    public function hasRepository(string $indexName): bool
+    {
+        return isset($this->indexes[$indexName]);
     }
 }

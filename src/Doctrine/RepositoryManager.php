@@ -14,6 +14,7 @@ namespace FOS\ElasticaBundle\Doctrine;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Finder\FinderInterface;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
+use FOS\ElasticaBundle\Repository;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -50,7 +51,7 @@ class RepositoryManager implements RepositoryManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function addIndex($indexName, FinderInterface $finder, $repositoryName = null)
+    public function addIndex(string $indexName, FinderInterface $finder, string $repositoryName = null): void
     {
         throw new \LogicException(__METHOD__.' should not be called. Call addIndex on the main repository manager');
     }
@@ -65,7 +66,7 @@ class RepositoryManager implements RepositoryManagerInterface
      *
      * {@inheritdoc}
      */
-    public function getRepository($entityName)
+    public function getRepository(string $entityName): Repository
     {
         $realEntityName = $entityName;
         if (false !== strpos($entityName, ':')) {
@@ -78,5 +79,10 @@ class RepositoryManager implements RepositoryManagerInterface
         }
 
         return $this->repositoryManager->getRepository($realEntityName);
+    }
+
+    public function hasRepository(string $indexName): bool
+    {
+        return $this->repositoryManager->hasRepository($indexName);
     }
 }
