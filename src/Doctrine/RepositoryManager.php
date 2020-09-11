@@ -50,14 +50,14 @@ class RepositoryManager implements RepositoryManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function addType($indexTypeName, FinderInterface $finder, $repositoryName = null)
+    public function addIndex($indexName, FinderInterface $finder, $repositoryName = null)
     {
-        throw new \LogicException(__METHOD__.' should not be called. Call addType on the main repository manager');
+        throw new \LogicException(__METHOD__.' should not be called. Call addIndex on the main repository manager');
     }
 
-    public function addEntity($entityName, $indexTypeName)
+    public function addEntity($entityName, $indexName)
     {
-        $this->entities[$entityName] = $indexTypeName;
+        $this->entities[$entityName] = $indexName;
     }
 
     /**

@@ -38,11 +38,11 @@ class RepositoryManagerTest extends TestCase
         $mainManager = $this->createMock(RepositoryManagerInterface::class);
 
         $mainManager->method('getRepository')
-            ->with($this->equalTo('index/type'))
+            ->with($this->equalTo('index'))
             ->willReturn(new Repository($finderMock));
 
         $manager = new RepositoryManager($registryMock, $mainManager);
-        $manager->addEntity(NamespacedEntity::class, 'index/type');
+        $manager->addEntity(NamespacedEntity::class, 'index');
         $repository = $manager->getRepository(NamespacedEntity::class);
         $this->assertInstanceOf(Repository::class, $repository);
     }
@@ -58,11 +58,11 @@ class RepositoryManagerTest extends TestCase
             ->willReturn((new \ReflectionClass(NamespacedEntity::class))->getNamespaceName());
 
         $mainManager->method('getRepository')
-            ->with($this->equalTo('index/type'))
+            ->with($this->equalTo('index'))
             ->willReturn(new Repository($finderMock));
 
         $manager = new RepositoryManager($registryMock, $mainManager);
-        $manager->addEntity(NamespacedEntity::class, 'index/type');
+        $manager->addEntity(NamespacedEntity::class, 'index');
         $repository = $manager->getRepository('FOSElasticaBundle:NamespacedEntity');
         $this->assertInstanceOf(Repository::class, $repository);
     }

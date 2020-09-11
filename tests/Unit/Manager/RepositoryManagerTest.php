@@ -33,11 +33,11 @@ class RepositoryManagerTest extends TestCase
     {
         $finderMock = $this->createMock(TransformedFinder::class);
 
-        $typeName = 'index/type';
+        $indexName = 'index';
 
         $manager = new RepositoryManager();
-        $manager->addType($typeName, $finderMock);
-        $repository = $manager->getRepository($typeName);
+        $manager->addIndex($indexName, $finderMock);
+        $repository = $manager->getRepository($indexName);
         $this->assertInstanceOf(Repository::class, $repository);
     }
 
@@ -45,11 +45,11 @@ class RepositoryManagerTest extends TestCase
     {
         $finderMock = $this->createMock(TransformedFinder::class);
 
-        $typeName = 'index/type';
+        $indexName = 'index';
 
         $manager = new RepositoryManager();
-        $manager->addType($typeName, $finderMock, CustomRepository::class);
-        $repository = $manager->getRepository($typeName);
+        $manager->addIndex($indexName, $finderMock, CustomRepository::class);
+        $repository = $manager->getRepository($indexName);
         $this->assertInstanceOf(CustomRepository::class, $repository);
     }
 
@@ -57,10 +57,10 @@ class RepositoryManagerTest extends TestCase
     {
         $finderMock = $this->createMock(TransformedFinder::class);
 
-        $typeName = 'index/type';
+        $indexName = 'index';
 
         $manager = new RepositoryManager();
-        $manager->addType($typeName, $finderMock);
+        $manager->addIndex($indexName, $finderMock);
 
         $this->expectException(\RuntimeException::class);
         $manager->getRepository('Missing type');
@@ -70,12 +70,12 @@ class RepositoryManagerTest extends TestCase
     {
         $finderMock = $this->createMock(TransformedFinder::class);
 
-        $typeName = 'index/type';
+        $indexName = 'index';
 
         $manager = new RepositoryManager();
-        $manager->addType($typeName, $finderMock, 'FOS\ElasticaBundle\Tests\MissingRepository');
+        $manager->addIndex($indexName, $finderMock, 'FOS\ElasticaBundle\Tests\MissingRepository');
 
         $this->expectException(\RuntimeException::class);
-        $manager->getRepository($typeName);
+        $manager->getRepository($indexName);
     }
 }
