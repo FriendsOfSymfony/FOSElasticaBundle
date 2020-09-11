@@ -203,7 +203,7 @@ class FOSElasticaExtension extends Extension
                 'model' => $index['persistence']['model'] ?? null,
                 'name' => $name,
                 'settings' => $index['settings'],
-                'type_prototype' => isset($index['type_prototype']) ? $index['type_prototype'] : [],
+                'index_prototype' => isset($index['index_prototype']) ? $index['index_prototype'] : [],
                 'use_alias' => $index['use_alias'],
             ];
 
@@ -650,7 +650,7 @@ class FOSElasticaExtension extends Extension
         }
 
         $container->getDefinition('fos_elastica.repository_manager')
-            ->addMethodCall('addType', $arguments);
+            ->addMethodCall('addIndex', $arguments);
 
         $managerId = sprintf('fos_elastica.manager.%s', $typeConfig['driver']);
         $container->getDefinition($managerId)

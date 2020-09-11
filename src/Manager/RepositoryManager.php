@@ -26,7 +26,7 @@ class RepositoryManager implements RepositoryManagerInterface
     /**
      * @var array
      */
-    private $types;
+    private $indexes;
 
     /**
      * @var array
@@ -35,13 +35,13 @@ class RepositoryManager implements RepositoryManagerInterface
 
     public function __construct()
     {
-        $this->types = [];
+        $this->indexes = [];
         $this->repositories = [];
     }
 
-    public function addType($indexTypeName, FinderInterface $finder, $repositoryName = null)
+    public function addIndex(string $indexName, FinderInterface $finder, string $repositoryName = null): void
     {
-        $this->types[$indexTypeName] = [
+        $this->indexes[$indexName] = [
             'finder' => $finder,
             'repositoryName' => $repositoryName,
         ];
@@ -53,51 +53,56 @@ class RepositoryManager implements RepositoryManagerInterface
      * Returns custom repository if one specified otherwise
      * returns a basic repository.
      *
-     * @param string $typeName
+     * @param string $indexName
      *
      * @return Repository
      */
-    public function getRepository($typeName)
+    public function getRepository(string $indexName): Repository
     {
-        if (isset($this->repositories[$typeName])) {
-            return $this->repositories[$typeName];
+        if (isset($this->repositories[$indexName])) {
+            return $this->repositories[$indexName];
         }
 
-        if (!isset($this->types[$typeName])) {
-            throw new RuntimeException(sprintf('No search finder configured for %s', $typeName));
+        if (!$this->hasRepository($indexName)) {
+            throw new RuntimeException(sprintf('No search finder configured for %s', $indexName));
         }
 
-        $repository = $this->createRepository($typeName);
-        $this->repositories[$typeName] = $repository;
+        $repository = $this->createRepository($indexName);
+        $this->repositories[$indexName] = $repository;
 
         return $repository;
     }
 
     /**
-     * @param $typeName
+     * @param $indexName
      *
      * @return string
      */
-    protected function getRepositoryName($typeName)
+    protected function getRepositoryName($indexName)
     {
-        if (isset($this->types[$typeName]['repositoryName'])) {
-            return $this->types[$typeName]['repositoryName'];
+        if (isset($this->indexes[$indexName]['repositoryName'])) {
+            return $this->indexes[$indexName]['repositoryName'];
         }
 
         return 'FOS\ElasticaBundle\Repository';
     }
 
     /**
-     * @param $typeName
+     * @param $indexName
      *
      * @return mixed
      */
-    private function createRepository($typeName)
+    private function createRepository($indexName)
     {
-        if (!class_exists($repositoryName = $this->getRepositoryName($typeName))) {
-            throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $typeName));
+        if (!class_exists($repositoryName = $this->getRepositoryName($indexName))) {
+            throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $indexName));
         }
 
-        return new $repositoryName($this->types[$typeName]['finder']);
+        return new $repositoryName($this->indexes[$indexName]['finder']);
+    }
+
+    public function hasRepository(string $indexName): bool
+    {
+        return isset($this->indexes[$indexName]);
     }
 }

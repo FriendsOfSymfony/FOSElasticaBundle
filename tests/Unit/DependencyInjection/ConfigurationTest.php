@@ -127,7 +127,7 @@ class ConfigurationTest extends TestCase
             ],
             'indexes' => [
                 'test' => [
-                    'type_prototype' => [
+                    'index_prototype' => [
                         'analyzer' => 'custom_analyzer',
                         'persistence' => [
                             'identifier' => 'ID',

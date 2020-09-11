@@ -128,11 +128,7 @@ class FOSElasticaExtensionTest extends TestCase
                                 'listener' => null,
                                 'finder' => null,
                             ],
-                            'types' => [
-                                '_doc' => [
-                                    'properties' => ['text' => null],
-                                ],
-                            ],
+                            'properties' => ['text' => null],
                         ],
                     ],
                 ],

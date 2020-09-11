@@ -3,8 +3,8 @@
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Query\Builder;
+use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
 use FOS\ElasticaBundle\Doctrine\RegisterListenersService;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
