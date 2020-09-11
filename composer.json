@@ -16,6 +16,7 @@
         "symfony/framework-bundle": "^4.4 || ^5.1",
         "symfony/console": "^4.4 || ^5.1",
         "symfony/dependency-injection": "^4.4 || ^5.1",
+        "symfony/messenger": "^4.4 || ^5.1",
         "symfony/property-access": "^4.4 || ^5.1",
         "pagerfanta/pagerfanta": "^2.0",
         "psr/log": "^1.0",
