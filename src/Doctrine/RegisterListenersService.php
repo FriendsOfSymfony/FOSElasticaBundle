@@ -46,26 +46,13 @@ class RegisterListenersService
         if (false == $options['debug_logging'] && $manager instanceof EntityManagerInterface) {
             $configuration = $manager->getConnection()->getConfiguration();
             $logger = $configuration->getSQLLogger();
-            
+
             $this->addListener($pager, PreFetchObjectsEvent::class, function() use ($configuration) {
                 $configuration->setSQLLogger(null);
             });
 
             $this->addListener($pager, PreInsertObjectsEvent::class, function() use ($configuration, $logger) {
                 $configuration->setSQLLogger($logger);
-            });
-        }
-
-        if (false == $options['debug_logging'] && $manager instanceof DocumentManager) {
-            $configuration = $manager->getConnection()->getConfiguration();
-            $logger = $configuration->getLoggerCallable();
-
-            $this->addListener($pager, PreFetchObjectsEvent::class, function() use ($configuration) {
-                $configuration->setLoggerCallable(null);
-            });
-
-            $this->addListener($pager, PreInsertObjectsEvent::class, function() use ($configuration, $logger) {
-                $configuration->setLoggerCallable($logger);
             });
         }
     }

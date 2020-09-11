@@ -453,7 +453,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->append($this->getPersistenceNode())
                             ->append($this->getSerializerNode())
-                            ->arrayNode('type_prototype')
+                            ->arrayNode('index_prototype')
                                 ->children()
                                     ->scalarNode('analyzer')->end()
                                     ->append($this->getPersistenceNode())
