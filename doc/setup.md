@@ -79,75 +79,54 @@ In this case, the service `fos_elastica.index.app` will relate to an Elasticsear
 that varies depending on your kernel's environment. For example, in dev it will relate to
 `app_dev`.
 
-D: Defining index types
+D: Defining indexes
 -----------------------
 
-By default, FOSElasticaBundle requires each type that is to be indexed to be mapped.
+By default, FOSElasticaBundle requires each index that is to be indexed to be mapped.
 It is possible to use a serializer to avoid this requirement. To use a serializer, see
 the [serializer documentation](serializer.md)
 
-An Elasticsearch type needs to be defined with each field of a related PHP object that
+An Elasticsearch index needs to be defined with each field of a related PHP object that
 will end up being indexed.
 
 ```yaml
 fos_elastica:
     indexes:
-        app:
-            types:
-                user:
-                    properties:
-                        username: ~
-                        firstName: ~
-                        lastName: ~
-                        email: ~
+        user:
+            properties:
+                username: ~
+                firstName: ~
+                lastName: ~
+                email: ~
 ```
 
-Each defined type is made available as a service, and in this case the service key is
-`fos_elastica.index.app.user` and is an instance of `Elastica\Type`.
+Each defined index is made available as a service, and in this case the service key is
+`fos_elastica.index.user` and is an instance of `Elastica\Index`.
 
-If you are using Elasticsearch 6.x, you have to create separate index for each type:
-```yaml
-fos_elastica:
-    indexes:
-        app_user:
-            types:
-                user:
-                    properties:
-                        username: ~
-                        firstName: ~
-                        lastName: ~
-                        email: ~
-        app_post:
-            types:
-                post:
-                    properties:
-                        title: ~
-                        content: ~                       
-```
-
-FOSElasticaBundle requires a provider for each type that will notify when an object
-that maps to a type has been modified. The bundle ships with support for Doctrine objects.
+FOSElasticaBundle requires a provider for each index that will notify when an object
+that maps to an index has been modified. The bundle ships with support for Doctrine objects.
 
 Below is an example for the Doctrine ORM.
 
 ```yaml
+fos_elastica:
+    indexes:
+        user:
             persistence:
                 # the driver can be orm, mongodb or phpcr
                 driver: orm
                 model: Acme\ApplicationBundle\Entity\User
                 provider: ~
                 finder: ~
-            types:
-                user:
-                    properties:
-                        username: ~
-                        firstName: ~
-                        lastName: ~
-                        email: ~
+            properties:
+                username: ~
+                firstName: ~
+                lastName: ~
+                email: ~
 ```
 
-There are a significant number of options available for types, that can be
-[found here](types.md)
+There are a significant number of options available for indexes, that can be
+[found here](indexes.md)
 
 E: Populating the Elasticsearch index
 -------------------------------------
@@ -163,7 +142,7 @@ $ php bin/console fos:elastica:populate
 
 _**Note:** Consider reading [speed up populate command](cookbook/speed-up-populate-command.md) if you are going to deal with big data set._
 
-The command will also create all indexes and types defined if they do not already exist
+The command will also create all indexes defined if they do not already exist
 on the Elasticsearch server.
 
 F: Usage

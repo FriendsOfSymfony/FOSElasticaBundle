@@ -32,7 +32,7 @@ curl -XPOST 'http://localhost:9200/test/_forcemerge?max_num_segments=5'
 ```
 
 Everything seems to be straightforward, but you'll how this can be achieved with FOSElasticaBundle?
-For this purpose `PRE_INDEX_POPULATE`, `POST_INDEX_POPULATE`, `PRE_TYPE_POPULATE` and `POST_TYPE_POPULATE` were introduced, they allow you to monitor and hook into the process.
+For this purpose `PreIndexPopulateEvent` and `PostIndexPopulateEvent` were introduced, they allow you to monitor and hook into the process.
 
 Now let's implement `PopulateListener` by creating `AppBundle\EventListener\PopulateListener`:
 
@@ -40,7 +40,8 @@ Now let's implement `PopulateListener` by creating `AppBundle\EventListener\Popu
 <?php
 namespace AppBundle\EventListener;
 
-use FOS\ElasticaBundle\Event\IndexPopulateEvent;
+use FOS\ElasticaBundle\Event\PostIndexPopulateEvent;
+use FOS\ElasticaBundle\Event\PreIndexPopulateEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
 
 class PopulateListener
@@ -58,14 +59,14 @@ class PopulateListener
         $this->indexManager    = $indexManager;
     }
 
-    public function preIndexPopulate(IndexPopulateEvent $event)
+    public function preIndexPopulate(PreIndexPopulateEvent $event)
     {
         $index = $this->indexManager->getIndex($event->getIndex());
         $settings = $index->getSettings();
         $settings->setRefreshInterval(-1);
     }
 
-    public function postIndexPopulate(IndexPopulateEvent $event)
+    public function postIndexPopulate(PostIndexPopulateEvent $event)
     {
         $index = $this->indexManager->getIndex($event->getIndex());
         $settings = $index->getSettings();
@@ -79,7 +80,7 @@ Note : for Elasticsearch v2.1 and above, you will need to "manually" call `_forc
 
 ```php
 ...
-    public function postIndexPopulate(IndexPopulateEvent $event)
+    public function postIndexPopulate(PostIndexPopulateEvent $event)
     {
         $index = $this->indexManager->getIndex($event->getIndex());
         $index->getClient()->request('_forcemerge', 'POST', ['max_num_segments' => 5]);
@@ -100,4 +101,4 @@ Declare your listener and register event(s):
 
 and pretty much that's it!
 
-Other events that were introduced: `PRE_INDEX_RESET`, `POST_INDEX_RESET`, `PRE_TYPE_RESET` and `POST_TYPE_RESET` are working in similar way
+Other events that were introduced: `PreIndexResetEvent` and `PostIndexResetEvent` are working in similar way.

@@ -4,8 +4,8 @@ Aliased Indexes
 You can set up FOSElasticaBundle to use aliases for indexes which allows you to run an
 index population without resetting the index currently being used by the application.
 
-> *Note*: When you're using an alias, resetting an individual type will still cause a
-> reset for that type.
+> *Note*: When you're using an alias, resetting an individual index will still cause a
+> reset for that index.
 
 To configure FOSElasticaBundle to use aliases for an index, set the use_alias option to
 true.

@@ -7,7 +7,7 @@ Available documentation for FOSElasticaBundle
 * [Setup](setup.md)
 * [Usage](usage.md)
 * [Using a Serializer](serializer.md)
-* [Types](types.md)
+* [Indexes](indexes.md)
 * [Provider](provider.md)
 * [Index templates](templates.md)
 
@@ -23,7 +23,6 @@ Cookbook Entries
 * [Manual Providers](cookbook/manual-provider.md)
 * [Clustering - Multiple Connections](cookbook/multiple-connections.md)
 * [Hints on result hydration](cookbook/hints-on-result-hydration.md)
-* [Multi type search](cookbook/multi-type-search.md)
 * [Attachments Handling](cookbook/attachments.md)
 * [Populate Events](cookbook/populate-events.md)
 * Performance

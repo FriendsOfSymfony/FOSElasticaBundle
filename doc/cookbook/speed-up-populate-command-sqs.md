@@ -121,8 +121,7 @@ Go the AWS GUI console and you should see the messages added to the queue. If yo
     "reset": true,
     "ignore_errors": false,
     "sleep": 0,
-    "indexName": "app",
-    "typeName": "user"
+    "indexName": "user"
   },
   "page": 1
 }

@@ -4,16 +4,16 @@ FOSElasticaBundle Usage
 Basic Searching with a Finder
 -----------------------------
 
-The most useful searching method is to use a finder defined by the type configuration.
+The most useful searching method is to use a finder defined by the index configuration.
 A finder will return results that have been hydrated by the configured persistence backend,
 allowing you to use relationships of returned entities. For more information about
-configuration options for this kind of searching, please see the [types](types.md)
+configuration options for this kind of searching, please see the [indexes](indexes.md)
 documentation.
 
-> This example assumes you have defined an index `app` and a type `user` in your `config.yml`.
+> This example assumes you have defined an index `user` in your `config.yml`.
 
 ```php
-$finder = $this->container->get('fos_elastica.finder.app.user');
+$finder = $this->container->get('fos_elastica.finder.user');
 
 // Option 1. Returns all users who have example.net in any of their mapped fields
 $results = $finder->find('example.net');
@@ -97,11 +97,11 @@ $finder = $this->container->get('fos_elastica.finder.app');
 $results = $finder->find('bob');
 ```
 
-Type Repositories
+Index Repositories
 -----------------
 
 In the case where you need many different methods for different searching terms, it
-may be better to separate methods for each type into their own dedicated repository
+may be better to separate methods for each index into their own dedicated repository
 classes, just like Doctrine ORM's EntityRepository classes.
 
 The manager class that handles repositories has a service key of `fos_elastica.manager`.
@@ -138,10 +138,12 @@ circumstances this is not ideal and you'd prefer to use a different method to jo
 any entity relations that are required on the page that will be displaying the results.
 
 ```yaml
-            user:
-                persistence:
-                    elastica_to_model_transformer:
-                        query_builder_method: createSearchQueryBuilder
+fos_elastica:
+    indexes:
+        user:
+            persistence:
+                elastica_to_model_transformer:
+                    query_builder_method: createSearchQueryBuilder
 ```
 
 An example for using a custom query builder method:
@@ -178,12 +180,12 @@ Results must match at least one specified `categoryIds`, and should match the
 `title` or `tags` criteria. Additionally, we define a snowball analyzer to
 apply to queries against the `title` field.
 
-Assuming a type is configured as follows:
+Assuming an index is configured as follows:
 
 ```yaml
 fos_elastica:
     indexes:
-        app:
+        article:
             settings:
                 index:
                     analysis:
@@ -196,12 +198,10 @@ fos_elastica:
                 model: Acme\DemoBundle\Entity\Article
                 provider: ~
                 finder: ~
-            types:
-                article:
-                    properties:
-                        title: { boost: 10, analyzer: my_analyzer }
-                        tags:
-                        categoryIds:
+            properties:
+                title: { boost: 10, analyzer: my_analyzer }
+                tags:
+                categoryIds:
 ```
 
 The following code will execute a search against the Elasticsearch server:
