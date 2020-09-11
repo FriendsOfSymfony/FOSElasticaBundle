@@ -29,7 +29,7 @@ fos_elastica:
                          ...
 ```
 
-Index template is similar to index configuration and has the same fields like `types`, `settings`, `client`, etc. with additional fields:
+Index template is similar to index configuration and has the same fields like `settings`, `client`, etc. with additional fields:
 
 1. `template_name` - template name. If omitted then used key (`<name>`) of `index_templates` section. Example: `template_1`
 2. `template` - template pattern. Example: `te*` or `bar*`

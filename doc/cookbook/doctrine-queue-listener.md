@@ -43,7 +43,6 @@ enqueue_elastica:
         queue_listeners:
             -
               index_name: 'acme_index'
-              type_name: 'acme_blog'
               model_class: 'AppBundle\Entity\Blog'
 ```
 

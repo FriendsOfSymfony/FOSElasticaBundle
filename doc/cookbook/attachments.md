@@ -18,20 +18,18 @@ on the github page. If you want to highlight content from the document, then you
 ```yaml
 fos_elastica:
     indexes:
-        app:
-            types:
-                user:
-                    properties:
-                        id: ~
-                        content:
-                            type: attachment
-                            path: full
-                            fields:
-                                name: { store: yes }
-                                title: { store : yes }
-                                date: { store : yes }
-                                content : { term_vector: with_positions_offsets, store: yes }
-                                ...
+        user:
+            properties:
+                id: ~
+                content:
+                    type: attachment
+                    path: full
+                    fields:
+                        name: { store: yes }
+                        title: { store : yes }
+                        date: { store : yes }
+                        content : { term_vector: with_positions_offsets, store: yes }
+                        ...
 ```
 
 

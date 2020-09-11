@@ -28,7 +28,7 @@ fos_elastica:
         serializer: jms_serializer
 ```
 
-B) Set up each defined type to support serialization
+B) Set up each defined index to support serialization
 ----------------------------------------------------
 
 An index does not need to have mappings defined when using a serializer. An example configuration
@@ -37,11 +37,9 @@ for an index in this case:
 ```yaml
 fos_elastica:
     indexes:
-        app:
+        user:
             serializer:
                 groups: [elastica]
-            types:
-                user:
 ```
 
 And inside the User class:
@@ -65,13 +63,10 @@ In addition the JMS Serializer allows you to specify options for version and whe
 
 ```yaml
 fos_elastica:
-
     indexes:
-        app:
+        user:
             serializer:
                 groups: [elastica]
                 version: '1.1'
                 serialize_null: true
-            types:
-                user:
 ```
