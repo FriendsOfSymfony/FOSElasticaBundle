@@ -18,11 +18,12 @@ jobs:
   include:
     # Latest supported dependencies with each PHP version
     - php: 7.2
+
     - php: 7.4
       env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover=coverage.clover"
 
-    # Install all SF components in the same major version, see https://github.com/dunglas/symfony-lock
     - php: 7.4
+    - php: 8.0
 
     # Try SF ^4
     - php: 7.2
