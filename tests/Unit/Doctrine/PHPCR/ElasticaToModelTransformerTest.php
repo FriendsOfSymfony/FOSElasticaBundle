@@ -53,7 +53,7 @@ class ElasticaToModelTransformerTest extends TestCase
         $this->repository = $this
             ->getMockBuilder(DocumentRepository::class)
             ->disableOriginalConstructor()
-            ->setMethods(array(
+            ->setMethods([
                 'customQueryBuilderCreator',
                 'createQueryBuilder',
                 'find',
@@ -61,8 +61,8 @@ class ElasticaToModelTransformerTest extends TestCase
                 'findBy',
                 'findOneBy',
                 'getClassName',
-                'findMany'
-            ))->getMock();
+                'findMany',
+            ])->getMock();
 
         $this->repository->expects($this->any())
             ->method('findMany')

@@ -34,7 +34,7 @@ final class InPlacePagerPersister implements PagerPersisterInterface
     /**
      * {@inheritdoc}
      */
-    public function insert(PagerInterface $pager, array $options = array())
+    public function insert(PagerInterface $pager, array $options = [])
     {
         $pager->setMaxPerPage(empty($options['max_per_page']) ? 100 : $options['max_per_page']);
 
@@ -70,7 +70,7 @@ final class InPlacePagerPersister implements PagerPersisterInterface
     /**
      * @throws \Exception
      */
-    private function insertPage(int $page, PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $options = array()): void
+    private function insertPage(int $page, PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $options = []): void
     {
         $pager->setCurrentPage($page);
 

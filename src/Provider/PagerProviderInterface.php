@@ -8,5 +8,5 @@ interface PagerProviderInterface
      *
      * @return PagerInterface
      */
-    public function provide(array $options = array());
+    public function provide(array $options = []);
 }

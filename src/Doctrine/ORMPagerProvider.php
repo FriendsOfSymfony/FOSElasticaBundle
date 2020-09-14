@@ -60,7 +60,7 @@ final class ORMPagerProvider implements PagerProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function provide(array $options = array())
+    public function provide(array $options = [])
     {
         $options = array_replace($this->baseOptions, $options);
 

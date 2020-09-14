@@ -42,7 +42,7 @@ class ORMPagerProviderTest extends TestCase
         $expectedBuilder = $this->createMock(QueryBuilder::class);
         $expectedBuilder->method('getDQLPart')
             ->with('orderBy')
-            ->willReturn(array($this->createMock(OrderBy::class)));
+            ->willReturn([$this->createMock(OrderBy::class)]);
 
         $repository = $this->createMock(EntityRepository::class);
         $repository
@@ -83,7 +83,7 @@ class ORMPagerProviderTest extends TestCase
         $expectedBuilder = $this->createMock(QueryBuilder::class);
         $expectedBuilder->method('getDQLPart')
             ->with('orderBy')
-            ->willReturn(array($this->createMock(OrderBy::class)));
+            ->willReturn([$this->createMock(OrderBy::class)]);
 
         $repository = $this->createMock(DoctrineORMCustomRepositoryMock::class);
         $repository
@@ -121,7 +121,7 @@ class ORMPagerProviderTest extends TestCase
         $expectedBuilder = $this->createMock(QueryBuilder::class);
         $expectedBuilder->method('getDQLPart')
             ->with('orderBy')
-            ->willReturn(array($this->createMock(OrderBy::class)));
+            ->willReturn([$this->createMock(OrderBy::class)]);
 
         $repository = $this->createMock(EntityRepository::class);
         $repository
