@@ -44,7 +44,7 @@ class ObjectPersister implements ObjectPersisterInterface
     /**
      * {@inheritdoc}
      */
-    public function handlesObject($object)
+    public function handlesObject($object): bool
     {
         return $object instanceof $this->objectClass;
     }
