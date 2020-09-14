@@ -11,6 +11,7 @@ in 6.0 versions.
 * Dropped Symfony 3 support.
 * Dropped Elasticsearch 5 and 6 support.
 * Dropped PHP 7.1 support.
+* Removed `FOS\ElasticaBundle\Exception\InvalidArgumentTypeException`
 * [BC break] Signature of method `FOS\ElasticaBundle\Finder\FinderInterface::find()` was changed.
 * [BC break] Signature of method `FOS\ElasticaBundle\Persister\ObjectPersisterInterface::handlesObject()` was changed.
 * [BC break] Signature of methods `getPager`, `getOptions` and `getObjectPersister` from interface `FOS\ElasticaBundle\Persister\Event\PersistEvent` were changed.
