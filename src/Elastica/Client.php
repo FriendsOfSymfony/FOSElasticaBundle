@@ -51,7 +51,7 @@ class Client extends BaseClient
     /**
      * {@inheritdoc}
      */
-    public function request($path, $method = Request::GET, $data = [], array $query = [], $contentType = Request::DEFAULT_CONTENT_TYPE): Response
+    public function request(string $path, string $method = Request::GET, $data = [], array $query = [], string $contentType = Request::DEFAULT_CONTENT_TYPE): Response
     {
         if ($this->stopwatch) {
             $this->stopwatch->start('es_request', 'fos_elastica');
@@ -92,7 +92,7 @@ class Client extends BaseClient
         return $this->indexCache[$name] = new Index($this, $name);
     }
 
-    public function getIndexTemplate($name)
+    public function getIndexTemplate($name): IndexTemplate
     {
         if (isset($this->indexTemplateCache[$name])) {
             return $this->indexTemplateCache[$name];
@@ -103,10 +103,8 @@ class Client extends BaseClient
 
     /**
      * Sets a stopwatch instance for debugging purposes.
-     *
-     * @param Stopwatch $stopwatch
      */
-    public function setStopwatch(Stopwatch $stopwatch = null)
+    public function setStopwatch(?Stopwatch $stopwatch = null)
     {
         $this->stopwatch = $stopwatch;
     }
@@ -114,16 +112,13 @@ class Client extends BaseClient
     /**
      * Log the query if we have an instance of ElasticaLogger.
      *
-     * @param string       $path
-     * @param string       $method
      * @param array|string $data
      * @param int          $queryTime
      * @param int          $engineMS
-     * @param int          $itemCount
      */
-    private function logQuery($path, $method, $data, array $query, $queryTime, $engineMS = 0, $itemCount = 0): void
+    private function logQuery(string $path, string $method, $data, array $query, $queryTime, $engineMS = 0, int $itemCount = 0): void
     {
-        if (!$this->_logger or !$this->_logger instanceof ElasticaLogger) {
+        if (!$this->_logger instanceof ElasticaLogger) {
             return;
         }
 
@@ -136,8 +131,6 @@ class Client extends BaseClient
             'headers' => $connection->hasConfig('headers') ? $connection->getConfig('headers') : [],
         ];
 
-        /** @var ElasticaLogger $logger */
-        $logger = $this->_logger;
-        $logger->logQuery($path, $method, $data, $queryTime, $connectionArray, $query, $engineMS, $itemCount);
+        $this->_logger->logQuery($path, $method, $data, $queryTime, $connectionArray, $query, $engineMS, $itemCount);
     }
 }
