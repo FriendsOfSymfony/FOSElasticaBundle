@@ -44,7 +44,7 @@ class TransformedFinder implements PaginatedFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function find($query, $limit = null, $options = [])
+    public function find($query, ?int $limit = null, array $options = [])
     {
         $results = $this->search($query, $limit, $options);
 
@@ -53,12 +53,10 @@ class TransformedFinder implements PaginatedFinderInterface
 
     /**
      * @param $query
-     * @param int|null $limit
-     * @param array    $options
      *
      * @return array
      */
-    public function findHybrid($query, $limit = null, $options = [])
+    public function findHybrid($query, ?int $limit = null, array $options = [])
     {
         $results = $this->search($query, $limit, $options);
 
@@ -76,7 +74,7 @@ class TransformedFinder implements PaginatedFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function findPaginated($query, $options = [])
+    public function findPaginated($query, array $options = [])
     {
         $paginatorAdapter = $this->createPaginatorAdapter($query, $options);
 
@@ -100,7 +98,7 @@ class TransformedFinder implements PaginatedFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function createPaginatorAdapter($query, $options = [])
+    public function createPaginatorAdapter($query, array $options = [])
     {
         $query = Query::create($query);
 
@@ -120,7 +118,7 @@ class TransformedFinder implements PaginatedFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function createRawPaginatorAdapter($query, $options = [])
+    public function createRawPaginatorAdapter($query, array $options = [])
     {
         $query = Query::create($query);
 
@@ -129,12 +127,10 @@ class TransformedFinder implements PaginatedFinderInterface
 
     /**
      * @param $query
-     * @param int|null $limit
-     * @param array    $options
      *
      * @return array
      */
-    protected function search($query, $limit = null, $options = [])
+    protected function search($query, ?int $limit = null, array $options = [])
     {
         $queryObject = Query::create($query);
         if (null !== $limit) {
