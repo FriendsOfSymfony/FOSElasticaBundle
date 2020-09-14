@@ -18,22 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class PopulateListenerTest extends TestCase
 {
-    private function mockResetter($numberOfCalls, $indexName, $deleteOption)
-    {
-        $stub = $this
-            ->getMockBuilder(Resetter::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-
-        $stub
-            ->expects($this->exactly($numberOfCalls))
-            ->method('switchIndexAlias')
-            ->with($indexName, $deleteOption);
-
-        return $stub;
-    }
-
     public function testOnPostIndexPopulateWithReset()
     {
         $indexName = 'index';
@@ -56,5 +40,21 @@ class PopulateListenerTest extends TestCase
 
         $event = new PostIndexPopulateEvent($indexName, false, ['delete' => $deleteOption]);
         $listener->onPostIndexPopulate($event);
+    }
+
+    private function mockResetter($numberOfCalls, $indexName, $deleteOption)
+    {
+        $stub = $this
+            ->getMockBuilder(Resetter::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $stub
+            ->expects($this->exactly($numberOfCalls))
+            ->method('switchIndexAlias')
+            ->with($indexName, $deleteOption);
+
+        return $stub;
     }
 }

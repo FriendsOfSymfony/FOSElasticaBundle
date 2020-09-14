@@ -74,10 +74,7 @@ class Listener
     /**
      * Constructor.
      *
-     * @param ObjectPersisterInterface $objectPersister
-     * @param IndexableInterface       $indexable
-     * @param array                    $config
-     * @param LoggerInterface          $logger
+     * @param LoggerInterface $logger
      */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
@@ -112,8 +109,6 @@ class Listener
 
     /**
      * Looks for new objects that should be indexed.
-     *
-     * @param LifecycleEventArgs $eventArgs
      */
     public function postPersist(LifecycleEventArgs $eventArgs)
     {
@@ -126,8 +121,6 @@ class Listener
 
     /**
      * Looks for objects being updated that should be indexed or removed from the index.
-     *
-     * @param LifecycleEventArgs $eventArgs
      */
     public function postUpdate(LifecycleEventArgs $eventArgs)
     {
@@ -146,8 +139,6 @@ class Listener
     /**
      * Delete objects preRemove instead of postRemove so that we have access to the id.  Because this is called
      * preRemove, first check that the entity is managed by Doctrine.
-     *
-     * @param LifecycleEventArgs $eventArgs
      */
     public function preRemove(LifecycleEventArgs $eventArgs)
     {

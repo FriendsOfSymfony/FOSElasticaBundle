@@ -78,11 +78,7 @@ class DeleteCommand extends Command
             $path = sprintf('%s', $indexName);
             $this->client->request($path, Request::DELETE);
         } catch (ExceptionInterface $deleteOldIndexException) {
-            throw new \RuntimeException(sprintf(
-                'Failed to delete index %s with message: %s',
-                $indexName,
-                $deleteOldIndexException->getMessage()
-            ), 0, $deleteOldIndexException);
+            throw new \RuntimeException(sprintf('Failed to delete index %s with message: %s', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
         }
     }
 }

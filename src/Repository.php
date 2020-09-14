@@ -24,9 +24,6 @@ class Repository
     /** @var PaginatedFinderInterface */
     protected $finder;
 
-    /**
-     * @param PaginatedFinderInterface $finder
-     */
     public function __construct(PaginatedFinderInterface $finder)
     {
         $this->finder = $finder;
@@ -69,7 +66,7 @@ class Repository
 
     /**
      * @param mixed $query
-     * @param array  $options
+     * @param array $options
      *
      * @return Paginator\PaginatorAdapterInterface
      */

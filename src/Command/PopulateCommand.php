@@ -168,7 +168,7 @@ class PopulateCommand extends Command
 
         $this->dispatcher->addListener(
             OnExceptionEvent::class,
-            function(OnExceptionEvent $event) use ($loggerClosure) {
+            function (OnExceptionEvent $event) use ($loggerClosure) {
                 $loggerClosure(
                     count($event->getObjects()),
                     $event->getPager()->getNbResults(),
@@ -179,14 +179,14 @@ class PopulateCommand extends Command
 
         $this->dispatcher->addListener(
             PostInsertObjectsEvent::class,
-            function(PostInsertObjectsEvent $event) use ($loggerClosure) {
+            function (PostInsertObjectsEvent $event) use ($loggerClosure) {
                 $loggerClosure(count($event->getObjects()), $event->getPager()->getNbResults());
             }
         );
 
         $this->dispatcher->addListener(
             PostAsyncInsertObjectsEvent::class,
-            function(PostAsyncInsertObjectsEvent $event) use ($loggerClosure) {
+            function (PostAsyncInsertObjectsEvent $event) use ($loggerClosure) {
                 $loggerClosure($event->getObjectsCount(), $event->getPager()->getNbResults(), $event->getErrorMessage());
             }
         );
@@ -194,7 +194,7 @@ class PopulateCommand extends Command
         if ($options['ignore_errors']) {
             $this->dispatcher->addListener(
                 OnExceptionEvent::class,
-                function(OnExceptionEvent $event) {
+                function (OnExceptionEvent $event) {
                     if ($event->getException() instanceof BulkResponseException) {
                         $event->setIgnore(true);
                     }
@@ -219,6 +219,6 @@ class PopulateCommand extends Command
     {
         $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
         $this->indexManager->getIndex($index)->refresh();
-        $output->writeln("");
+        $output->writeln('');
     }
 }

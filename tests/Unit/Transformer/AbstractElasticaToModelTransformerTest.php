@@ -11,9 +11,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Transformer;
 
+use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 use FOS\ElasticaBundle\Transformer\AbstractElasticaToModelTransformer;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 
 class AbstractElasticaToModelTransformerTest extends UnitTestHelper
 {
@@ -30,12 +30,14 @@ class AbstractElasticaToModelTransformerTest extends UnitTestHelper
         $mock = $this
             ->getMockBuilder(AbstractElasticaToModelTransformer::class)
             ->getMockForAbstractClass();
+
         return $mock;
     }
 
     protected function mockPropertyAccesor()
     {
         $mock = $this->createMock(PropertyAccessorInterface::class);
+
         return $mock;
     }
 }

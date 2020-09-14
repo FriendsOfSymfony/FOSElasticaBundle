@@ -22,9 +22,6 @@ class AliasProcessor
 {
     /**
      * Sets the randomised root name for an index.
-     *
-     * @param IndexConfig $indexConfig
-     * @param Index       $index
      */
     public function setRootName(IndexConfig $indexConfig, Index $index)
     {
@@ -42,10 +39,8 @@ class AliasProcessor
      *
      * $force will delete an index encountered where an alias is expected.
      *
-     * @param IndexConfig $indexConfig
-     * @param Index       $index
-     * @param bool        $force
-     * @param bool        $delete
+     * @param bool $force
+     * @param bool $delete
      *
      * @throws AliasIsIndexException
      */
@@ -118,9 +113,7 @@ class AliasProcessor
     /**
      * Cleans up an index when we encounter a failure to rename the alias.
      *
-     * @param Client     $client
-     * @param string     $indexName
-     * @param \Exception $renameAliasException
+     * @param string $indexName
      */
     private function cleanupRenameFailure(Client $client, $indexName, \Exception $renameAliasException)
     {
@@ -135,17 +128,12 @@ class AliasProcessor
             );
         }
 
-        throw new \RuntimeException(sprintf(
-            'Failed to updated index alias: %s. %s',
-            $renameAliasException->getMessage(),
-            $additionalError ?: sprintf('Newly built index %s was deleted', $indexName)
-        ), 0, $renameAliasException);
+        throw new \RuntimeException(sprintf('Failed to updated index alias: %s. %s', $renameAliasException->getMessage(), $additionalError ?: sprintf('Newly built index %s was deleted', $indexName)), 0, $renameAliasException);
     }
 
     /**
      * Delete an index.
      *
-     * @param Client $client
      * @param string $indexName Index name to delete
      */
     private function deleteIndex(Client $client, $indexName)
@@ -154,18 +142,13 @@ class AliasProcessor
             $path = sprintf('%s', $indexName);
             $client->request($path, Request::DELETE);
         } catch (ExceptionInterface $deleteOldIndexException) {
-            throw new \RuntimeException(sprintf(
-                'Failed to delete index %s with message: %s',
-                $indexName,
-                $deleteOldIndexException->getMessage()
-            ), 0, $deleteOldIndexException);
+            throw new \RuntimeException(sprintf('Failed to delete index %s with message: %s', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
         }
     }
 
     /**
      * Close an index.
      *
-     * @param Client $client
      * @param string $indexName
      */
     private function closeIndex(Client $client, $indexName)
@@ -174,15 +157,7 @@ class AliasProcessor
             $path = sprintf('%s/_close', $indexName);
             $client->request($path, Request::POST);
         } catch (ExceptionInterface $e) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Failed to close index %s with message: %s',
-                    $indexName,
-                    $e->getMessage()
-                ),
-                0,
-                $e
-            );
+            throw new \RuntimeException(sprintf('Failed to close index %s with message: %s', $indexName, $e->getMessage()), 0, $e);
         }
     }
 
@@ -190,7 +165,6 @@ class AliasProcessor
      * Returns the name of a single index that an alias points to or throws
      * an exception if there is more than one.
      *
-     * @param Client $client
      * @param string $aliasName Alias name
      *
      * @return string|null
@@ -217,12 +191,7 @@ class AliasProcessor
         }
 
         if (count($aliasedIndexes) > 1) {
-            throw new \RuntimeException(sprintf(
-                'Alias %s is used for multiple indexes: [%s]. Make sure it\'s'.
-                'either not used or is assigned to one index only',
-                $aliasName,
-                implode(', ', $aliasedIndexes)
-            ));
+            throw new \RuntimeException(sprintf('Alias %s is used for multiple indexes: [%s]. Make sure it\'s'.'either not used or is assigned to one index only', $aliasName, implode(', ', $aliasedIndexes)));
         }
 
         return array_shift($aliasedIndexes);

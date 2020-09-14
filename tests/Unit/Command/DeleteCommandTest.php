@@ -17,10 +17,8 @@ use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\IndexManager;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteCommandTest extends TestCase
 {
@@ -58,7 +56,6 @@ class DeleteCommandTest extends TestCase
         $input = $this->createMock(InputInterface::class);
         $input->expects($this->once())->method('getOption')->with('index')->willReturn(null);
 
-
         $index1 = clone $this->indexMock;
         $index2 = clone $this->indexMock;
 
@@ -73,7 +70,6 @@ class DeleteCommandTest extends TestCase
             ->method('getIndex')
             ->withConsecutive(['index1'], ['index2'])
             ->willReturnOnConsecutiveCalls($index1, $index2);
-        ;
 
         $index1->expects($this->once())->method('exists')->willReturn(true);
         $index1->expects($this->once())->method('getName')->willReturn('index1');
@@ -107,7 +103,6 @@ class DeleteCommandTest extends TestCase
             ->method('getIndex')
             ->with('index_name')
             ->willReturn($this->indexMock);
-        ;
 
         $this->indexMock->expects($this->once())->method('exists')->willReturn(true);
         $this->indexMock->expects($this->once())->method('getName')->willReturn('index_name');

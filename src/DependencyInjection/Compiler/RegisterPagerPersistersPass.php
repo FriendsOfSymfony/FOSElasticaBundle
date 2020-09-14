@@ -38,12 +38,7 @@ final class RegisterPagerPersistersPass implements CompilerPassInterface
                 $persisterName = $attribute['persisterName'];
 
                 if (isset($nameToServiceIdMap[$persisterName])) {
-                    throw new \InvalidArgumentException(sprintf(
-                        'Cannot register pager persister "%s". The pager persister "%s" has been registered for same name "%s"',
-                        $id,
-                        $nameToServiceIdMap[$persisterName],
-                        $persisterName
-                    ));
+                    throw new \InvalidArgumentException(sprintf('Cannot register pager persister "%s". The pager persister "%s" has been registered for same name "%s"', $id, $nameToServiceIdMap[$persisterName], $persisterName));
                 }
 
                 $persisterDef = $container->getDefinition($id);
@@ -75,12 +70,7 @@ final class RegisterPagerPersistersPass implements CompilerPassInterface
         $rc = new \ReflectionClass($persisterClass);
 
         if (!$rc->implementsInterface(PagerPersisterInterface::class)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Elastica pager persister "%s" with class "%s" must implement "%s".',
-                $persisterId,
-                $persisterClass,
-                PagerPersisterInterface::class
-            ));
+            throw new \InvalidArgumentException(sprintf('Elastica pager persister "%s" with class "%s" must implement "%s".', $persisterId, $persisterClass, PagerPersisterInterface::class));
         }
     }
 }

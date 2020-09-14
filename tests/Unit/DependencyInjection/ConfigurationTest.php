@@ -300,7 +300,7 @@ class ConfigurationTest extends TestCase
         $configuration = $this->getConfigs([
             'clients' => [
                 'default' => [
-                    'http_error_codes' => ['HTTP_ERROR_CODE']
+                    'http_error_codes' => ['HTTP_ERROR_CODE'],
                 ],
             ],
         ]);
@@ -315,8 +315,8 @@ class ConfigurationTest extends TestCase
                 'index_templates' => [
                     'some_template' => [
                         'template' => 'some_template_*',
-                        'client'   => 'default',
-                        'properties'  => [
+                        'client' => 'default',
+                        'properties' => [
                             'some_field' => [],
                         ],
                     ],

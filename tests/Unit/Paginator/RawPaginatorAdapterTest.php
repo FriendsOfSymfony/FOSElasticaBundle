@@ -11,64 +11,13 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Event;
 
-use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use Elastica\Query;
 use Elastica\ResultSet;
-use Elastica\SearchableInterface;
-use InvalidArgumentException;
+use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 
 class RawPaginatorAdapterTest extends UnitTestHelper
 {
-    protected function mockResultSet()
-    {
-        $methods = ['getTotalHits', 'getAggregations', 'getSuggests', 'getMaxScore'];
-        $mock = $this
-            ->getMockBuilder(ResultSet::class)
-            ->disableOriginalConstructor()
-            ->setMethods($methods)
-            ->getMock();
-        return $mock;
-    }
-
-    private function createAdapterWithSearch($methodName, $value)
-    {
-        $resultSet = $this->mockResultSet();
-        $resultSet
-            ->expects($this->exactly(1))
-            ->method($methodName)
-            ->willReturn($value);
-
-        $query = new Query();
-        $options = [];
-        $searchable = $this->mockSearchable();
-        $searchable
-            ->expects($this->exactly(1))
-            ->method('search')
-            ->with($query)
-            ->willReturn($resultSet);
-
-        $adapter = new RawPaginatorAdapter($searchable, $query, $options);
-        return $adapter;
-    }
-
-    private function createAdapterWithCount($totalHits, $querySize = null)
-    {
-        $query = new Query();
-        if ($querySize) {
-            $query->setParam('size', $querySize);
-        }
-        $options = [];
-        $searchable = $this->mockSearchable();
-        $searchable
-            ->expects($this->exactly(1))
-            ->method('count')
-            ->willReturn($totalHits);
-
-        $adapter = new RawPaginatorAdapter($searchable, $query, $options);
-        return $adapter;
-    }
-
     public function testGetTotalHits()
     {
         $adapter = $this->createAdapterWithCount(123);
@@ -118,5 +67,57 @@ class RawPaginatorAdapterTest extends UnitTestHelper
 
         $adapter = new RawPaginatorAdapter($searchable, $query, $options);
         $this->assertEquals($query, $adapter->getQuery());
+    }
+
+    protected function mockResultSet()
+    {
+        $methods = ['getTotalHits', 'getAggregations', 'getSuggests', 'getMaxScore'];
+        $mock = $this
+            ->getMockBuilder(ResultSet::class)
+            ->disableOriginalConstructor()
+            ->setMethods($methods)
+            ->getMock();
+
+        return $mock;
+    }
+
+    private function createAdapterWithSearch($methodName, $value)
+    {
+        $resultSet = $this->mockResultSet();
+        $resultSet
+            ->expects($this->exactly(1))
+            ->method($methodName)
+            ->willReturn($value);
+
+        $query = new Query();
+        $options = [];
+        $searchable = $this->mockSearchable();
+        $searchable
+            ->expects($this->exactly(1))
+            ->method('search')
+            ->with($query)
+            ->willReturn($resultSet);
+
+        $adapter = new RawPaginatorAdapter($searchable, $query, $options);
+
+        return $adapter;
+    }
+
+    private function createAdapterWithCount($totalHits, $querySize = null)
+    {
+        $query = new Query();
+        if ($querySize) {
+            $query->setParam('size', $querySize);
+        }
+        $options = [];
+        $searchable = $this->mockSearchable();
+        $searchable
+            ->expects($this->exactly(1))
+            ->method('count')
+            ->willReturn($totalHits);
+
+        $adapter = new RawPaginatorAdapter($searchable, $query, $options);
+
+        return $adapter;
     }
 }

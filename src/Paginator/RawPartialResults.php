@@ -21,9 +21,6 @@ class RawPartialResults implements PartialResultsInterface
 {
     protected $resultSet;
 
-    /**
-     * @param ResultSet $resultSet
-     */
     public function __construct(ResultSet $resultSet)
     {
         $this->resultSet = $resultSet;

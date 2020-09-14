@@ -81,6 +81,7 @@ class RepositoryTest extends TestCase
         $finderMock->expects($this->once())
             ->method($name)
             ->withConsecutive($arguments);
+
         return $finderMock;
     }
 }

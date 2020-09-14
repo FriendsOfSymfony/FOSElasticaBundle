@@ -13,15 +13,15 @@ return PhpCsFixer\Config::create()
     ->setRules([
         '@Symfony' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,
         'header_comment' => ['header' => $header],
         'linebreak_after_opening_tag' => true,
-        'no_php4_constructor' => true,
         'no_useless_else' => true,
         'ordered_class_elements' => true,
         'ordered_imports' => true,
-        'php_unit_construct' => true,
         'phpdoc_no_empty_return' => false,
+        'ternary_to_null_coalescing' => true,
     ])
     ->setUsingCache(true)
     ->setFinder(

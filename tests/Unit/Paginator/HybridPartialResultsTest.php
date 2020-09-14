@@ -11,12 +11,23 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Event;
 
-use FOS\ElasticaBundle\Paginator\HybridPartialResults;
 use Elastica\ResultSet;
+use FOS\ElasticaBundle\Paginator\HybridPartialResults;
 use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 
 class HybridPartialResultsTest extends UnitTestHelper
 {
+    public function testToArray()
+    {
+        $transformer = $this->mockElasticaToModelTransformer();
+
+        $resultSet = $this->mockResultSet();
+
+        $results = new HybridPartialResults($resultSet, $transformer);
+
+        $results->toArray();
+    }
+
     protected function mockResultSet()
     {
         $mock = $this
@@ -30,16 +41,5 @@ class HybridPartialResultsTest extends UnitTestHelper
             ->willReturn([]);
 
         return $mock;
-    }
-
-    public function testToArray()
-    {
-        $transformer = $this->mockElasticaToModelTransformer();
-
-        $resultSet = $this->mockResultSet();
-
-        $results = new HybridPartialResults($resultSet, $transformer);
-
-        $results->toArray();
     }
 }

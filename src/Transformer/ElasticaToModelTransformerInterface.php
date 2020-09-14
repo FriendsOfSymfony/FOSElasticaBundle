@@ -27,8 +27,6 @@ interface ElasticaToModelTransformerInterface
     public function transform(array $elasticaObjects);
 
     /**
-     * @param array $elasticaObjects
-     *
      * @return mixed
      */
     public function hybridTransform(array $elasticaObjects);

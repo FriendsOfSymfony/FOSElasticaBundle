@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Persister;
 
 use FOS\ElasticaBundle\Persister\Event\OnExceptionEvent;
@@ -60,7 +69,7 @@ final class InPlacePagerPersister implements PagerPersisterInterface
 
                 $this->insertPage($page, $pager, $objectPersister, $options);
 
-                $page++;
+                ++$page;
             } while ($page <= $lastPage);
         } finally {
             $this->dispatcher->dispatch(new PostPersistEvent($pager, $objectPersister, $options));
@@ -107,5 +116,4 @@ final class InPlacePagerPersister implements PagerPersisterInterface
             }
         }
     }
-
 }

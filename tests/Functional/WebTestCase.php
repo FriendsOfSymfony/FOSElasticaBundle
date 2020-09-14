@@ -29,13 +29,6 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class WebTestCase extends BaseKernelTestCase
 {
-    protected static function getKernelClass()
-    {
-        require_once __DIR__.'/app/AppKernel.php';
-
-        return AppKernel::class;
-    }
-
     public static function setUpBeforeClass(): void
     {
         static::deleteTmpDir();
@@ -44,6 +37,13 @@ class WebTestCase extends BaseKernelTestCase
     public static function tearDownAfterClass(): void
     {
         static::deleteTmpDir();
+    }
+
+    protected static function getKernelClass()
+    {
+        require_once __DIR__.'/app/AppKernel.php';
+
+        return AppKernel::class;
     }
 
     protected static function deleteTmpDir()
@@ -66,9 +66,9 @@ class WebTestCase extends BaseKernelTestCase
         return new $class(
             static::getVarDir(),
             $options['test_case'],
-            isset($options['root_config']) ? $options['root_config'] : 'config.yml',
-            isset($options['environment']) ? $options['environment'] : strtolower(static::getVarDir().$options['test_case']),
-            isset($options['debug']) ? $options['debug'] : true
+            $options['root_config'] ?? 'config.yml',
+            $options['environment'] ?? strtolower(static::getVarDir().$options['test_case']),
+            $options['debug'] ?? true
         );
     }
 

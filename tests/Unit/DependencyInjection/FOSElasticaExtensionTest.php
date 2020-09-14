@@ -12,10 +12,10 @@
 namespace FOS\ElasticaBundle\Tests\Unit\DependencyInjection;
 
 use FOS\ElasticaBundle\DependencyInjection\FOSElasticaExtension;
-use FOS\ElasticaBundle\Doctrine\RegisterListenersService;
 use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
 use FOS\ElasticaBundle\Doctrine\ORMPagerProvider;
 use FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider;
+use FOS\ElasticaBundle\Doctrine\RegisterListenersService;
 use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
 use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
@@ -220,7 +220,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertSame(
             [
                 'fos_elastica.pager_provider' => [
-                    ['index' => 'acme_index',],
+                    ['index' => 'acme_index'],
                 ],
             ],
             $definition->getTags()
@@ -268,10 +268,10 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertSame(InPlacePagerPersister::class, $definition->getClass());
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
-        $this->assertSame('fos_elastica.persister_registry', (string)$definition->getArgument(0));
+        $this->assertSame('fos_elastica.persister_registry', (string) $definition->getArgument(0));
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(1));
-        $this->assertSame('event_dispatcher', (string)$definition->getArgument(1));
+        $this->assertSame('event_dispatcher', (string) $definition->getArgument(1));
 
         $this->assertSame(
             [
@@ -316,7 +316,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertSame(RegisterListenersService::class, $definition->getClass());
 
         $this->assertInstanceOf(Reference::class, $definition->getArgument(0));
-        $this->assertSame('event_dispatcher', (string)$definition->getArgument(0));
+        $this->assertSame('event_dispatcher', (string) $definition->getArgument(0));
     }
 
     public function testShouldRegisterFilterObjectsListener()
@@ -355,7 +355,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertSame(FilterObjectsListener::class, $listener->getClass());
 
         $this->assertInstanceOf(Reference::class, $listener->getArgument(0));
-        $this->assertSame('fos_elastica.indexable', (string)$listener->getArgument(0));
+        $this->assertSame('fos_elastica.indexable', (string) $listener->getArgument(0));
         $this->assertEquals(['kernel.event_subscriber' => [[]]], $listener->getTags());
     }
 

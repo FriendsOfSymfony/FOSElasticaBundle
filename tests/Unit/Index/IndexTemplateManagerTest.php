@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
 use Elastica\IndexTemplate;
@@ -12,9 +21,8 @@ use PHPUnit\Framework\TestCase;
 class IndexTemplateManagerTest extends TestCase
 {
     /**
-     * Test get index template
+     * Test get index template.
      *
-     * @param array       $templates
      * @param string      $name
      * @param string      $expectedTemplate
      * @param string|null $expectedException
@@ -35,27 +43,27 @@ class IndexTemplateManagerTest extends TestCase
     public function provideTestGetIndexTemplate()
     {
         return [
-            'empty templates'             => [
-                'templates'         => [],
-                'name'              => 'any template',
-                'expectedTemplate'  => [],
+            'empty templates' => [
+                'templates' => [],
+                'name' => 'any template',
+                'expectedTemplate' => [],
                 'expectedException' => \InvalidArgumentException::class,
             ],
-            'expected template found'     => [
-                'templates'        => [
-                    'first template'  => $firstTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
+            'expected template found' => [
+                'templates' => [
+                    'first template' => $firstTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
                     'second template' => $secondTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
                 ],
-                'name'             => 'second template',
+                'name' => 'second template',
                 'expectedTemplate' => $secondTemplate,
             ],
             'expected template not found' => [
-                'templates'         => [
-                    'first template'  => $firstTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
+                'templates' => [
+                    'first template' => $firstTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
                     'second template' => $secondTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
                 ],
-                'name'              => 'some template',
-                'expectedTemplate'  => null,
+                'name' => 'some template',
+                'expectedTemplate' => null,
                 'expectedException' => \InvalidArgumentException::class,
             ],
         ];

@@ -12,7 +12,6 @@
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine;
 
 use Elastica\Index;
-use Elastica\Type;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
 use PHPUnit\Framework\TestCase;

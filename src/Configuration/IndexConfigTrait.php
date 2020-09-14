@@ -1,8 +1,9 @@
 <?php
+
 /*
- * This file is part of the OpCart software.
+ * This file is part of the FOSElasticaBundle package.
  *
- * (c) 2015, OpticsPlanet, Inc
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +12,7 @@
 namespace FOS\ElasticaBundle\Configuration;
 
 /**
- * Index configuration trait class
+ * Index configuration trait class.
  *
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
  */
@@ -25,7 +26,7 @@ trait IndexConfigTrait
     private $elasticSearchName;
 
     /**
-     * The model of the index
+     * The model of the index.
      *
      * @var string|null
      */
@@ -56,9 +57,6 @@ trait IndexConfigTrait
      */
     private $mapping;
 
-    /**
-     * @return string
-     */
     public function getElasticSearchName(): string
     {
         return $this->elasticSearchName;
@@ -69,17 +67,11 @@ trait IndexConfigTrait
         return $this->model;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return array
-     */
     public function getSettings(): array
     {
         return $this->settings;

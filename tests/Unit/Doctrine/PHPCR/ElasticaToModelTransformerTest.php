@@ -13,9 +13,9 @@ namespace FOS\ElasticaBundle\Tests\Unit\Doctrine\PHPCR;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use FOS\ElasticaBundle\Doctrine\PHPCR\ElasticaToModelTransformer;
 use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\DocumentRepository;
+use FOS\ElasticaBundle\Doctrine\PHPCR\ElasticaToModelTransformer;
 use PHPUnit\Framework\TestCase;
 
 class ElasticaToModelTransformerTest extends TestCase

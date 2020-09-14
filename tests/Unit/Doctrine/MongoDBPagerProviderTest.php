@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -59,7 +68,6 @@ class MongoDBPagerProviderTest extends TestCase
             ->method('getRepository')
             ->with($objectClass)
             ->willReturn($repository);
-
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
@@ -126,7 +134,6 @@ class MongoDBPagerProviderTest extends TestCase
             ->method('getRepository')
             ->willReturn($repository);
 
-
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
@@ -140,7 +147,7 @@ class MongoDBPagerProviderTest extends TestCase
             ->with($this->identicalTo($manager), $this->isInstanceOf(PagerInterface::class), $baseConfig)
         ;
 
-        $provider = new MongoDBPagerProvider($doctrine,$registerListenersMock, $objectClass, $baseConfig);
+        $provider = new MongoDBPagerProvider($doctrine, $registerListenersMock, $objectClass, $baseConfig);
 
         $provider->provide();
     }

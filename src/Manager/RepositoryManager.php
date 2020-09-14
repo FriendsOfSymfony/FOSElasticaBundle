@@ -52,10 +52,6 @@ class RepositoryManager implements RepositoryManagerInterface
      *
      * Returns custom repository if one specified otherwise
      * returns a basic repository.
-     *
-     * @param string $indexName
-     *
-     * @return Repository
      */
     public function getRepository(string $indexName): Repository
     {
@@ -71,6 +67,11 @@ class RepositoryManager implements RepositoryManagerInterface
         $this->repositories[$indexName] = $repository;
 
         return $repository;
+    }
+
+    public function hasRepository(string $indexName): bool
+    {
+        return isset($this->indexes[$indexName]);
     }
 
     /**
@@ -99,10 +100,5 @@ class RepositoryManager implements RepositoryManagerInterface
         }
 
         return new $repositoryName($this->indexes[$indexName]['finder']);
-    }
-
-    public function hasRepository(string $indexName): bool
-    {
-        return isset($this->indexes[$indexName]);
     }
 }

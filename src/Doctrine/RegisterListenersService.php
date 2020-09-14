@@ -1,7 +1,16 @@
 <?php
+
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Doctrine;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
 use FOS\ElasticaBundle\Persister\Event\PersistEvent;
@@ -27,18 +36,18 @@ class RegisterListenersService
     {
         $options = array_replace([
             'clear_object_manager' => true,
-            'debug_logging'        => false,
-            'sleep'                => 0,
+            'debug_logging' => false,
+            'sleep' => 0,
         ], $options);
 
         if ($options['clear_object_manager']) {
-            $this->addListener($pager, PostInsertObjectsEvent::class, function() use ($manager) {
+            $this->addListener($pager, PostInsertObjectsEvent::class, function () use ($manager) {
                 $manager->clear();
             });
         }
 
         if ($options['sleep']) {
-            $this->addListener($pager, PostInsertObjectsEvent::class, function() use ($options) {
+            $this->addListener($pager, PostInsertObjectsEvent::class, function () use ($options) {
                 usleep($options['sleep']);
             });
         }
@@ -47,24 +56,22 @@ class RegisterListenersService
             $configuration = $manager->getConnection()->getConfiguration();
             $logger = $configuration->getSQLLogger();
 
-            $this->addListener($pager, PreFetchObjectsEvent::class, function() use ($configuration) {
+            $this->addListener($pager, PreFetchObjectsEvent::class, function () use ($configuration) {
                 $configuration->setSQLLogger(null);
             });
 
-            $this->addListener($pager, PreInsertObjectsEvent::class, function() use ($configuration, $logger) {
+            $this->addListener($pager, PreInsertObjectsEvent::class, function () use ($configuration, $logger) {
                 $configuration->setSQLLogger($logger);
             });
         }
     }
 
     /**
-     * @param PagerInterface $pager
      * @param string $eventName
-     * @param \Closure $callable
      */
     private function addListener(PagerInterface $pager, $eventName, \Closure $callable)
     {
-        $this->dispatcher->addListener($eventName, function(PersistEvent $event) use ($pager, $callable) {
+        $this->dispatcher->addListener($eventName, function (PersistEvent $event) use ($pager, $callable) {
             if ($event->getPager() !== $pager) {
                 return;
             }
