@@ -44,7 +44,7 @@ class FOSElasticaExtension extends Extension
      *
      * @var array
      */
-    private $indexTemplateConfigs = array();
+    private $indexTemplateConfigs = [];
 
     /**
      * If we've encountered a type mapped to a specific persistence driver, it will be loaded
@@ -247,9 +247,9 @@ class FOSElasticaExtension extends Extension
             $indexDef = new ChildDefinition('fos_elastica.index_template_prototype');
             $indexDef->setFactory([new Reference('fos_elastica.client'), 'getIndexTemplate']);
             $indexDef->replaceArgument(0, $indexTemplateName);
-            $indexDef->addTag('fos_elastica.index_template', array(
+            $indexDef->addTag('fos_elastica.index_template', [
                 'name' => $name,
-            ));
+            ]);
 
             if (isset($indexTemplate['client'])) {
                 $client = $this->getClient($indexTemplate['client']);
@@ -259,13 +259,13 @@ class FOSElasticaExtension extends Extension
             $container->setDefinition($indexId, $indexDef);
             $reference = new Reference($indexId);
 
-            $this->indexTemplateConfigs[$name] = array(
+            $this->indexTemplateConfigs[$name] = [
                 'elasticsearch_name' => $indexTemplateName,
                 'reference' => $reference,
                 'name' => $name,
                 'settings' => $indexTemplate['settings'],
                 'template' => $indexTemplate['template'],
-            );
+            ];
 
             $this->loadIndexConfig((array) $indexTemplate, $this->indexTemplateConfigs[$name]);
         }

@@ -42,9 +42,9 @@ class ResetTemplatesCommandTest extends WebTestCase
 
         $command = $this->application->find('fos:elastica:reset-templates');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $commandTester->execute([
             'command'  => $command->getName(),
-        ));
+        ]);
 
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Resetting all templates', $output);
@@ -83,10 +83,10 @@ class ResetTemplatesCommandTest extends WebTestCase
 
         $command = $this->application->find('fos:elastica:reset-templates');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $commandTester->execute([
             'command'  => $command->getName(),
             '--index'  => 'index_template_example_1',
-        ));
+        ]);
 
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Resetting template', $output);
@@ -103,11 +103,11 @@ class ResetTemplatesCommandTest extends WebTestCase
         $command = $this->application->find('fos:elastica:reset-templates');
         $commandTester = new CommandTester($command);
         $commandTester->setInputs(['yes']);
-        $commandTester->execute(array(
+        $commandTester->execute([
             'command'  => $command->getName(),
             '--index'  => 'index_template_example_1',
             '--force-delete' => true,
-        ));
+        ]);
 
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('You are going to remove all template indexes. Are you sure?', $output);

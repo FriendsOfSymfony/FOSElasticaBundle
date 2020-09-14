@@ -37,7 +37,7 @@ class FilterObjectsListener implements EventSubscriberInterface
         $objects = $event->getObjects();
         $index = $options['indexName'];
 
-        $filtered = array();
+        $filtered = [];
         foreach ($objects as $object) {
             if (!$this->indexable->isObjectIndexable($index, $object)) {
                 continue;

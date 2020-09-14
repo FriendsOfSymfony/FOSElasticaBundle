@@ -356,7 +356,7 @@ class Configuration implements ConfigurationInterface
                                         ->arrayNode('http_error_codes')
                                             ->beforeNormalization()
                                                 ->ifTrue(function ($v) { return !is_array($v); })
-                                                ->then(function ($v) { return array($v); })
+                                                ->then(function ($v) { return [$v]; })
                                             ->end()
                                             ->requiresAtLeastOneElement()
                                             ->defaultValue([400, 403, 404])

@@ -39,7 +39,7 @@ class Client extends BaseClient
      *
      * @var array
      */
-    private $indexTemplateCache = array();
+    private $indexTemplateCache = [];
 
     /**
      * Symfony's debugging Stopwatch.

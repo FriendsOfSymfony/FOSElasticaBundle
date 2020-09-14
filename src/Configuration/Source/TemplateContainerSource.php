@@ -37,7 +37,7 @@ class TemplateContainerSource implements SourceInterface
      */
     public function getConfiguration()
     {
-        $indexes = array();
+        $indexes = [];
         foreach ($this->configArray as $config) {
             $index = new IndexTemplateConfig($config);
 
