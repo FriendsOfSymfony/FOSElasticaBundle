@@ -196,7 +196,7 @@ class PopulateCommand extends Command
                 OnExceptionEvent::class,
                 function (OnExceptionEvent $event) {
                     if ($event->getException() instanceof BulkResponseException) {
-                        $event->setIgnore(true);
+                        $event->setIgnored(true);
                     }
                 }
             );
