@@ -16,18 +16,9 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 
 interface PersistEvent
 {
-    /**
-     * @return PagerInterface
-     */
-    public function getPager();
+    public function getPager(): PagerInterface;
 
-    /**
-     * @return array
-     */
-    public function getOptions();
+    public function getOptions(): array;
 
-    /**
-     * @return ObjectPersisterInterface
-     */
-    public function getObjectPersister();
+    public function getObjectPersister(): ObjectPersisterInterface;
 }
