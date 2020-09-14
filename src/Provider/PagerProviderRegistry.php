@@ -45,7 +45,7 @@ class PagerProviderRegistry
      *
      * @throws \InvalidArgumentException if no provider was registered for the index and type
      */
-    public function getProvider(string $index): ?PagerProviderInterface
+    public function getProvider(string $index): PagerProviderInterface
     {
         if (!$this->providers->has($index)) {
             throw new \InvalidArgumentException(sprintf('No provider was registered for index "%s".', $index));

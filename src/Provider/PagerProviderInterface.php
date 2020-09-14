@@ -13,8 +13,5 @@ namespace FOS\ElasticaBundle\Provider;
 
 interface PagerProviderInterface
 {
-    /**
-     * @return PagerInterface
-     */
-    public function provide(array $options = []);
+    public function provide(array $options = []): PagerInterface;
 }

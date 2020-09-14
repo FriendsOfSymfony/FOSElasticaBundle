@@ -15,6 +15,7 @@ use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
+use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -57,7 +58,7 @@ final class ORMPagerProvider implements PagerProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function provide(array $options = [])
+    public function provide(array $options = []): PagerInterface
     {
         $options = array_replace($this->baseOptions, $options);
 

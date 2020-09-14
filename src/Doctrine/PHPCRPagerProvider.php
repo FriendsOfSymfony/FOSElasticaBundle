@@ -13,6 +13,7 @@ namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
+use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use Pagerfanta\Adapter\DoctrineODMPhpcrAdapter;
 use Pagerfanta\Pagerfanta;
@@ -55,7 +56,7 @@ final class PHPCRPagerProvider implements PagerProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function provide(array $options = [])
+    public function provide(array $options = []): PagerInterface
     {
         $options = array_replace($this->baseOptions, $options);
 
