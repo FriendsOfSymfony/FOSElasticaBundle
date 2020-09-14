@@ -39,10 +39,7 @@ final class PostPersistEvent extends Event implements PersistEvent
         $this->options = $options;
     }
 
-    /**
-     * @return PagerInterface
-     */
-    public function getPager(): ?PagerInterface
+    public function getPager(): PagerInterface
     {
         return $this->pager;
     }
