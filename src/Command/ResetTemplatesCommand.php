@@ -53,7 +53,7 @@ final class ResetTemplatesCommand extends Command
                 'force-delete',
                 null,
                 InputOption::VALUE_NONE,
-                'Delete all indexes that matches index templates patterns. ' .
+                'Delete all indexes that matches index templates patterns. '.
                 'Aware that pattern may match various indexes.'
             )
             ->setDescription('Reset search indexes templates')

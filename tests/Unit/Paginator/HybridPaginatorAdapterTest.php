@@ -11,14 +11,22 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Event;
 
-use FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter;
 use Elastica\Query;
-use Elastica\SearchableInterface;
-use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter;
 use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 
 class HybridPaginatorAdapterTest extends UnitTestHelper
 {
+    public function testGetResults()
+    {
+        $searchable = $this->mockSearchable();
+        $query = new Query();
+        $transformer = $this->mockElasticaToModelTransformer();
+
+        $adapter = $this->mockHybridPaginatorAdapter([$searchable, $query, $transformer]);
+        $adapter->getResults(0, 0);
+    }
+
     protected function mockHybridPaginatorAdapter($args)
     {
         $mock = $this
@@ -35,15 +43,5 @@ class HybridPaginatorAdapterTest extends UnitTestHelper
             ->willReturn($resultSet);
 
         return $mock;
-    }
-
-    public function testGetResults()
-    {
-        $searchable = $this->mockSearchable();
-        $query = new Query();
-        $transformer = $this->mockElasticaToModelTransformer();
-
-        $adapter = $this->mockHybridPaginatorAdapter([$searchable, $query, $transformer]);
-        $adapter->getResults(0, 0);
     }
 }

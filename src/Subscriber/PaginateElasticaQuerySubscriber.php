@@ -62,8 +62,6 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 
     /**
      * Adds knp paging sort to query.
-     *
-     * @param ItemsEvent $event
      */
     protected function setSorting(ItemsEvent $event)
     {

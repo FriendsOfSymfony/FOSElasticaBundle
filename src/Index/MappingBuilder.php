@@ -19,8 +19,6 @@ class MappingBuilder
     /**
      * Builds mappings for an entire index.
      *
-     * @param IndexConfigInterface $indexConfig
-     *
      * @return array
      */
     public function buildIndexMapping(IndexConfigInterface $indexConfig)
@@ -43,8 +41,6 @@ class MappingBuilder
     /**
      * Builds mappings for an entire index template.
      *
-     * @param IndexTemplateConfig $indexTemplateConfig
-     *
      * @return array
      */
     public function buildIndexTemplateMapping(IndexTemplateConfig $indexTemplateConfig)
@@ -57,9 +53,6 @@ class MappingBuilder
 
     /**
      * Builds mappings for a single type.
-     *
-     * @param string|null $model
-     * @param IndexConfigInterface $indexConfig
      *
      * @return array
      */

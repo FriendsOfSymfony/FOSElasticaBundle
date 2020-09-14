@@ -99,12 +99,7 @@ class FOSElasticaExtension extends Extension
         $container->setParameter('fos_elastica.default_index', $config['default_index']);
 
         if ($usedIndexNames = \array_intersect_key($config['indexes'], $config['index_templates'])) {
-            throw new \DomainException(
-                \sprintf(
-                    'Index names "%s" are already in use and can not be used for index templates names',
-                    \implode('","', \array_keys($usedIndexNames))
-                )
-            );
+            throw new \DomainException(\sprintf('Index names "%s" are already in use and can not be used for index templates names', \implode('","', \array_keys($usedIndexNames))));
         }
         $this->loadIndexTemplates($config['index_templates'], $container);
 
@@ -120,9 +115,6 @@ class FOSElasticaExtension extends Extension
     }
 
     /**
-     * @param array            $config
-     * @param ContainerBuilder $container
-     *
      * @return Configuration
      */
     public function getConfiguration(array $config, ContainerBuilder $container)
@@ -179,7 +171,7 @@ class FOSElasticaExtension extends Extension
 
         foreach ($indexes as $name => $index) {
             $indexId = sprintf('fos_elastica.index.%s', $name);
-            $indexName = isset($index['index_name']) ? $index['index_name'] : $name;
+            $indexName = $index['index_name'] ?? $name;
 
             $indexDef = new ChildDefinition('fos_elastica.index_prototype');
             $indexDef->setFactory([new Reference('fos_elastica.client'), 'getIndex']);
@@ -203,7 +195,7 @@ class FOSElasticaExtension extends Extension
                 'model' => $index['persistence']['model'] ?? null,
                 'name' => $name,
                 'settings' => $index['settings'],
-                'index_prototype' => isset($index['index_prototype']) ? $index['index_prototype'] : [],
+                'index_prototype' => $index['index_prototype'] ?? [],
                 'use_alias' => $index['use_alias'],
             ];
 
@@ -231,8 +223,8 @@ class FOSElasticaExtension extends Extension
     /**
      * Loads the configured indexes.
      *
-     * @param array            $indexTemplates   An array of indexes configurations
-     * @param ContainerBuilder $container A ContainerBuilder instance
+     * @param array            $indexTemplates An array of indexes configurations
+     * @param ContainerBuilder $container      A ContainerBuilder instance
      *
      * @throws \InvalidArgumentException
      *
@@ -242,7 +234,7 @@ class FOSElasticaExtension extends Extension
     {
         foreach ($indexTemplates as $name => $indexTemplate) {
             $indexId = sprintf('fos_elastica.index_template.%s', $name);
-            $indexTemplateName = isset($indexTemplate['template_name']) ? $indexTemplate['template_name'] : $name;
+            $indexTemplateName = $indexTemplate['template_name'] ?? $name;
 
             $indexDef = new ChildDefinition('fos_elastica.index_template_prototype');
             $indexDef->setFactory([new Reference('fos_elastica.client'), 'getIndexTemplate']);
@@ -274,9 +266,8 @@ class FOSElasticaExtension extends Extension
     /**
      * Loads the configured index finders.
      *
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     * @param string                                                  $name      The index name
-     * @param Reference                                               $index     Reference to the related index
+     * @param string    $name  The index name
+     * @param Reference $index Reference to the related index
      *
      * @return string
      */
@@ -673,7 +664,7 @@ class FOSElasticaExtension extends Extension
     }
 
     /**
-     * Load index template manager
+     * Load index template manager.
      */
     private function loadIndexTemplateManager(ContainerBuilder $container): void
     {

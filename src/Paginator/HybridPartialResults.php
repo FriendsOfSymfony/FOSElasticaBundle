@@ -24,10 +24,6 @@ class HybridPartialResults extends RawPartialResults
      */
     protected $transformer;
 
-    /**
-     * @param ResultSet                           $resultSet
-     * @param ElasticaToModelTransformerInterface $transformer
-     */
     public function __construct(ResultSet $resultSet, ElasticaToModelTransformerInterface $transformer)
     {
         parent::__construct($resultSet);

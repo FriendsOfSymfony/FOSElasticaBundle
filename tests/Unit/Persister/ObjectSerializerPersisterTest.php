@@ -14,8 +14,8 @@ namespace FOS\ElasticaBundle\Tests\Unit\Persister;
 use Elastica\Index;
 use FOS\ElasticaBundle\Persister\ObjectSerializerPersister;
 use FOS\ElasticaBundle\Serializer\Callback;
-use FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer;
 use FOS\ElasticaBundle\Tests\Unit\Mocks\ObjectSerializerPersisterPOPO as POPO;
+use FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 

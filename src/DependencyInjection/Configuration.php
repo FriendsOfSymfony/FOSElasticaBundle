@@ -489,8 +489,6 @@ class Configuration implements ConfigurationInterface
     /**
      * Adds the configuration for the "index_templates" key.
      *
-     * @param ArrayNodeDefinition $rootNode
-     *
      * @return void
      */
     private function addIndexTemplatesSection(ArrayNodeDefinition $rootNode)

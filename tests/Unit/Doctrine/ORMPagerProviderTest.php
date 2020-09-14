@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine;
 
 use Doctrine\ORM\EntityManager;
@@ -57,7 +66,6 @@ class ORMPagerProviderTest extends TestCase
             ->with($objectClass)
             ->willReturn($repository);
 
-
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
@@ -98,7 +106,6 @@ class ORMPagerProviderTest extends TestCase
             ->with($objectClass)
             ->willReturn($repository);
 
-
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
@@ -135,7 +142,6 @@ class ORMPagerProviderTest extends TestCase
             ->method('getRepository')
             ->with($objectClass)
             ->willReturn($repository);
-
 
         $doctrine = $this->createDoctrineMock();
         $doctrine

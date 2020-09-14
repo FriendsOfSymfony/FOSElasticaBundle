@@ -32,7 +32,7 @@ class ConfigSourcePass implements CompilerPassInterface
         $indexTemplateSources = [];
         foreach (array_keys($container->findTaggedServiceIds('fos_elastica.config_source')) as $id) {
             $tag = $container->findDefinition($id)->getTag('fos_elastica.config_source');
-            if (isset($tag[0]['source']) && $tag[0]['source'] === self::SOURCE_TYPE_INDEX_TEMPLATE) {
+            if (isset($tag[0]['source']) && self::SOURCE_TYPE_INDEX_TEMPLATE === $tag[0]['source']) {
                 $indexTemplateSources[] = new Reference($id);
             } else {
                 $indexSources[] = new Reference($id);

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine;
 
 use Doctrine\Common\Persistence\ObjectManager;
@@ -59,7 +68,7 @@ class RegisterListenersServiceTest extends TestCase
         $pager = $this->createPagerMock();
 
         $service->register($manager, $pager, [
-            'clear_object_manager' => false
+            'clear_object_manager' => false,
         ]);
 
         $dispatcher->dispatch(
@@ -83,7 +92,7 @@ class RegisterListenersServiceTest extends TestCase
         $anotherPager = $this->createPagerMock();
 
         $service->register($manager, $pager, [
-            'clear_object_manager' => true
+            'clear_object_manager' => true,
         ]);
 
         $dispatcher->dispatch(
@@ -187,7 +196,6 @@ class RegisterListenersServiceTest extends TestCase
             ->willReturn($connection)
         ;
 
-
         $pager = $this->createPagerMock();
 
         $service->register($manager, $pager, [
@@ -211,7 +219,6 @@ class RegisterListenersServiceTest extends TestCase
             ->expects($this->never())
             ->method('getConnection')
         ;
-
 
         $pager = $this->createPagerMock();
 

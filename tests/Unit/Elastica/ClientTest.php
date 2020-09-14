@@ -11,8 +11,8 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Client;
 
-use Elastica\Client as BaseClient;
 use Elastica\Connection;
+use Elastica\Exception\ClientException;
 use Elastica\JSON;
 use Elastica\Request;
 use Elastica\Response;
@@ -20,37 +20,9 @@ use Elastica\Transport\NullTransport;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use PHPUnit\Framework\TestCase;
-use Elastica\Exception\ClientException;
 
 class ClientTest extends TestCase
 {
-    private function getConnectionMock()
-    {
-        $connection = $this->createMock(Connection::class);
-        $connection->expects($this->any())->method('toArray')->will($this->returnValue([]));
-        return $connection;
-    }
-
-    private function getClientMock(Response $response = null, $connection = null)
-    {
-        $transport = new NullTransport();
-        if ($response) {
-            $transport->setResponse($response);
-        }
-
-        if (!$connection) {
-            $connection = $this->getConnectionMock();
-        }
-        $connection->expects($this->any())->method('getTransportObject')->will($this->returnValue($transport));
-
-        $client = $this->getMockBuilder(Client::class)
-            ->setMethods(['getConnection'])
-            ->getMock();
-
-        $client->expects($this->any())->method('getConnection')->will($this->returnValue($connection));
-        return $client;
-    }
-
     public function testRequestsAreLogged()
     {
         $client = $this->getClientMock();
@@ -77,16 +49,15 @@ class ClientTest extends TestCase
     }
 
     public function testRequestsWithTransportInfoErrorsRaiseExceptions()
-
     {
-        $httpCode       = 403;
+        $httpCode = 403;
         $responseString = JSON::stringify(['message' => 'some AWS error']);
-        $transferInfo   = [
+        $transferInfo = [
             'request_header' => 'bar',
-            'http_code'      => $httpCode,
-            'body'           => $responseString,
+            'http_code' => $httpCode,
+            'body' => $responseString,
         ];
-        $response       = new Response($responseString);
+        $response = new Response($responseString);
         $response->setTransferInfo($transferInfo);
 
         $connection = $this->getConnectionMock();
@@ -113,5 +84,34 @@ class ClientTest extends TestCase
         $client = new Client();
         $template = $client->getIndexTemplate('some_index');
         $this->assertSame($template, $client->getIndexTemplate('some_index'));
+    }
+
+    private function getConnectionMock()
+    {
+        $connection = $this->createMock(Connection::class);
+        $connection->expects($this->any())->method('toArray')->will($this->returnValue([]));
+
+        return $connection;
+    }
+
+    private function getClientMock(Response $response = null, $connection = null)
+    {
+        $transport = new NullTransport();
+        if ($response) {
+            $transport->setResponse($response);
+        }
+
+        if (!$connection) {
+            $connection = $this->getConnectionMock();
+        }
+        $connection->expects($this->any())->method('getTransportObject')->will($this->returnValue($transport));
+
+        $client = $this->getMockBuilder(Client::class)
+            ->setMethods(['getConnection'])
+            ->getMock();
+
+        $client->expects($this->any())->method('getConnection')->will($this->returnValue($connection));
+
+        return $client;
     }
 }

@@ -11,7 +11,6 @@
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use FOS\ElasticaBundle\FOSElasticaBundle;
-use JMS\SerializerBundle\JMSSerializerBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 
 return [

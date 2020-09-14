@@ -1,18 +1,27 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Index;
 
 use Elastica\IndexTemplate;
 
 /**
- * Class Index template manager
+ * Class Index template manager.
  *
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
  */
 class IndexTemplateManager
 {
     /**
-     * Templates
+     * Templates.
      *
      * @var array
      */

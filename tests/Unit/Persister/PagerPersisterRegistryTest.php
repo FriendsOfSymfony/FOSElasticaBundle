@@ -75,7 +75,7 @@ class PagerPersisterRegistryTest extends TestCase
         $registry->setContainer($container);
 
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('You have requested a non-existent service "the_service_id".');;
+        $this->expectExceptionMessage('You have requested a non-existent service "the_service_id".');
         $registry->getPagerPersister('the_name');
     }
 

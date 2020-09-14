@@ -52,10 +52,6 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 
     /**
      * Instantiates a new Mapper.
-     *
-     * @param ManagerRegistry $registry
-     * @param string          $objectClass
-     * @param array           $options
      */
     public function __construct(ManagerRegistry $registry, string $objectClass, array $options = [])
     {

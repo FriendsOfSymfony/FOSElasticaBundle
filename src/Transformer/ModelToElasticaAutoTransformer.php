@@ -141,8 +141,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         }
 
         foreach ($fields as $key => $mapping) {
-            $path = isset($mapping['property_path']) ?
-                $mapping['property_path'] :
+            $path = $mapping['property_path'] ??
                 $key;
             if (false === $path) {
                 continue;

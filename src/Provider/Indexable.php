@@ -106,10 +106,7 @@ class Indexable implements IndexableInterface
 
             return $callback;
         } catch (SyntaxError $e) {
-            throw new \InvalidArgumentException(sprintf(
-                'Callback for index "%s" is an invalid expression',
-                $index
-            ), $e->getCode(), $e);
+            throw new \InvalidArgumentException(sprintf('Callback for index "%s" is an invalid expression', $index), $e->getCode(), $e);
         }
     }
 

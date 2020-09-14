@@ -54,14 +54,14 @@ class ElasticaLogger extends AbstractLogger
     /**
      * Logs a query.
      *
-     * @param string $path       Path to call
-     * @param string $method     Rest method to use (GET, POST, DELETE, PUT)
-     * @param array|string $data Arguments
-     * @param float  $queryTime  Execution time (in seconds)
-     * @param array  $connection Host, port, transport, and headers of the query
-     * @param array  $query      Arguments
-     * @param int    $engineTime
-     * @param int    $itemCount
+     * @param string       $path       Path to call
+     * @param string       $method     Rest method to use (GET, POST, DELETE, PUT)
+     * @param array|string $data       Arguments
+     * @param float        $queryTime  Execution time (in seconds)
+     * @param array        $connection Host, port, transport, and headers of the query
+     * @param array        $query      Arguments
+     * @param int          $engineTime
+     * @param int          $itemCount
      */
     public function logQuery($path, $method, $data, $queryTime, $connection = [], $query = [], $engineTime = 0, $itemCount = 0)
     {
@@ -73,7 +73,7 @@ class ElasticaLogger extends AbstractLogger
                 $jsonStrings = explode("\n", $data);
                 $data = [];
                 foreach ($jsonStrings as $json) {
-                    if ($json != '') {
+                    if ('' != $json) {
                         $data[] = json_decode($json, true);
                     }
                 }

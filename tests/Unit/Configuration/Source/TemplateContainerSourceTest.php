@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FOS\ElasticaBundle\Tests\Unit\Configuration\Source;
 
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
@@ -32,7 +41,7 @@ class TemplateContainerSourceTest extends TestCase
                     ],
                     'elasticsearch_name' => 'some_search_name',
                     'settings' => [
-                        'some_setting' => 'setting_value'
+                        'some_setting' => 'setting_value',
                     ],
                     'template' => 'some_index_config_*',
                 ],
@@ -45,7 +54,7 @@ class TemplateContainerSourceTest extends TestCase
         $this->assertEquals('some_index_config_*', $templateConfig->getTemplate());
         $this->assertEquals(
             [
-                'some_setting' => 'setting_value'
+                'some_setting' => 'setting_value',
             ],
             $templateConfig->getSettings()
         );

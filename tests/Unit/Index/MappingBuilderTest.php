@@ -96,7 +96,7 @@ class MappingBuilderTest extends TestCase
         $this->assertEquals(
             [
                 'template' => 'index_template_*',
-                'mappings' => $this->indexConfig->getMapping()
+                'mappings' => $this->indexConfig->getMapping(),
             ],
             $this->builder->buildIndexTemplateMapping($config)
         );

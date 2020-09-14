@@ -25,9 +25,6 @@ class ContainerSource implements SourceInterface
      */
     private $configArray;
 
-    /**
-     * @param array $configArray
-     */
     public function __construct(array $configArray)
     {
         $this->configArray = $configArray;
@@ -42,7 +39,6 @@ class ContainerSource implements SourceInterface
     {
         $indexes = [];
         foreach ($this->configArray as $config) {
-
             $index = new IndexConfig($config);
             $indexes[$config['name']] = $index;
         }

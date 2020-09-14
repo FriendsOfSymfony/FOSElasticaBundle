@@ -33,9 +33,6 @@ class Callback
         }
     }
 
-    /**
-     * @param array $groups
-     */
     public function setGroups(array $groups): void
     {
         $this->groups = $groups;

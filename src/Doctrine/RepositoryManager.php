@@ -38,10 +38,6 @@ class RepositoryManager implements RepositoryManagerInterface
      */
     private $repositoryManager;
 
-    /**
-     * @param ManagerRegistry            $managerRegistry
-     * @param RepositoryManagerInterface $repositoryManager
-     */
     public function __construct(ManagerRegistry $managerRegistry, RepositoryManagerInterface $repositoryManager)
     {
         $this->managerRegistry = $managerRegistry;

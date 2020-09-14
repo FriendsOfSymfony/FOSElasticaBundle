@@ -72,7 +72,6 @@ class SearchCommand extends Command
     }
 
     /**
-     * @param Result $result
      * @param string $showField
      * @param string $showSource
      * @param string $showId
@@ -84,7 +83,7 @@ class SearchCommand extends Command
     {
         $source = $result->getSource();
         if ($showField) {
-            $toString = isset($source[$showField]) ? $source[$showField] : '-';
+            $toString = $source[$showField] ?? '-';
         } else {
             $toString = reset($source);
         }
