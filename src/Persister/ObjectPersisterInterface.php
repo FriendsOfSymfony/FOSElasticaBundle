@@ -23,10 +23,8 @@ interface ObjectPersisterInterface
      * Checks if this persister can handle the given object or not.
      *
      * @param mixed $object
-     *
-     * @return bool
      */
-    public function handlesObject($object);
+    public function handlesObject($object): bool;
 
     /**
      * Insert one object into the type
