@@ -5,8 +5,6 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults public="false" />
-
         <service id="fos_elastica.in_place_pager_persister" class="FOS\ElasticaBundle\Persister\InPlacePagerPersister" public="true">
             <argument type="service" id="fos_elastica.persister_registry" />
             <argument type="service" id="event_dispatcher" />
