@@ -31,46 +31,40 @@ class Repository
 
     /**
      * @param mixed $query
-     * @param int   $limit
-     * @param array $options
      *
      * @return array
      */
-    public function find($query, $limit = null, $options = [])
+    public function find($query, ?int $limit = null, array $options = [])
     {
         return $this->finder->find($query, $limit, $options);
     }
 
     /**
      * @param mixed $query
-     * @param int   $limit
-     * @param array $options
      *
      * @return mixed
      */
-    public function findHybrid($query, $limit = null, $options = [])
+    public function findHybrid($query, ?int $limit = null, array $options = [])
     {
         return $this->finder->findHybrid($query, $limit, $options);
     }
 
     /**
      * @param mixed $query
-     * @param array $options
      *
      * @return \Pagerfanta\Pagerfanta
      */
-    public function findPaginated($query, $options = [])
+    public function findPaginated($query, array $options = [])
     {
         return $this->finder->findPaginated($query, $options);
     }
 
     /**
      * @param mixed $query
-     * @param array $options
      *
      * @return Paginator\PaginatorAdapterInterface
      */
-    public function createPaginatorAdapter($query, $options = [])
+    public function createPaginatorAdapter($query, array $options = [])
     {
         return $this->finder->createPaginatorAdapter($query, $options);
     }
