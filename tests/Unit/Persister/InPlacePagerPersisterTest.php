@@ -366,7 +366,7 @@ class InPlacePagerPersisterTest extends TestCase
         $dispatcher->addListener(OnExceptionEvent::class, function (OnExceptionEvent $event) use (&$called) {
             $called = true;
 
-            $event->setIgnore(true);
+            $event->setIgnored(true);
         });
 
         $persister->insert($pager, $options);

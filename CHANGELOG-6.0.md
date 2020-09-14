@@ -19,3 +19,4 @@ in 6.0 versions.
 * [BC break] Removed `Elastica\Type`.
 * [BC break] Removed `_parent`.
 * [BC Break] Removed `FOS\ElasticaBundle\Persister\Event\Events` class, use class events instead.
+* [BC break] Renamed `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnore()` to `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnored()`.

@@ -45,7 +45,7 @@ final class OnExceptionEvent extends Event implements PersistEvent
     /**
      * @var bool
      */
-    private $ignore;
+    private $ignored = false;
 
     public function __construct(
         PagerInterface $pager,
@@ -58,8 +58,6 @@ final class OnExceptionEvent extends Event implements PersistEvent
         $this->objectPersister = $objectPersister;
         $this->exception = $exception;
         $this->options = $options;
-
-        $this->ignore = false;
         $this->objects = $objects;
     }
 
@@ -90,12 +88,12 @@ final class OnExceptionEvent extends Event implements PersistEvent
 
     public function isIgnored(): bool
     {
-        return $this->ignore;
+        return $this->ignored;
     }
 
-    public function setIgnore(bool $ignore)
+    public function setIgnored(bool $ignored)
     {
-        $this->ignore = $ignore;
+        $this->ignored = $ignored;
     }
 
     public function getObjects(): array

@@ -113,11 +113,11 @@ final class OnExceptionEventTest extends TestCase
         $this->assertFalse($event->isIgnored());
     }
 
-    public function testShouldAllowIgnoreException()
+    public function testShouldAllowIgnoredException()
     {
         $event = new OnExceptionEvent($this->createPagerMock(), $this->createObjectPersisterMock(), new \Exception(), [], []);
 
-        $event->setIgnore(true);
+        $event->setIgnored(true);
 
         $this->assertTrue($event->isIgnored());
     }
