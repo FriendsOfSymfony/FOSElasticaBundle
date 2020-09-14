@@ -5,8 +5,6 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults public="false" />
-
         <service id="fos_elastica.model_to_elastica_transformer" class="FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer" abstract="true">
             <argument type="collection" /> <!-- options -->
             <argument type="service" id="event_dispatcher" /> <!-- options -->
