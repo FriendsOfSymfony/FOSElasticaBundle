@@ -12,6 +12,7 @@ in 6.0 versions.
 * Dropped Elasticsearch 5 and 6 support.
 * Dropped PHP 7.1 support.
 * Removed `FOS\ElasticaBundle\Exception\InvalidArgumentTypeException`
+* [BC break] Signature of method `FOS\ElasticaBundle\HybridResult::getResult()` was changed.
 * [BC break] Signature of method `FOS\ElasticaBundle\Finder\FinderInterface::find()` was changed.
 * [BC break] Signature of method `FOS\ElasticaBundle\Persister\ObjectPersisterInterface::handlesObject()` was changed.
 * [BC break] Signature of method `FOS\ElasticaBundle\Provider\PagerProviderInterface::provider()` was changed.

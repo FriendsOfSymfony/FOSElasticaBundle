@@ -29,7 +29,7 @@ class HybridResult
         return $this->transformed;
     }
 
-    public function getResult()
+    public function getResult(): Result
     {
         return $this->result;
     }
