@@ -41,17 +41,17 @@ Here is an example query that can be ran on attachments. This also includes an e
 
 ```php
 $keywordQuery = new QueryString();
-$keywordQuery->addParam(NULL, array('fuzziness' => 1));
+$keywordQuery->addParam(NULL, ['fuzziness' => 1]);
 $keywordQuery->setQuery("$term~");
 $keywordQuery->setDefaultOperator('AND');
 
 $query = new Query($keywordQuery);
-$query->setSource(array("id", "..."));
-$query->setHighlight(array(
-    'fields' => array(
-        'content' => new \stdClass()
-    )
-));
+$query->setSource(["id", "..."]);
+$query->setHighlight([
+    'fields' => [
+        'content' => new \stdClass(),
+    ],
+]);
 ```
 
 Converting Attachments

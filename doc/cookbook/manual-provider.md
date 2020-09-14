@@ -1,7 +1,7 @@
 Manual pager provider
 ====================
 
-Create a service with the tag "fos_elastica.pager_provider" and attributes for the
+Create a service with the tag "fos_elastica.pager_provider" and attribute "index" for the
 index for which the service will provide.
 
 ```yaml
@@ -26,7 +26,7 @@ use Pagerfanta\Adapter\ArrayAdapter;
 
 class UserPagerProvider implements PagerProviderInterface
 {
-    public function provide(array $options = array())
+    public function provide(array $options = [])
     {
         return new PagerfantaPager(new Pagerfanta(new ArrayAdapter([ /* an array of objects */ ])));
     }

@@ -93,8 +93,8 @@ Declare your listener and register event(s):
 
 ```xml
 <service id="app.event_listener.populate_listener" class="AppBundle\EventListener\PopulateListener">
-    <tag name="kernel.event_listener" event="elastica.index.index_pre_populate" method="preIndexPopulate"/>
-    <tag name="kernel.event_listener" event="elastica.index.index_post_populate" method="postIndexPopulate"/>
+    <tag name="kernel.event_listener" event="FOS\ElasticaBundle\Event\PreIndexPopulateEvent" method="preIndexPopulate"/>
+    <tag name="kernel.event_listener" event="FOS\ElasticaBundle\Event\PostIndexPopulateEvent" method="postIndexPopulate"/>
     <argument type="service" id="fos_elastica.index_manager"/>
 </service>
 ```

@@ -14,12 +14,15 @@ You can even manipulate empty Elastica document created in
 concerned by index process.
 
 Set up an event listener or subscriber for 
-`FOS\ElasticaBundle\Event\TransformEvent::PRE_TRANSFORM` to be able to do some
+`FOS\ElasticaBundle\Event\PreTransformEvent` to be able to do some
 operation on your objects.
 
 ```php
 
 namespace AcmeBundle\EventListener;
+
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use FOS\ElasticaBundle\Event\PreTransformEvent;
 
 class PreTransformListener implements EventSubscriberInterface
 {
@@ -27,21 +30,21 @@ class PreTransformListener implements EventSubscriberInterface
     
     // ...
     
-    public function doPreTransform(TransformEvent $event)
+    public function doPreTransform(PreTransformEvent $event)
     {
         $this->anotherService->reloadTranslation($event->getObject());
     }
     
     public static function getSubscribedEvents()
     {
-        return array(
-            TransformEvent::PRE_TRANSFORM => 'doPreTransform',
-        );
+        return [
+            PreTransformEvent::class => 'doPreTransform',
+        ];
     }
 }
 ```
 
-Service definition:
+Service definition (when autoconfigure is disabled):
 ```yml
 acme.listener.custom_property:
     class: AcmeBundle\EventListener\PreTransformListener

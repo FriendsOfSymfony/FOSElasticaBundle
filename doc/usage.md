@@ -216,11 +216,11 @@ $fieldQuery->setFieldParam('title', 'analyzer', 'my_analyzer');
 $boolQuery->addShould($fieldQuery);
 
 $tagsQuery = new \Elastica\Query\Terms();
-$tagsQuery->setTerms('tags', array('tag1', 'tag2'));
+$tagsQuery->setTerms('tags', ['tag1', 'tag2']);
 $boolQuery->addShould($tagsQuery);
 
 $categoryQuery = new \Elastica\Query\Terms();
-$categoryQuery->setTerms('categoryIds', array('1', '2', '3'));
+$categoryQuery->setTerms('categoryIds', ['1', '2', '3']);
 $boolQuery->addMust($categoryQuery);
 
 $data = $finder->find($boolQuery);

@@ -63,7 +63,7 @@ $ ./bin/console fos:elastica:populate --pager-persister=queue
 ## Customization
 
 The `QueuePagerPersister` could be customized via options. 
-The options could be customized in a listener subscribed on `FOS\ElasticaBundle\Persister\Event::PRE_PERSIST` event for example.
+The options could be customized in a listener subscribed on `FOS\ElasticaBundle\Persister\Event\PrePersistEvent` event for example.
 
 Here's the list of available options:
 

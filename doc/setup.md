@@ -34,10 +34,10 @@ class AppKernel extends Kernel
 {
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             // ...
             new FOS\ElasticaBundle\FOSElasticaBundle(),
-        );
+        ];
 
         // ...
     }
@@ -104,7 +104,7 @@ Each defined index is made available as a service, and in this case the service 
 `fos_elastica.index.user` and is an instance of `Elastica\Index`.
 
 FOSElasticaBundle requires a provider for each index that will notify when an object
-that maps to an index has been modified. The bundle ships with support for Doctrine objects.
+that maps an index has been modified. The bundle ships with support for Doctrine objects.
 
 Below is an example for the Doctrine ORM.
 

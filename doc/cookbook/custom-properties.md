@@ -5,7 +5,7 @@ object into an Elastica document which allows you to set custom properties on th
 document for indexing.
 
 Set up an event listener or subscriber for 
-`FOS\ElasticaBundle\Event\TransformEvent::POST_TRANSFORM` to be able to inject your own
+`FOS\ElasticaBundle\Event\PostTransformEvent` to be able to inject your own
 parameters.
 
 ```php
@@ -13,7 +13,7 @@ parameters.
 namespace AcmeBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use FOS\ElasticaBundle\Event\TransformEvent;
+use FOS\ElasticaBundle\Event\PostTransformEvent;
 
 class CustomPropertyListener implements EventSubscriberInterface
 {
@@ -21,7 +21,7 @@ class CustomPropertyListener implements EventSubscriberInterface
     
     // ...
     
-    public function addCustomProperty(TransformEvent $event)
+    public function addCustomProperty(PostTransformEvent $event)
     {
         $document = $event->getDocument();
         $custom = $this->anotherService->calculateCustom($event->getObject());
@@ -31,14 +31,14 @@ class CustomPropertyListener implements EventSubscriberInterface
     
     public static function getSubscribedEvents()
     {
-        return array(
-            TransformEvent::POST_TRANSFORM => 'addCustomProperty',
-        );
+        return [
+            PostTransformEvent::class => 'addCustomProperty',
+        ];
     }
 }
 ```
 
-Service definition:
+Service definition (when autoconfigure is disabled):
 ```yml
 acme.listener.custom_property:
     class: AcmeBundle\EventListener\CustomPropertyListener
