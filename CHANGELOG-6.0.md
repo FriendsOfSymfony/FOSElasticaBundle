@@ -14,6 +14,7 @@ in 6.0 versions.
 * Removed `FOS\ElasticaBundle\Exception\InvalidArgumentTypeException`
 * [BC break] Signature of method `FOS\ElasticaBundle\Finder\FinderInterface::find()` was changed.
 * [BC break] Signature of method `FOS\ElasticaBundle\Persister\ObjectPersisterInterface::handlesObject()` was changed.
+* [BC break] Signature of method `FOS\ElasticaBundle\Provider\PagerProviderInterface::provider()` was changed.
 * [BC break] Signature of methods `getPager`, `getOptions` and `getObjectPersister` from interface `FOS\ElasticaBundle\Persister\Event\PersistEvent` were changed.
 * [BC break] Signature of methods `getNbResults`, `getNbPages`, `getCurrentPage`, `setCurrentPage`, `getMaxPerPage` and `setMaxPerPage` from interface `FOS\ElasticaBundle\Provider\PagerInterface` were changed.
 * [BC break] Signature of methods `findPaginated`, `createPaginatorAdapter` and `createRawPaginatorAdapter` from interface `FOS\ElasticaBundle\Finder\PaginatedFinderInterface` were changed.
