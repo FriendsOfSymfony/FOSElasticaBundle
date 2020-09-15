@@ -17,7 +17,7 @@ services:
     indexable_service:
         class: FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService
     fos_elastica.manager.orm:
-        class: FOS\ElasticaBundle\Manager\RepositoryManagerInterface
+        class: FOS\ElasticaBundle\Doctrine\RepositoryManager
 
 fos_elastica:
     clients:
