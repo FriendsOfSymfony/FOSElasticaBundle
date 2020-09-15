@@ -13,7 +13,6 @@ namespace FOS\ElasticaBundle\Manager;
 
 use FOS\ElasticaBundle\Finder\FinderInterface;
 use FOS\ElasticaBundle\Repository;
-use RuntimeException;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -26,20 +25,14 @@ class RepositoryManager implements RepositoryManagerInterface
     /**
      * @var array
      */
-    private $indexes;
+    private $indexes = [];
 
     /**
      * @var array
      */
-    private $repositories;
+    private $repositories = [];
 
-    public function __construct()
-    {
-        $this->indexes = [];
-        $this->repositories = [];
-    }
-
-    public function addIndex(string $indexName, FinderInterface $finder, string $repositoryName = null): void
+    public function addIndex(string $indexName, FinderInterface $finder, ?string $repositoryName = null): void
     {
         $this->indexes[$indexName] = [
             'finder' => $finder,
@@ -60,7 +53,7 @@ class RepositoryManager implements RepositoryManagerInterface
         }
 
         if (!$this->hasRepository($indexName)) {
-            throw new RuntimeException(sprintf('No search finder configured for %s', $indexName));
+            throw new \RuntimeException(sprintf('No repository configured for %s', $indexName));
         }
 
         $repository = $this->createRepository($indexName);
@@ -74,12 +67,7 @@ class RepositoryManager implements RepositoryManagerInterface
         return isset($this->indexes[$indexName]);
     }
 
-    /**
-     * @param $indexName
-     *
-     * @return string
-     */
-    protected function getRepositoryName($indexName)
+    protected function getRepositoryName(string $indexName): string
     {
         if (isset($this->indexes[$indexName]['repositoryName'])) {
             return $this->indexes[$indexName]['repositoryName'];
@@ -89,14 +77,12 @@ class RepositoryManager implements RepositoryManagerInterface
     }
 
     /**
-     * @param $indexName
-     *
      * @return mixed
      */
-    private function createRepository($indexName)
+    private function createRepository(string $indexName)
     {
         if (!class_exists($repositoryName = $this->getRepositoryName($indexName))) {
-            throw new RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $indexName));
+            throw new \RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $indexName));
         }
 
         return new $repositoryName($this->indexes[$indexName]['finder']);
