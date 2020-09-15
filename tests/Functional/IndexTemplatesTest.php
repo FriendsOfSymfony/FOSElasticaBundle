@@ -26,19 +26,19 @@ class IndexTemplatesTest extends WebTestCase
 {
     public function testContainer()
     {
-        static::bootKernel(['test_case' => 'Basic']);
+        self::bootKernel(['test_case' => 'Basic']);
 
-        $instance = static::$kernel->getContainer()->get('fos_elastica.index_template.index_template_example_1');
+        $instance = self::$container->get('fos_elastica.index_template.index_template_example_1');
         $this->assertInstanceOf(IndexTemplate::class, $instance);
         $this->assertInstanceOf(OriginalIndexTemplate::class, $instance);
 
-        $instance = static::$kernel->getContainer()->get('fos_elastica.config_manager.index_templates');
+        $instance = self::$container->get('fos_elastica.config_manager.index_templates');
         $this->assertInstanceOf(ConfigManager::class, $instance);
 
-        $instance = static::$kernel->getContainer()->get('fos_elastica.index_template_manager');
+        $instance = self::$container->get('fos_elastica.index_template_manager');
         $this->assertInstanceOf(IndexTemplateManager::class, $instance);
 
-        $instance = static::$kernel->getContainer()->get('fos_elastica.template_resetter');
+        $instance = self::$container->get('fos_elastica.template_resetter');
         $this->assertInstanceOf(TemplateResetter::class, $instance);
     }
 }

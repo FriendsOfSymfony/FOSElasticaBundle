@@ -13,6 +13,7 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 use Elastica\Connection\Strategy\RoundRobin;
 use Elastica\Connection\Strategy\Simple;
+use FOS\ElasticaBundle\Elastica\Client;
 
 /**
  * @group functional
@@ -21,15 +22,18 @@ class ClientTest extends WebTestCase
 {
     public function testContainerSource()
     {
-        static::bootKernel(['test_case' => 'Basic']);
+        self::bootKernel(['test_case' => 'Basic']);
 
-        $es = static::$kernel->getContainer()->get('fos_elastica.client.default');
+        /** @var Client $es */
+        $es = self::$container->get('fos_elastica.client.default');
         $this->assertInstanceOf(RoundRobin::class, $es->getConnectionStrategy());
 
-        $es = static::$kernel->getContainer()->get('fos_elastica.client.second_server');
+        /** @var Client $es */
+        $es = self::$container->get('fos_elastica.client.second_server');
         $this->assertInstanceOf(RoundRobin::class, $es->getConnectionStrategy());
 
-        $es = static::$kernel->getContainer()->get('fos_elastica.client.third');
+        /** @var Client $es */
+        $es = self::$container->get('fos_elastica.client.third');
         $this->assertInstanceOf(Simple::class, $es->getConnectionStrategy());
     }
 }
