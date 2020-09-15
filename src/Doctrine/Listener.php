@@ -80,7 +80,7 @@ class Listener
         ObjectPersisterInterface $objectPersister,
         IndexableInterface $indexable,
         array $config = [],
-        LoggerInterface $logger = null
+        ?LoggerInterface $logger = null
     ) {
         $this->config = array_merge([
             'identifier' => 'id',

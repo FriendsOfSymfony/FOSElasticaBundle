@@ -94,7 +94,7 @@ class ClientTest extends TestCase
         return $connection;
     }
 
-    private function getClientMock(Response $response = null, $connection = null)
+    private function getClientMock(?Response $response = null, $connection = null)
     {
         $transport = new NullTransport();
         if ($response) {

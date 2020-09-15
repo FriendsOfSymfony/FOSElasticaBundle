@@ -295,7 +295,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         return $this->createMock(PartialResultsInterface::class);
     }
 
-    private function getRequestStack(Request $request = null)
+    private function getRequestStack(?Request $request = null)
     {
         $stack = new RequestStack();
 
