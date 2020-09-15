@@ -15,9 +15,15 @@ class PersistenceRepositoryTest extends WebTestCase
 {
     public function testRepositoryShouldBeSetCorrectly()
     {
-        static::bootKernel(['test_case' => 'ORM']);
+        selfi::bootKernel(['test_case' => 'ORM']);
 
-        $repository = static::$kernel->getContainer()->get('fos_elastica.manager.orm')
+        // returns the real and unchanged service container
+        $container = self::$kernel->getContainer();
+
+        // gets the special container that allows fetching private services
+        $container = self::$container;
+
+        $repository = self::$container->get('fos_elastica.manager.orm')
             ->getRepository(TypeObject::class);
 
         $this->assertInstanceOf(TypeObjectRepository::class, $repository);
