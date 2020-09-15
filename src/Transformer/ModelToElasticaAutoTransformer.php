@@ -141,16 +141,15 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         }
 
         foreach ($fields as $key => $mapping) {
-            $path = $mapping['property_path'] ??
-                $key;
+            $path = $mapping['property_path'] ?? $key;
             if (false === $path) {
                 continue;
             }
             $value = $this->propertyAccessor->getValue($object, $path);
 
-            if (isset($mapping['type']) && in_array(
-                    $mapping['type'], ['nested', 'object'], true
-                ) && isset($mapping['properties']) && !empty($mapping['properties'])
+            if (isset($mapping['type'])
+                && in_array($mapping['type'], ['nested', 'object'], true)
+                && isset($mapping['properties']) && !empty($mapping['properties'])
             ) {
                 /* $value is a nested document or object. Transform $value into
                  * an array of documents, respective the mapped properties.
