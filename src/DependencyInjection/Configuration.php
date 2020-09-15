@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
      */
     private $debug;
 
-    public function __construct($debug)
+    public function __construct(bool $debug)
     {
         $this->debug = $debug;
     }
@@ -201,7 +201,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('batch_size')->defaultValue(100)->end()
                         ->scalarNode('clear_object_manager')->defaultTrue()->end()
-                        ->scalarNode('debug_logging')
+                        ->booleanNode('debug_logging')
                             ->defaultValue($this->debug)
                             ->treatNullLike(true)
                         ->end()
