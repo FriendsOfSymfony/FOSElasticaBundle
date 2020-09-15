@@ -11,19 +11,35 @@ in 6.0 versions.
 * Dropped Symfony 3 support.
 * Dropped Elasticsearch 5 and 6 support.
 * Dropped PHP 7.1 support.
-* Removed `FOS\ElasticaBundle\Exception\InvalidArgumentTypeException`
-* [BC break] Signature of method `FOS\ElasticaBundle\HybridResult::getResult()` was changed.
-* [BC break] Signature of method `FOS\ElasticaBundle\Finder\FinderInterface::find()` was changed.
-* [BC break] Signature of method `FOS\ElasticaBundle\Persister\ObjectPersisterInterface::handlesObject()` was changed.
-* [BC break] Signature of method `FOS\ElasticaBundle\Provider\PagerProviderInterface::provide()` was changed.
-* [BC break] Signature of methods `getPager`, `getOptions` and `getObjectPersister` from interface `FOS\ElasticaBundle\Persister\Event\PersistEvent` were changed.
-* [BC break] Signature of methods `getNbResults`, `getNbPages`, `getCurrentPage`, `setCurrentPage`, `getMaxPerPage` and `setMaxPerPage` from interface `FOS\ElasticaBundle\Provider\PagerInterface` were changed.
-* [BC break] Signature of methods `findPaginated`, `createPaginatorAdapter` and `createRawPaginatorAdapter` from interface `FOS\ElasticaBundle\Finder\PaginatedFinderInterface` were changed.
-* [BC break] Signature of methods `request`, `getIndex`, `getIndexTemplate` and `setStopwatch` from class `FOS\ElasticaBundle\Elastica\Client` were changed.
-* [BC break] Signature of methods `logQuery`, `getNbQueries` and `getQueries` from class `FOS\ElasticaBundle\Logger\ElasticaLogger` were changed.
-* [BC break] Signature of methods `addIndex`, `getRepository` and `getRepositoryName` from class `FOS\ElasticaBundle\Manager\RepositoryManager` were changed.
-* [BC break] Signature of methods `find`, `findHybrid`, `findPaginated` and `createPaginatorAdapter` from class `FOS\ElasticaBundle\Repository` were changed.
-* [BC break] Removed `Elastica\Type`.
-* [BC break] Removed `_parent`.
-* [BC Break] Removed `FOS\ElasticaBundle\Persister\Event\Events` class, use class events instead.
-* [BC break] Renamed `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnore()` to `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnored()`.
+* Removed `FOS\ElasticaBundle\Exception\InvalidArgumentTypeException`.
+* **[BC break]** Changed signature of method `FOS\ElasticaBundle\Finder\FinderInterface::find()`.
+* **[BC break]** Changed signature of method `FOS\ElasticaBundle\HybridResult::getResult()`.
+* **[BC break]** Changed signature of method `FOS\ElasticaBundle\Persister\ObjectPersisterInterface::handlesObject()`.
+* **[BC break]** Changed signature of method `FOS\ElasticaBundle\Provider\PagerProviderInterface::provide()`.
+* **[BC break]** Changed signature of methods `getPager`, `getOptions` and `getObjectPersister` from interface `FOS\ElasticaBundle\Persister\Event\PersistEvent`.
+* **[BC break]** Changed signature of methods `getNbResults`, `getNbPages`, `getCurrentPage`, `setCurrentPage`, `getMaxPerPage` and `setMaxPerPage` from interface `FOS\ElasticaBundle\Provider\PagerInterface`.
+* **[BC break]** Changed signature of methods `findPaginated`, `createPaginatorAdapter` and `createRawPaginatorAdapter` from interface `FOS\ElasticaBundle\Finder\PaginatedFinderInterface`.
+* **[BC break]** Changed signature of methods `request`, `getIndex`, `getIndexTemplate` and `setStopwatch` from class `FOS\ElasticaBundle\Elastica\Client`.
+* **[BC break]** Changed signature of methods `logQuery`, `getNbQueries` and `getQueries` from class `FOS\ElasticaBundle\Logger\ElasticaLogger`.
+* **[BC break]** Changed signature of methods `addIndex`, `getRepository` and `getRepositoryName` from class `FOS\ElasticaBundle\Manager\RepositoryManager`.
+* **[BC break]** Changed signature of methods `find`, `findHybrid`, `findPaginated` and `createPaginatorAdapter` from class `FOS\ElasticaBundle\Repository`.
+* **[BC break]** Removed `Elastica\Type`.
+* **[BC break]** Removed `_parent`.
+* **[BC break]** Removed `FOS\ElasticaBundle\Event\IndexPopulateEvent` constants for event names, use event classes instead:
+    - `PRE_INDEX_POPULATE` => `FOS\ElasticaBundle\Event\PreIndexPopulateEvent`
+    - `POST_INDEX_POPULATE` => `FOS\ElasticaBundle\Event\PostIndexPopulateEvent`
+* **[BC break]** Removed `FOS\ElasticaBundle\Event\IndexResetEvent` constants for event names, use event classes instead:
+    - `PRE_INDEX_RESET` => `FOS\ElasticaBundle\Event\PreIndexResetEvent`
+    - `POST_INDEX_RESET` => `FOS\ElasticaBundle\Event\PostIndexResetEvent`
+* **[BC break]** Removed `FOS\ElasticaBundle\Event\TransformEvent` constants for event names, use event classes instead:
+    - `PRE_TRANSFORM` => `FOS\ElasticaBundle\Event\PreTransformEvent`
+    - `POST_TRANSFORM` => `FOS\ElasticaBundle\Event\PostTransformEvent`
+* **[BC break]** Removed `FOS\ElasticaBundle\Persister\Event\Events` class, use event classes instead:
+    - `ON_EXCEPTION` => `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent`
+    - `POST_ASYNC_INSERT_OBJECTS` => `FOS\ElasticaBundle\Persister\Event\PostAsyncInsertObjectsEvent`
+    - `PRE_INSERT_OBJECTS` => `FOS\ElasticaBundle\Persister\Event\PreInsertObjectsEvent`
+    - `POST_INSERT_OBJECTS` => `FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent`
+    - `PRE_PERSIST` => `FOS\ElasticaBundle\Persister\Event\PrePersistEvent`
+    - `POST_PERSIST` => `FOS\ElasticaBundle\Persister\Event\PostPersistEvent`
+    - `PRE_FETCH_OBJECTS` => `FOS\ElasticaBundle\Persister\Event\PreFetchObjectsEvent`
+* **[BC break]** Renamed `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnore()` to `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnored()`.
