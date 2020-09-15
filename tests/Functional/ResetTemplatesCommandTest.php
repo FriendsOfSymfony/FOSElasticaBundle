@@ -37,12 +37,12 @@ class ResetTemplatesCommandTest extends WebTestCase
 
     protected function setUp(): void
     {
-        static::bootKernel(['test_case' => 'Basic']);
+        self::bootKernel(['test_case' => 'Basic']);
         $this->application = $application = new Application(static::$kernel);
         // required for old supported Symfony
         $application->all();
 
-        $this->client = static::$kernel->getContainer()->get('fos_elastica.client');
+        $this->client = self::$container->get('fos_elastica.client');
     }
 
     public function testResetAllTemplates()

@@ -11,6 +11,10 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
+use Elastica\Index;
+use FOS\ElasticaBundle\Index\ResetterInterface;
+use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
+
 /**
  * @group functional
  */
@@ -18,7 +22,7 @@ class MappingToElasticaTest extends WebTestCase
 {
     public function testResetIndexAddsMappings()
     {
-        static::bootKernel(['test_case' => 'Basic']);
+        self::bootKernel(['test_case' => 'Basic']);
         $resetter = $this->getResetter();
         $resetter->resetIndex('index');
 
@@ -40,7 +44,7 @@ class MappingToElasticaTest extends WebTestCase
 
     public function testORMResetIndexAddsMappings()
     {
-        static::bootKernel(['test_case' => 'ORM']);
+        self::bootKernel(['test_case' => 'ORM']);
         $resetter = $this->getResetter();
         $resetter->resetIndex('index');
 
@@ -52,8 +56,9 @@ class MappingToElasticaTest extends WebTestCase
 
     public function testMappingIteratorToArrayField()
     {
-        static::bootKernel(['test_case' => 'ORM']);
-        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.index');
+        self::bootKernel(['test_case' => 'ORM']);
+        /** @var ObjectPersisterInterface $persister */
+        $persister = self::$container->get('fos_elastica.object_persister.index');
 
         $object = new TypeObj();
         $object->id = 1;
@@ -66,16 +71,13 @@ class MappingToElasticaTest extends WebTestCase
         $persister->replaceOne($object);
     }
 
-    /**
-     * @return \FOS\ElasticaBundle\Index\Resetter $resetter
-     */
-    private function getResetter()
+    private function getResetter(): ResetterInterface
     {
-        return static::$kernel->getContainer()->get('fos_elastica.resetter');
+        return self::$container->get('fos_elastica.resetter');
     }
 
-    private function getIndex(string $name = 'index'): \Elastica\Index
+    private function getIndex(string $name = 'index'): Index
     {
-        return static::$kernel->getContainer()->get('fos_elastica.index.'.$name);
+        return self::$container->get('fos_elastica.index.'.$name);
     }
 }

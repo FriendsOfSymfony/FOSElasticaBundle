@@ -11,6 +11,8 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
+use FOS\ElasticaBundle\Provider\Indexable;
+
 /**
  * @group functional
  */
@@ -25,10 +27,10 @@ class IndexableCallbackTest extends WebTestCase
      */
     public function testIndexableCallback()
     {
-        static::bootKernel(['test_case' => 'ORM']);
+        self::bootKernel(['test_case' => 'ORM']);
 
-        /** @var \FOS\ElasticaBundle\Provider\Indexable $in */
-        $in = static::$kernel->getContainer()->get('test_alias.fos_elastica.indexable');
+        /** @var Indexable $in */
+        $in = self::$container->get('test_alias.fos_elastica.indexable');
 
         $this->assertTrue($in->isObjectIndexable('index', new TypeObj()));
         $this->assertTrue($in->isObjectIndexable('third_index', new TypeObj()));

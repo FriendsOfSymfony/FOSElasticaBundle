@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
+use FOS\ElasticaBundle\Configuration\ConfigManager;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 
 /**
@@ -21,22 +22,12 @@ class ConfigurationManagerTest extends WebTestCase
     public function testContainerSource()
     {
         static::bootKernel(['test_case' => 'Basic']);
-        $manager = $this->getManager();
+        /** @var ConfigManager $manager */
+        $manager = self::$container->get('fos_elastica.config_manager');
 
         $index = $manager->getIndexConfiguration('index');
 
         $this->assertSame('index', $index->getName());
         $this->assertInstanceOf(IndexConfig::class, $index);
-        //$this->assertInstanceOf(TypeConfig::class, $index->getType('parent'));
-    }
-
-    /**
-     * @return \FOS\ElasticaBundle\Configuration\ConfigManager
-     */
-    private function getManager()
-    {
-        $manager = static::$kernel->getContainer()->get('fos_elastica.config_manager');
-
-        return $manager;
     }
 }
