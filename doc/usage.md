@@ -130,13 +130,14 @@ services:
 ```php
 namespace App\Controller;
 
-use FOS\ElasticaBundle\Manager\RepositoryManager;
+use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 
 class UserController extends Controller
 {
+    /** @var RepositoryManagerInterface */
     private $repositoryManager;
 
-    public function __construct(RepositoryManager $repositoryManager)
+    public function __construct(RepositoryManagerInterface $repositoryManager)
     {
         $this->repositoryManager = $repositoryManager;
     }
