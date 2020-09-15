@@ -139,7 +139,7 @@ class AliasProcessor
     private function deleteIndex(Client $client, $indexName)
     {
         try {
-            $path = sprintf('%s', $indexName);
+            $path = $indexName;
             $client->request($path, Request::DELETE);
         } catch (ExceptionInterface $deleteOldIndexException) {
             throw new \RuntimeException(sprintf('Failed to delete index "%s" with message: "%s"', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
@@ -154,7 +154,7 @@ class AliasProcessor
     private function closeIndex(Client $client, $indexName)
     {
         try {
-            $path = sprintf('%s/_close', $indexName);
+            $path = $indexName.'/_close';
             $client->request($path, Request::POST);
         } catch (ExceptionInterface $e) {
             throw new \RuntimeException(sprintf('Failed to close index "%s" with message: "%s"', $indexName, $e->getMessage()), 0, $e);
