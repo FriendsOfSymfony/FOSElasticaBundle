@@ -21,6 +21,7 @@ in 6.0 versions.
 * [BC break] Signature of methods `findPaginated`, `createPaginatorAdapter` and `createRawPaginatorAdapter` from interface `FOS\ElasticaBundle\Finder\PaginatedFinderInterface` were changed.
 * [BC break] Signature of methods `request`, `getIndex`, `getIndexTemplate` and `setStopwatch` from class `FOS\ElasticaBundle\Elastica\Client` were changed.
 * [BC break] Signature of methods `logQuery`, `getNbQueries` and `getQueries` from class `FOS\ElasticaBundle\Logger\ElasticaLogger` were changed.
+* [BC break] Signature of methods `addIndex`, `getRepository` and `getRepositoryName` from class `FOS\ElasticaBundle\Manager\RepositoryManager` were changed.
 * [BC break] Signature of methods `find`, `findHybrid`, `findPaginated` and `createPaginatorAdapter` from class `FOS\ElasticaBundle\Repository` were changed.
 * [BC break] Removed `Elastica\Type`.
 * [BC break] Removed `_parent`.
