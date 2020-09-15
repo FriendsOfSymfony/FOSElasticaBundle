@@ -142,7 +142,7 @@ class AliasProcessor
             $path = sprintf('%s', $indexName);
             $client->request($path, Request::DELETE);
         } catch (ExceptionInterface $deleteOldIndexException) {
-            throw new \RuntimeException(sprintf('Failed to delete index %s with message: %s', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
+            throw new \RuntimeException(sprintf('Failed to delete index "%s" with message: "%s"', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
         }
     }
 
@@ -157,7 +157,7 @@ class AliasProcessor
             $path = sprintf('%s/_close', $indexName);
             $client->request($path, Request::POST);
         } catch (ExceptionInterface $e) {
-            throw new \RuntimeException(sprintf('Failed to close index %s with message: %s', $indexName, $e->getMessage()), 0, $e);
+            throw new \RuntimeException(sprintf('Failed to close index "%s" with message: "%s"', $indexName, $e->getMessage()), 0, $e);
         }
     }
 
@@ -191,7 +191,7 @@ class AliasProcessor
         }
 
         if (count($aliasedIndexes) > 1) {
-            throw new \RuntimeException(sprintf('Alias %s is used for multiple indexes: [%s]. Make sure it\'s'.'either not used or is assigned to one index only', $aliasName, implode(', ', $aliasedIndexes)));
+            throw new \RuntimeException(sprintf('Alias "%s" is used for multiple indexes: ["%s"]. Make sure it\'s'.'either not used or is assigned to one index only', $aliasName, implode('", "', $aliasedIndexes)));
         }
 
         return array_shift($aliasedIndexes);

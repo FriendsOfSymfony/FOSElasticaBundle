@@ -34,7 +34,7 @@ class ConfigManager implements ManagerInterface
     public function getIndexConfiguration(string $indexName): IndexConfigInterface
     {
         if (!$this->hasIndexConfiguration($indexName)) {
-            throw new \InvalidArgumentException(sprintf('Index with name "%s" is not configured.', $indexName));
+            throw new \InvalidArgumentException(sprintf('Index "%s" is not configured.', $indexName));
         }
 
         return $this->indexes[$indexName];

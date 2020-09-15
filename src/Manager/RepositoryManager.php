@@ -53,7 +53,7 @@ class RepositoryManager implements RepositoryManagerInterface
         }
 
         if (!$this->hasRepository($indexName)) {
-            throw new \RuntimeException(sprintf('No repository configured for %s', $indexName));
+            throw new \RuntimeException(sprintf('No repository is configured for index "%s"', $indexName));
         }
 
         $repository = $this->createRepository($indexName);
@@ -82,7 +82,7 @@ class RepositoryManager implements RepositoryManagerInterface
     private function createRepository(string $indexName)
     {
         if (!class_exists($repositoryName = $this->getRepositoryName($indexName))) {
-            throw new \RuntimeException(sprintf('%s repository for %s does not exist', $repositoryName, $indexName));
+            throw new \RuntimeException(sprintf('%s repository for index "%s" does not exist', $repositoryName, $indexName));
         }
 
         return new $repositoryName($this->indexes[$indexName]['finder']);
