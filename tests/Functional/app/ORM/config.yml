@@ -16,8 +16,8 @@ services:
         alias: fos_elastica.indexable
     indexable_service:
         class: FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService
-    fos_elastica.manager.orm:
-        class: FOS\ElasticaBundle\Doctrine\RepositoryManager
+    test_alias.fos_elastica.manager.orm:
+        alias: fos_elastica.manager.orm
 
 fos_elastica:
     clients:

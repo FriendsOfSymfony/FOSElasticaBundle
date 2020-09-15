@@ -23,7 +23,7 @@ class PersistenceRepositoryTest extends WebTestCase
         // gets the special container that allows fetching private services
         $container = self::$container;
 
-        $repository = self::$container->get('fos_elastica.manager.orm')
+        $repository = self::$container->get('test_alias.fos_elastica.manager.orm')
             ->getRepository(TypeObject::class);
 
         $this->assertInstanceOf(TypeObjectRepository::class, $repository);
