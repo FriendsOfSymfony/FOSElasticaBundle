@@ -115,15 +115,41 @@ fos_elastica:
 
 An example for using a repository:
 
+```yaml
+# config/services.yaml
+services:
+    # ...
+
+    App\Controller\UserController:
+        tags: ['controller.service_arguments']
+        public: true
+        arguments:
+            - '@fos_elastica.manager'
+```
+
 ```php
-/** var FOS\ElasticaBundle\Manager\RepositoryManager */
-$repositoryManager = $this->container->get('fos_elastica.manager');
+namespace App\Controller;
 
-/** var FOS\ElasticaBundle\Repository */
-$repository = $repositoryManager->getRepository('UserBundle:User');
+use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 
-/** var array of Acme\UserBundle\Entity\User */
-$users = $repository->find('bob');
+class UserController extends Controller
+{
+    /** @var RepositoryManagerInterface */
+    private $repositoryManager;
+
+    public function __construct(RepositoryManagerInterface $repositoryManager)
+    {
+        $this->repositoryManager = $repositoryManager;
+    }
+
+    public function userAction()
+    {
+        $repository = $this->repositoryManager->getRepository('UserBundle:User');
+
+        /** var array of App\UserBundle\Entity\User */
+        $users = $repository->find('bob');
+    }
+}
 ```
 
 For more information about customising repositories, see the cookbook entry
@@ -160,10 +186,10 @@ class UserRepository extends EntityRepository
     public function createSearchQueryBuilder($entityAlias)
     {
         $qb = $this->createQueryBuilder($entityAlias);
-        
+
         $qb->select($entityAlias, 'g')
             ->innerJoin($entityAlias.'.groups', 'g');
-            
+
         return $qb;
     }
 }

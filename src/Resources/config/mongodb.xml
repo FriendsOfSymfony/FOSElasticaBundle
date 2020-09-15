@@ -32,7 +32,7 @@
             </call>
         </service>
 
-        <service id="fos_elastica.manager.mongodb" class="FOS\ElasticaBundle\Doctrine\RepositoryManager" public="true">
+        <service id="fos_elastica.manager.mongodb" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
             <argument type="service" id="doctrine_mongodb"/>
             <argument type="service" id="fos_elastica.repository_manager"/>
         </service>

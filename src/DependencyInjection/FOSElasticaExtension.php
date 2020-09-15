@@ -723,9 +723,7 @@ class FOSElasticaExtension extends Extension
         }
 
         $container->setAlias('fos_elastica.manager', sprintf('fos_elastica.manager.%s', $defaultManagerService));
-        $container->getAlias('fos_elastica.manager')->setPublic(true);
         $container->setAlias(RepositoryManagerInterface::class, 'fos_elastica.manager');
-        $container->getAlias(RepositoryManagerInterface::class)->setPublic(false);
     }
 
     /**

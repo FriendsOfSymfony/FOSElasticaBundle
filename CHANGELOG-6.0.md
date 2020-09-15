@@ -43,3 +43,4 @@ in 6.0 versions.
     - `POST_PERSIST` => `FOS\ElasticaBundle\Persister\Event\PostPersistEvent`
     - `PRE_FETCH_OBJECTS` => `FOS\ElasticaBundle\Persister\Event\PreFetchObjectsEvent`
 * **[BC break]** Renamed `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnore()` to `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnored()`.
+* **[BC break]** Marked all `fos_elastica.manager` services as private.
