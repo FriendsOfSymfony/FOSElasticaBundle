@@ -10,12 +10,13 @@ doctrine:
         auto_mapping: false
 
 services:
+    _defaults:
+        # for tests only
+        public: true
     test_alias.fos_elastica.indexable:
         alias: fos_elastica.indexable
-        public: true
     indexable_service:
         class: FOS\ElasticaBundle\Tests\Functional\app\ORM\IndexableService
-        public: false
 
 fos_elastica:
     clients:
