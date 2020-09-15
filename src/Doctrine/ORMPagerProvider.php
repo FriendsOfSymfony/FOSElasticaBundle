@@ -22,7 +22,7 @@ use Pagerfanta\Pagerfanta;
 
 final class ORMPagerProvider implements PagerProviderInterface
 {
-    const ENTITY_ALIAS = 'a';
+    public const ENTITY_ALIAS = 'a';
 
     /**
      * @var string

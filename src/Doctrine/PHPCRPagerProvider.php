@@ -20,7 +20,7 @@ use Pagerfanta\Pagerfanta;
 
 final class PHPCRPagerProvider implements PagerProviderInterface
 {
-    const ENTITY_ALIAS = 'a';
+    public const ENTITY_ALIAS = 'a';
 
     /**
      * @var string
