@@ -15,7 +15,7 @@ class PersistenceRepositoryTest extends WebTestCase
 {
     public function testRepositoryShouldBeSetCorrectly()
     {
-        selfi::bootKernel(['test_case' => 'ORM']);
+        self::bootKernel(['test_case' => 'ORM']);
 
         // returns the real and unchanged service container
         $container = self::$kernel->getContainer();
