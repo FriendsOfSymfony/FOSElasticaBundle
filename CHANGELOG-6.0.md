@@ -4,7 +4,7 @@ CHANGELOG for 6.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
-### 6.0.0 (unreleased)
+### 6.0.0-BETA1 (2020-09-15)
 
 * Added Symfony 5 support.
 * Added Elasticsearch 7 support.
