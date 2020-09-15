@@ -33,7 +33,7 @@
             <argument type="service" id="fos_elastica.logger" />
         </service>
 
-        <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber" public="true">
+        <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
             <tag name="knp_paginator.subscriber" />
             <argument type="service" id="request_stack" />
         </service>

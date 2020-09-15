@@ -46,3 +46,6 @@ in 6.0 versions.
 * **[BC break]** Renamed `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnore()` to `FOS\ElasticaBundle\Persister\Event\OnExceptionEvent::setIgnored()`.
 * **[BC break]** Marked all `fos_elastica.manager` services as private.
 * **[BC break]** Marked the `fos_elastica.repository_manager` service as private.
+* **[BC break]** Marked the `fos_elastica.pager_provider_registry` service as private.
+* **[BC break]** Marked the `fos_elastica.index_manager` service as private.
+* **[BC break]** Marked the `fos_elastica.paginator.subscriber` service as private.
