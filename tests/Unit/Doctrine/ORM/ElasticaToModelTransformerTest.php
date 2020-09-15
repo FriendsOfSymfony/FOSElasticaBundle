@@ -11,21 +11,21 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine\ORM;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectRepository;
 use FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer;
 use PHPUnit\Framework\TestCase;
 
 class ElasticaToModelTransformerTest extends TestCase
 {
-    const OBJECT_CLASS = \stdClass::class;
+    public const OBJECT_CLASS = \stdClass::class;
 
     /**
-     * @var \Doctrine\Common\Persistence\ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Doctrine\Persistence\ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
@@ -35,7 +35,7 @@ class ElasticaToModelTransformerTest extends TestCase
     protected $manager;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Doctrine\Persistence\ObjectRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $repository;
 
