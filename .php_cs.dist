@@ -23,6 +23,7 @@ return PhpCsFixer\Config::create()
         'phpdoc_no_empty_return' => false,
         'ternary_to_null_coalescing' => true,
         'nullable_type_declaration_for_default_null_value' => true,
+        'visibility_required' => ['property', 'method', 'const'],
     ])
     ->setUsingCache(true)
     ->setFinder(

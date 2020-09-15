@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ConfigSourcePass implements CompilerPassInterface
 {
-    const SOURCE_TYPE_INDEX_TEMPLATE = 'index_template';
+    public const SOURCE_TYPE_INDEX_TEMPLATE = 'index_template';
 
     /**
      * {@inheritdoc}

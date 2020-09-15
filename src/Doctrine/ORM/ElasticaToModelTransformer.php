@@ -21,7 +21,7 @@ use FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
  */
 class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
 {
-    const ENTITY_ALIAS = 'o';
+    public const ENTITY_ALIAS = 'o';
 
     /**
      * Fetch objects for theses identifier values.
