@@ -25,9 +25,6 @@ interface RepositoryManagerInterface
     /**
      * Adds index name and its finder.
      * Custom repository class name can also be added.
-     *
-     * @param string $indexName      The type name in "index/type" format
-     * @param string $repositoryName
      */
     public function addIndex(string $indexName, FinderInterface $finder, string $repositoryName = null): void;
 
@@ -36,10 +33,11 @@ interface RepositoryManagerInterface
      *
      * Returns custom repository if one specified otherwise
      * returns a basic repository.
-     *
-     * @param $indexName
      */
     public function getRepository(string $indexName): Repository;
 
+    /**
+     * Check whether a repository exists for the index.
+     */
     public function hasRepository(string $indexName): bool;
 }

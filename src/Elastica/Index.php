@@ -37,7 +37,7 @@ class Index extends BaseIndex
      * While it's technically a regular setter for name property, it's specifically named overrideName, but not setName
      * since it's used for a very specific case and normally should not be used
      */
-    public function overrideName(string $name)
+    public function overrideName(string $name): void
     {
         $this->originalName = $this->_name;
         $this->_name = $name;

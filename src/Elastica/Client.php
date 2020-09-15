@@ -104,7 +104,7 @@ class Client extends BaseClient
     /**
      * Sets a stopwatch instance for debugging purposes.
      */
-    public function setStopwatch(?Stopwatch $stopwatch = null)
+    public function setStopwatch(?Stopwatch $stopwatch = null): void
     {
         $this->stopwatch = $stopwatch;
     }

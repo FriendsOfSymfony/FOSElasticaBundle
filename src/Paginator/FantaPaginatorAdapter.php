@@ -17,9 +17,6 @@ class FantaPaginatorAdapter implements AdapterInterface
 {
     private $adapter;
 
-    /**
-     * @param \FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface $adapter
-     */
     public function __construct(PaginatorAdapterInterface $adapter)
     {
         $this->adapter = $adapter;

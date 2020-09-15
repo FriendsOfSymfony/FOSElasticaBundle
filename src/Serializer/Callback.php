@@ -23,7 +23,7 @@ class Callback
     protected $serializeNull = false;
 
     /**
-     * @param $serializer
+     * @param object $serializer
      */
     public function setSerializer($serializer)
     {
@@ -43,7 +43,7 @@ class Callback
     }
 
     /**
-     * @param $version
+     * @param mixed $version
      */
     public function setVersion($version): void
     {
