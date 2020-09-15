@@ -26,7 +26,7 @@ interface RepositoryManagerInterface
      * Adds index name and its finder.
      * Custom repository class name can also be added.
      */
-    public function addIndex(string $indexName, FinderInterface $finder, string $repositoryName = null): void;
+    public function addIndex(string $indexName, FinderInterface $finder, ?string $repositoryName = null): void;
 
     /**
      * Return repository for entity.
