@@ -10,6 +10,8 @@ doctrine:
         auto_mapping: false
 
 services:
+    _defaults:
+        public: true
     test_alias.fos_elastica.indexable:
         alias: fos_elastica.indexable
     indexable_service:
