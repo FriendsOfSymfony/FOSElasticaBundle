@@ -39,12 +39,9 @@ class AliasProcessor
      *
      * $force will delete an index encountered where an alias is expected.
      *
-     * @param bool $force
-     * @param bool $delete
-     *
      * @throws AliasIsIndexException
      */
-    public function switchIndexAlias(IndexConfig $indexConfig, Index $index, $force = false, $delete = true)
+    public function switchIndexAlias(IndexConfig $indexConfig, Index $index, bool $force = false, bool $delete = true)
     {
         $client = $index->getClient();
 
@@ -85,14 +82,8 @@ class AliasProcessor
 
     /**
      * Builds an ElasticSearch request to rename or create an alias.
-     *
-     * @param string|null $aliasedIndex
-     * @param string      $aliasName
-     * @param string      $newIndexName
-     *
-     * @return array
      */
-    private function buildAliasUpdateRequest($aliasedIndex, $aliasName, $newIndexName)
+    private function buildAliasUpdateRequest(?string $aliasedIndex, string $aliasName, string $newIndexName): array
     {
         $aliasUpdateRequest = ['actions' => []];
         if (null !== $aliasedIndex) {
@@ -112,10 +103,8 @@ class AliasProcessor
 
     /**
      * Cleans up an index when we encounter a failure to rename the alias.
-     *
-     * @param string $indexName
      */
-    private function cleanupRenameFailure(Client $client, $indexName, \Exception $renameAliasException)
+    private function cleanupRenameFailure(Client $client, string $indexName, \Exception $renameAliasException): void
     {
         $additionalError = '';
         try {
@@ -133,10 +122,8 @@ class AliasProcessor
 
     /**
      * Delete an index.
-     *
-     * @param string $indexName Index name to delete
      */
-    private function deleteIndex(Client $client, $indexName)
+    private function deleteIndex(Client $client, string $indexName): void
     {
         try {
             $path = sprintf('%s', $indexName);
@@ -148,10 +135,8 @@ class AliasProcessor
 
     /**
      * Close an index.
-     *
-     * @param string $indexName
      */
-    private function closeIndex(Client $client, $indexName)
+    private function closeIndex(Client $client, string $indexName): void
     {
         try {
             $path = sprintf('%s/_close', $indexName);
@@ -165,13 +150,9 @@ class AliasProcessor
      * Returns the name of a single index that an alias points to or throws
      * an exception if there is more than one.
      *
-     * @param string $aliasName Alias name
-     *
-     * @return string|null
-     *
      * @throws AliasIsIndexException
      */
-    private function getAliasedIndex(Client $client, $aliasName)
+    private function getAliasedIndex(Client $client, string $aliasName): ?string
     {
         $aliasesInfo = $client->request('_aliases', 'GET')->getData();
         $aliasedIndexes = [];
