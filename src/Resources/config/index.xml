@@ -23,7 +23,7 @@
             <!-- tagged with fos_elastica.index_template in the Extension -->
         </service>
 
-        <service id="fos_elastica.index_manager" class="FOS\ElasticaBundle\Index\IndexManager" public="true">
+        <service id="fos_elastica.index_manager" class="FOS\ElasticaBundle\Index\IndexManager">
             <argument /> <!-- indexes -->
             <argument type="service" id="fos_elastica.index" /> <!-- default index -->
         </service>
