@@ -49,3 +49,4 @@ in 6.0 versions.
 * **[BC break]** Marked the `fos_elastica.pager_provider_registry` service as private.
 * **[BC break]** Marked the `fos_elastica.index_manager` service as private.
 * **[BC break]** Marked the `fos_elastica.paginator.subscriber` service as private.
+* **[BC break]** The configuration option `debug_logging` must be a boolean instead of a scalar value.
