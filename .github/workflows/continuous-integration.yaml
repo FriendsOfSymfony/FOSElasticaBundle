@@ -15,8 +15,6 @@ jobs:
           coverage: 'none'
           extensions: 'json, mbstring, tokenizer'
           tools: 'composer-normalize, php-cs-fixer:2.16.4'
-        env:
-          update: true
 
       - name: 'Display tools versions'
         run: |
@@ -28,3 +26,4 @@ jobs:
 
       - name: 'Check composer.json'
         run: 'composer-normalize --diff --dry-run --no-update-lock'
+        if: 'always()'
