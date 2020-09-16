@@ -24,7 +24,7 @@
             <argument type="tagged_locator" tag="fos_elastica.persister" index-by="index" />
         </service>
 
-        <service id="fos_elastica.filter_objects_listener" class="FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener" public="true">
+        <service id="fos_elastica.filter_objects_listener" class="FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener">
             <argument type="service" id="fos_elastica.indexable" />
 
             <tag name="kernel.event_subscriber" />
