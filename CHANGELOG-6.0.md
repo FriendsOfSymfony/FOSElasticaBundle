@@ -4,7 +4,7 @@ CHANGELOG for 6.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
-### 6.0.0-BETA1 (2020-xx-xx)
+### 6.0.0-BETA2 (2020-xx-xx)
 
 * **[BC break]** The configuration option `debug_logging` must be a boolean instead of a scalar value.
 
