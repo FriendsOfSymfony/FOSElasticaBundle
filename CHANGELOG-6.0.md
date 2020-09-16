@@ -7,6 +7,7 @@ in 6.0 versions.
 ### 6.0.0-BETA2 (2020-xx-xx)
 
 * Fixed several Doctrine Persistence deprecations.
+* **[BC break]** Marked the `fos_elastica.filter_objects_listener` service as private.
 * **[BC break]** The configuration option `debug_logging` must be a boolean instead of a scalar value.
 
 ### 6.0.0-BETA1 (2020-09-15)
