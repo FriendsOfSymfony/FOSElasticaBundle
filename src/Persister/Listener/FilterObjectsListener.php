@@ -27,7 +27,7 @@ class FilterObjectsListener implements EventSubscriberInterface
         $this->indexable = $indexable;
     }
 
-    public function filterObjects(PreInsertObjectsEvent $event)
+    public function filterObjects(PreInsertObjectsEvent $event): void
     {
         $options = $event->getOptions();
         if (false == empty($options['skip_indexable_check'])) {
@@ -52,8 +52,10 @@ class FilterObjectsListener implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
-        return [PreInsertObjectsEvent::class => 'filterObjects'];
+        return [
+            PreInsertObjectsEvent::class => 'filterObjects',
+        ];
     }
 }
