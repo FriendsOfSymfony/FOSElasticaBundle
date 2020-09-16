@@ -16,6 +16,7 @@
         "symfony/framework-bundle": "^4.4 || ^5.1",
         "symfony/console": "^4.4 || ^5.1",
         "symfony/dependency-injection": "^4.4 || ^5.1",
+        "symfony/messenger": "^4.4 || ^5.1",
         "symfony/property-access": "^4.4 || ^5.1",
         "pagerfanta/pagerfanta": "^2.0",
         "psr/log": "^1.0",
@@ -40,7 +41,8 @@
         "symfony/web-profiler-bundle": "^4.4 || ^5.1"
     },
     "suggest": {
-        "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
+        "symfony/messenger": "For populating Elasticsearch indexes asynchronously and using significanly less resources.",
+        "enqueue/elastica-bundle": "For populating Elasticsearch indexes asynchronously and using significanly less resources. Uses Enqueue."
     },
     "autoload": {
         "psr-4": { "FOS\\ElasticaBundle\\": "src/" }
