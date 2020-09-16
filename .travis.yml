@@ -14,10 +14,6 @@ env:
 matrix:
   fast_finish: true
   include:
-    # Minimum supported dependencies with min and max PHP version
-    - php: 7.2
-      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-
     # Latest supported dependencies with each PHP version
     - php: 7.2
     - php: 7.4
@@ -26,10 +22,15 @@ matrix:
     # Install all SF components in the same major version, see https://github.com/dunglas/symfony-lock
     - php: 7.4
 
+    # Try SF ^4
+    - php: 7.2
+      env: SYMFONY_REQUIRE="^4"
+
 before_install:
   - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
 
 install:
+  - if [ "$SYMFONY_REQUIRE" != "" ]; then composer global require --no-progress --no-scripts --no-plugins symfony/flex; fi;
   # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
   - pecl install -f mongodb-stable
   - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
