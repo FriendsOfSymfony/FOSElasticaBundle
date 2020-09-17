@@ -1,5 +1,13 @@
 <?php
-declare(strict_types=1);
+
+/*
+ * This file is part of the FOSElasticaBundle package.
+ *
+ * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace FOS\ElasticaBundle\Persister;
 
@@ -10,8 +18,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 final class AsyncPagerPersister implements PagerPersisterInterface
 {
-    const NAME = 'async';
-    const DEFAULT_PAGE_SIZE = 100;
+    public const NAME = 'async';
+    private const DEFAULT_PAGE_SIZE = 100;
 
     /**
      * @var PagerPersisterRegistry
@@ -41,7 +49,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
     /**
      * {@inheritdoc}
      */
-    public function insert(PagerInterface $pager, array $options = array()): void
+    public function insert(PagerInterface $pager, array $options = []): void
     {
         $pager->setMaxPerPage(empty($options['max_per_page']) ? self::DEFAULT_PAGE_SIZE : $options['max_per_page']);
 
@@ -58,7 +66,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
         do {
             $this->messageBus->dispatch(new AsyncPersistPage($page, $options));
 
-            $page++;
+            ++$page;
         } while ($page <= $lastPage);
     }
 
