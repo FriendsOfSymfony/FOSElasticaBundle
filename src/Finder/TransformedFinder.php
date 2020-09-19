@@ -85,7 +85,6 @@ class TransformedFinder implements PaginatedFinderInterface
      * Searches for query hybrid results and returns them wrapped in a paginator.
      *
      * @param mixed $query Can be a string, an array or an \Elastica\Query object
-     * @param array $options
      *
      * @return Pagerfanta paginated hybrid results
      */

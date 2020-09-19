@@ -61,7 +61,6 @@ class Repository
 
     /**
      * @param mixed $query
-     * @param array $options
      *
      * @return Paginator\PaginatorAdapterInterface
      */
@@ -72,7 +71,6 @@ class Repository
 
     /**
      * @param mixed $query
-     * @param array $options
      *
      * @return Paginator\HybridPaginatorAdapter
      */
