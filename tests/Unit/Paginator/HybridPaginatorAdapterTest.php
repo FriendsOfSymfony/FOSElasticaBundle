@@ -23,7 +23,7 @@ class HybridPaginatorAdapterTest extends UnitTestHelper
         $query = new Query();
         $transformer = $this->mockElasticaToModelTransformer();
 
-        $adapter = $this->mockHybridPaginatorAdapter([$searchable, $query, $transformer]);
+        $adapter = $this->mockHybridPaginatorAdapter([$searchable, $query, [], $transformer]);
         $adapter->getResults(0, 0);
     }
 
