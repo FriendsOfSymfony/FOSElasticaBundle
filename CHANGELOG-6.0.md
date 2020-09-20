@@ -8,6 +8,7 @@ in 6.0 versions.
 
 * Added support for queued messages via Symfony Messenger.
 * Fixed several Doctrine Persistence deprecations.
+* Fixed missing options in `findHybridPaginated`.
 * **[BC break]** Marked the `fos_elastica.filter_objects_listener` service as private.
 * **[BC break]** The configuration option `debug_logging` must be a boolean instead of a scalar value.
 
