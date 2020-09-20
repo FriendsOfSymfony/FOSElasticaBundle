@@ -74,8 +74,8 @@ class Repository
      *
      * @return Paginator\HybridPaginatorAdapter
      */
-    public function createHybridPaginatorAdapter($query)
+    public function createHybridPaginatorAdapter($query, array $options = [])
     {
-        return $this->finder->createHybridPaginatorAdapter($query);
+        return $this->finder->createHybridPaginatorAdapter($query, $options);
     }
 }

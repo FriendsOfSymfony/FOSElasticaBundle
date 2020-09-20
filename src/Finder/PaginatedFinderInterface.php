@@ -45,7 +45,7 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return PaginatorAdapterInterface
      */
-    public function createHybridPaginatorAdapter($query);
+    public function createHybridPaginatorAdapter($query, array $options = []);
 
     /**
      * Creates a raw paginator adapter for this query.
