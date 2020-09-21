@@ -261,7 +261,7 @@ fos_elastica:
 ### Turning on the persistence backend logger in production
 
 FOSElasticaBundle will turn off your persistence backend's logging configuration by default
-when Symfony2 is not in debug mode. You can force FOSElasticaBundle to always disable
+when Symfony is not in debug mode. You can force FOSElasticaBundle to always disable
 logging by setting debug_logging to false, to leave logging alone by setting it to true,
 or leave it set to its default value which will mirror %kernel.debug%.
 
