@@ -11,47 +11,27 @@
 
 namespace FOS\ElasticaBundle\Persister;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
-final class PagerPersisterRegistry implements ContainerAwareInterface
+final class PagerPersisterRegistry
 {
-    use ContainerAwareTrait;
+    /** @var ServiceLocator */
+    private $persisters;
 
-    /**
-     * @var string[]
-     */
-    private $nameToServiceIdMap = [];
-
-    /**
-     * @param string[] $nameToServiceIdMap
-     */
-    public function __construct(array $nameToServiceIdMap)
+    public function __construct(ServiceLocator $persisters)
     {
-        $this->nameToServiceIdMap = $nameToServiceIdMap;
+        $this->persisters = $persisters;
     }
 
     /**
-     * @param string $name
-     *
      * @throws \InvalidArgumentException if no pager persister was registered for the given name
-     *
-     * @return PagerPersisterInterface
      */
-    public function getPagerPersister($name)
+    public function getPagerPersister(string $name): PagerPersisterInterface
     {
-        if (!isset($this->nameToServiceIdMap[$name])) {
+        if (!$this->persisters->has($name)) {
             throw new \InvalidArgumentException(sprintf('No pager persister was registered for the give name "%s".', $name));
         }
 
-        $serviceId = $this->nameToServiceIdMap[$name];
-
-        $pagerPersister = $this->container->get($serviceId);
-
-        if (!$pagerPersister instanceof PagerPersisterInterface) {
-            throw new \LogicException(sprintf('The pager provider service "%s" must implement "%s" interface but it is an instance of "%s" class.', $serviceId, PagerPersisterInterface::class, get_class($pagerPersister)));
-        }
-
-        return $pagerPersister;
+        return $this->persisters->get($name);
     }
 }
