@@ -12,18 +12,10 @@
 namespace FOS\ElasticaBundle\Persister;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class PagerPersisterRegistryTest extends TestCase
 {
-    public function testShouldImplementContainerAwareInterface()
-    {
-        $rc = new \ReflectionClass(PagerPersisterRegistry::class);
-
-        $this->assertTrue($rc->implementsInterface(ContainerAwareInterface::class));
-    }
-
     public function testShouldBeFinal()
     {
         $rc = new \ReflectionClass(PagerPersisterRegistry::class);
@@ -31,65 +23,38 @@ class PagerPersisterRegistryTest extends TestCase
         $this->assertTrue($rc->isFinal());
     }
 
-    public function testCouldBeConstructedWithNameToServiceIdMap()
-    {
-        new PagerPersisterRegistry([]);
-    }
-
     public function testThrowsIfThereIsNoSuchEntryInNameToServiceIdMap()
     {
-        $container = new Container();
-
-        $registry = new PagerPersisterRegistry([
-            'the_name' => 'the_service_id',
-        ]);
-        $registry->setContainer($container);
+        $serviceLocator = $this->createMock(ServiceLocator::class);
+        $serviceLocator->expects($this->once())->method('has')->with('the_name')->willReturn(false);
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('No pager persister was registered for the give name "the_other_name".');
-        $registry->getPagerPersister('the_other_name');
+        $this->expectExceptionMessage('No pager persister was registered for the give name "the_name".');
+
+        (new PagerPersisterRegistry($serviceLocator))->getPagerPersister('the_name');
     }
 
     public function testThrowsIfRelatedServiceDoesNotImplementPagerPersisterInterface()
     {
-        $container = new Container();
-        $container->set('the_service_id', new \stdClass());
+        $serviceLocator = $this->createMock(ServiceLocator::class);
+        $serviceLocator->expects($this->once())->method('has')->with('the_name')->willReturn(true);
+        $serviceLocator->expects($this->once())->method('get')->with('the_name')->willReturn(new \stdClass());
 
-        $registry = new PagerPersisterRegistry([
-            'the_name' => 'the_service_id',
-        ]);
-        $registry->setContainer($container);
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('Return value of FOS\ElasticaBundle\Persister\PagerPersisterRegistry::getPagerPersister() must implement interface FOS\ElasticaBundle\Persister\PagerPersisterInterface, instance of stdClass returned');
 
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('The pager provider service "the_service_id" must implement "FOS\ElasticaBundle\Persister\PagerPersisterInterface" interface but it is an instance of "stdClass" class.');
-        $registry->getPagerPersister('the_name');
-    }
-
-    public function testThrowsIfThereIsServiceWithSuchId()
-    {
-        $container = new Container();
-
-        $registry = new PagerPersisterRegistry([
-            'the_name' => 'the_service_id',
-        ]);
-        $registry->setContainer($container);
-
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('You have requested a non-existent service "the_service_id".');
-        $registry->getPagerPersister('the_name');
+        (new PagerPersisterRegistry($serviceLocator))->getPagerPersister('the_name');
     }
 
     public function testShouldReturnPagerPersisterByGivenName()
     {
         $pagerPersisterMock = $this->createPagerPersisterMock();
 
-        $container = new Container();
-        $container->set('the_service_id', $pagerPersisterMock);
+        $serviceLocator = $this->createMock(ServiceLocator::class);
+        $serviceLocator->expects($this->once())->method('has')->with('the_name')->willReturn(true);
+        $serviceLocator->expects($this->once())->method('get')->with('the_name')->willReturn($pagerPersisterMock);
 
-        $registry = new PagerPersisterRegistry([
-            'the_name' => 'the_service_id',
-        ]);
-        $registry->setContainer($container);
+        $registry = new PagerPersisterRegistry($serviceLocator);
 
         $actualPagerPersister = $registry->getPagerPersister('the_name');
 

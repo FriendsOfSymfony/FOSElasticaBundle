@@ -390,9 +390,9 @@ class FOSElasticaExtensionTest extends TestCase
 
         $this->assertTrue($container->hasDefinition('fos_elastica.pager_persister_registry'));
 
-        $listener = $container->getDefinition('fos_elastica.pager_persister_registry');
-        $this->assertSame(PagerPersisterRegistry::class, $listener->getClass());
-        $this->assertSame([], $listener->getArgument(0));
+        $registry = $container->getDefinition('fos_elastica.pager_persister_registry');
+        $this->assertSame(PagerPersisterRegistry::class, $registry->getClass());
+        $this->assertCount(0, $registry->getArgument(0)->getTaggedIteratorArgument()->getValues());
     }
 
     public function testShouldRegisterDoctrineORMListener()

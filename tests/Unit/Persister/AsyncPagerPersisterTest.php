@@ -22,7 +22,6 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Envelope;
@@ -38,7 +37,7 @@ class AsyncPagerPersisterTest extends TestCase
 
     public function testInsertDispatchAsyncPersistPageObject()
     {
-        $pagerPersisterRegistry = new PagerPersisterRegistry([]);
+        $pagerPersisterRegistry = new PagerPersisterRegistry($this->createMock(ServiceLocator::class));
         $pagerProviderRegistry = $this->createMock(PagerProviderRegistry::class);
         $messageBus = $this->createMock(MessageBusInterface::class);
         $sut = new AsyncPagerPersister($pagerPersisterRegistry, $pagerProviderRegistry, $messageBus);
@@ -57,24 +56,20 @@ class AsyncPagerPersisterTest extends TestCase
 
     public function testInsertPageReturnObjectCount()
     {
-        $pagerPersisterRegistry = new PagerPersisterRegistry(
-            [
-                InPlacePagerPersister::NAME => 'my_service',
-            ]
-        );
+        $persistersLocator = $this->createMock(ServiceLocator::class);
+        $persistersLocator->expects($this->once())->method('has')->with('foo')->willReturn(true);
+        $persistersLocator->expects($this->once())->method('get')->with('foo')->willReturn($this->createMock(ObjectPersisterInterface::class));
 
-        $serviceLocator = $this->createMock(ServiceLocator::class);
-        $serviceLocator->expects($this->once())->method('has')->with('foo')->willReturn(true);
-        $serviceLocator->expects($this->once())->method('get')->with('foo')->willReturn($this->createMock(ObjectPersisterInterface::class));
-
-        $container = $this->createMock(ContainerInterface::class);
-        $container->expects($this->once())->method('get')->with('my_service')->willReturn(
+        $pagerPersistersLocator = $this->createMock(ServiceLocator::class);
+        $pagerPersistersLocator->expects($this->once())->method('has')->with('in_place')->willReturn(true);
+        $pagerPersistersLocator->expects($this->once())->method('get')->with('in_place')->willReturn(
             new InPlacePagerPersister(
-                new PersisterRegistry($serviceLocator),
+                new PersisterRegistry($persistersLocator),
                 $this->createMock(EventDispatcherInterface::class)
             )
         );
-        $pagerPersisterRegistry->setContainer($container);
+
+        $pagerPersisterRegistry = new PagerPersisterRegistry($pagerPersistersLocator);
 
         $pagerMock = $this->createMock(PagerInterface::class);
         $pagerMock->expects($this->exactly(2))->method('setMaxPerPage')->with(10);
