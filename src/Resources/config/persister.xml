@@ -21,11 +21,7 @@
         </service>
 
         <service id="fos_elastica.pager_persister_registry" class="FOS\ElasticaBundle\Persister\PagerPersisterRegistry">
-            <argument type="collection" /> <!-- nameToServiceIdMap -->
-
-            <call method="setContainer">
-                <argument type="service" id="service_container" />
-            </call>
+            <argument type="tagged_locator" tag="fos_elastica.pager_persister" index-by="persisterName" />
         </service>
 
         <service id="fos_elastica.persister_registry" class="FOS\ElasticaBundle\Persister\PersisterRegistry">
