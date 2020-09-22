@@ -4,17 +4,25 @@ CHANGELOG for 6.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
-### 6.0.0-BETA2 (2020-xx-xx)
+### 6.0.0-BETA3 (2020-xx-xx)
+
+### 6.0.0-BETA2 (2020-09-23)
 
 * Added support for queued messages via Symfony Messenger.
 * Fixed several Doctrine Persistence deprecations.
 * Fixed missing options in `findHybridPaginated`.
 * Fixed wrong class alias for `fos_elastica.template_resetter` service.
+* **[BC break]** Changed signature of method `FOS\ElasticaBundle\Persister\PagerPersisterRegistry::getPagerPersister()`.
 * **[BC break]** Marked all services tagged with `fos_elastica.pager_provider` private (`fos_elastica.pager_provider.prototype.mongodb`, `fos_elastica.pager_provider.prototype.orm` and `fos_elastica.pager_provider.prototype.phpcr` abstract services).
 * **[BC break]** Marked the `fos_elastica.config_manager` service as private.
 * **[BC break]** Marked the `fos_elastica.filter_objects_listener` service as private.
 * **[BC break]** Marked the `fos_elastica.finder` abstract service and all its children as private.
+* **[BC break]** Marked the `fos_elastica.in_place_pager_persister` service as private.
 * **[BC break]** Marked the `fos_elastica.index_template_manager` service as private.
+* **[BC break]** Marked the `fos_elastica.object_persister` service as private.
+* **[BC break]** Marked the `fos_elastica.object_serializer_persister` service as private.
+* **[BC break]** Marked the `fos_elastica.pager_persister_registry` service as private.
+* **[BC break]** Marked the `fos_elastica.persister_registry` service as private.
 * **[BC break]** Marked the `fos_elastica.resetter` service as private.
 * **[BC break]** Marked the `fos_elastica.template_resetter` service as private.
 * **[BC break]** The configuration option `debug_logging` must be a boolean instead of a scalar value.
