@@ -19,7 +19,7 @@
             </call>
         </service>
 
-        <service id="fos_elastica.config_manager" class="FOS\ElasticaBundle\Configuration\ConfigManager" public="true">
+        <service id="fos_elastica.config_manager" class="FOS\ElasticaBundle\Configuration\ConfigManager">
             <argument type="collection" /> <!-- collection of SourceInterface services -->
         </service>
         <service id="FOS\ElasticaBundle\Configuration\ConfigManager" alias="fos_elastica.config_manager" />
