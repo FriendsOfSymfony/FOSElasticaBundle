@@ -34,7 +34,7 @@
         </service>
         <service id="FOS\ElasticaBundle\Index\IndexTemplateManager" alias="fos_elastica.index_template_manager"/>
 
-        <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter" public="true">
+        <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter">
             <argument type="service" id="fos_elastica.config_manager" />
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.alias_processor" />
