@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="fos_elastica.pager_provider.prototype.phpcr" class="FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider" public="true" abstract="true">
+        <service id="fos_elastica.pager_provider.prototype.phpcr" class="FOS\ElasticaBundle\Doctrine\PHPCRPagerProvider" abstract="true">
             <argument type="service" id="doctrine_phpcr" /> <!-- manager registry -->
             <argument type="service" id="fos_elastica.doctrine.register_listeners" />
             <argument /> <!-- model -->
