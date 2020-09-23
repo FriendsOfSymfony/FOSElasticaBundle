@@ -13,7 +13,7 @@
         </service>
 
         <service id="fos_elastica.doctrine.register_listeners" class="FOS\ElasticaBundle\Doctrine\RegisterListenersService">
-            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="event_dispatcher" />
         </service>
 
         <service id="fos_elastica.listener.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\Listener" abstract="true">
@@ -33,8 +33,8 @@
         </service>
 
         <service id="fos_elastica.manager.mongodb" class="FOS\ElasticaBundle\Doctrine\RepositoryManager">
-            <argument type="service" id="doctrine_mongodb"/>
-            <argument type="service" id="fos_elastica.repository_manager"/>
+            <argument type="service" id="doctrine_mongodb" />
+            <argument type="service" id="fos_elastica.repository_manager" />
         </service>
     </services>
 </container>

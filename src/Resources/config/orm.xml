@@ -13,7 +13,7 @@
         </service>
 
         <service id="fos_elastica.doctrine.register_listeners" class="FOS\ElasticaBundle\Doctrine\RegisterListenersService">
-            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="event_dispatcher" />
         </service>
 
         <service id="fos_elastica.listener.prototype.orm" class="FOS\ElasticaBundle\Doctrine\Listener" abstract="true">
