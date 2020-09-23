@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="fos_elastica.pager_provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider" public="true" abstract="true">
+        <service id="fos_elastica.pager_provider.prototype.mongodb" class="FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider" abstract="true">
             <argument type="service" id="doctrine_mongodb" /> <!-- manager registry -->
             <argument type="service" id="fos_elastica.doctrine.register_listeners" />
             <argument /> <!-- model -->
