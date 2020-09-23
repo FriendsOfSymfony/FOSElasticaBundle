@@ -27,19 +27,19 @@
             <argument /> <!-- indexes -->
             <argument type="service" id="fos_elastica.index" /> <!-- default index -->
         </service>
-        <service id="FOS\ElasticaBundle\Index\IndexManager" alias="fos_elastica.index_manager"/>
+        <service id="FOS\ElasticaBundle\Index\IndexManager" alias="fos_elastica.index_manager" />
 
         <service id="fos_elastica.index_template_manager" class="FOS\ElasticaBundle\Index\IndexTemplateManager" public="true">
             <argument /> <!-- indexes templates -->
         </service>
-        <service id="FOS\ElasticaBundle\Index\IndexTemplateManager" alias="fos_elastica.index_template_manager"/>
+        <service id="FOS\ElasticaBundle\Index\IndexTemplateManager" alias="fos_elastica.index_template_manager" />
 
         <service id="fos_elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter">
             <argument type="service" id="fos_elastica.config_manager" />
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.alias_processor" />
             <argument type="service" id="fos_elastica.mapping_builder" />
-            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="event_dispatcher" />
         </service>
         <service id="FOS\ElasticaBundle\Index\Resetter" alias="fos_elastica.resetter" />
 
