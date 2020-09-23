@@ -43,7 +43,7 @@
         </service>
         <service id="FOS\ElasticaBundle\Index\Resetter" alias="fos_elastica.resetter" />
 
-        <service id="fos_elastica.template_resetter" class="FOS\ElasticaBundle\Index\TemplateResetter" public="true">
+        <service id="fos_elastica.template_resetter" class="FOS\ElasticaBundle\Index\TemplateResetter">
             <argument type="service" id="fos_elastica.config_manager.index_templates" />
             <argument type="service" id="fos_elastica.mapping_builder" />
             <argument type="service" id="fos_elastica.client" />
