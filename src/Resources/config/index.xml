@@ -52,7 +52,7 @@
         <service id="FOS\ElasticaBundle\Index\TemplateResetter" alias="fos_elastica.template_resetter" />
 
         <!-- Abstract definition for all finders. -->
-        <service id="fos_elastica.finder" class="FOS\ElasticaBundle\Finder\TransformedFinder" public="true" abstract="true">
+        <service id="fos_elastica.finder" class="FOS\ElasticaBundle\Finder\TransformedFinder" abstract="true">
             <argument /> <!-- searchable -->
             <argument /> <!-- transformer -->
         </service>
