@@ -12,6 +12,7 @@ in 6.0 versions.
 * Fixed wrong class alias for `fos_elastica.template_resetter` service.
 * **[BC break]** Marked all services tagged with `fos_elastica.pager_provider` private (`fos_elastica.pager_provider.prototype.mongodb`, `fos_elastica.pager_provider.prototype.orm` and `fos_elastica.pager_provider.prototype.phpcr` abstract services).
 * **[BC break]** Marked the `fos_elastica.config_manager` service as private.
+* **[BC break]** Marked the `fos_elastica.config_manager.index_templates` service as private.
 * **[BC break]** Marked the `fos_elastica.filter_objects_listener` service as private.
 * **[BC break]** Marked the `fos_elastica.finder` abstract service and all its children as private.
 * **[BC break]** Marked the `fos_elastica.index_template_manager` service as private.

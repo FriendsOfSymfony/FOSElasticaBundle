@@ -24,7 +24,7 @@
         </service>
         <service id="FOS\ElasticaBundle\Configuration\ConfigManager" alias="fos_elastica.config_manager" />
 
-        <service id="fos_elastica.config_manager.index_templates" class="FOS\ElasticaBundle\Configuration\ConfigManager" public="true">
+        <service id="fos_elastica.config_manager.index_templates" class="FOS\ElasticaBundle\Configuration\ConfigManager">
             <argument type="collection" /> <!-- collection of SourceInterface services -->
         </service>
 
