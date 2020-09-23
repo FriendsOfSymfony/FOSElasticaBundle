@@ -14,6 +14,7 @@ in 6.0 versions.
 * **[BC break]** Marked the `fos_elastica.config_manager` service as private.
 * **[BC break]** Marked the `fos_elastica.filter_objects_listener` service as private.
 * **[BC break]** Marked the `fos_elastica.finder` abstract service and all its children as private.
+* **[BC break]** Marked the `fos_elastica.index_template_manager` service as private.
 * **[BC break]** Marked the `fos_elastica.resetter` service as private.
 * **[BC break]** Marked the `fos_elastica.template_resetter` service as private.
 * **[BC break]** The configuration option `debug_logging` must be a boolean instead of a scalar value.
