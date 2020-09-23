@@ -29,7 +29,7 @@
         </service>
         <service id="FOS\ElasticaBundle\Index\IndexManager" alias="fos_elastica.index_manager" />
 
-        <service id="fos_elastica.index_template_manager" class="FOS\ElasticaBundle\Index\IndexTemplateManager" public="true">
+        <service id="fos_elastica.index_template_manager" class="FOS\ElasticaBundle\Index\IndexTemplateManager">
             <argument /> <!-- indexes templates -->
         </service>
         <service id="FOS\ElasticaBundle\Index\IndexTemplateManager" alias="fos_elastica.index_template_manager" />
