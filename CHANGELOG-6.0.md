@@ -6,6 +6,8 @@ in 6.0 versions.
 
 ### 6.0.0-BETA3 (2020-xx-xx)
 
+* Fixed `symfony/messenger` integration.
+
 ### 6.0.0-BETA2 (2020-09-24)
 
 * Added support for queued messages via Symfony Messenger.
