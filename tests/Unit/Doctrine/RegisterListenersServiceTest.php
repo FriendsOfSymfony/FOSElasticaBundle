@@ -21,6 +21,7 @@ use FOS\ElasticaBundle\Persister\Event\PreFetchObjectsEvent;
 use FOS\ElasticaBundle\Persister\Event\PreInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\PagerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -170,14 +171,13 @@ class RegisterListenersServiceTest extends TestCase
     public function testShouldRegisterDisableDebugLoggingByDefaultForEntityManager()
     {
         $dispatcher = $this->createDispatcherMock();
-        $dispatcher
-            ->expects($this->at(0))
+        $dispatcher->expects($this->exactly(2))
             ->method('addListener')
-            ->with(PreFetchObjectsEvent::class, $this->isInstanceOf(\Closure::class));
-        $dispatcher
-            ->expects($this->at(1))
-            ->method('addListener')
-            ->with(PreInsertObjectsEvent::class, $this->isInstanceOf(\Closure::class));
+            ->withConsecutive(
+                [PreFetchObjectsEvent::class, $this->isInstanceOf(\Closure::class)],
+                [PreInsertObjectsEvent::class, $this->isInstanceOf(\Closure::class)]
+            )
+        ;
 
         $service = new RegisterListenersService($dispatcher);
 
@@ -284,39 +284,39 @@ class RegisterListenersServiceTest extends TestCase
         ]);
     }
 
-    private function createPagerMock()
+    /**
+     * @return MockObject|PagerInterface
+     */
+    private function createPagerMock(): MockObject
     {
         return $this->createMock(PagerInterface::class);
     }
 
     /**
-     * @return ObjectPersisterInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject|ObjectPersisterInterface
      */
-    private function createObjectPersisterMock()
+    private function createObjectPersisterMock(): MockObject
     {
         return $this->createMock(ObjectPersisterInterface::class);
     }
 
     /**
-     * @return ObjectManager|\PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject|ObjectManager
      */
-    private function createObjectManagerMock()
+    private function createObjectManagerMock(): MockObject
     {
         return $this->createMock(ObjectManager::class);
     }
 
-    /**
-     * @return EventDispatcher
-     */
-    private function createDispatcher()
+    private function createDispatcher(): EventDispatcher
     {
         return new EventDispatcher();
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|EventDispatcherInterface
+     * @return MockObject|EventDispatcherInterface
      */
-    private function createDispatcherMock()
+    private function createDispatcherMock(): MockObject
     {
         return $this->createMock(EventDispatcherInterface::class);
     }
