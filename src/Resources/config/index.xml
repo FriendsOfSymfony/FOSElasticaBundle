@@ -13,12 +13,12 @@
             <argument type="collection" /> <!-- array of indexable callbacks keyed by type name -->
         </service>
 
-        <service id="fos_elastica.index_prototype" class="FOS\ElasticaBundle\Elastica\Index" public="true" abstract="true">
+        <service id="fos_elastica.index_prototype" class="FOS\ElasticaBundle\Elastica\Index" abstract="true">
             <argument /> <!-- index name -->
             <!-- tagged with fos_elastica.index in the Extension -->
         </service>
 
-        <service id="fos_elastica.index_template_prototype" class="FOS\ElasticaBundle\Elastica\IndexTemplate" public="true" abstract="true">
+        <service id="fos_elastica.index_template_prototype" class="FOS\ElasticaBundle\Elastica\IndexTemplate" abstract="true">
             <argument /> <!-- index template name -->
             <!-- tagged with fos_elastica.index_template in the Extension -->
         </service>
