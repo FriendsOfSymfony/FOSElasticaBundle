@@ -17,12 +17,6 @@ class PersistenceRepositoryTest extends WebTestCase
     {
         self::bootKernel(['test_case' => 'ORM']);
 
-        // returns the real and unchanged service container
-        $container = self::$kernel->getContainer();
-
-        // gets the special container that allows fetching private services
-        $container = self::$container;
-
         $repository = self::$container->get('test_alias.fos_elastica.manager.orm')
             ->getRepository(TypeObject::class);
 
