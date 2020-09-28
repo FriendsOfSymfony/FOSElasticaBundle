@@ -12,14 +12,6 @@
             <tag name="fos_elastica.pager_persister" persisterName="in_place" />
         </service>
 
-        <service id="fos_elastica.async_pager_persister" class="FOS\ElasticaBundle\Persister\AsyncPagerPersister">
-            <argument type="service" id="fos_elastica.pager_persister_registry" />
-            <argument type="service" id="fos_elastica.pager_provider_registry" />
-            <argument type="service" id="messenger.default_bus" />
-
-            <tag name="fos_elastica.pager_persister" persisterName="async" />
-        </service>
-
         <service id="fos_elastica.pager_persister_registry" class="FOS\ElasticaBundle\Persister\PagerPersisterRegistry">
             <argument type="tagged_locator" tag="fos_elastica.pager_persister" index-by="persisterName" />
         </service>

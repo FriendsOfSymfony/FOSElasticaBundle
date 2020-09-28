@@ -19,9 +19,11 @@ use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class FOSElasticaExtension extends Extension
 {
@@ -78,6 +80,10 @@ class FOSElasticaExtension extends Extension
         if (empty($config['default_index'])) {
             $keys = array_keys($config['indexes']);
             $config['default_index'] = reset($keys);
+        }
+
+        if ($this->isConfigEnabled($container, $config['messenger'])) {
+            $this->registerMessengerConfiguration($config['messenger'], $container, $loader);
         }
 
         if (isset($config['serializer'])) {
@@ -738,5 +744,18 @@ class FOSElasticaExtension extends Extension
         }
 
         return $this->clients[$clientName]['reference'];
+    }
+
+    private function registerMessengerConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader): void
+    {
+        if (!interface_exists(MessageBusInterface::class)) {
+            throw new LogicException('Messenger support cannot be enabled as the Messenger component is not installed. Try running "composer require symfony/messenger".');
+        }
+
+        $loader->load('messenger.xml');
+
+        $container->getDefinition('fos_elastica.async_pager_persister')
+            ->replaceArgument(2, $config['message_bus'] ? new Reference($config['message_bus']) : new Reference('messenger.default_bus'))
+        ;
     }
 }
