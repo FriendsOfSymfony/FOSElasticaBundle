@@ -206,10 +206,10 @@ class ResetterTest extends TestCase
 
     private function dispatcherExpects(array $events)
     {
-        $expectation = $this->dispatcher->expects($this->exactly(count($events)))
+        $expectation = $this->dispatcher->expects($this->exactly(\count($events)))
             ->method('dispatch');
 
-        call_user_func_array([$expectation, 'withConsecutive'], $events);
+        \call_user_func_array([$expectation, 'withConsecutive'], $events);
     }
 
     private function mockIndex($indexName, IndexConfig $config, $mapping = [])

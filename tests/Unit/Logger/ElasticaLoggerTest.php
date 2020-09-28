@@ -30,7 +30,7 @@ class ElasticaLoggerTest extends TestCase
     {
         $elasticaLogger = new ElasticaLogger(null, true);
 
-        $total = rand(1, 15);
+        $total = \rand(1, 15);
         for ($i = 0; $i < $total; ++$i) {
             $elasticaLogger->logQuery('testPath', 'testMethod', ['data'], 12);
         }
@@ -72,7 +72,7 @@ class ElasticaLoggerTest extends TestCase
     {
         $elasticaLogger = new ElasticaLogger(null, false);
 
-        $total = rand(1, 15);
+        $total = \rand(1, 15);
         for ($i = 0; $i < $total; ++$i) {
             $elasticaLogger->logQuery('testPath', 'testMethod', ['data'], 12);
         }
@@ -130,7 +130,7 @@ class ElasticaLoggerTest extends TestCase
 
         $loggerMock = $this->getMockLoggerForLevelMessageAndContext($level, $message, $context);
 
-        call_user_func([$loggerMock, $level], $message, $context);
+        \call_user_func([$loggerMock, $level], $message, $context);
     }
 
     public function testMessagesCanBeLoggedToArbitraryLevels()

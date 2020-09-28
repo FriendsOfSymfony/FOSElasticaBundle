@@ -28,7 +28,7 @@ class PHPCRPagerProviderTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(DocumentManager::class)) {
+        if (!\class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');
         }
     }

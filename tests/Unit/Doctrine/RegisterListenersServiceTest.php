@@ -135,12 +135,12 @@ class RegisterListenersServiceTest extends TestCase
             'sleep' => 2000000,
         ]);
 
-        $time = microtime(true);
+        $time = \microtime(true);
         $dispatcher->dispatch(
             new PostInsertObjectsEvent($pager, $this->createObjectPersisterMock(), [], [])
         );
 
-        $this->assertGreaterThan(1.5, microtime(true) - $time);
+        $this->assertGreaterThan(1.5, \microtime(true) - $time);
     }
 
     public function testShouldNotCallSleepListenerForAnotherPagers()
@@ -159,12 +159,12 @@ class RegisterListenersServiceTest extends TestCase
             'sleep' => 2000000,
         ]);
 
-        $time = microtime(true);
+        $time = \microtime(true);
         $dispatcher->dispatch(
             new PostInsertObjectsEvent($anotherPager, $this->createObjectPersisterMock(), [], [])
         );
 
-        $this->assertLessThan(1, microtime(true) - $time);
+        $this->assertLessThan(1, \microtime(true) - $time);
     }
 
     public function testShouldRegisterDisableDebugLoggingByDefaultForEntityManager()
@@ -231,7 +231,7 @@ class RegisterListenersServiceTest extends TestCase
 
     public function testShouldIgnoreDebugLoggingOptionForMongoDBDocumentManager()
     {
-        if (!class_exists(\Doctrine\ODM\MongoDB\DocumentManager::class)) {
+        if (!\class_exists(\Doctrine\ODM\MongoDB\DocumentManager::class)) {
             $this->markTestSkipped('Doctrine MongoDB ODM is not available.');
         }
 
@@ -256,7 +256,7 @@ class RegisterListenersServiceTest extends TestCase
 
     public function testShouldIgnoreDebugLoggingOptionForPHPCRManager()
     {
-        if (!class_exists(\Doctrine\ODM\PHPCR\DocumentManagerInterface::class)) {
+        if (!\class_exists(\Doctrine\ODM\PHPCR\DocumentManagerInterface::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');
         }
 

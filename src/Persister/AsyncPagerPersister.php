@@ -53,7 +53,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
     {
         $pager->setMaxPerPage(empty($options['max_per_page']) ? self::DEFAULT_PAGE_SIZE : $options['max_per_page']);
 
-        $options = array_replace([
+        $options = \array_replace([
             'max_per_page' => $pager->getMaxPerPage(),
             'first_page' => $pager->getCurrentPage(),
             'last_page' => $pager->getNbPages(),
@@ -61,7 +61,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
 
         $pager->setCurrentPage($options['first_page']);
 
-        $lastPage = min($options['last_page'], $pager->getNbPages());
+        $lastPage = \min($options['last_page'], $pager->getNbPages());
         $page = $pager->getCurrentPage();
         do {
             $this->messageBus->dispatch(new AsyncPersistPage($page, $options));
@@ -87,7 +87,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
         $pager->setMaxPerPage($options['max_per_page']);
         $pager->setCurrentPage($options['first_page']);
 
-        $objectCount = count($pager->getCurrentPageResults());
+        $objectCount = \count($pager->getCurrentPageResults());
 
         $pagerPersister = $this->pagerPersisterRegistry->getPagerPersister(InPlacePagerPersister::NAME);
         $pagerPersister->insert($pager, $options);

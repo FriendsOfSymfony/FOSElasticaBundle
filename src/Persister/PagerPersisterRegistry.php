@@ -29,7 +29,7 @@ final class PagerPersisterRegistry
     public function getPagerPersister(string $name): PagerPersisterInterface
     {
         if (!$this->persisters->has($name)) {
-            throw new \InvalidArgumentException(sprintf('No pager persister was registered for the give name "%s".', $name));
+            throw new \InvalidArgumentException(\sprintf('No pager persister was registered for the give name "%s".', $name));
         }
 
         return $this->persisters->get($name);

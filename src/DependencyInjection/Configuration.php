@@ -196,7 +196,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('orm')
                     ->validate()
                     ->ifNotInArray(self::SUPPORTED_DRIVERS)
-                        ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode(self::SUPPORTED_DRIVERS))
+                        ->thenInvalid('The driver %s is not supported. Please choose one of '.\json_encode(self::SUPPORTED_DRIVERS))
                     ->end()
                 ->end()
                 ->scalarNode('model')->defaultValue(null)->end()
@@ -330,7 +330,7 @@ class Configuration implements ConfigurationInterface
                         // If there is no connections array key defined, assume a single connection.
                         ->beforeNormalization()
                         ->ifTrue(function ($v) {
-                            return is_array($v) && !array_key_exists('connections', $v);
+                            return \is_array($v) && !\array_key_exists('connections', $v);
                         })
                         ->then(function ($v) {
                             return [
@@ -347,7 +347,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('url')
                                             ->validate()
                                                 ->ifTrue(function ($url) {
-                                                    return $url && '/' !== substr($url, -1);
+                                                    return $url && '/' !== \substr($url, -1);
                                                 })
                                                 ->then(function ($url) {
                                                     return $url.'/';
@@ -361,7 +361,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('proxy')->end()
                                         ->arrayNode('http_error_codes')
                                             ->beforeNormalization()
-                                                ->ifTrue(function ($v) { return !is_array($v); })
+                                                ->ifTrue(function ($v) { return !\is_array($v); })
                                                 ->then(function ($v) { return [$v]; })
                                             ->end()
                                             ->requiresAtLeastOneElement()
@@ -385,7 +385,7 @@ class Configuration implements ConfigurationInterface
                                             ->prototype('scalar')->end()
                                         ->end()
                                         ->arrayNode('curl')
-                                            ->useAttributeAsKey(CURLOPT_SSL_VERIFYPEER)
+                                            ->useAttributeAsKey(\CURLOPT_SSL_VERIFYPEER)
                                             ->prototype('boolean')->end()
                                         ->end()
                                         ->scalarNode('transport')->end()
@@ -434,7 +434,7 @@ class Configuration implements ConfigurationInterface
                         ->then(function ($v) {
                             $dt = [];
                             foreach ($v['dynamic_templates'] as $key => $type) {
-                                if (is_int($key)) {
+                                if (\is_int($key)) {
                                     $dt[] = $type;
                                 } else {
                                     $dt[][$key] = $type;
@@ -519,7 +519,7 @@ class Configuration implements ConfigurationInterface
                         ->then(function ($v) {
                             $dt = [];
                             foreach ($v['dynamic_templates'] as $key => $type) {
-                                if (is_int($key)) {
+                                if (\is_int($key)) {
                                     $dt[] = $type;
                                 } else {
                                     $dt[][$key] = $type;

@@ -119,7 +119,7 @@ class PopulateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $indexes = (null !== $index = $input->getOption('index')) ? [$index] : array_keys($this->indexManager->getAllIndexes());
+        $indexes = (null !== $index = $input->getOption('index')) ? [$index] : \array_keys($this->indexManager->getAllIndexes());
         $reset = !$input->getOption('no-reset');
         $delete = !$input->getOption('no-delete');
 
@@ -159,7 +159,7 @@ class PopulateCommand extends Command
         $this->dispatcher->dispatch($event = new PreIndexPopulateEvent($index, $reset, $options));
 
         if ($reset = $event->isReset()) {
-            $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
+            $output->writeln(\sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
             $this->resetter->resetIndex($index, true);
         }
 
@@ -170,9 +170,9 @@ class PopulateCommand extends Command
             OnExceptionEvent::class,
             function (OnExceptionEvent $event) use ($loggerClosure) {
                 $loggerClosure(
-                    count($event->getObjects()),
+                    \count($event->getObjects()),
                     $event->getPager()->getNbResults(),
-                    sprintf('<error>%s</error>', $event->getException()->getMessage())
+                    \sprintf('<error>%s</error>', $event->getException()->getMessage())
                 );
             }
         );
@@ -180,7 +180,7 @@ class PopulateCommand extends Command
         $this->dispatcher->addListener(
             PostInsertObjectsEvent::class,
             function (PostInsertObjectsEvent $event) use ($loggerClosure) {
-                $loggerClosure(count($event->getObjects()), $event->getPager()->getNbResults());
+                $loggerClosure(\count($event->getObjects()), $event->getPager()->getNbResults());
             }
         );
 
@@ -205,7 +205,7 @@ class PopulateCommand extends Command
         $provider = $this->pagerProviderRegistry->getProvider($index);
         $pager = $provider->provide($options);
 
-        $this->pagerPersister->insert($pager, array_merge($options, ['indexName' => $index]));
+        $this->pagerPersister->insert($pager, \array_merge($options, ['indexName' => $index]));
 
         $this->dispatcher->dispatch(new PostIndexPopulateEvent($index, $reset, $options));
 
@@ -217,7 +217,7 @@ class PopulateCommand extends Command
      */
     private function refreshIndex(OutputInterface $output, string $index): void
     {
-        $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
+        $output->writeln(\sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
         $this->indexManager->getIndex($index)->refresh();
         $output->writeln('');
     }

@@ -50,11 +50,11 @@ class ResetCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $indexes = (null !== $index = $input->getOption('index')) ? [$index] : array_keys($this->indexManager->getAllIndexes());
+        $indexes = (null !== $index = $input->getOption('index')) ? [$index] : \array_keys($this->indexManager->getAllIndexes());
         $force = (bool) $input->getOption('force');
 
         foreach ($indexes as $index) {
-            $output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
+            $output->writeln(\sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
             $this->resetter->resetIndex($index, false, $force);
         }
 

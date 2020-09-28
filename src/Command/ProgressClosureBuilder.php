@@ -36,11 +36,11 @@ final class ProgressClosureBuilder
 
             if (null !== $message) {
                 $progress->clear();
-                $output->writeln(sprintf('<info>%s</info> <error>%s</error>', $action, $message));
+                $output->writeln(\sprintf('<info>%s</info> <error>%s</error>', $action, $message));
                 $progress->display();
             }
 
-            $progress->setMessage(sprintf('<info>%s</info> <comment>%s</comment>', $action, $index));
+            $progress->setMessage(\sprintf('<info>%s</info> <comment>%s</comment>', $action, $index));
             $progress->advance($increment);
         };
     }

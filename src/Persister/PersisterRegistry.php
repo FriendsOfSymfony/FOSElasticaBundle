@@ -31,7 +31,7 @@ class PersisterRegistry
     public function getPersister(string $index): ObjectPersisterInterface
     {
         if (!$this->persisters->has($index)) {
-            throw new \InvalidArgumentException(sprintf('No persister was registered for index "%s".', $index));
+            throw new \InvalidArgumentException(\sprintf('No persister was registered for index "%s".', $index));
         }
 
         return $this->persisters->get($index);

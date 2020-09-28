@@ -51,16 +51,16 @@ class DeleteCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $indexName = $input->getOption('index');
-        $indexes = null === $indexName ? array_keys($this->indexManager->getAllIndexes()) : [$indexName];
+        $indexes = null === $indexName ? \array_keys($this->indexManager->getAllIndexes()) : [$indexName];
 
         foreach ($indexes as $indexName) {
             $output->writeln(
-                sprintf('<info>Deleting</info> <comment>%s</comment> ', $indexName)
+                \sprintf('<info>Deleting</info> <comment>%s</comment> ', $indexName)
             );
             $index = $this->indexManager->getIndex($indexName);
             if (!$index->exists()) {
                 $output->writeln(
-                    sprintf('<error>%s does not exist and can\'t be deleted</error>', $indexName)
+                    \sprintf('<error>%s does not exist and can\'t be deleted</error>', $indexName)
                 );
 
                 continue;
@@ -78,7 +78,7 @@ class DeleteCommand extends Command
             $path = $indexName;
             $this->client->request($path, Request::DELETE);
         } catch (ExceptionInterface $deleteOldIndexException) {
-            throw new \RuntimeException(sprintf('Failed to delete index "%s" with message: "%s"', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
+            throw new \RuntimeException(\sprintf('Failed to delete index "%s" with message: "%s"', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
         }
     }
 }

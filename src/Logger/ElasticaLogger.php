@@ -62,12 +62,12 @@ class ElasticaLogger extends AbstractLogger
 
         if ($this->debug) {
             $e = new \Exception();
-            if (is_string($data)) {
-                $jsonStrings = explode("\n", $data);
+            if (\is_string($data)) {
+                $jsonStrings = \explode("\n", $data);
                 $data = [];
                 foreach ($jsonStrings as $json) {
                     if ('' != $json) {
-                        $data[] = json_decode($json, true);
+                        $data[] = \json_decode($json, true);
                     }
                 }
             } else {
@@ -88,7 +88,7 @@ class ElasticaLogger extends AbstractLogger
         }
 
         if (null !== $this->logger) {
-            $message = sprintf('%s (%s) %0.2f ms', $path, $method, $executionMS);
+            $message = \sprintf('%s (%s) %0.2f ms', $path, $method, $executionMS);
             $this->logger->info($message, (array) $data);
         }
     }
@@ -98,7 +98,7 @@ class ElasticaLogger extends AbstractLogger
      */
     public function getNbQueries(): int
     {
-        return count($this->queries);
+        return \count($this->queries);
     }
 
     /**

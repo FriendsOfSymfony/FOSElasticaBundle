@@ -34,7 +34,7 @@ class RegisterListenersService
 
     public function register(ObjectManager $manager, PagerInterface $pager, array $options)
     {
-        $options = array_replace([
+        $options = \array_replace([
             'clear_object_manager' => true,
             'debug_logging' => false,
             'sleep' => 0,
@@ -48,7 +48,7 @@ class RegisterListenersService
 
         if ($options['sleep']) {
             $this->addListener($pager, PostInsertObjectsEvent::class, function () use ($options) {
-                usleep($options['sleep']);
+                \usleep($options['sleep']);
             });
         }
 
@@ -76,7 +76,7 @@ class RegisterListenersService
                 return;
             }
 
-            call_user_func_array($callable, func_get_args());
+            \call_user_func_array($callable, \func_get_args());
         });
     }
 }

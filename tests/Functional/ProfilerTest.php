@@ -83,7 +83,7 @@ class ProfilerTest extends WebTestCase
             'queries' => $this->logger->getQueries(),
         ]);
 
-        $output = str_replace('&quot;', '"', $output);
+        $output = \str_replace('&quot;', '"', $output);
 
         $this->assertStringContainsString('{"query":{"match_all":', $output);
         $this->assertStringContainsString('index/_search', $output);
@@ -93,7 +93,7 @@ class ProfilerTest extends WebTestCase
     public function queryProvider()
     {
         return [
-            [json_decode('{"query":{"match_all":{}}}', true)],
+            [\json_decode('{"query":{"match_all":{}}}', true)],
             ['{"query":{"match_all":{}}}'],
         ];
     }

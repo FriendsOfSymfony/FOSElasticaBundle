@@ -33,7 +33,7 @@ class ElasticaDataCollectorTest extends UnitTestHelper
         /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
         $loggerMock = $this->createMock(ElasticaLogger::class);
 
-        $totalQueries = rand();
+        $totalQueries = \rand();
 
         $loggerMock->expects($this->once())
             ->method('getNbQueries')

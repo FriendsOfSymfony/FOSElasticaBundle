@@ -87,7 +87,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         ];
 
         if (isset($options['sortNestedPath'])) {
-            $path = is_callable($options['sortNestedPath']) ?
+            $path = \is_callable($options['sortNestedPath']) ?
                 $options['sortNestedPath']($sortField) : $options['sortNestedPath'];
 
             if (!empty($path)) {
@@ -96,7 +96,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
 
         if (isset($options['sortNestedFilter'])) {
-            $filter = is_callable($options['sortNestedFilter']) ?
+            $filter = \is_callable($options['sortNestedFilter']) ?
                 $options['sortNestedFilter']($sortField) : $options['sortNestedFilter'];
 
             if (!empty($filter)) {
@@ -116,13 +116,13 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             $sortDirection = $options['defaultSortDirection'];
         }
 
-        if ('desc' === strtolower($sortDirection)) {
+        if ('desc' === \strtolower($sortDirection)) {
             $dir = 'desc';
         }
 
         // check if the requested sort field is in the sort whitelist
-        if (isset($options['sortFieldWhitelist']) && !in_array($sortField, $options['sortFieldWhitelist'], true)) {
-            throw new \UnexpectedValueException(sprintf('Cannot sort by: [%s] this field is not in whitelist', $sortField));
+        if (isset($options['sortFieldWhitelist']) && !\in_array($sortField, $options['sortFieldWhitelist'], true)) {
+            throw new \UnexpectedValueException(\sprintf('Cannot sort by: [%s] this field is not in whitelist', $sortField));
         }
 
         return $dir;

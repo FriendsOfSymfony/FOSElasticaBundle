@@ -51,7 +51,7 @@ class IndexManager
         }
 
         if (!isset($this->indexes[$name])) {
-            throw new \InvalidArgumentException(sprintf('The index "%s" does not exist', $name));
+            throw new \InvalidArgumentException(\sprintf('The index "%s" does not exist', $name));
         }
 
         return $this->indexes[$name];

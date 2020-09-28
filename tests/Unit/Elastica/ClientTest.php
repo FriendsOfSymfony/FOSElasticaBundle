@@ -73,7 +73,7 @@ class ClientTest extends TestCase
             ->willReturn([400, 403, 404]);
         $client = $this->getClientMock($response, $connection);
 
-        $desiredMessage = sprintf('Error in transportInfo: response code is %d, response body is %s', $httpCode, $responseString);
+        $desiredMessage = \sprintf('Error in transportInfo: response code is %d, response body is %s', $httpCode, $responseString);
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage($desiredMessage);
         $response = $client->request('foo');
