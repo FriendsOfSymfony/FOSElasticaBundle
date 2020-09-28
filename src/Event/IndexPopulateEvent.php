@@ -59,7 +59,7 @@ class IndexPopulateEvent extends IndexEvent
     public function getOption(string $name)
     {
         if (!isset($this->options[$name])) {
-            throw new \InvalidArgumentException(sprintf('The "%s" option does not exist.', $name));
+            throw new \InvalidArgumentException(\sprintf('The "%s" option does not exist.', $name));
         }
 
         return $this->options[$name];

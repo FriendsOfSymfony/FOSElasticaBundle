@@ -78,7 +78,7 @@ final class ResetTemplatesCommand extends Command
         }
 
         if (null !== $indexTemplate) {
-            $output->writeln(sprintf('<info>Resetting template</info> <comment>%s</comment>', $indexTemplate));
+            $output->writeln(\sprintf('<info>Resetting template</info> <comment>%s</comment>', $indexTemplate));
             $this->resetter->resetIndex($indexTemplate, $deleteByPattern);
         } else {
             $output->writeln('<info>Resetting all templates</info>');

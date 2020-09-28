@@ -176,7 +176,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
      */
     public function testResultsAreSortedByIdentifier($elasticaResults, $doctrineObjects)
     {
-        rsort($doctrineObjects);
+        \rsort($doctrineObjects);
 
         $transformer = $this->createMockTransformer();
 

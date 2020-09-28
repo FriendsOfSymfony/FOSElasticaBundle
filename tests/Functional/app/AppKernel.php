@@ -29,15 +29,15 @@ class AppKernel extends Kernel
 
     public function __construct($varDir, $testCase, $rootConfig, $environment, $debug)
     {
-        if (!is_dir(__DIR__.'/'.$testCase)) {
-            throw new \InvalidArgumentException(sprintf('The test case "%s" does not exist.', $testCase));
+        if (!\is_dir(__DIR__.'/'.$testCase)) {
+            throw new \InvalidArgumentException(\sprintf('The test case "%s" does not exist.', $testCase));
         }
         $this->varDir = $varDir;
         $this->testCase = $testCase;
 
         $fs = new Filesystem();
-        if (!$fs->isAbsolutePath($rootConfig) && !file_exists($rootConfig = __DIR__.'/'.$testCase.'/'.$rootConfig)) {
-            throw new \InvalidArgumentException(sprintf('The root config "%s" does not exist.', $rootConfig));
+        if (!$fs->isAbsolutePath($rootConfig) && !\file_exists($rootConfig = __DIR__.'/'.$testCase.'/'.$rootConfig)) {
+            throw new \InvalidArgumentException(\sprintf('The root config "%s" does not exist.', $rootConfig));
         }
         $this->rootConfig = $rootConfig;
 
@@ -46,8 +46,8 @@ class AppKernel extends Kernel
 
     public function registerBundles()
     {
-        if (!file_exists($filename = $this->getProjectDir().'/'.$this->testCase.'/bundles.php')) {
-            throw new \RuntimeException(sprintf('The bundles file "%s" does not exist.', $filename));
+        if (!\file_exists($filename = $this->getProjectDir().'/'.$this->testCase.'/bundles.php')) {
+            throw new \RuntimeException(\sprintf('The bundles file "%s" does not exist.', $filename));
         }
 
         return include $filename;
@@ -60,12 +60,12 @@ class AppKernel extends Kernel
 
     public function getCacheDir()
     {
-        return sys_get_temp_dir().'/'.$this->varDir.'/'.$this->testCase.'/cache/'.$this->environment;
+        return \sys_get_temp_dir().'/'.$this->varDir.'/'.$this->testCase.'/cache/'.$this->environment;
     }
 
     public function getLogDir()
     {
-        return sys_get_temp_dir().'/'.$this->varDir.'/'.$this->testCase.'/logs';
+        return \sys_get_temp_dir().'/'.$this->varDir.'/'.$this->testCase.'/logs';
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)

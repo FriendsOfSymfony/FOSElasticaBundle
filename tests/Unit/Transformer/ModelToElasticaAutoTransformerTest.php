@@ -40,7 +40,7 @@ class POPO3
     {
         $this->date = new \DateTime('1979-05-05');
         $this->file = new \SplFileInfo(__DIR__.'/fixtures/attachment.odt');
-        $this->fileContents = file_get_contents(__DIR__.'/fixtures/attachment.odt');
+        $this->fileContents = \file_get_contents(__DIR__.'/fixtures/attachment.odt');
     }
 
     public function getId()
@@ -279,7 +279,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $document = $transformer->transform(new POPO3(), ['nullValue' => []]);
         $data = $document->getData();
 
-        $this->assertTrue(array_key_exists('nullValue', $data));
+        $this->assertTrue(\array_key_exists('nullValue', $data));
     }
 
     public function testThatCannotTransformObjectWhenGetterDoesNotExistForPrivateMethod()
@@ -296,7 +296,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $document = $transformer->transform(new POPO3(), ['file' => ['type' => 'attachment']]);
         $data = $document->getData();
 
-        $this->assertSame(base64_encode(file_get_contents(__DIR__.'/fixtures/attachment.odt')), $data['file']);
+        $this->assertSame(\base64_encode(\file_get_contents(__DIR__.'/fixtures/attachment.odt')), $data['file']);
     }
 
     public function testFileContentsAddedForAttachmentMapping()
@@ -306,7 +306,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $data = $document->getData();
 
         $this->assertSame(
-            base64_encode(file_get_contents(__DIR__.'/fixtures/attachment.odt')), $data['fileContents']
+            \base64_encode(\file_get_contents(__DIR__.'/fixtures/attachment.odt')), $data['fileContents']
         );
     }
 
@@ -321,7 +321,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ]);
         $data = $document->getData();
 
-        $this->assertTrue(array_key_exists('sub', $data));
+        $this->assertTrue(\array_key_exists('sub', $data));
         $this->assertIsArray($data['sub']);
         $this->assertSame([
              ['foo' => 'foo'],
@@ -340,7 +340,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
                 ]);
         $data = $document->getData();
 
-        $this->assertTrue(array_key_exists('sub', $data));
+        $this->assertTrue(\array_key_exists('sub', $data));
         $this->assertIsArray($data['sub']);
         $this->assertSame([
              ['bar' => 'foo'],
@@ -358,7 +358,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
                 ]);
         $data = $document->getData();
 
-        $this->assertTrue(array_key_exists('obj', $data));
+        $this->assertTrue(\array_key_exists('obj', $data));
         $this->assertIsArray($data['obj']);
         $this->assertSame([
              'foo' => 'foo',
@@ -391,8 +391,8 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         );
         $data = $document->getData();
 
-        $this->assertTrue(array_key_exists('obj', $data));
-        $this->assertTrue(array_key_exists('nestedObject', $data));
+        $this->assertTrue(\array_key_exists('obj', $data));
+        $this->assertTrue(\array_key_exists('nestedObject', $data));
         $this->assertIsArray($data['obj']);
         $this->assertIsArray($data['nestedObject']);
         $this->assertSame(
@@ -426,7 +426,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ]);
         $data = $document->getData();
 
-        $this->assertTrue(array_key_exists('objWithoutIdentifier', $data));
+        $this->assertTrue(\array_key_exists('objWithoutIdentifier', $data));
         $this->assertIsArray($data['objWithoutIdentifier']);
         $this->assertSame([
             'foo' => 'foo',
@@ -448,7 +448,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ]);
         $data = $document->getData();
 
-        $this->assertTrue(array_key_exists('subWithoutIdentifier', $data));
+        $this->assertTrue(\array_key_exists('subWithoutIdentifier', $data));
         $this->assertIsArray($data['subWithoutIdentifier']);
         $this->assertSame([
             ['foo' => 'foo', 'bar' => 'foo'],

@@ -28,7 +28,7 @@ class MongoDBPagerProviderTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(DocumentManager::class)) {
+        if (!\class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine MongoDB ODM is not available.');
         }
     }

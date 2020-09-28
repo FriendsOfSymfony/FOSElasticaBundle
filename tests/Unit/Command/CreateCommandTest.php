@@ -135,7 +135,7 @@ class CreateCommandTest extends TestCase
         $mapping = ['mapping'];
 
         $input->expects($this->once())->method('getOption')->with('index')->willReturn($indexName);
-        $this->indexManager->expects($this->once())->method('getAllIndexes')->willReturn(array_flip($indices));
+        $this->indexManager->expects($this->once())->method('getAllIndexes')->willReturn(\array_flip($indices));
         $output->expects($this->exactly(2))->method('writeln');
 
         $this->configManager->expects($this->exactly(2))->method('getIndexConfiguration')

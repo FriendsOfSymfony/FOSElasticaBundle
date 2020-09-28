@@ -57,7 +57,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
     {
         $this->registry = $registry;
         $this->objectClass = $objectClass;
-        $this->options = array_merge($this->options, $options);
+        $this->options = \array_merge($this->options, $options);
     }
 
     /**
@@ -87,16 +87,16 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         }
 
         $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
-        $objectsCnt = count($objects);
-        $elasticaObjectsCnt = count($elasticaObjects);
+        $objectsCnt = \count($objects);
+        $elasticaObjectsCnt = \count($elasticaObjects);
         $propertyAccessor = $this->propertyAccessor;
         $identifier = $this->options['identifier'];
         if (!$this->options['ignore_missing'] && $objectsCnt < $elasticaObjectsCnt) {
-            $missingIds = array_diff($ids, array_map(function ($object) use ($propertyAccessor, $identifier) {
+            $missingIds = \array_diff($ids, \array_map(function ($object) use ($propertyAccessor, $identifier) {
                 return $propertyAccessor->getValue($object, $identifier);
             }, $objects));
 
-            throw new \RuntimeException(sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%d). Missing IDs: %s. IDs: %s', $objectsCnt, $elasticaObjectsCnt, implode(', ', $missingIds), implode(', ', $ids)));
+            throw new \RuntimeException(\sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%d). Missing IDs: %s. IDs: %s', $objectsCnt, $elasticaObjectsCnt, \implode(', ', $missingIds), \implode(', ', $ids)));
         }
 
         foreach ($objects as $object) {
@@ -107,8 +107,8 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         }
 
         // sort objects in the order of ids
-        $idPos = array_flip($ids);
-        usort(
+        $idPos = \array_flip($ids);
+        \usort(
             $objects,
             function ($a, $b) use ($idPos, $identifier, $propertyAccessor) {
                 if ($this->options['hydrate']) {

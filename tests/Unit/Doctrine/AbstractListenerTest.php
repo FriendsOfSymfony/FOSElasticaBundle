@@ -52,7 +52,7 @@ abstract class ListenerTest extends TestCase
         $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->postPersist($eventArgs);
 
-        $this->assertSame($entity, current($listener->scheduledForInsertion));
+        $this->assertSame($entity, \current($listener->scheduledForInsertion));
 
         $persister->expects($this->once())
             ->method('insertMany')
@@ -71,7 +71,7 @@ abstract class ListenerTest extends TestCase
         $listener = $this->createListener($persister, $indexable, ['indexName' => 'index', 'defer' => true]);
         $listener->postPersist($eventArgs);
 
-        $this->assertSame($entity, current($listener->scheduledForInsertion));
+        $this->assertSame($entity, \current($listener->scheduledForInsertion));
 
         $persister->expects($this->never())->method('insertMany');
 
@@ -108,7 +108,7 @@ abstract class ListenerTest extends TestCase
         $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->postUpdate($eventArgs);
 
-        $this->assertSame($entity, current($listener->scheduledForUpdate));
+        $this->assertSame($entity, \current($listener->scheduledForUpdate));
 
         $persister->expects($this->once())
             ->method('replaceMany')
@@ -131,7 +131,7 @@ abstract class ListenerTest extends TestCase
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
-            ->with(get_class($entity))
+            ->with(\get_class($entity))
             ->will($this->returnValue($classMetadata));
 
         $classMetadata->expects($this->any())
@@ -143,7 +143,7 @@ abstract class ListenerTest extends TestCase
         $listener->postUpdate($eventArgs);
 
         $this->assertEmpty($listener->scheduledForUpdate);
-        $this->assertSame($entity->getId(), current($listener->scheduledForDeletion));
+        $this->assertSame($entity->getId(), \current($listener->scheduledForDeletion));
 
         $persister->expects($this->never())
             ->method('replaceOne');
@@ -166,7 +166,7 @@ abstract class ListenerTest extends TestCase
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
-            ->with(get_class($entity))
+            ->with(\get_class($entity))
             ->will($this->returnValue($classMetadata));
 
         $classMetadata->expects($this->any())
@@ -177,7 +177,7 @@ abstract class ListenerTest extends TestCase
         $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->preRemove($eventArgs);
 
-        $this->assertSame($entity->getId(), current($listener->scheduledForDeletion));
+        $this->assertSame($entity->getId(), \current($listener->scheduledForDeletion));
 
         $persister->expects($this->once())
             ->method('deleteManyByIdentifiers')
@@ -199,7 +199,7 @@ abstract class ListenerTest extends TestCase
 
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
-            ->with(get_class($entity))
+            ->with(\get_class($entity))
             ->will($this->returnValue($classMetadata));
 
         $classMetadata->expects($this->any())
@@ -210,7 +210,7 @@ abstract class ListenerTest extends TestCase
         $listener = $this->createListener($persister, $indexable, ['identifier' => 'identifier', 'indexName' => 'index']);
         $listener->preRemove($eventArgs);
 
-        $this->assertSame($entity->identifier, current($listener->scheduledForDeletion));
+        $this->assertSame($entity->identifier, \current($listener->scheduledForDeletion));
 
         $persister->expects($this->once())
             ->method('deleteManyByIdentifiers')
@@ -257,14 +257,14 @@ abstract class ListenerTest extends TestCase
     {
         $refl = new \ReflectionClass($this->getLifecycleEventArgsClass());
 
-        return $refl->newInstanceArgs(func_get_args());
+        return $refl->newInstanceArgs(\func_get_args());
     }
 
     private function createListener()
     {
         $refl = new \ReflectionClass($this->getListenerClass());
 
-        return $refl->newInstanceArgs(func_get_args());
+        return $refl->newInstanceArgs(\func_get_args());
     }
 
     private function getMockClassMetadata()

@@ -27,14 +27,14 @@ class ConfigManager implements ManagerInterface
     public function __construct(array $sources)
     {
         foreach ($sources as $source) {
-            $this->indexes = array_merge($source->getConfiguration(), $this->indexes);
+            $this->indexes = \array_merge($source->getConfiguration(), $this->indexes);
         }
     }
 
     public function getIndexConfiguration(string $indexName): IndexConfigInterface
     {
         if (!$this->hasIndexConfiguration($indexName)) {
-            throw new \InvalidArgumentException(sprintf('Index "%s" is not configured.', $indexName));
+            throw new \InvalidArgumentException(\sprintf('Index "%s" is not configured.', $indexName));
         }
 
         return $this->indexes[$indexName];
@@ -42,7 +42,7 @@ class ConfigManager implements ManagerInterface
 
     public function getIndexNames(): array
     {
-        return array_keys($this->indexes);
+        return \array_keys($this->indexes);
     }
 
     public function hasIndexConfiguration(string $indexName): bool

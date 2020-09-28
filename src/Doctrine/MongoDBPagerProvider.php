@@ -56,13 +56,13 @@ final class MongoDBPagerProvider implements PagerProviderInterface
      */
     public function provide(array $options = []): PagerInterface
     {
-        $options = array_replace($this->baseOptions, $options);
+        $options = \array_replace($this->baseOptions, $options);
 
         $manager = $this->doctrine->getManagerForClass($this->objectClass);
         $repository = $manager->getRepository($this->objectClass);
 
         $pager = new PagerfantaPager(new Pagerfanta(
-            new DoctrineODMMongoDBAdapter(call_user_func([$repository, $options['query_builder_method']]))
+            new DoctrineODMMongoDBAdapter(\call_user_func([$repository, $options['query_builder_method']]))
         ));
 
         $this->registerListenersService->register($manager, $pager, $options);

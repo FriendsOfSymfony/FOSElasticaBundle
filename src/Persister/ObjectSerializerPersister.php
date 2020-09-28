@@ -44,7 +44,7 @@ class ObjectSerializerPersister extends ObjectPersister
     {
         $document = $this->transformer->transform($object, []);
 
-        $data = call_user_func($this->serializer, $object);
+        $data = \call_user_func($this->serializer, $object);
         $document->setData($data);
 
         return $document;

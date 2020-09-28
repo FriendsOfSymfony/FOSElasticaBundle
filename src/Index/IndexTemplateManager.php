@@ -44,7 +44,7 @@ class IndexTemplateManager
     public function getIndexTemplate($name)
     {
         if (!isset($this->templates[$name])) {
-            throw new \InvalidArgumentException(sprintf('The index template "%s" does not exist', $name));
+            throw new \InvalidArgumentException(\sprintf('The index template "%s" does not exist', $name));
         }
 
         return $this->templates[$name];

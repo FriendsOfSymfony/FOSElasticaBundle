@@ -59,9 +59,9 @@ class Indexable implements IndexableInterface
             ]);
         }
 
-        return is_string($callback)
-            ? call_user_func([$object, $callback])
-            : call_user_func($callback, $object);
+        return \is_string($callback)
+            ? \call_user_func([$object, $callback])
+            : \call_user_func($callback, $object);
     }
 
     /**
@@ -71,21 +71,21 @@ class Indexable implements IndexableInterface
      */
     private function buildCallback(string $index, object $object)
     {
-        if (!array_key_exists($index, $this->callbacks)) {
+        if (!\array_key_exists($index, $this->callbacks)) {
             return null;
         }
 
         $callback = $this->callbacks[$index];
 
-        if (is_callable($callback) or is_callable([$object, $callback])) {
+        if (\is_callable($callback) or \is_callable([$object, $callback])) {
             return $callback;
         }
 
-        if (is_string($callback)) {
+        if (\is_string($callback)) {
             return $this->buildExpressionCallback($index, $object, $callback);
         }
 
-        throw new \InvalidArgumentException(sprintf('Callback for index "%s" is not a valid callback.', $index));
+        throw new \InvalidArgumentException(\sprintf('Callback for index "%s" is not a valid callback.', $index));
     }
 
     /**
@@ -106,7 +106,7 @@ class Indexable implements IndexableInterface
 
             return $callback;
         } catch (SyntaxError $e) {
-            throw new \InvalidArgumentException(sprintf('Callback for index "%s" is an invalid expression', $index), $e->getCode(), $e);
+            throw new \InvalidArgumentException(\sprintf('Callback for index "%s" is an invalid expression', $index), $e->getCode(), $e);
         }
     }
 
@@ -117,7 +117,7 @@ class Indexable implements IndexableInterface
      */
     private function getCallback(string $index, object $object)
     {
-        if (!array_key_exists($index, $this->initialisedCallbacks)) {
+        if (!\array_key_exists($index, $this->initialisedCallbacks)) {
             $this->initialisedCallbacks[$index] = $this->buildCallback($index, $object);
         }
 
@@ -144,12 +144,12 @@ class Indexable implements IndexableInterface
      */
     private function getExpressionVar($object = null): string
     {
-        if (!is_object($object)) {
+        if (!\is_object($object)) {
             return 'object';
         }
 
         $ref = new \ReflectionClass($object);
 
-        return strtolower($ref->getShortName());
+        return \strtolower($ref->getShortName());
     }
 }

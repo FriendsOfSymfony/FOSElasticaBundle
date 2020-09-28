@@ -82,7 +82,7 @@ class Listener
         array $config = [],
         ?LoggerInterface $logger = null
     ) {
-        $this->config = array_merge([
+        $this->config = \array_merge([
             'identifier' => 'id',
             'defer' => false,
         ], $config);
@@ -191,15 +191,15 @@ class Listener
     private function persistScheduled()
     {
         if ($this->shouldPersist()) {
-            if (count($this->scheduledForInsertion)) {
+            if (\count($this->scheduledForInsertion)) {
                 $this->objectPersister->insertMany($this->scheduledForInsertion);
                 $this->scheduledForInsertion = [];
             }
-            if (count($this->scheduledForUpdate)) {
+            if (\count($this->scheduledForUpdate)) {
                 $this->objectPersister->replaceMany($this->scheduledForUpdate);
                 $this->scheduledForUpdate = [];
             }
-            if (count($this->scheduledForDeletion)) {
+            if (\count($this->scheduledForDeletion)) {
                 $this->objectPersister->deleteManyByIdentifiers($this->scheduledForDeletion);
                 $this->scheduledForDeletion = [];
             }
@@ -214,7 +214,7 @@ class Listener
     private function scheduleForDeletion($object)
     {
         if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
-            $this->scheduledForDeletion[] = !is_scalar($identifierValue) ? (string) $identifierValue : $identifierValue;
+            $this->scheduledForDeletion[] = !\is_scalar($identifierValue) ? (string) $identifierValue : $identifierValue;
         }
     }
 

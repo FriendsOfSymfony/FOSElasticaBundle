@@ -31,7 +31,7 @@ class RawPartialResults implements PartialResultsInterface
      */
     public function toArray()
     {
-        return array_map(function (Result $result) {
+        return \array_map(function (Result $result) {
             return $result->getSource();
         }, $this->resultSet->getResults());
     }

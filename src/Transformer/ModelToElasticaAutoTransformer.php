@@ -51,7 +51,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     public function __construct(array $options = [], ?EventDispatcherInterface $dispatcher = null)
     {
-        $this->options = array_merge($this->options, $options);
+        $this->options = \array_merge($this->options, $options);
         $this->dispatcher = $dispatcher;
     }
 
@@ -83,7 +83,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected function transformNested($objects, array $fields)
     {
-        if (is_array($objects) || $objects instanceof \Traversable || $objects instanceof \ArrayAccess) {
+        if (\is_array($objects) || $objects instanceof \Traversable || $objects instanceof \ArrayAccess) {
             $documents = [];
             foreach ($objects as $object) {
                 $document = $this->transformObjectToDocument($object, $fields);
@@ -112,14 +112,14 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         $normalizeValue = function (&$v) {
             if ($v instanceof \DateTimeInterface) {
                 $v = $v->format('c');
-            } elseif (!is_scalar($v) && !is_null($v)) {
+            } elseif (!\is_scalar($v) && !\is_null($v)) {
                 $v = (string) $v;
             }
         };
 
-        if (is_array($value) || $value instanceof \Traversable || $value instanceof \ArrayAccess) {
-            $value = is_array($value) ? $value : iterator_to_array($value, false);
-            array_walk_recursive($value, $normalizeValue);
+        if (\is_array($value) || $value instanceof \Traversable || $value instanceof \ArrayAccess) {
+            $value = \is_array($value) ? $value : \iterator_to_array($value, false);
+            \array_walk_recursive($value, $normalizeValue);
         } else {
             $normalizeValue($value);
         }
@@ -148,7 +148,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             $value = $this->propertyAccessor->getValue($object, $path);
 
             if (isset($mapping['type'])
-                && in_array($mapping['type'], ['nested', 'object'], true)
+                && \in_array($mapping['type'], ['nested', 'object'], true)
                 && isset($mapping['properties']) && !empty($mapping['properties'])
             ) {
                 /* $value is a nested document or object. Transform $value into
