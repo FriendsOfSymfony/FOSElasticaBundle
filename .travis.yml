@@ -31,9 +31,7 @@ before_install:
 
 install:
   - if [ "$SYMFONY_REQUIRE" != "" ]; then composer global require --no-progress --no-scripts --no-plugins symfony/flex; fi;
-  # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
   - pecl install -f mongodb-stable
-  - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
   - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
   - mkdir /tmp/elasticsearch
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
