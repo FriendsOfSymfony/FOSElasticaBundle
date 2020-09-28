@@ -101,7 +101,6 @@ class FOSElasticaExtension extends Extension
 
         $this->loadIndexes($config['indexes'], $container);
         $container->setAlias('fos_elastica.index', sprintf('fos_elastica.index.%s', $config['default_index']));
-        $container->getAlias('fos_elastica.index')->setPublic(true);
         $container->setParameter('fos_elastica.default_index', $config['default_index']);
 
         if ($usedIndexNames = \array_intersect_key($config['indexes'], $config['index_templates'])) {
