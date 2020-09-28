@@ -385,7 +385,7 @@ class Configuration implements ConfigurationInterface
                                             ->prototype('scalar')->end()
                                         ->end()
                                         ->arrayNode('curl')
-                                            ->useAttributeAsKey(CURLOPT_SSL_VERIFYPEER)
+                                            ->useAttributeAsKey(\CURLOPT_SSL_VERIFYPEER)
                                             ->prototype('boolean')->end()
                                         ->end()
                                         ->scalarNode('transport')->end()
