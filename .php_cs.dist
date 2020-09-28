@@ -17,6 +17,7 @@ return PhpCsFixer\Config::create()
         'combine_consecutive_unsets' => true,
         'header_comment' => ['header' => $header],
         'linebreak_after_opening_tag' => true,
+        'native_function_invocation' => true,
         'no_useless_else' => true,
         'nullable_type_declaration_for_default_null_value' => true,
         'ordered_class_elements' => true,
