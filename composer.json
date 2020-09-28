@@ -37,7 +37,6 @@
         "symfony/console": "^4.4 || ^5.1",
         "symfony/dependency-injection": "^4.4 || ^5.1",
         "symfony/framework-bundle": "^4.4 || ^5.1",
-        "symfony/messenger": "^4.4 || ^5.1",
         "symfony/property-access": "^4.4 || ^5.1"
     },
     "require-dev": {
@@ -53,6 +52,7 @@
         "knplabs/knp-components": "^2.3",
         "phpunit/phpunit": "^8.5",
         "symfony/expression-language": "^4.4 || ^5.1",
+        "symfony/messenger": "^4.4 || ^5.1",
         "symfony/serializer": "^4.4 || ^5.1",
         "symfony/twig-bundle": "^4.4 || ^5.1",
         "symfony/web-profiler-bundle": "^4.4 || ^5.1",
