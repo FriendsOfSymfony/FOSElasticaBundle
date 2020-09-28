@@ -18,6 +18,7 @@ return PhpCsFixer\Config::create()
         'header_comment' => ['header' => $header],
         'is_null' => true,
         'linebreak_after_opening_tag' => true,
+        'native_constant_invocation' => true,
         'native_function_invocation' => true,
         'no_alias_functions' => true,
         'no_useless_else' => true,
