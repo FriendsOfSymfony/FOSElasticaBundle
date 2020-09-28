@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="fos_elastica.async_pager_persister" class="FOS\ElasticaBundle\Persister\AsyncPagerPersister">
+            <argument type="service" id="fos_elastica.pager_persister_registry" />
+            <argument type="service" id="fos_elastica.pager_provider_registry" />
+            <argument /> <!-- message bus-->
+
+            <tag name="fos_elastica.pager_persister" persisterName="async" />
+        </service>
+    </services>
+</container>
