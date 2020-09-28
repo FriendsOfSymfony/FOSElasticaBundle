@@ -36,6 +36,10 @@ class ConfigurationTest extends TestCase
             'indexes' => [],
             'index_templates' => [],
             'default_manager' => 'orm',
+            'messenger' => [
+                'enabled' => false,
+                'message_bus' => null,
+            ],
         ], $configuration);
     }
 
