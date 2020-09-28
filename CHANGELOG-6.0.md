@@ -4,7 +4,9 @@ CHANGELOG for 6.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
-### 6.0.0-BETA3 (2020-xx-xx)
+### 6.0.0-BETA4 (2020-xx-xx)
+
+### 6.0.0-BETA3 (2020-09-28)
 
 * Fixed `symfony/messenger` integration.
 * **[BC break]** Marked the `fos_elastica.index` service as private.
