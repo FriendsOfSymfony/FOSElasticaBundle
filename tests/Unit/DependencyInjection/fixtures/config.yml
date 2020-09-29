@@ -2,19 +2,14 @@ fos_elastica:
     clients:
         default:
             url: http://localhost:9200
+            curl:
+                !php/const CURLOPT_SSL_VERIFYPEER: false
+                !php/const \CURLOPT_RANDOM_FILE: /dev/urandom
     indexes:
         test_index:
             client: default
-            types:
-                parent_field:
-                    properties:
-                        text: ~
-                    persistence:
-                        driver: orm
-                        model: foo_model
-                child_field:
-                    properties:
-                        text: ~
-                    persistence:
-                        driver: orm
-                        model: foo_model
+            properties:
+                text: ~
+            persistence:
+                driver: orm
+                model: foo_model
