@@ -12,12 +12,15 @@
 namespace FOS\ElasticaBundle\Tests\Unit\DependencyInjection;
 
 use FOS\ElasticaBundle\DependencyInjection\Compiler\ConfigSourcePass;
+use FOS\ElasticaBundle\Tests\Unit\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
 class ConfigSourcePassTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var ContainerBuilder */
     private $container;
 
