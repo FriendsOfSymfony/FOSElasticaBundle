@@ -66,7 +66,7 @@ class RepositoryManager implements RepositoryManagerInterface
     {
         $realEntityName = $entityName;
         if (false !== \strpos($entityName, ':')) {
-            list($namespaceAlias, $simpleClassName) = \explode(':', $entityName);
+            [$namespaceAlias, $simpleClassName] = \explode(':', $entityName);
             $realEntityName = $this->managerRegistry->getAliasNamespace($namespaceAlias).'\\'.$simpleClassName;
         }
 
