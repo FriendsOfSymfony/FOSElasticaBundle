@@ -20,8 +20,10 @@ use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
 use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Yaml\Yaml;
 
@@ -40,6 +42,28 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.index.test_index'));
         $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.elastica_to_model_transformer.test_index'));
         $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index'));
+    }
+
+    public function testYamlConfiguration()
+    {
+        $containerBuilder = new ContainerBuilder();
+        $containerBuilder->registerExtension($extension = new FOSElasticaExtension());
+        $containerBuilder->setParameter('kernel.debug', true);
+
+        $loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__.'/fixtures'));
+        $loader->load('config.yml');
+
+        $extensionConfig = $containerBuilder->getExtensionConfig($extension->getAlias());
+        $extension->load($extensionConfig, $containerBuilder);
+
+        $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.index.test_index'));
+        $this->assertTrue($containerBuilder->hasDefinition('fos_elastica.client.default'));
+
+        $defaultClientDefinition = $containerBuilder->findDefinition('fos_elastica.client.default');
+        $this->assertSame([
+            \CURLOPT_SSL_VERIFYPEER => false,
+            \CURLOPT_RANDOM_FILE => '/dev/urandom',
+        ], $defaultClientDefinition->getArgument(0)['connections'][0]['curl']);
     }
 
     public function testShouldRegisterDoctrineORMPagerProviderIfEnabled()
