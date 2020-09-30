@@ -15,7 +15,6 @@ use Elastica\Client as ElasticaClient;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -93,14 +92,16 @@ class FOSElasticaExtension extends Extension
         }
 
         $this->loadClients($config['clients'], $container);
-        $container->setAlias('fos_elastica.client', \sprintf('fos_elastica.client.%s', $config['default_client']));
-        $container->getAlias('fos_elastica.client')->setPublic(true);
-        $container->setAlias(ElasticaClient::class, new Alias('fos_elastica.client', false));
-        $container->setAlias(Client::class, 'fos_elastica.client');
-        $container->getAlias(Client::class)->setPublic(false);
+        $container->setAlias('fos_elastica.client', \sprintf('fos_elastica.client.%s', $config['default_client']))
+            ->setPublic(false);
+        $container->setAlias(ElasticaClient::class, 'fos_elastica.client')
+            ->setPublic(false);
+        $container->setAlias(Client::class, 'fos_elastica.client')
+            ->setPublic(false);
 
         $this->loadIndexes($config['indexes'], $container);
-        $container->setAlias('fos_elastica.index', \sprintf('fos_elastica.index.%s', $config['default_index']));
+        $container->setAlias('fos_elastica.index', \sprintf('fos_elastica.index.%s', $config['default_index']))
+            ->setPublic(false);
         $container->setParameter('fos_elastica.default_index', $config['default_index']);
 
         if ($usedIndexNames = \array_intersect_key($config['indexes'], $config['index_templates'])) {
@@ -132,10 +133,8 @@ class FOSElasticaExtension extends Extension
      *
      * @param array            $clients   An array of clients configurations
      * @param ContainerBuilder $container A ContainerBuilder instance
-     *
-     * @return array
      */
-    private function loadClients(array $clients, ContainerBuilder $container)
+    private function loadClients(array $clients, ContainerBuilder $container): void
     {
         foreach ($clients as $name => $clientConfig) {
             $clientId = \sprintf('fos_elastica.client.%s', $name);
@@ -167,10 +166,8 @@ class FOSElasticaExtension extends Extension
      * @param ContainerBuilder $container A ContainerBuilder instance
      *
      * @throws \InvalidArgumentException
-     *
-     * @return array
      */
-    private function loadIndexes(array $indexes, ContainerBuilder $container)
+    private function loadIndexes(array $indexes, ContainerBuilder $container): void
     {
         $indexableCallbacks = [];
 
@@ -232,10 +229,8 @@ class FOSElasticaExtension extends Extension
      * @param ContainerBuilder $container      A ContainerBuilder instance
      *
      * @throws \InvalidArgumentException
-     *
-     * @return void
      */
-    private function loadIndexTemplates(array $indexTemplates, ContainerBuilder $container)
+    private function loadIndexTemplates(array $indexTemplates, ContainerBuilder $container): void
     {
         foreach ($indexTemplates as $name => $indexTemplate) {
             $indexId = \sprintf('fos_elastica.index_template.%s', $name);
@@ -273,8 +268,6 @@ class FOSElasticaExtension extends Extension
      *
      * @param string    $name  The index name
      * @param Reference $index Reference to the related index
-     *
-     * @return string
      */
     private function loadIndexFinder(ContainerBuilder $container, string $name, Reference $index): void
     {
@@ -564,7 +557,6 @@ class FOSElasticaExtension extends Extension
         }
 
         if ($indexConfig['listener']['defer']) {
-            $listenerDef->setPublic(true);
             $listenerDef->addTag(
                 'kernel.event_listener',
                 ['event' => 'kernel.terminate', 'method' => 'onTerminate']
@@ -700,7 +692,8 @@ class FOSElasticaExtension extends Extension
      */
     private function loadSerializer(array $config, ContainerBuilder $container): void
     {
-        $container->setAlias('fos_elastica.serializer', $config['serializer']);
+        $container->setAlias('fos_elastica.serializer', $config['serializer'])
+            ->setPublic(false);
 
         $serializer = $container->getDefinition('fos_elastica.serializer_callback_prototype');
         $serializer->setClass($config['callback_class']);
@@ -727,8 +720,10 @@ class FOSElasticaExtension extends Extension
             $defaultManagerService = $this->loadedDrivers[0];
         }
 
-        $container->setAlias('fos_elastica.manager', \sprintf('fos_elastica.manager.%s', $defaultManagerService));
-        $container->setAlias(RepositoryManagerInterface::class, 'fos_elastica.manager');
+        $container->setAlias('fos_elastica.manager', \sprintf('fos_elastica.manager.%s', $defaultManagerService))
+            ->setPublic(false);
+        $container->setAlias(RepositoryManagerInterface::class, 'fos_elastica.manager')
+            ->setPublic(false);
     }
 
     /**

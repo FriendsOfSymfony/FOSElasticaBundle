@@ -12,38 +12,65 @@ documentation.
 
 > This example assumes you have defined an index `user` in your `config.yml`.
 
+```yaml
+# config/services.yaml
+services:
+    # ...
+
+    App\Controller\UserController:
+        tags: ['controller.service_arguments']
+        public: true
+        arguments:
+            - '@fos_elastica.finder.user'
+```
+
 ```php
-$finder = $this->container->get('fos_elastica.finder.user');
+namespace App\Controller;
 
-// Option 1. Returns all users who have example.net in any of their mapped fields
-$results = $finder->find('example.net');
+use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 
-// Option 2. Returns a set of hybrid results that contain all Elasticsearch results
-// and their transformed counterparts. Each result is an instance of a HybridResult
-$results = $finder->findHybrid('example.net');
+class UserController
+{
+    private $finder;
 
-// Option 3a. Pagerfanta'd resultset
-/** var Pagerfanta\Pagerfanta */
-$userPaginator = $finder->findPaginated('bob');
-$countOfResults = $userPaginator->getNbResults();
+    public function __construct(PaginatedFinderInterface $finder)
+    {
+        $this->finder = $finder;
+    }
 
-// Option 3b. KnpPaginator resultset
-$paginator = $this->get('knp_paginator');
-$results = $finder->createPaginatorAdapter('bob');
-$pagination = $paginator->paginate($results, $page, 10);
+    public function userAction()
+    {
+        // Option 1. Returns all users who have example.net in any of their mapped fields
+        $results = $this->finder->find('example.net');
 
-// You can specify additional options as the fourth parameter of Knp Paginator
-// paginate method to nested_filter and nested_sort
+        // Option 2. Returns a set of hybrid results that contain all Elasticsearch results
+        // and their transformed counterparts. Each result is an instance of a HybridResult
+        $results = $this->finder->findHybrid('example.net');
 
-$options = [
-    'sortNestedPath' => 'owner',
-    'sortNestedFilter' => new Query\Term(['enabled' => ['value' => true]]),
-];
+        // Option 3a. Pagerfanta'd resultset
+        /** var Pagerfanta\Pagerfanta */
+        $userPaginator = $this->finder->findPaginated('bob');
+        $countOfResults = $userPaginator->getNbResults();
 
-// sortNestedPath and sortNestedFilter also accepts a callable
-// which takes the current sort field to get the correct sort path/filter
+        // Option 3b. KnpPaginator resultset
+        $paginator = $this->get('knp_paginator');
+        $results = $this->finder->createPaginatorAdapter('bob');
+        $pagination = $paginator->paginate($results, $page, 10);
 
-$pagination = $paginator->paginate($results, $page, 10, $options);
+        // You can specify additional options as the fourth parameter of Knp Paginator
+        // paginate method to nested_filter and nested_sort
+
+        $options = [
+            'sortNestedPath' => 'owner',
+            'sortNestedFilter' => new Query\Term(['enabled' => ['value' => true]]),
+        ];
+
+        // sortNestedPath and sortNestedFilter also accepts a callable
+        // which takes the current sort field to get the correct sort path/filter
+
+        $pagination = $paginator->paginate($results, $page, 10, $options);
+    }
+}
 ```
 
 When searching with a finder, parameters can be passed which influence the Elasticsearch query in general.
@@ -52,7 +79,7 @@ For example, the `search_type` parameter (see [the Elasticsearch documentation](
 can be set as follows:
 
 ```php
-$results = $finder->findHybrid('example.net', null, ['search_type' => 'dfs_query_then_fetch']);
+$results = $this->finder->findHybrid('example.net', null, ['search_type' => 'dfs_query_then_fetch']);
 ```
 
 Aggregations
@@ -67,7 +94,7 @@ $agg = new \Elastica\Aggregation\Terms('tags');
 $agg->setField('companyGroup');
 $query->addAggregation($agg);
 
-$companies = $finder->findPaginated($query);
+$companies = $this->finder->findPaginated($query);
 $companies->setMaxPerPage($params['limit']);
 $companies->setCurrentPage($params['page']);
 
