@@ -154,6 +154,31 @@ class AliasProcessorTest extends TestCase
         $this->processor->switchIndexAlias($indexConfig, $index, true);
     }
 
+    public function testSwitchAliasCloseOldIndex()
+    {
+        $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
+        [$index, $client] = $this->getMockedIndex('unique_name');
+
+        $client->expects($this->exactly(3))
+            ->method('request')
+            ->withConsecutive(
+                ['_aliases', 'GET'],
+                ['_aliases', 'POST', ['actions' => [
+                    ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                ]]],
+                ['old_unique_name/_close', 'POST']
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
+                new Response([]),
+                new Response([])
+            )
+        ;
+
+        $this->processor->switchIndexAlias($indexConfig, $index, true, false);
+    }
+
     public function testSwitchAliasDeletesOldIndex()
     {
         $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
