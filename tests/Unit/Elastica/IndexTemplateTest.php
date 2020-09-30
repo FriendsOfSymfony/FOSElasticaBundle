@@ -14,6 +14,7 @@ namespace FOS\ElasticaBundle\Tests\Unit\Elastica;
 use Elastica\Client;
 use Elastica\IndexTemplate as BaseIndexTemplate;
 use FOS\ElasticaBundle\Elastica\IndexTemplate;
+use FOS\ElasticaBundle\Tests\Unit\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,6 +22,8 @@ use PHPUnit\Framework\TestCase;
  */
 class IndexTemplateTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testInstantiate()
     {
         $template = new IndexTemplate($this->prophesize(Client::class)->reveal(), 'some_name');
