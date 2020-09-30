@@ -152,6 +152,8 @@ class FOSElasticaExtension extends Extension
             $clientDef->addTag('fos_elastica.client');
 
             $container->setDefinition($clientId, $clientDef);
+            $container->registerAliasForArgument($clientId, Client::class, $name.'.client');
+            $container->registerAliasForArgument($clientId, ElasticaClient::class, $name.'.client');
 
             $this->clients[$name] = [
                 'id' => $clientId,
