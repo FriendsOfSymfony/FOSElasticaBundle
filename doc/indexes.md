@@ -209,8 +209,8 @@ The callback option supports multiple approaches:
   information on the ExpressionLanguage component and its capabilities see its
   [documentation](http://symfony.com/doc/current/components/expression_language/index.html)
 
-In all cases, the callback should return a true or false, with true indicating it will be
-indexed, and a false indicating the object should not be indexed, or should be removed
+In all cases, the callback should return a boolean, with `true` indicating it will be
+indexed, and `false` indicating the object should not be indexed, or should be removed
 from the index if we are running an update.
 
 Provider Configuration
