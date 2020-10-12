@@ -359,6 +359,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('host')->end()
                                         ->scalarNode('port')->end()
                                         ->scalarNode('proxy')->end()
+                                        ->scalarNode('auth_type')->end()
                                         ->arrayNode('http_error_codes')
                                             ->beforeNormalization()
                                                 ->ifTrue(function ($v) { return !\is_array($v); })
