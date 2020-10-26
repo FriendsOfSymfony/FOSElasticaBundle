@@ -68,7 +68,7 @@ class CreateCommand extends Command
                 $this->aliasProcessor->setRootName($indexConfig, $index);
             }
             $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
-            $index->create($mapping, false);
+            $index->create($mapping);
 
             if ($indexConfig->isUseAlias()) {
                 $index->addAlias($indexName);
