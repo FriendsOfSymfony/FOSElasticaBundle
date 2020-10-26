@@ -88,7 +88,7 @@ class Resetter implements ResetterInterface
         $this->dispatcher->dispatch($event = new PreIndexResetEvent($indexName, $populating, $force));
 
         $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
-        $index->create($mapping, true);
+        $index->create($mapping, ['recreate' => true]);
 
         if (!$populating and $indexConfig->isUseAlias()) {
             $this->aliasProcessor->switchIndexAlias($indexConfig, $index, $force);
