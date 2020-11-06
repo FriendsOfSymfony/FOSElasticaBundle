@@ -1,6 +1,8 @@
 language: php
 
-sudo: false
+arch: amd64
+os: linux
+dist: xenial
 
 cache:
     directories:
@@ -11,7 +13,7 @@ env:
     - PHPUNIT_FLAGS="-v"
     - ES_VERSION="7.0.0"
 
-matrix:
+jobs:
   fast_finish: true
   include:
     # Latest supported dependencies with each PHP version
