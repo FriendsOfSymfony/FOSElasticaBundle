@@ -278,3 +278,13 @@ $boolQuery->addMust($categoryQuery);
 
 $data = $finder->find($boolQuery);
 ```
+
+Note: While passing an array of queries like this
+```php
+$boolQuery->addShould([$fieldQuery, $tagsQuery]);
+```
+works fine with Elasticsearch up to version 7.6, it _will_ result in an error like
+
+>[bool] failed to parse field [should]
+
+with version 7.7 and above.
