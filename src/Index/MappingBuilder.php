@@ -47,7 +47,7 @@ class MappingBuilder
             $mappingIndex['settings'] = $settings;
         }
 
-        $this->dispatcher->dispatch($event = new PostMappingBuildEvent($indexConfig, $mapping));
+        $this->dispatcher->dispatch(new PostMappingBuildEvent($indexConfig, $mapping));
 
         return $mappingIndex;
     }
