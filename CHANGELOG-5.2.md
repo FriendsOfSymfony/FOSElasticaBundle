@@ -4,6 +4,10 @@ CHANGELOG for 5.2.x
 This changelog references the relevant changes (bug and security fixes) done
 in 5.2 versions.
 
+### 5.2.1 (2020-11-30)
+
+* Improved Symfony 5.2 support.
+
 ### 5.2.0 (2020-09-15)
 
 * Added Symfony 5 support.
