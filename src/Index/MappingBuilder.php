@@ -37,6 +37,8 @@ class MappingBuilder
     {
         $mapping = $this->buildMapping($indexConfig->getModel(), $indexConfig);
 
+        $this->dispatcher->dispatch(new PostMappingBuildEvent($indexConfig, $mapping));
+
         $mappingIndex = [];
         if (!empty($mapping)) {
             $mappingIndex['mappings'] = $mapping;
@@ -46,8 +48,6 @@ class MappingBuilder
         if (!empty($settings)) {
             $mappingIndex['settings'] = $settings;
         }
-
-        $this->dispatcher->dispatch(new PostMappingBuildEvent($indexConfig, $mapping));
 
         return $mappingIndex;
     }
