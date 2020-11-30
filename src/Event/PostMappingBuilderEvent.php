@@ -11,13 +11,13 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use FOS\ElasticaBundle\Configuration\IndexConfig;
+use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class PostMappingBuilderEvent extends Event
 {
     /**
-     * @var IndexConfig
+     * @var IndexConfigInterface
      */
     private $indexConfig;
 
@@ -26,13 +26,13 @@ class PostMappingBuilderEvent extends Event
      */
     private $mapping;
 
-    public function __construct(IndexConfig $indexConfig, array $mapping)
+    public function __construct(IndexConfigInterface $indexConfig, array $mapping)
     {
         $this->indexConfig = $indexConfig;
         $this->mapping = $mapping;
     }
 
-    public function getIndexConfig(): IndexConfig
+    public function getIndexConfig(): IndexConfigInterface
     {
         return $this->indexConfig;
     }
