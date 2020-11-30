@@ -13,7 +13,7 @@ namespace FOS\ElasticaBundle\Index;
 
 use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
-use FOS\ElasticaBundle\Event\PostMappingBuilderEvent;
+use FOS\ElasticaBundle\Event\PostMappingBuildEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MappingBuilder
@@ -47,7 +47,7 @@ class MappingBuilder
             $mappingIndex['settings'] = $settings;
         }
 
-        $this->dispatcher->dispatch($event = new PostMappingBuilderEvent($indexConfig, $mapping));
+        $this->dispatcher->dispatch($event = new PostMappingBuildEvent($indexConfig, $mapping));
 
         return $mappingIndex;
     }
