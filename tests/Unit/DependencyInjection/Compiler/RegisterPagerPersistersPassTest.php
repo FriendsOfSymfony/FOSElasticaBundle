@@ -136,6 +136,7 @@ class RegisterPagerPersistersPassTest extends TestCase
     {
         $definition = new Definition(PagerPersisterInterface::class);
         $definition->addTag('fos_elastica.pager_persister', $attributes);
+        $definition->setPublic(true);
 
         return $definition;
     }

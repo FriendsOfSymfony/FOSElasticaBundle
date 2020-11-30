@@ -147,6 +147,7 @@ class RegisterPersistersPassTest extends TestCase
     {
         $definition = new Definition(ObjectPersisterInterface::class);
         $definition->addTag('fos_elastica.persister', $attributes);
+        $definition->setPublic(true);
 
         return $definition;
     }
