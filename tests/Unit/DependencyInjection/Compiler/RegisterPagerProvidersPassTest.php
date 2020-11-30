@@ -129,6 +129,7 @@ class RegisterPagerProvidersPassTest extends TestCase
         $provider = $this->createProviderDefinition(['index' => 'foo', 'type' => 'bar']);
         $provider->setClass(\stdClass::class);
         $provider->setFactory('a_factory_function');
+        $provider->setPublic(true);
 
         $container->setDefinition('a_foo_provider', $provider);
 
@@ -146,6 +147,7 @@ class RegisterPagerProvidersPassTest extends TestCase
     {
         $definition = new Definition(PagerProviderInterface::class);
         $definition->addTag('fos_elastica.pager_provider', $attributes);
+        $definition->setPublic(true);
 
         return $definition;
     }

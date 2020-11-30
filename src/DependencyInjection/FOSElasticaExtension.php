@@ -562,6 +562,7 @@ class FOSElasticaExtension extends Extension
         }
 
         $serviceDef->addTag('fos_elastica.persister', ['index' => $indexName, 'type' => $typeName]);
+        $serviceDef->setPublic(true);
 
         $container->setDefinition($serviceId, $serviceDef);
 
@@ -617,6 +618,7 @@ class FOSElasticaExtension extends Extension
          */
         $providerId = sprintf('fos_elastica.pager_provider.%s.%s', $indexName, $typeName);
         $providerDef->addTag('fos_elastica.pager_provider', ['index' => $indexName, 'type' => $typeName]);
+        $providerDef->setPublic(true);
 
         $container->setDefinition($providerId, $providerDef);
 
