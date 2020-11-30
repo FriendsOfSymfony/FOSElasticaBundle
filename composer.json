@@ -34,10 +34,10 @@
         "pagerfanta/pagerfanta": "^2.0",
         "psr/log": "^1.0",
         "ruflin/elastica": "^7.0",
-        "symfony/console": "^4.4 || ^5.1",
-        "symfony/dependency-injection": "^4.4 || ^5.1",
-        "symfony/framework-bundle": "^4.4 || ^5.1",
-        "symfony/property-access": "^4.4 || ^5.1"
+        "symfony/console": "^4.4 || ^5.1 || ^5.2",
+        "symfony/dependency-injection": "^4.4 || ^5.1 || ^5.2",
+        "symfony/framework-bundle": "^4.4 || ^5.1 || ^5.2",
+        "symfony/property-access": "^4.4 || ^5.1 || ^5.2"
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "^2.0",
@@ -52,12 +52,12 @@
         "knplabs/knp-components": "^2.3",
         "phpspec/prophecy-phpunit": "^1.1 || ^2.0",
         "phpunit/phpunit": "^8.5 || ^9.3",
-        "symfony/expression-language": "^4.4 || ^5.1",
-        "symfony/messenger": "^4.4 || ^5.1",
-        "symfony/serializer": "^4.4 || ^5.1",
-        "symfony/twig-bundle": "^4.4 || ^5.1",
-        "symfony/web-profiler-bundle": "^4.4 || ^5.1",
-        "symfony/yaml": "^4.4 || ^5.1"
+        "symfony/expression-language": "^4.4 || ^5.1 || ^5.2",
+        "symfony/messenger": "^4.4 || ^5.1 || ^5.2",
+        "symfony/serializer": "^4.4 || ^5.1 || ^5.2",
+        "symfony/twig-bundle": "^4.4 || ^5.1 || ^5.2",
+        "symfony/web-profiler-bundle": "^4.4 || ^5.1 || ^5.2",
+        "symfony/yaml": "^4.4 || ^5.1 || ^5.2"
     },
     "suggest": {
         "enqueue/elastica-bundle": "For populating Elasticsearch indexes asynchronously and using significanly less resources. Uses Enqueue.",
