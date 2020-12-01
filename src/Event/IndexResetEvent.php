@@ -16,7 +16,7 @@ namespace FOS\ElasticaBundle\Event;
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
-abstract class IndexResetEvent extends IndexEvent
+class IndexResetEvent extends IndexEvent
 {
     /**
      * @var bool

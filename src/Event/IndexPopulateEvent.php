@@ -16,7 +16,7 @@ namespace FOS\ElasticaBundle\Event;
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
-abstract class IndexPopulateEvent extends IndexEvent
+class IndexPopulateEvent extends IndexEvent
 {
     /**
      * @var bool
