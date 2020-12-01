@@ -13,9 +13,21 @@ namespace FOS\ElasticaBundle\Index;
 
 use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
+use FOS\ElasticaBundle\Event\PostMappingBuildEvent;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MappingBuilder
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->dispatcher = $eventDispatcher;
+    }
+
     /**
      * Builds mappings for an entire index.
      *
@@ -24,6 +36,10 @@ class MappingBuilder
     public function buildIndexMapping(IndexConfigInterface $indexConfig)
     {
         $mapping = $this->buildMapping($indexConfig->getModel(), $indexConfig);
+        $event = new PostMappingBuildEvent($indexConfig, $mapping);
+        $this->dispatcher->dispatch($event);
+
+        $mapping = $event->getMapping();
 
         $mappingIndex = [];
         if (!empty($mapping)) {

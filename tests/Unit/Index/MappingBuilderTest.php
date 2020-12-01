@@ -15,6 +15,7 @@ use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Index\MappingBuilder;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MappingBuilderTest extends TestCase
 {
@@ -74,7 +75,9 @@ class MappingBuilderTest extends TestCase
                 ],
             ]
         );
-        $this->builder = new MappingBuilder();
+
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->builder = new MappingBuilder($dispatcher);
     }
 
     public function testMappingBuilderStoreProperty()

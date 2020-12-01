@@ -44,7 +44,9 @@
             <tag name="monolog.logger" channel="elastica" />
         </service>
 
-        <service id="fos_elastica.mapping_builder" class="FOS\ElasticaBundle\Index\MappingBuilder" />
+        <service id="fos_elastica.mapping_builder" class="FOS\ElasticaBundle\Index\MappingBuilder">
+            <argument type="service" id="event_dispatcher" />
+        </service>
 
         <service id="fos_elastica.property_accessor" class="Symfony\Component\PropertyAccess\PropertyAccessor">
             <argument>%fos_elastica.property_accessor.magicCall%</argument>
