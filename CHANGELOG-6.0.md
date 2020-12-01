@@ -6,12 +6,13 @@ in 6.0 versions.
 
 ### 6.0.0-BETA4 (2020-xx-xx)
 
+* Added `auth_type` client parameter [Elastica#1790](https://github.com/ruflin/Elastica/pull/1790).
+* Added a post mapping builder event.
+* Fixed deprecations for `Elastica\Index::create()` [Elastica#1828](https://github.com/ruflin/Elastica/pull/1828).
 * **[BC break]** Marked all `fos_elastica.finder.*` services as private.
 * **[BC break]** Marked the `fos_elastica.client` alias as private.
 * **[BC break]** Marked the `fos_elastica.client_prototype` service as private.
 * **[BC break]** Marked the `fos_elastica.index_template_prototype` service as private.
-* Added `auth_type` client parameter [Elastica#1790](https://github.com/ruflin/Elastica/pull/1790).
-* Fixed deprecations for `Elastica\Index::create()` [Elastica#1828](https://github.com/ruflin/Elastica/pull/1828).
 
 ### 6.0.0-BETA3 (2020-09-28)
 
