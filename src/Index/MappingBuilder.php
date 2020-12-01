@@ -36,8 +36,10 @@ class MappingBuilder
     public function buildIndexMapping(IndexConfigInterface $indexConfig)
     {
         $mapping = $this->buildMapping($indexConfig->getModel(), $indexConfig);
+        $event = new PostMappingBuildEvent($indexConfig, $mapping);
+        $this->dispatcher->dispatch($event);
 
-        $this->dispatcher->dispatch(new PostMappingBuildEvent($indexConfig, $mapping));
+        $mapping = $event->getMapping();
 
         $mappingIndex = [];
         if (!empty($mapping)) {
