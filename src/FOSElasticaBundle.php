@@ -25,6 +25,7 @@ class FOSElasticaBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new AsyncHandlerPass());
         $container->addCompilerPass(new ConfigSourcePass());
         $container->addCompilerPass(new IndexPass());
     }

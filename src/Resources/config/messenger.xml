@@ -12,5 +12,9 @@
 
             <tag name="fos_elastica.pager_persister" persisterName="async" />
         </service>
+
+        <service id="fos_elastica.async_parsist_page_handler" class="FOS\ElasticaBundle\Message\Handler\AsyncPersistPageHandler">
+            <argument type="service" id="fos_elastica.async_pager_persister" />
+        </service>
     </services>
 </container>
