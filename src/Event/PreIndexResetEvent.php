@@ -11,6 +11,12 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-final class PreIndexResetEvent extends IndexResetEvent
+final class PreIndexResetEvent extends AbstractIndexResetEvent
 {
+    public function setForce(bool $force): self
+    {
+        $this->force = $force;
+
+        return $this;
+    }
 }

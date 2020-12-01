@@ -16,17 +16,17 @@ namespace FOS\ElasticaBundle\Event;
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
-class IndexPopulateEvent extends IndexEvent
+abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
 {
     /**
      * @var bool
      */
-    private $reset;
+    protected $reset;
 
     /**
      * @var array
      */
-    private $options;
+    protected $options;
 
     public function __construct(string $index, bool $reset, array $options)
     {
@@ -46,11 +46,6 @@ class IndexPopulateEvent extends IndexEvent
         return $this->options;
     }
 
-    public function setReset(bool $reset)
-    {
-        $this->reset = $reset;
-    }
-
     /**
      * @return mixed
      *
@@ -63,14 +58,5 @@ class IndexPopulateEvent extends IndexEvent
         }
 
         return $this->options[$name];
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $value
-     */
-    public function setOption($name, $value)
-    {
-        $this->options[$name] = $value;
     }
 }

@@ -14,12 +14,12 @@ namespace FOS\ElasticaBundle\Event;
 use Elastica\Document;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class TransformEvent extends Event
+abstract class AbstractTransformEvent extends Event
 {
     /**
      * @var Document
      */
-    private $document;
+    protected $document;
 
     /**
      * @var array
@@ -51,10 +51,5 @@ class TransformEvent extends Event
     public function getObject(): object
     {
         return $this->object;
-    }
-
-    public function setDocument(Document $document)
-    {
-        $this->document = $document;
     }
 }
