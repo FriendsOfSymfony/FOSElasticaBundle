@@ -14,7 +14,7 @@ namespace FOS\ElasticaBundle\Event;
 use Elastica\Document;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class TransformEvent extends Event
+abstract class TransformEvent extends Event
 {
     /**
      * @var Document
