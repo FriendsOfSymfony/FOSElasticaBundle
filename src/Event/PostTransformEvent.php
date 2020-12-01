@@ -11,6 +11,6 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-class PostTransformEvent extends TransformEvent
+final class PostTransformEvent extends TransformEvent
 {
 }
