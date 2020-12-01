@@ -41,4 +41,9 @@ final class PostMappingBuildEvent extends Event
     {
         return $this->mapping;
     }
+
+    public function setMapping(array $mapping): void
+    {
+        $this->mapping = $mapping;
+    }
 }
