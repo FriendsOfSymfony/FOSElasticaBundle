@@ -30,24 +30,21 @@ class MappingBuilder
 
     /**
      * Builds mappings for an entire index.
-     *
-     * @return array
      */
-    public function buildIndexMapping(IndexConfigInterface $indexConfig)
+    public function buildIndexMapping(IndexConfigInterface $indexConfig): array
     {
+        $mappingIndex = [];
         $mapping = $this->buildMapping($indexConfig->getModel(), $indexConfig);
-        $event = new PostMappingBuildEvent($indexConfig, $mapping);
-        $this->dispatcher->dispatch($event);
+        $this->dispatcher->dispatch($event = new PostMappingBuildEvent($indexConfig, $mapping));
 
         $mapping = $event->getMapping();
+        $settings = $indexConfig->getSettings();
 
-        $mappingIndex = [];
-        if (!empty($mapping)) {
+        if ($mapping) {
             $mappingIndex['mappings'] = $mapping;
         }
 
-        $settings = $indexConfig->getSettings();
-        if (!empty($settings)) {
+        if ($settings) {
             $mappingIndex['settings'] = $settings;
         }
 
@@ -56,10 +53,8 @@ class MappingBuilder
 
     /**
      * Builds mappings for an entire index template.
-     *
-     * @return array
      */
-    public function buildIndexTemplateMapping(IndexTemplateConfig $indexTemplateConfig)
+    public function buildIndexTemplateMapping(IndexTemplateConfig $indexTemplateConfig): array
     {
         $mapping = $this->buildIndexMapping($indexTemplateConfig);
         $mapping['template'] = $indexTemplateConfig->getTemplate();
@@ -69,10 +64,8 @@ class MappingBuilder
 
     /**
      * Builds mappings for a single type.
-     *
-     * @return array
      */
-    public function buildMapping(?string $model, IndexConfigInterface $indexConfig)
+    public function buildMapping(?string $model, IndexConfigInterface $indexConfig): array
     {
         $mapping = $indexConfig->getMapping();
 
@@ -96,7 +89,7 @@ class MappingBuilder
             $mapping['dynamic'] = $indexConfig->getDynamic();
         }
 
-        if (isset($mapping['dynamic_templates']) and empty($mapping['dynamic_templates'])) {
+        if (isset($mapping['dynamic_templates']) && !$mapping['dynamic_templates']) {
             unset($mapping['dynamic_templates']);
         }
 
@@ -109,28 +102,19 @@ class MappingBuilder
             $mapping['_meta']['model'] = $model;
         }
 
-        if (empty($mapping)) {
-            // Empty mapping, we want it encoded as a {} instead of a []
-            $mapping = new \ArrayObject();
-        }
-
         return $mapping;
     }
 
     /**
      * Fixes any properties and applies basic defaults for any field that does not have
      * required options.
-     *
-     * @param $properties
      */
-    private function fixProperties(&$properties)
+    private function fixProperties(array &$properties): void
     {
         foreach ($properties as $name => &$property) {
             unset($property['property_path']);
+            $property['type'] = $property['type'] ?? 'text';
 
-            if (!isset($property['type'])) {
-                $property['type'] = 'text';
-            }
             if (isset($property['fields'])) {
                 $this->fixProperties($property['fields']);
             }
