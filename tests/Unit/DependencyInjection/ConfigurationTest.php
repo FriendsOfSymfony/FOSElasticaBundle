@@ -38,7 +38,7 @@ class ConfigurationTest extends TestCase
             'default_manager' => 'orm',
             'messenger' => [
                 'enabled' => false,
-                'message_bus' => null,
+                'bus' => null,
             ],
         ], $configuration);
     }

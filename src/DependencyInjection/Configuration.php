@@ -57,7 +57,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('messenger')
                     ->canBeEnabled()
                     ->children()
-                        ->scalarNode('message_bus')->defaultNull()->end()
+                        ->scalarNode('bus')->defaultValue('messenger.default_bus')->end()
                     ->end()
                 ->end()
                 ->arrayNode('serializer')

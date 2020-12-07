@@ -8,7 +8,7 @@
         <service id="fos_elastica.async_pager_persister" class="FOS\ElasticaBundle\Persister\AsyncPagerPersister">
             <argument type="service" id="fos_elastica.pager_persister_registry" />
             <argument type="service" id="fos_elastica.pager_provider_registry" />
-            <argument /> <!-- message bus-->
+            <argument type="service" id="fos_elastica.messenger.bus" />
 
             <tag name="fos_elastica.pager_persister" persisterName="async" />
         </service>
