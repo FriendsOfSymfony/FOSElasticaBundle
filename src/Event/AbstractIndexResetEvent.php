@@ -16,12 +16,12 @@ namespace FOS\ElasticaBundle\Event;
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
  */
-class IndexResetEvent extends IndexEvent
+abstract class AbstractIndexResetEvent extends AbstractIndexEvent
 {
     /**
      * @var bool
      */
-    private $force;
+    protected $force;
 
     /**
      * @var bool
@@ -44,10 +44,5 @@ class IndexResetEvent extends IndexEvent
     public function isPopulating(): bool
     {
         return $this->populating;
-    }
-
-    public function setForce(bool $force)
-    {
-        $this->force = $force;
     }
 }
