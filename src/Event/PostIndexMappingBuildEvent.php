@@ -13,7 +13,7 @@ namespace FOS\ElasticaBundle\Event;
 
 use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 
-final class PostIndexMappingBuildEvent extends IndexEvent
+final class PostIndexMappingBuildEvent extends AbstractIndexEvent
 {
     /**
      * @var IndexConfigInterface
