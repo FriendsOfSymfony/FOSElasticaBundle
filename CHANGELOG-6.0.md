@@ -13,6 +13,7 @@ in 6.0 versions.
 * **[BC break]** Marked the `fos_elastica.client` alias as private.
 * **[BC break]** Marked the `fos_elastica.client_prototype` service as private.
 * **[BC break]** Marked the `fos_elastica.index_template_prototype` service as private.
+* **[BC break]** Marked all events final and introduced several abstract classes.
 
 ### 6.0.0-BETA3 (2020-09-28)
 
