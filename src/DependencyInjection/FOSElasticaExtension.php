@@ -750,8 +750,6 @@ class FOSElasticaExtension extends Extension
 
         $loader->load('messenger.xml');
 
-        $container->getDefinition('fos_elastica.async_pager_persister')
-            ->replaceArgument(2, $config['message_bus'] ? new Reference($config['message_bus']) : new Reference('messenger.default_bus'))
-        ;
+        $container->setAlias('fos_elastica.messenger.bus', $config['bus']);
     }
 }
