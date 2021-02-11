@@ -101,6 +101,8 @@ class PopulateCommand extends Command
             ->addOption('max-per-page', null, InputOption::VALUE_REQUIRED, 'The pager\'s page size', 100)
             ->addOption('pager-persister', null, InputOption::VALUE_REQUIRED, 'The pager persister to be used to populate the index', InPlacePagerPersister::NAME)
 
+            ->addOption('options', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Additional key=value values which are passed through to the provider. Define as --options=key=value.', [])
+
             ->setDescription('Populates search indexes from providers')
         ;
     }
@@ -123,14 +125,17 @@ class PopulateCommand extends Command
         $reset = !$input->getOption('no-reset');
         $delete = !$input->getOption('no-delete');
 
-        $options = [
-            'delete' => $delete,
-            'reset' => $reset,
-            'ignore_errors' => $input->getOption('ignore-errors'),
-            'sleep' => $input->getOption('sleep'),
-            'first_page' => $input->getOption('first-page'),
-            'max_per_page' => $input->getOption('max-per-page'),
-        ];
+        $options = array_merge(
+            [
+                'delete' => $delete,
+                'reset' => $reset,
+                'ignore_errors' => $input->getOption('ignore-errors'),
+                'sleep' => $input->getOption('sleep'),
+                'first_page' => $input->getOption('first-page'),
+                'max_per_page' => $input->getOption('max-per-page')
+            ],
+            $this->formatOptions($input->getOption('options'))
+        );
 
         if ($input->getOption('last-page')) {
             $options['last_page'] = $input->getOption('last-page');
@@ -220,5 +225,25 @@ class PopulateCommand extends Command
         $output->writeln(\sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
         $this->indexManager->getIndex($index)->refresh();
         $output->writeln('');
+    }
+
+    /**
+     * Formats the options from key=value to ["key" => "value"]
+     */
+    private function formatOptions(array $options): array
+    {
+        return array_reduce($options, static function(array $acc, string $option) {
+            if (strpos($option, '=') !== false) {
+                $splitted = explode('=', $option);
+                $key = array_shift($splitted);
+
+                $acc[$key] = implode('=', $splitted);
+
+            } else {
+                $acc[] = $option;
+            }
+
+            return $acc;
+        }, []);
     }
 }
