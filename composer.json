@@ -30,7 +30,7 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": ">=7.2",
         "pagerfanta/pagerfanta": "^2.0",
         "psr/log": "^1.0",
         "ruflin/elastica": "^7.0",
