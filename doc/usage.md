@@ -263,7 +263,7 @@ The following code will execute a search against the Elasticsearch server:
 $finder = $this->container->get('fos_elastica.finder.app.article');
 $boolQuery = new \Elastica\Query\BoolQuery();
 
-$fieldQuery = new \Elastica\Query\Match();
+$fieldQuery = new \Elastica\Query\MatchQuery();
 $fieldQuery->setFieldQuery('title', 'I am a title string');
 $fieldQuery->setFieldParam('title', 'analyzer', 'my_analyzer');
 $boolQuery->addShould($fieldQuery);
