@@ -27,7 +27,7 @@ class FantaPaginatorAdapter implements AdapterInterface
      *
      * @return int The number of results
      */
-    public function getNbResults()
+    public function getNbResults(): int
     {
         return $this->adapter->getTotalHits();
     }
@@ -59,12 +59,9 @@ class FantaPaginatorAdapter implements AdapterInterface
     /**
      * Returns a slice of the results.
      *
-     * @param int $offset The offset
-     * @param int $length The length
-     *
-     * @return array|\Traversable The slice
+     * @return iterable The slice
      */
-    public function getSlice($offset, $length)
+    public function getSlice(int $offset, int $length): iterable
     {
         return $this->adapter->getResults($offset, $length)->toArray();
     }
