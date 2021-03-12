@@ -51,6 +51,7 @@ class CreateCommand extends Command
         $this
             ->setName('fos:elastica:create')
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'Index that needs to be created')
+            ->addOption('no-alias', null, InputOption::VALUE_NONE, 'Do not alias index')
             ->setDescription('Creating empty index with mapping')
         ;
     }
@@ -70,7 +71,7 @@ class CreateCommand extends Command
             $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
             $index->create($mapping);
 
-            if ($indexConfig->isUseAlias()) {
+            if ($indexConfig->isUseAlias() && !$input->getOption('no-alias')) {
                 $index->addAlias($indexName);
             }
         }
