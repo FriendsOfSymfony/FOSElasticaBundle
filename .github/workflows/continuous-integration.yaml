@@ -37,13 +37,17 @@ jobs:
         include:
           - php: '7.2'
             elasticsearch: '7.0.0'
-            composer_flags: '--prefer-lowest'
+            composer_flags: '--prefer-lowest --prefer-stable'
+            symfony_require: '4.4.*'
           - php: '7.3'
             elasticsearch: '7.4.0'
+            composer_flags: '--prefer-stable'
           - php: '7.4'
             elasticsearch: '7.9.0'
+            composer_flags: '--prefer-stable'
           - php: '8.0'
             elasticsearch: '7.11.0'
+            composer_flags: '--prefer-stable'
       fail-fast: false
     steps:
       - name: 'Checkout'
@@ -72,6 +76,8 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: 'Update dependencies'
+        env:
+          SYMFONY_REQUIRE: "${{ matrix.symfony_require }}"
         run: |
           composer global require --no-progress --no-scripts --no-plugins symfony/flex
           composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_flags }}
