@@ -12,7 +12,7 @@
 namespace FOS\ElasticaBundle\Tests\Functional;
 
 use Elastica\Index;
-use Elastica\Query\Match;
+use Elastica\Query\MatchQuery;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 
 /**
@@ -33,7 +33,7 @@ class PropertyPathTest extends WebTestCase
         $index = self::$container->get('fos_elastica.index.index');
         $index->refresh();
 
-        $query = new Match();
+        $query = new MatchQuery();
         $query->setField('something', 'Hello');
         $search = $index->createSearch($query);
 

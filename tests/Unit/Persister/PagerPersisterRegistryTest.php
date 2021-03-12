@@ -41,7 +41,12 @@ class PagerPersisterRegistryTest extends TestCase
         $serviceLocator->expects($this->once())->method('get')->with('the_name')->willReturn(new \stdClass());
 
         $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('Return value of FOS\ElasticaBundle\Persister\PagerPersisterRegistry::getPagerPersister() must implement interface FOS\ElasticaBundle\Persister\PagerPersisterInterface, instance of stdClass returned');
+
+        if (\PHP_VERSION_ID >= 80000) {
+            $this->expectExceptionMessage('FOS\ElasticaBundle\Persister\PagerPersisterRegistry::getPagerPersister(): Return value must be of type FOS\ElasticaBundle\Persister\PagerPersisterInterface, stdClass returned');
+        } else {
+            $this->expectExceptionMessage('Return value of FOS\ElasticaBundle\Persister\PagerPersisterRegistry::getPagerPersister() must implement interface FOS\ElasticaBundle\Persister\PagerPersisterInterface, instance of stdClass returned');
+        }
 
         (new PagerPersisterRegistry($serviceLocator))->getPagerPersister('the_name');
     }
