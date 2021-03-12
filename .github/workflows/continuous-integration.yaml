@@ -27,3 +27,63 @@ jobs:
       - name: 'Check composer.json'
         run: 'composer-normalize --diff --dry-run --no-update-lock'
         if: 'always()'
+
+  phpunit:
+    runs-on: 'ubuntu-20.04'
+    name: 'PHPUnit (PHP ${{ matrix.php }}, ES ${{ matrix.elasticsearch }})'
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        include:
+          - php: '7.2'
+            elasticsearch: '7.0.0'
+            composer_flags: '--prefer-lowest'
+          - php: '7.3'
+            elasticsearch: '7.4.0'
+          - php: '7.4'
+            elasticsearch: '7.11.0'
+      fail-fast: false
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v2'
+
+      - name: 'Setup PHP'
+        uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '${{ matrix.php }}'
+          coverage: 'none'
+          tools: 'pecl, composer:v2'
+          extensions: 'curl, json, mbstring, mongodb-1.9.0, openssl'
+
+      - name: 'Get composer cache directory'
+        id: 'composer_cache'
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: 'Cache dependencies'
+        uses: 'actions/cache@v2'
+        with:
+          path: '${{ steps.composer_cache.outputs.dir }}'
+          key: '${{ runner.os }}-composer-php${{ matrix.php }}-${{ hashFiles(''**/composer.json'') }}'
+          restore-keys: |
+            ${{ runner.os }}-composer-php${{ matrix.php }}-
+            ${{ runner.os }}-composer-
+
+      - name: 'Update dependencies'
+        run: |
+          composer global require --no-progress --no-scripts --no-plugins symfony/flex
+          composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_flags }}
+
+      - name: 'Setup Elasticsearch'
+        run: |
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
+          docker network create elastic
+          docker run -d --name=elasticsearch --network=elastic -p 9200:9200 -e discovery.type=single-node -e node.name=es docker.elastic.co/elasticsearch/elasticsearch:${{ matrix.elasticsearch }} sh -c "./bin/elasticsearch-plugin install --batch ingest-attachment && /usr/local/bin/docker-entrypoint.sh"
+          docker run --rm --network=elastic curlimages/curl --max-time 120 --retry-max-time 120 --retry 120 --retry-delay 5 --retry-all-errors --show-error --silent http://elasticsearch:9200
+
+      - name: 'Run unit tests'
+        run: |
+          vendor/bin/phpunit
