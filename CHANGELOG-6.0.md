@@ -6,6 +6,7 @@ in 6.0 versions.
 
 ### 6.0.0-BETA4 (2020-xx-xx)
 
+* Added PHP 8 support,
 * Added `auth_type` client parameter [Elastica#1790](https://github.com/ruflin/Elastica/pull/1790).
 * Added a post mapping builder event.
 * Fixed deprecations for `Elastica\Index::create()` [Elastica#1828](https://github.com/ruflin/Elastica/pull/1828).
