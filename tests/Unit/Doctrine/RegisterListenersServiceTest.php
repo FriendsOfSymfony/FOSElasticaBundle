@@ -256,7 +256,7 @@ class RegisterListenersServiceTest extends TestCase
 
     public function testShouldIgnoreDebugLoggingOptionForPHPCRManager()
     {
-        if (!\class_exists(\Doctrine\ODM\PHPCR\DocumentManagerInterface::class)) {
+        if (!\interface_exists(\Doctrine\ODM\PHPCR\DocumentManagerInterface::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');
         }
 
