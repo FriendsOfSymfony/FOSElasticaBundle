@@ -9,12 +9,15 @@ in 6.0 versions.
 * Added PHP 8 support,
 * Added `auth_type` client parameter [Elastica#1790](https://github.com/ruflin/Elastica/pull/1790).
 * Added a post mapping builder event.
+* Upgraded `pagerfanta/pagerfanta` to v3.
 * Fixed deprecations for `Elastica\Index::create()` [Elastica#1828](https://github.com/ruflin/Elastica/pull/1828).
 * **[BC break]** Marked all `fos_elastica.finder.*` services as private.
 * **[BC break]** Marked the `fos_elastica.client` alias as private.
 * **[BC break]** Marked the `fos_elastica.client_prototype` service as private.
 * **[BC break]** Marked the `fos_elastica.index_template_prototype` service as private.
 * **[BC break]** Marked all events final and introduced several abstract classes.
+* **[BC break]** Signature of `FantaPaginatorAdapter::getNbResults()` has changed.
+* **[BC break]** Signature of `FantaPaginatorAdapter::getSlice()` has changed.
 
 ### 6.0.0-BETA3 (2020-09-28)
 

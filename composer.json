@@ -31,7 +31,7 @@
     ],
     "require": {
         "php": "^7.2 || ^8.0",
-        "pagerfanta/pagerfanta": "^2.0",
+        "pagerfanta/pagerfanta": "^2.4 || ^3.0",
         "psr/log": "^1.0",
         "ruflin/elastica": "^7.1",
         "symfony/console": "^4.4 || ^5.1",
@@ -50,6 +50,9 @@
         "jms/serializer": "^3.8",
         "jms/serializer-bundle": "^3.5",
         "knplabs/knp-components": "^2.3 || ^3.0",
+        "pagerfanta/doctrine-mongodb-odm-adapter": "^2.4 || ^3.0",
+        "pagerfanta/doctrine-orm-adapter": "^2.4 || ^3.0",
+        "pagerfanta/doctrine-phpcr-odm-adapter": "^2.4 || ^3.0",
         "phpspec/prophecy-phpunit": "^1.1 || ^2.0",
         "phpunit/phpunit": "^8.5 || ^9.3",
         "symfony/expression-language": "^4.4 || ^5.1",

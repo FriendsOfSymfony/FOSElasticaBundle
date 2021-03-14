@@ -20,7 +20,7 @@ use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Tests\Unit\Mocks\DoctrineMongoDBCustomRepositoryMock;
-use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
+use Pagerfanta\Doctrine\MongoDBODM\QueryAdapter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
@@ -83,7 +83,7 @@ class MongoDBPagerProviderTest extends TestCase
         $this->assertInstanceOf(PagerfantaPager::class, $pager);
 
         $adapter = $pager->getPagerfanta()->getAdapter();
-        $this->assertInstanceOf(DoctrineODMMongoDBAdapter::class, $adapter);
+        $this->assertInstanceOf(QueryAdapter::class, $adapter);
         $this->assertSame($expectedBuilder, $adapter->getQueryBuilder());
     }
 
