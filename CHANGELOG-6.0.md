@@ -4,7 +4,7 @@ CHANGELOG for 6.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
-### 6.0.0-BETA4 (2020-xx-xx)
+### 6.0.0-RC1 (2021-xx-xx)
 
 * Added PHP 8 support,
 * Added `auth_type` client parameter [Elastica#1790](https://github.com/ruflin/Elastica/pull/1790).
