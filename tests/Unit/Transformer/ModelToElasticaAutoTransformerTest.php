@@ -279,7 +279,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $document = $transformer->transform(new POPO3(), ['nullValue' => []]);
         $data = $document->getData();
 
-        $this->assertTrue(\array_key_exists('nullValue', $data));
+        $this->assertArrayHasKey('nullValue', $data);
     }
 
     public function testThatCannotTransformObjectWhenGetterDoesNotExistForPrivateMethod()
@@ -321,7 +321,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ]);
         $data = $document->getData();
 
-        $this->assertTrue(\array_key_exists('sub', $data));
+        $this->assertArrayHasKey('sub', $data);
         $this->assertIsArray($data['sub']);
         $this->assertSame([
              ['foo' => 'foo'],
@@ -340,7 +340,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
                 ]);
         $data = $document->getData();
 
-        $this->assertTrue(\array_key_exists('sub', $data));
+        $this->assertArrayHasKey('sub', $data);
         $this->assertIsArray($data['sub']);
         $this->assertSame([
              ['bar' => 'foo'],
@@ -358,7 +358,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
                 ]);
         $data = $document->getData();
 
-        $this->assertTrue(\array_key_exists('obj', $data));
+        $this->assertArrayHasKey('obj', $data);
         $this->assertIsArray($data['obj']);
         $this->assertSame([
              'foo' => 'foo',
@@ -391,8 +391,8 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         );
         $data = $document->getData();
 
-        $this->assertTrue(\array_key_exists('obj', $data));
-        $this->assertTrue(\array_key_exists('nestedObject', $data));
+        $this->assertArrayHasKey('obj', $data);
+        $this->assertArrayHasKey('nestedObject', $data);
         $this->assertIsArray($data['obj']);
         $this->assertIsArray($data['nestedObject']);
         $this->assertSame(
@@ -426,7 +426,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ]);
         $data = $document->getData();
 
-        $this->assertTrue(\array_key_exists('objWithoutIdentifier', $data));
+        $this->assertArrayHasKey('objWithoutIdentifier', $data);
         $this->assertIsArray($data['objWithoutIdentifier']);
         $this->assertSame([
             'foo' => 'foo',
@@ -448,7 +448,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ]);
         $data = $document->getData();
 
-        $this->assertTrue(\array_key_exists('subWithoutIdentifier', $data));
+        $this->assertArrayHasKey('subWithoutIdentifier', $data);
         $this->assertIsArray($data['subWithoutIdentifier']);
         $this->assertSame([
             ['foo' => 'foo', 'bar' => 'foo'],
