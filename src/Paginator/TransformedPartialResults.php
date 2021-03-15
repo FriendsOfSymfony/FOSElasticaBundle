@@ -31,7 +31,7 @@ class TransformedPartialResults extends RawPartialResults
     /**
      * {@inheritdoc}
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->transformer->transform($this->resultSet->getResults());
     }

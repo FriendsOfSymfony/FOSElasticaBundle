@@ -20,6 +20,11 @@ class HybridPartialResultsTest extends UnitTestHelper
     public function testToArray()
     {
         $transformer = $this->mockElasticaToModelTransformer();
+        $transformer
+            ->expects($this->once())
+            ->method('hybridTransform')
+            ->willReturn([])
+        ;
 
         $resultSet = $this->mockResultSet();
 
