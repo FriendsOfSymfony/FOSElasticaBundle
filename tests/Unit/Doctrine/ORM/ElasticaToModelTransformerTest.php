@@ -152,6 +152,6 @@ class ElasticaToModelTransformerTest extends TestCase
         $method = $class->getMethod('findByIdentifiers');
         $method->setAccessible(true);
 
-        $method->invokeArgs($transformer, [[1, 2, 3], /* $hydrate */true]);
+        $method->invokeArgs($transformer, [[1, 2, 3], /* $hydrate */ true]);
     }
 }
