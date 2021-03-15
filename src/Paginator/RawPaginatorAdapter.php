@@ -14,7 +14,6 @@ namespace FOS\ElasticaBundle\Paginator;
 use Elastica\Query;
 use Elastica\ResultSet;
 use Elastica\SearchableInterface;
-use InvalidArgumentException;
 
 /**
  * Allows pagination of Elastica\Query. Does not map results.
@@ -166,7 +165,7 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         }
 
         if ($itemCountPerPage < 1) {
-            throw new InvalidArgumentException('$itemCountPerPage must be greater than zero');
+            throw new \InvalidArgumentException('$itemCountPerPage must be greater than zero');
         }
 
         $query = clone $this->query;
