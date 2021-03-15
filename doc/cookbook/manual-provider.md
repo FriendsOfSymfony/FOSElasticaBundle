@@ -21,12 +21,13 @@ namespace Acme\UserBundle\Provider;
 
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
+use FOS\ElasticaBundle\Provider\PagerInterface;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\ArrayAdapter;
 
 class UserPagerProvider implements PagerProviderInterface
 {
-    public function provide(array $options = [])
+    public function provide(array $options = []): PagerInterface
     {
         return new PagerfantaPager(new Pagerfanta(new ArrayAdapter([ /* an array of objects */ ])));
     }
