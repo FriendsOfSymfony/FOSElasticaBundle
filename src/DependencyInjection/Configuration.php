@@ -76,13 +76,13 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "dynamic_templates".
      */
-    private function getDynamicTemplateNode()
+    private function getDynamicTemplateNode(): ArrayNodeDefinition
     {
         $node = $this->createTreeBuilderNode('dynamic_templates');
 
         $node
-            ->prototype('array')
-                ->prototype('array')
+            ->arrayPrototype()
+                ->arrayPrototype()
                     ->children()
                         ->scalarNode('match')->end()
                         ->scalarNode('unmatch')->end()
@@ -91,11 +91,17 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('path_unmatch')->end()
                         ->scalarNode('match_pattern')->end()
                         ->arrayNode('mapping')
-                            ->prototype('variable')
+                            ->variablePrototype()
                                 ->treatNullLike([])
                             ->end()
                         ->end()
                     ->end()
+                ->end()
+                ->validate()
+                    ->ifTrue(static function ($v) {
+                        return 1 !== \count($v);
+                    })
+                    ->thenInvalid('Dynamic template should consist of a single named object: %s.')
                 ->end()
             ->end()
         ;
@@ -420,33 +426,8 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('indexes')
                     ->useAttributeAsKey('name')
-                    ->prototype('array')
+                    ->arrayPrototype()
                         ->treatNullLike([])
-                        ->beforeNormalization()
-                        ->ifNull()
-                        ->thenEmptyArray()
-                        ->end()
-                        // Support multiple dynamic_template formats to match the old bundle style
-                        // and the way ElasticSearch expects them
-                        ->beforeNormalization()
-                        ->ifTrue(function ($v) {
-                            return isset($v['dynamic_templates']);
-                        })
-                        ->then(function ($v) {
-                            $dt = [];
-                            foreach ($v['dynamic_templates'] as $key => $type) {
-                                if (\is_int($key)) {
-                                    $dt[] = $type;
-                                } else {
-                                    $dt[][$key] = $type;
-                                }
-                            }
-
-                            $v['dynamic_templates'] = $dt;
-
-                            return $v;
-                        })
-                        ->end()
                         ->children()
                             ->scalarNode('index_name')
                                 ->info('Defaults to the name of the index, but can be modified if the index name is different in ElasticSearch')

@@ -171,17 +171,16 @@ class ConfigurationTest extends TestCase
         $this->assertTrue(empty($configuration['clients']['default']['connections'][0]['url']));
     }
 
-    public function testUnconfiguredType()
+    public function testUnconfiguredIndex()
     {
         $configuration = $this->getConfigs([
-                'clients' => [
-                    'default' => ['url' => 'http://localhost:9200'],
-                ],
-                'indexes' => [
-                    'test' => [
-                    ],
-                ],
-            ]);
+            'clients' => [
+                'default' => ['url' => 'http://localhost:9200'],
+            ],
+            'indexes' => [
+                'test' => null,
+            ],
+        ]);
 
         $this->assertArrayHasKey('properties', $configuration['indexes']['test']);
     }
