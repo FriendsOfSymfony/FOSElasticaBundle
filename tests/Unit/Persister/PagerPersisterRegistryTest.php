@@ -9,8 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Persister;
+namespace FOS\ElasticaBundle\Tests\Unit\Persister;
 
+use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
+use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 

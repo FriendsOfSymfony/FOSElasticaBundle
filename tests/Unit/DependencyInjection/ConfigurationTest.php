@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Tests\Unit\Resetter\DependencyInjection;
+namespace FOS\ElasticaBundle\Tests\Unit\DependencyInjection;
 
 use FOS\ElasticaBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;

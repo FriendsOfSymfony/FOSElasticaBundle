@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Tests\Unit\Client;
+namespace FOS\ElasticaBundle\Tests\Unit\Elastica;
 
 use Elastica\Connection;
 use Elastica\Exception\ClientException;
