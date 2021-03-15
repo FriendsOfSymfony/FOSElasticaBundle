@@ -18,6 +18,7 @@ in 6.0 versions.
 * **[BC break]** Marked all events final and introduced several abstract classes.
 * **[BC break]** Signature of `FantaPaginatorAdapter::getNbResults()` has changed.
 * **[BC break]** Signature of `FantaPaginatorAdapter::getSlice()` has changed.
+* **[BC break]** Signature of `PartialResultsInterface::toArray()`, `PartialResultsInterface::getTotalHits()` and `PartialResultsInterface::getAggregations()` have changed.
 
 ### 6.0.0-BETA3 (2020-09-28)
 
