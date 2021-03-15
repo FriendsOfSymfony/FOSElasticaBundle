@@ -24,7 +24,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class AbstractElasticaToModelTransformerTest extends TestCase
 {
     /**
-     * @var ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $registry;
 
@@ -240,7 +240,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|AbstractElasticaToModelTransformer
+     * @return \PHPUnit\Framework\MockObject\MockObject|AbstractElasticaToModelTransformer
      */
     private function createMockTransformer($options = [])
     {

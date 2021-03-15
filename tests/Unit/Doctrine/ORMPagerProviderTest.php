@@ -163,7 +163,7 @@ class ORMPagerProviderTest extends TestCase
     }
 
     /**
-     * @return RegisterListenersService|\PHPUnit_Framework_MockObject_MockObject
+     * @return RegisterListenersService|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createRegisterListenersServiceMock()
     {
@@ -171,7 +171,7 @@ class ORMPagerProviderTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|ManagerRegistry
+     * @return \PHPUnit\Framework\MockObject\MockObject|ManagerRegistry
      */
     private function createDoctrineMock()
     {

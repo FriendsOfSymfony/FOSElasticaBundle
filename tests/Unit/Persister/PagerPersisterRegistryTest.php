@@ -69,7 +69,7 @@ class PagerPersisterRegistryTest extends TestCase
     }
 
     /**
-     * @return PagerPersisterInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return PagerPersisterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createPagerPersisterMock()
     {

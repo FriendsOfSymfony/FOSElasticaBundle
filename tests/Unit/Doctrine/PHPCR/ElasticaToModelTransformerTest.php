@@ -21,17 +21,17 @@ use PHPUnit\Framework\TestCase;
 class ElasticaToModelTransformerTest extends TestCase
 {
     /**
-     * @var ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $registry;
 
     /**
-     * @var DocumentManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var DocumentManager|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $manager;
 
     /**
-     * @var DocumentRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var DocumentRepository|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $repository;
 

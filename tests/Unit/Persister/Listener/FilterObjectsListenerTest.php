@@ -123,7 +123,7 @@ class FilterObjectsListenerTest extends TestCase
     }
 
     /**
-     * @return ObjectPersisterInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return ObjectPersisterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createObjectPersisterMock()
     {
@@ -131,7 +131,7 @@ class FilterObjectsListenerTest extends TestCase
     }
 
     /**
-     * @return PagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return PagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createPagerMock()
     {
@@ -139,7 +139,7 @@ class FilterObjectsListenerTest extends TestCase
     }
 
     /**
-     * @return IndexableInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return IndexableInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createIndexableMock()
     {

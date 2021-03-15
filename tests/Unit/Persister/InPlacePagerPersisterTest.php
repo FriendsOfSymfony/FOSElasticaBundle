@@ -380,7 +380,7 @@ class InPlacePagerPersisterTest extends TestCase
     }
 
     /**
-     * @return ObjectPersisterInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return ObjectPersisterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createObjectPersisterMock()
     {
@@ -388,7 +388,7 @@ class InPlacePagerPersisterTest extends TestCase
     }
 
     /**
-     * @return PersisterRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @return PersisterRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createPersisterRegistryMock()
     {
@@ -396,7 +396,7 @@ class InPlacePagerPersisterTest extends TestCase
     }
 
     /**
-     * @return PersisterRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @return PersisterRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createPersisterRegistryStub($objectPersister = null)
     {

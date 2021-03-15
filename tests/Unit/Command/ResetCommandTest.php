@@ -26,12 +26,12 @@ class ResetCommandTest extends TestCase
     private $command;
 
     /**
-     * @var Resetter|\PHPUnit_Framework_MockObject_MockObject
+     * @var Resetter|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resetter;
 
     /**
-     * @var IndexManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var IndexManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexManager;
 

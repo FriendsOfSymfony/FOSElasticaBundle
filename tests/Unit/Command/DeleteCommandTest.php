@@ -28,17 +28,17 @@ class DeleteCommandTest extends TestCase
     private $command;
 
     /**
-     * @var Client|\PHPUnit_Framework_MockObject_MockObject
+     * @var Client|\PHPUnit\Framework\MockObject\MockObject
      */
     private $clientMock;
 
     /**
-     * @var IndexManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var IndexManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexManagerMock;
 
     /**
-     * @var Index|\PHPUnit_Framework_MockObject_MockObject
+     * @var Index|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexMock;
 
