@@ -189,7 +189,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(PostPersistEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $objects, $options) {
+        $dispatcher->addListener(PostPersistEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $options) {
             $called = true;
 
             $this->assertInstanceOf(PostPersistEvent::class, $event);
