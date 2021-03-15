@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Tests\Unit\Event;
+namespace FOS\ElasticaBundle\Tests\Unit\Exception;
 
 use FOS\ElasticaBundle\Exception\AliasIsIndexException;
 use PHPUnit\Framework\TestCase;

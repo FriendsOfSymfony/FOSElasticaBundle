@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Tests\Configuration;
+namespace FOS\ElasticaBundle\Tests\Unit\Configuration;
 
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use PHPUnit\Framework\TestCase;

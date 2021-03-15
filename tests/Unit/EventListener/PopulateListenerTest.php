@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Tests\Unit\Event;
+namespace FOS\ElasticaBundle\Tests\Unit\EventListener;
 
 use FOS\ElasticaBundle\Event\PostIndexPopulateEvent;
 use FOS\ElasticaBundle\EventListener\PopulateListener;

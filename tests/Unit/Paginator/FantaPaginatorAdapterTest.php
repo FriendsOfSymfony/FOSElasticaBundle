@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Tests\Unit\Event;
+namespace FOS\ElasticaBundle\Tests\Unit\Paginator;
 
 use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
