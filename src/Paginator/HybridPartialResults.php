@@ -34,7 +34,7 @@ class HybridPartialResults extends RawPartialResults
     /**
      * {@inheritdoc}
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->transformer->hybridTransform($this->resultSet->getResults());
     }

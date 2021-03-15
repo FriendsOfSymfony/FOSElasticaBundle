@@ -29,7 +29,7 @@ class RawPartialResults implements PartialResultsInterface
     /**
      * {@inheritdoc}
      */
-    public function toArray()
+    public function toArray(): array
     {
         return \array_map(function (Result $result) {
             return $result->getSource();
@@ -39,7 +39,7 @@ class RawPartialResults implements PartialResultsInterface
     /**
      * {@inheritdoc}
      */
-    public function getTotalHits()
+    public function getTotalHits(): int
     {
         return $this->resultSet->getTotalHits();
     }
@@ -47,24 +47,13 @@ class RawPartialResults implements PartialResultsInterface
     /**
      * {@inheritdoc}
      */
-    public function getAggregations()
+    public function getAggregations(): array
     {
-        if ($this->resultSet->hasAggregations()) {
-            return $this->resultSet->getAggregations();
-        }
-
-        return;
+        return $this->resultSet->getAggregations();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSuggests()
+    public function getSuggests(): array
     {
-        if ($this->resultSet->hasSuggests()) {
-            return $this->resultSet->getSuggests();
-        }
-
-        return;
+        return $this->resultSet->getSuggests();
     }
 }
