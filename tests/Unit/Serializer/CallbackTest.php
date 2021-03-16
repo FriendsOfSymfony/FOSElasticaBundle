@@ -42,7 +42,7 @@ class CallbackTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(
-            'Setting serialization groups requires using "JMS\Serializer\Serializer" or "Symfony\Component\Serializer\Serializer"'
+            'Setting serialization groups requires using a "Symfony\Component\Serializer\SerializerInterface" or "JMS\Serializer\SerializerInterface" serializer instance.'
         );
 
         $callback->setGroups(['foo']);

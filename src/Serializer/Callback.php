@@ -22,53 +22,54 @@ class Callback
     protected $version;
     protected $serializeNull = false;
 
-    /**
-     * @param object $serializer
-     */
-    public function setSerializer($serializer)
+    public function setSerializer(object $serializer): self
     {
         $this->serializer = $serializer;
+
         if (!\method_exists($this->serializer, 'serialize')) {
             throw new \RuntimeException('The serializer must have a "serialize" method.');
         }
+
+        return $this;
     }
 
-    public function setGroups(array $groups): void
+    public function setGroups(array $groups): self
     {
         $this->groups = $groups;
 
         if (!empty($this->groups) && !$this->serializer instanceof SerializerInterface && !$this->serializer instanceof JMSSerializer) {
-            throw new \RuntimeException('Setting serialization groups requires using "JMS\Serializer\Serializer" or "Symfony\Component\Serializer\Serializer".');
+            throw new \RuntimeException(\sprintf('Setting serialization groups requires using a "%s" or "%s" serializer instance.', SerializerInterface::class, JMSSerializer::class));
         }
+
+        return $this;
     }
 
-    /**
-     * @param mixed $version
-     */
-    public function setVersion($version): void
+    public function setVersion(string $version): self
     {
         $this->version = $version;
 
         if ($this->version && !$this->serializer instanceof JMSSerializer) {
-            throw new \RuntimeException('Setting serialization version requires using "JMS\Serializer\Serializer".');
+            throw new \RuntimeException(\sprintf('Setting serialization version requires using a "%s" serializer instance.', JMSSerializer::class));
         }
+
+        return $this;
     }
 
-    public function setSerializeNull(bool $serializeNull): void
+    public function setSerializeNull(bool $serializeNull): self
     {
         $this->serializeNull = $serializeNull;
 
         if (true === $this->serializeNull && !$this->serializer instanceof SerializerInterface && !$this->serializer instanceof JMSSerializer) {
-            throw new \RuntimeException('Setting null value serialization option requires using "JMS\Serializer\Serializer" or "Symfony\Component\Serializer\Serializer".');
+            throw new \RuntimeException(\sprintf('Setting null value serialization option requires using a "%s" or "%s" serializer instance.', SerializerInterface::class, JMSSerializer::class));
         }
+
+        return $this;
     }
 
     /**
      * @param $object
-     *
-     * @return mixed
      */
-    public function serialize($object)
+    public function serialize($object): string
     {
         $context = $this->serializer instanceof JMSSerializer ? SerializationContext::create()->enableMaxDepthChecks() : [];
 
