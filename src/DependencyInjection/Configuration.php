@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\DependencyInjection;
 
+use FOS\ElasticaBundle\Serializer\Callback as SerializerCallback;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -63,7 +64,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('serializer')
                     ->treatNullLike([])
                     ->children()
-                        ->scalarNode('callback_class')->defaultValue('FOS\ElasticaBundle\Serializer\Callback')->end()
+                        ->scalarNode('callback_class')->defaultValue(SerializerCallback::class)->end()
                         ->scalarNode('serializer')->defaultValue('serializer')->end()
                     ->end()
                 ->end()
