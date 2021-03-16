@@ -28,22 +28,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateCommandTest extends TestCase
 {
     /**
-     * @var IndexManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var IndexManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexManager;
 
     /**
-     * @var MappingBuilder|\PHPUnit_Framework_MockObject_MockObject
+     * @var MappingBuilder|\PHPUnit\Framework\MockObject\MockObject
      */
     private $mappingBuilder;
 
     /**
-     * @var ConfigManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var ConfigManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configManager;
 
     /**
-     * @var AliasProcessor|\PHPUnit_Framework_MockObject_MockObject
+     * @var AliasProcessor|\PHPUnit\Framework\MockObject\MockObject
      */
     private $aliasProcessor;
 
@@ -53,12 +53,12 @@ class CreateCommandTest extends TestCase
     private $command;
 
     /**
-     * @var IndexConfig|\PHPUnit_Framework_MockObject_MockObject
+     * @var IndexConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexConfig;
 
     /**
-     * @var Index|\PHPUnit_Framework_MockObject_MockObject
+     * @var Index|\PHPUnit\Framework\MockObject\MockObject
      */
     private $index;
 

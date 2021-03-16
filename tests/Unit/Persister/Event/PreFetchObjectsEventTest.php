@@ -104,7 +104,7 @@ final class PreFetchObjectsEventTest extends TestCase
     }
 
     /**
-     * @return ObjectPersisterInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return ObjectPersisterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createObjectPersisterMock()
     {
@@ -112,7 +112,7 @@ final class PreFetchObjectsEventTest extends TestCase
     }
 
     /**
-     * @return PagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return PagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createPagerMock()
     {

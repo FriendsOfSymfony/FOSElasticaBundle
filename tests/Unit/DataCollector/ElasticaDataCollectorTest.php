@@ -24,13 +24,13 @@ class ElasticaDataCollectorTest extends UnitTestHelper
 {
     public function testCorrectAmountOfQueries()
     {
-        /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|Request */
+        /** @var $requestMock \PHPUnit\Framework\MockObject\MockObject|Request */
         $requestMock = $this->createMock(Request::class);
 
-        /** @var $responseMock \PHPUnit_Framework_MockObject_MockObject|Response */
+        /** @var $responseMock \PHPUnit\Framework\MockObject\MockObject|Response */
         $responseMock = $this->createMock(Response::class);
 
-        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        /** @var $loggerMock \PHPUnit\Framework\MockObject\MockObject|ElasticaLogger */
         $loggerMock = $this->createMock(ElasticaLogger::class);
 
         $totalQueries = \rand();
@@ -46,13 +46,13 @@ class ElasticaDataCollectorTest extends UnitTestHelper
 
     public function testCorrectQueriesReturned()
     {
-        /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|Request */
+        /** @var $requestMock \PHPUnit\Framework\MockObject\MockObject|Request */
         $requestMock = $this->createMock(Request::class);
 
-        /** @var $responseMock \PHPUnit_Framework_MockObject_MockObject|Response */
+        /** @var $responseMock \PHPUnit\Framework\MockObject\MockObject|Response */
         $responseMock = $this->createMock(Response::class);
 
-        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        /** @var $loggerMock \PHPUnit\Framework\MockObject\MockObject|ElasticaLogger */
         $loggerMock = $this->createMock(ElasticaLogger::class);
 
         $queries = ['testQueries'];
@@ -68,13 +68,13 @@ class ElasticaDataCollectorTest extends UnitTestHelper
 
     public function testCorrectQueriesTime()
     {
-        /** @var $requestMock \PHPUnit_Framework_MockObject_MockObject|Request */
+        /** @var $requestMock \PHPUnit\Framework\MockObject\MockObject|Request */
         $requestMock = $this->createMock(Request::class);
 
-        /** @var $responseMock \PHPUnit_Framework_MockObject_MockObject|Response */
+        /** @var $responseMock \PHPUnit\Framework\MockObject\MockObject|Response */
         $responseMock = $this->createMock(Response::class);
 
-        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        /** @var $loggerMock \PHPUnit\Framework\MockObject\MockObject|ElasticaLogger */
         $loggerMock = $this->createMock(ElasticaLogger::class);
 
         $queries = [[
@@ -96,7 +96,7 @@ class ElasticaDataCollectorTest extends UnitTestHelper
 
     public function testName()
     {
-        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        /** @var $loggerMock \PHPUnit\Framework\MockObject\MockObject|ElasticaLogger */
         $loggerMock = $this->createMock(ElasticaLogger::class);
 
         $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
@@ -106,7 +106,7 @@ class ElasticaDataCollectorTest extends UnitTestHelper
 
     public function testReset()
     {
-        /** @var $loggerMock \PHPUnit_Framework_MockObject_MockObject|ElasticaLogger */
+        /** @var $loggerMock \PHPUnit\Framework\MockObject\MockObject|ElasticaLogger */
         $loggerMock = $this->createMock(ElasticaLogger::class);
         $loggerMock->expects($this->once())
             ->method('reset')
