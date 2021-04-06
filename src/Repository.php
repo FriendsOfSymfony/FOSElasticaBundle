@@ -80,11 +80,12 @@ class Repository
 
     /**
      * @param mixed $query
+     * @param array  $options
      *
      * @return Paginator\HybridPaginatorAdapter
      */
-    public function createHybridPaginatorAdapter($query)
+    public function createHybridPaginatorAdapter($query, $options = [])
     {
-        return $this->finder->createHybridPaginatorAdapter($query);
+        return $this->finder->createHybridPaginatorAdapter($query, $options);
     }
 }
