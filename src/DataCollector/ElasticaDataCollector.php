@@ -15,6 +15,7 @@ use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
 if (Kernel::VERSION_ID >= 50000) {
@@ -97,7 +98,7 @@ if (Kernel::VERSION_ID >= 50000) {
      *
      * @author Gordon Franke <info@nevalon.de>
      */
-    class ElasticaDataCollector extends DataCollector
+    class ElasticaDataCollector extends DataCollector implements LateDataCollectorInterface
     {
         protected $logger;
 
@@ -108,8 +109,13 @@ if (Kernel::VERSION_ID >= 50000) {
 
         public function collect(Request $request, Response $response, \Exception $exception = null)
         {
-            $this->data['nb_queries'] = $this->logger->getNbQueries();
-            $this->data['queries'] = $this->logger->getQueries();
+            $this->_collect();
+        }
+
+        //@todo also add up to 6.x
+        public function lateCollect()
+        {
+            $this->_collect();
         }
 
         /**
@@ -163,6 +169,12 @@ if (Kernel::VERSION_ID >= 50000) {
         {
             $this->logger->reset();
             $this->data = [];
+        }
+
+        private function _collect()
+        {
+            $this->data['nb_queries'] = $this->logger->getNbQueries();
+            $this->data['queries'] = $this->logger->getQueries();
         }
     }
 }
