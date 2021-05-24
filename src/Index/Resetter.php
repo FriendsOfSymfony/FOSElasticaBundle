@@ -63,7 +63,7 @@ class Resetter implements ResetterInterface
     /**
      * Deletes and recreates all indexes.
      */
-    public function resetAllIndexes(bool $populating = false, bool $force = false)
+    public function resetAllIndexes(bool $populating = false, bool $force = false): void
     {
         foreach ($this->configManager->getIndexNames() as $name) {
             $this->resetIndex($name, $populating, $force);
@@ -76,7 +76,7 @@ class Resetter implements ResetterInterface
      *
      * @throws \InvalidArgumentException if no index exists for the given name
      */
-    public function resetIndex(string $indexName, bool $populating = false, bool $force = false)
+    public function resetIndex(string $indexName, bool $populating = false, bool $force = false): void
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
         $index = $this->indexManager->getIndex($indexName);
@@ -102,7 +102,7 @@ class Resetter implements ResetterInterface
      *
      * @throws \FOS\ElasticaBundle\Exception\AliasIsIndexException
      */
-    public function switchIndexAlias(string $indexName, bool $delete = true)
+    public function switchIndexAlias(string $indexName, bool $delete = true): void
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
 

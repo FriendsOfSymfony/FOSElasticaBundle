@@ -6,7 +6,8 @@ in 6.0 versions.
 
 ### 6.0.0-RC1 (2021-xx-xx)
 
-* **[BC break]** Signature of `FOS\ElasticaBundle\Configuration\Source\SourceInterface::getConfiguration()` has changed.
+* **[BC break]** Changed signature of `FOS\ElasticaBundle\Configuration\Source\SourceInterface::getConfiguration()`.
+* **[BC break]** Changed signature of methods `resetAllIndexes` and `resetIndex` from interface `FOS\ElasticaBundle\Index\ResetterInterface` and its implementations.
 
 ### 6.0.0-BETA4 (2021-05-24)
 
@@ -20,9 +21,9 @@ in 6.0 versions.
 * **[BC break]** Marked the `fos_elastica.client_prototype` service as private.
 * **[BC break]** Marked the `fos_elastica.index_template_prototype` service as private.
 * **[BC break]** Marked all events final and introduced several abstract classes.
-* **[BC break]** Signature of `FantaPaginatorAdapter::getNbResults()` has changed.
-* **[BC break]** Signature of `FantaPaginatorAdapter::getSlice()` has changed.
-* **[BC break]** Signature of `PartialResultsInterface::toArray()`, `PartialResultsInterface::getTotalHits()` and `PartialResultsInterface::getAggregations()` have changed.
+* **[BC break]** Changed signature of `FantaPaginatorAdapter::getNbResults()`.
+* **[BC break]** Changed signature of `FantaPaginatorAdapter::getSlice()`.
+* **[BC break]** Changed signature of `PartialResultsInterface::toArray()`, `PartialResultsInterface::getTotalHits()` and `PartialResultsInterface::getAggregations()`.
 
 ### 6.0.0-BETA3 (2020-09-28)
 
