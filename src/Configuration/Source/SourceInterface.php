@@ -22,5 +22,5 @@ interface SourceInterface
      *
      * @return \FOS\ElasticaBundle\Configuration\IndexConfig[]
      */
-    public function getConfiguration();
+    public function getConfiguration(): array;
 }

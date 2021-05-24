@@ -35,7 +35,7 @@ class ContainerSource implements SourceInterface
      *
      * @return IndexConfig[]
      */
-    public function getConfiguration()
+    public function getConfiguration(): array
     {
         $indexes = [];
         foreach ($this->configArray as $config) {
