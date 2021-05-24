@@ -316,7 +316,7 @@ class FOSElasticaExtension extends Extension
             'dynamic_date_formats',
             'numeric_detection',
         ] as $field) {
-            $indexConfig['config'][$field] = \array_key_exists($field, $index) ? $index[$field] : null;
+            $indexConfig['config'][$field] = $index[$field] ?? null;
         }
     }
 
