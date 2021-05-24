@@ -20,15 +20,11 @@ interface ResetterInterface
 {
     /**
      * Reset all indexes.
-     *
-     * @return void
      */
-    public function resetAllIndexes();
+    public function resetAllIndexes(): void;
 
     /**
      * Reset index.
-     *
-     * @return void
      */
-    public function resetIndex(string $indexName);
+    public function resetIndex(string $indexName): void;
 }
