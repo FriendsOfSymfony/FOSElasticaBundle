@@ -68,6 +68,6 @@ class WebTestCase extends BaseKernelTestCase
 
     protected static function getVarDir()
     {
-        return \substr(\strrchr(\get_called_class(), '\\'), 1);
+        return \substr(\strrchr(static::class, '\\'), 1);
     }
 }

@@ -73,7 +73,7 @@ class RepositoryManager implements RepositoryManagerInterface
             return $this->indexes[$indexName]['repositoryName'];
         }
 
-        return 'FOS\ElasticaBundle\Repository';
+        return Repository::class;
     }
 
     /**
