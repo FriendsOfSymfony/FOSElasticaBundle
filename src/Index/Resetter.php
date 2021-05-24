@@ -90,7 +90,7 @@ class Resetter implements ResetterInterface
         $mapping = $this->mappingBuilder->buildIndexMapping($indexConfig);
         $index->create($mapping, ['recreate' => true]);
 
-        if (!$populating and $indexConfig->isUseAlias()) {
+        if (!$populating && $indexConfig->isUseAlias()) {
             $this->aliasProcessor->switchIndexAlias($indexConfig, $index, $force);
         }
 
