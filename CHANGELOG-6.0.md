@@ -4,6 +4,10 @@ CHANGELOG for 6.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
+### 6.0.0-RC1 (2021-xx-xx)
+
+* **[BC break]** Signature of `FOS\ElasticaBundle\Configuration\Source\SourceInterface::getConfiguration()` has changed.
+
 ### 6.0.0-BETA4 (2021-05-24)
 
 * Added PHP 8 support,
