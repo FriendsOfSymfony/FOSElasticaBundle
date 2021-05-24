@@ -27,7 +27,7 @@ final class ProgressClosureBuilder
     {
         $progress = null;
 
-        return function ($increment, $totalObjects, $message = null) use (&$progress, $output, $action, $index, $offset) {
+        return static function ($increment, $totalObjects, $message = null) use (&$progress, $output, $action, $index, $offset) {
             if (null === $progress) {
                 $progress = new ProgressBar($output, $totalObjects);
                 $progress->start();

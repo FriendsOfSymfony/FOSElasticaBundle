@@ -654,7 +654,7 @@ class FOSElasticaExtension extends Extension
      **/
     private function loadIndexManager(ContainerBuilder $container): void
     {
-        $indexRefs = \array_map(function ($index) {
+        $indexRefs = \array_map(static function ($index) {
             return $index['reference'];
         }, $this->indexConfigs);
 
@@ -667,7 +667,7 @@ class FOSElasticaExtension extends Extension
      */
     private function loadIndexTemplateManager(ContainerBuilder $container): void
     {
-        $indexTemplateRefs = \array_map(function ($index) {
+        $indexTemplateRefs = \array_map(static function ($index) {
             return $index['reference'];
         }, $this->indexTemplateConfigs);
 
