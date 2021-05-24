@@ -83,7 +83,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected function transformNested($objects, array $fields)
     {
-        if (\is_array($objects) || $objects instanceof \Traversable || $objects instanceof \ArrayAccess) {
+        if (\is_iterable($objects)) {
             $documents = [];
             foreach ($objects as $object) {
                 $document = $this->transformObjectToDocument($object, $fields);
@@ -119,7 +119,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             }
         };
 
-        if (\is_array($value) || $value instanceof \Traversable || $value instanceof \ArrayAccess) {
+        if (\is_iterable($value)) {
             $value = \is_array($value) ? $value : \iterator_to_array($value, false);
             \array_walk_recursive($value, $normalizeValue);
         } else {
