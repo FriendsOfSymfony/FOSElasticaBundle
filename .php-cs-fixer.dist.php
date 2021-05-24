@@ -9,26 +9,26 @@ For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 EOF;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRules([
+        '@PHP71Migration' => true,
+        '@PSR2' => true,
+        '@PhpCsFixer' => true,
         '@Symfony' => true,
-        'array_syntax' => ['syntax' => 'short'],
-        'combine_consecutive_issets' => true,
-        'combine_consecutive_unsets' => true,
         'header_comment' => ['header' => $header],
         'is_null' => true,
-        'linebreak_after_opening_tag' => true,
-        'list_syntax' => ['syntax' => 'short'],
+        'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
+        'method_chaining_indentation' => false,
         'native_constant_invocation' => true,
-        'native_function_invocation' => true,
+        'native_function_invocation' => [
+            'include' => ['@all'],
+        ],
         'no_alias_functions' => true,
-        'no_useless_else' => true,
         'nullable_type_declaration_for_default_null_value' => true,
-        'ordered_class_elements' => true,
         'ordered_imports' => true,
+        'php_unit_test_class_requires_covers' => false,
         'phpdoc_no_empty_return' => false,
-        'ternary_to_null_coalescing' => true,
-        'visibility_required' => ['property', 'method', 'const'],
+        'visibility_required' => ['elements' => ['property', 'method', 'const']],
     ])
     ->setUsingCache(true)
     ->setFinder(

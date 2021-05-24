@@ -14,7 +14,7 @@ jobs:
           php-version: '7.4'
           coverage: 'none'
           extensions: 'json, mbstring, tokenizer'
-          tools: 'composer-normalize, php-cs-fixer:2.18.3'
+          tools: 'composer-normalize, php-cs-fixer:3.0.0'
 
       - name: 'Display tools versions'
         run: |
@@ -22,7 +22,7 @@ jobs:
           php-cs-fixer --version
 
       - name: 'Check PHP code'
-        run: 'php-cs-fixer fix --diff --dry-run --allow-risky=yes --using-cache=false'
+        run: 'php-cs-fixer fix --diff --dry-run --allow-risky=yes --using-cache=no'
 
       - name: 'Check composer.json'
         run: 'composer-normalize --diff --dry-run --no-update-lock'
