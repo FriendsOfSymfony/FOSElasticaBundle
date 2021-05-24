@@ -21,6 +21,9 @@ use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Pagerfanta\Pagerfanta;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class TransformedFinderTest extends TestCase
 {
     public function testFindMethodTransformsSearchResults()
@@ -49,7 +52,8 @@ class TransformedFinderTest extends TestCase
     {
         $transformer = $this->createMock(ElasticaToModelTransformerInterface::class);
         $transformer->expects($this->never())
-            ->method($this->anything());
+            ->method($this->anything())
+        ;
         $query = Query::create('');
         $limit = 10;
 
@@ -66,7 +70,8 @@ class TransformedFinderTest extends TestCase
         $searchable->expects($this->once())
             ->method('search')
             ->with($this->isInstanceOf(Query::class))
-            ->will($this->returnValue($this->createMockResultSet()));
+            ->will($this->returnValue($this->createMockResultSet()))
+        ;
 
         $finder = new TransformedFinder($searchable, $transformer);
 
@@ -129,7 +134,8 @@ class TransformedFinderTest extends TestCase
         $transformer
             ->expects($this->once())
             ->method($transformMethod)
-            ->with([]);
+            ->with([])
+        ;
 
         return $transformer;
     }
@@ -141,13 +147,15 @@ class TransformedFinderTest extends TestCase
         $finder = $this->getMockBuilder(TransformedFinder::class)
             ->setConstructorArgs([$searchable, $transformer])
             ->setMethods(['search'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $finder
             ->expects($this->once())
             ->method('search')
             ->with($query, $limit)
-            ->will($this->returnValue([]));
+            ->will($this->returnValue([]))
+        ;
 
         return $finder;
     }

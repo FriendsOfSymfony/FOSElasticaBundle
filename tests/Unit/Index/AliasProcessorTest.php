@@ -22,6 +22,9 @@ use FOS\ElasticaBundle\Index\AliasProcessor;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class AliasProcessorTest extends TestCase
 {
     /**
@@ -46,7 +49,8 @@ class AliasProcessorTest extends TestCase
         $index = $this->createMock(Index::class);
         $index->expects($this->once())
             ->method('overrideName')
-            ->with($this->stringStartsWith($resultStartsWith));
+            ->with($this->stringStartsWith($resultStartsWith))
+        ;
 
         $this->processor->setRootName($indexConfig, $index);
     }

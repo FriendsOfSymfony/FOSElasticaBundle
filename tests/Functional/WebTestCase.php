@@ -18,6 +18,9 @@ use Symfony\Component\Filesystem\Filesystem;
 /*
  * Based on https://github.com/symfony/symfony/blob/2.7/src/Symfony/Bundle/FrameworkBundle/Tests/Functional/WebTestCase.php
  */
+/**
+ * @internal
+ */
 class WebTestCase extends BaseKernelTestCase
 {
     public static function setUpBeforeClass(): void

@@ -25,6 +25,9 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
+/**
+ * @internal
+ */
 class ORMPagerProviderTest extends TestCase
 {
     public function testShouldImplementPagerProviderInterface()
@@ -51,27 +54,31 @@ class ORMPagerProviderTest extends TestCase
         $expectedBuilder = $this->createMock(QueryBuilder::class);
         $expectedBuilder->method('getDQLPart')
             ->with('orderBy')
-            ->willReturn([$this->createMock(OrderBy::class)]);
+            ->willReturn([$this->createMock(OrderBy::class)])
+        ;
 
         $repository = $this->createMock(EntityRepository::class);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($expectedBuilder);
+            ->willReturn($expectedBuilder)
+        ;
 
         $manager = $this->createMock(EntityManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
             ->with($objectClass)
-            ->willReturn($repository);
+            ->willReturn($repository)
+        ;
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
             ->with($objectClass)
-            ->willReturn($manager);
+            ->willReturn($manager)
+        ;
 
         $provider = new ORMPagerProvider($doctrine, $this->createRegisterListenersServiceMock(), $objectClass, $baseConfig);
 
@@ -91,27 +98,31 @@ class ORMPagerProviderTest extends TestCase
         $expectedBuilder = $this->createMock(QueryBuilder::class);
         $expectedBuilder->method('getDQLPart')
             ->with('orderBy')
-            ->willReturn([$this->createMock(OrderBy::class)]);
+            ->willReturn([$this->createMock(OrderBy::class)])
+        ;
 
         $repository = $this->createMock(DoctrineORMCustomRepositoryMock::class);
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
-            ->willReturn($expectedBuilder);
+            ->willReturn($expectedBuilder)
+        ;
 
         $manager = $this->createMock(EntityManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
             ->with($objectClass)
-            ->willReturn($repository);
+            ->willReturn($repository)
+        ;
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
             ->with($objectClass)
-            ->willReturn($manager);
+            ->willReturn($manager)
+        ;
 
         $provider = new ORMPagerProvider($doctrine, $this->createRegisterListenersServiceMock(), $objectClass, $baseConfig);
 
@@ -128,27 +139,31 @@ class ORMPagerProviderTest extends TestCase
         $expectedBuilder = $this->createMock(QueryBuilder::class);
         $expectedBuilder->method('getDQLPart')
             ->with('orderBy')
-            ->willReturn([$this->createMock(OrderBy::class)]);
+            ->willReturn([$this->createMock(OrderBy::class)])
+        ;
 
         $repository = $this->createMock(EntityRepository::class);
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($expectedBuilder);
+            ->willReturn($expectedBuilder)
+        ;
 
         $manager = $this->createMock(EntityManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
             ->with($objectClass)
-            ->willReturn($repository);
+            ->willReturn($repository)
+        ;
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
             ->with($objectClass)
-            ->willReturn($manager);
+            ->willReturn($manager)
+        ;
 
         $registerListenersMock = $this->createRegisterListenersServiceMock();
         $registerListenersMock

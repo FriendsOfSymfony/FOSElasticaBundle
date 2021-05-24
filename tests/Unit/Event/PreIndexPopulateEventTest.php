@@ -14,6 +14,9 @@ namespace FOS\ElasticaBundle\Tests\Unit\Event;
 use FOS\ElasticaBundle\Event\PreIndexPopulateEvent;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class PreIndexPopulateEventTest extends TestCase
 {
     public function testPopulate()

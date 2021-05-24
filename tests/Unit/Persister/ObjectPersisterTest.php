@@ -27,6 +27,9 @@ class InvalidObjectPersister extends ObjectPersister
     }
 }
 
+/**
+ * @internal
+ */
 class ObjectPersisterTest extends TestCase
 {
     public function testThatCanReplaceObject()
@@ -35,7 +38,8 @@ class ObjectPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->once())
-            ->method('updateDocuments');
+            ->method('updateDocuments')
+        ;
 
         $fields = ['name' => []];
 
@@ -49,9 +53,11 @@ class ObjectPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->never())
-            ->method('deleteById');
+            ->method('deleteById')
+        ;
         $indexMock->expects($this->never())
-            ->method('addDocument');
+            ->method('addDocument')
+        ;
 
         $fields = ['name' => []];
 
@@ -67,9 +73,11 @@ class ObjectPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->never())
-            ->method('deleteById');
+            ->method('deleteById')
+        ;
         $indexMock->expects($this->once())
-            ->method('addDocuments');
+            ->method('addDocuments')
+        ;
 
         $fields = ['name' => []];
 
@@ -83,9 +91,11 @@ class ObjectPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->never())
-            ->method('deleteById');
+            ->method('deleteById')
+        ;
         $indexMock->expects($this->never())
-            ->method('addDocument');
+            ->method('addDocument')
+        ;
 
         $fields = ['name' => []];
 
@@ -101,9 +111,11 @@ class ObjectPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->once())
-            ->method('deleteDocuments');
+            ->method('deleteDocuments')
+        ;
         $indexMock->expects($this->never())
-            ->method('addDocument');
+            ->method('addDocument')
+        ;
 
         $fields = ['name' => []];
 
@@ -117,9 +129,11 @@ class ObjectPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->never())
-            ->method('deleteById');
+            ->method('deleteById')
+        ;
         $indexMock->expects($this->never())
-            ->method('addDocument');
+            ->method('addDocument')
+        ;
 
         $fields = ['name' => []];
 
@@ -135,11 +149,14 @@ class ObjectPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->never())
-            ->method('deleteById');
+            ->method('deleteById')
+        ;
         $indexMock->expects($this->never())
-            ->method('addDocument');
+            ->method('addDocument')
+        ;
         $indexMock->expects($this->once())
-            ->method('addDocuments');
+            ->method('addDocuments')
+        ;
 
         $fields = ['name' => []];
 
@@ -153,11 +170,14 @@ class ObjectPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->never())
-            ->method('deleteById');
+            ->method('deleteById')
+        ;
         $indexMock->expects($this->never())
-            ->method('addDocument');
+            ->method('addDocument')
+        ;
         $indexMock->expects($this->never())
-            ->method('addDocuments');
+            ->method('addDocuments')
+        ;
 
         $fields = ['name' => []];
 

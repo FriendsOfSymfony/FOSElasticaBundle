@@ -18,6 +18,9 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\Event;
 
+/**
+ * @internal
+ */
 final class OnExceptionEventTest extends TestCase
 {
     public function testShouldBeSubClassOfEventClass()
@@ -45,7 +48,8 @@ final class OnExceptionEventTest extends TestCase
     {
         new OnExceptionEvent(
             $this->createPagerMock(),
-            $this->createObjectPersisterMock(), new \Exception(),
+            $this->createObjectPersisterMock(),
+            new \Exception(),
             $objects = [],
             $options = []
         );

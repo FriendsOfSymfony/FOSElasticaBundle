@@ -19,6 +19,9 @@ use FOS\ElasticaBundle\Transformer\ModelToElasticaIdentifierTransformer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
+/**
+ * @internal
+ */
 class ObjectSerializerPersisterTest extends TestCase
 {
     public function testThatCanReplaceObject()
@@ -27,7 +30,8 @@ class ObjectSerializerPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->once())
-            ->method('updateDocuments');
+            ->method('updateDocuments')
+        ;
 
         $serializerMock = $this->createMock(Callback::class);
         $serializerMock->expects($this->once())->method('serialize');
@@ -42,9 +46,11 @@ class ObjectSerializerPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->never())
-            ->method('deleteById');
+            ->method('deleteById')
+        ;
         $indexMock->expects($this->once())
-            ->method('addDocuments');
+            ->method('addDocuments')
+        ;
 
         $serializerMock = $this->createMock(Callback::class);
         $serializerMock->expects($this->once())->method('serialize');
@@ -59,9 +65,11 @@ class ObjectSerializerPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->once())
-            ->method('deleteDocuments');
+            ->method('deleteDocuments')
+        ;
         $indexMock->expects($this->never())
-            ->method('addDocument');
+            ->method('addDocument')
+        ;
 
         $serializerMock = $this->createMock(Callback::class);
         $serializerMock->expects($this->once())->method('serialize');
@@ -76,9 +84,11 @@ class ObjectSerializerPersisterTest extends TestCase
 
         $indexMock = $this->createMock(Index::class);
         $indexMock->expects($this->never())
-            ->method('deleteById');
+            ->method('deleteById')
+        ;
         $indexMock->expects($this->once())
-            ->method('addDocuments');
+            ->method('addDocuments')
+        ;
 
         $serializerMock = $this->createMock(Callback::class);
         $serializerMock->expects($this->exactly(2))->method('serialize');

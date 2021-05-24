@@ -28,6 +28,8 @@ class NamespacedEntity
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
+ *
+ * @internal
  */
 class RepositoryManagerTest extends TestCase
 {
@@ -39,7 +41,8 @@ class RepositoryManagerTest extends TestCase
 
         $mainManager->method('getRepository')
             ->with($this->equalTo('index'))
-            ->willReturn(new Repository($finderMock));
+            ->willReturn(new Repository($finderMock))
+        ;
 
         $manager = new RepositoryManager($registryMock, $mainManager);
         $manager->addEntity(NamespacedEntity::class, 'index');
@@ -55,11 +58,13 @@ class RepositoryManagerTest extends TestCase
 
         $registryMock->method('getAliasNamespace')
             ->with($this->equalTo('FOSElasticaBundle'))
-            ->willReturn((new \ReflectionClass(NamespacedEntity::class))->getNamespaceName());
+            ->willReturn((new \ReflectionClass(NamespacedEntity::class))->getNamespaceName())
+        ;
 
         $mainManager->method('getRepository')
             ->with($this->equalTo('index'))
-            ->willReturn(new Repository($finderMock));
+            ->willReturn(new Repository($finderMock))
+        ;
 
         $manager = new RepositoryManager($registryMock, $mainManager);
         $manager->addEntity(NamespacedEntity::class, 'index');

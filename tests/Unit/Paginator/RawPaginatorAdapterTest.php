@@ -16,6 +16,9 @@ use Elastica\ResultSet;
 use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 
+/**
+ * @internal
+ */
 class RawPaginatorAdapterTest extends UnitTestHelper
 {
     public function testGetTotalHits()
@@ -72,13 +75,13 @@ class RawPaginatorAdapterTest extends UnitTestHelper
     protected function mockResultSet()
     {
         $methods = ['getTotalHits', 'getAggregations', 'getSuggests', 'getMaxScore'];
-        $mock = $this
+
+        return $this
             ->getMockBuilder(ResultSet::class)
             ->disableOriginalConstructor()
             ->setMethods($methods)
-            ->getMock();
-
-        return $mock;
+            ->getMock()
+        ;
     }
 
     private function createAdapterWithSearch($methodName, $value)
@@ -87,7 +90,8 @@ class RawPaginatorAdapterTest extends UnitTestHelper
         $resultSet
             ->expects($this->exactly(1))
             ->method($methodName)
-            ->willReturn($value);
+            ->willReturn($value)
+        ;
 
         $query = new Query();
         $options = [];
@@ -96,11 +100,10 @@ class RawPaginatorAdapterTest extends UnitTestHelper
             ->expects($this->exactly(1))
             ->method('search')
             ->with($query)
-            ->willReturn($resultSet);
+            ->willReturn($resultSet)
+        ;
 
-        $adapter = new RawPaginatorAdapter($searchable, $query, $options);
-
-        return $adapter;
+        return new RawPaginatorAdapter($searchable, $query, $options);
     }
 
     private function createAdapterWithCount($totalHits, $querySize = null)
@@ -114,10 +117,9 @@ class RawPaginatorAdapterTest extends UnitTestHelper
         $searchable
             ->expects($this->exactly(1))
             ->method('count')
-            ->willReturn($totalHits);
+            ->willReturn($totalHits)
+        ;
 
-        $adapter = new RawPaginatorAdapter($searchable, $query, $options);
-
-        return $adapter;
+        return new RawPaginatorAdapter($searchable, $query, $options);
     }
 }

@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
+ *
+ * @internal
  */
 class TemplateContainerSourceTest extends TestCase
 {

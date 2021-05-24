@@ -36,7 +36,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             // Add sort to query
             $this->setSorting($event);
 
-            /** @var $results PartialResultsInterface */
+            /** @var PartialResultsInterface $results */
             $results = $event->target->getResults($event->getOffset(), $event->getLimit());
 
             $event->count = $results->getTotalHits();

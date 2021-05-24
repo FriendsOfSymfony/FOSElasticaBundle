@@ -65,7 +65,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
     /**
      * Transforms an object into an elastica object having the required keys.
-     **/
+     */
     public function transform(object $object, array $fields): Document
     {
         $identifier = $this->propertyAccessor->getValue($object, $this->options['identifier']);
@@ -91,7 +91,9 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             }
 
             return $documents;
-        } elseif (null !== $objects) {
+        }
+
+        if (null !== $objects) {
             $document = $this->transformObjectToDocument($objects, $fields);
 
             return $document->getData();

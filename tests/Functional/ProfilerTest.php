@@ -28,6 +28,8 @@ use Twig\RuntimeLoader\RuntimeLoaderInterface;
 
 /**
  * @group functional
+ *
+ * @internal
  */
 class ProfilerTest extends WebTestCase
 {
@@ -66,6 +68,8 @@ class ProfilerTest extends WebTestCase
 
     /**
      * @dataProvider queryProvider
+     *
+     * @param mixed $query
      */
     public function testRender($query)
     {

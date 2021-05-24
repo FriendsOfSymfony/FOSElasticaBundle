@@ -15,6 +15,9 @@ use FOS\ElasticaBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 
+/**
+ * @internal
+ */
 class ConfigurationTest extends TestCase
 {
     /**

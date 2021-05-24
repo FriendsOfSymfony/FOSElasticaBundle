@@ -136,8 +136,7 @@ class TransformedFinder implements PaginatedFinderInterface
         if (null !== $limit) {
             $queryObject->setSize($limit);
         }
-        $results = $this->searchable->search($queryObject, $options)->getResults();
 
-        return $results;
+        return $this->searchable->search($queryObject, $options)->getResults();
     }
 }

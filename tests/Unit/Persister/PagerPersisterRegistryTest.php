@@ -16,6 +16,9 @@ use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
+/**
+ * @internal
+ */
 class PagerPersisterRegistryTest extends TestCase
 {
     public function testShouldBeFinal()

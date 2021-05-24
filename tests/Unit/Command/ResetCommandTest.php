@@ -18,6 +18,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 
+/**
+ * @internal
+ */
 class ResetCommandTest extends TestCase
 {
     /**
@@ -67,11 +70,13 @@ class ResetCommandTest extends TestCase
     public function testResetIndex()
     {
         $this->indexManager->expects($this->never())
-            ->method('getAllIndexes');
+            ->method('getAllIndexes')
+        ;
 
         $this->resetter->expects($this->once())
             ->method('resetIndex')
-            ->with($this->equalTo('index1'));
+            ->with($this->equalTo('index1'))
+        ;
 
         $this->command->run(
             new ArrayInput(['--index' => 'index1']),

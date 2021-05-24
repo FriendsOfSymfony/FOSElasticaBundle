@@ -25,6 +25,9 @@ use FOS\ElasticaBundle\Index\ResetterInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @internal
+ */
 class ResetterTest extends TestCase
 {
     /**
@@ -70,7 +73,8 @@ class ResetterTest extends TestCase
 
         $this->configManager->expects($this->once())
             ->method('getIndexNames')
-            ->will($this->returnValue([$indexName]));
+            ->will($this->returnValue([$indexName]))
+        ;
 
         $this->dispatcherExpects([
             [$this->isInstanceOf(PreIndexResetEvent::class)],
@@ -78,7 +82,8 @@ class ResetterTest extends TestCase
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
-            ->method('requestEndpoint');
+            ->method('requestEndpoint')
+        ;
 
         $this->resetter->resetAllIndexes();
     }
@@ -99,7 +104,8 @@ class ResetterTest extends TestCase
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
-            ->method('requestEndpoint');
+            ->method('requestEndpoint')
+        ;
 
         $this->resetter->resetIndex('index1');
     }
@@ -119,7 +125,8 @@ class ResetterTest extends TestCase
         ]);
 
         $this->elasticaClient->expects($this->exactly(2))
-            ->method('requestEndpoint');
+            ->method('requestEndpoint')
+        ;
 
         $this->resetter->resetIndex('index1');
     }
@@ -142,10 +149,12 @@ class ResetterTest extends TestCase
 
         $this->aliasProcessor->expects($this->once())
             ->method('switchIndexAlias')
-            ->with($indexConfig, $index, false);
+            ->with($indexConfig, $index, false)
+        ;
 
         $this->elasticaClient->expects($this->exactly(2))
-            ->method('requestEndpoint');
+            ->method('requestEndpoint')
+        ;
 
         $this->resetter->resetIndex('index1');
     }
@@ -155,10 +164,12 @@ class ResetterTest extends TestCase
         $this->configManager->expects($this->once())
             ->method('getIndexConfiguration')
             ->with('nonExistant')
-            ->will($this->throwException(new \InvalidArgumentException()));
+            ->will($this->throwException(new \InvalidArgumentException()))
+        ;
 
         $this->indexManager->expects($this->never())
-            ->method('getIndex');
+            ->method('getIndex')
+        ;
 
         $this->expectException(\InvalidArgumentException::class);
         $this->resetter->resetIndex('nonExistant');
@@ -174,9 +185,11 @@ class ResetterTest extends TestCase
         ]));
 
         $this->indexManager->expects($this->never())
-            ->method('getIndex');
+            ->method('getIndex')
+        ;
         $this->aliasProcessor->expects($this->never())
-            ->method('switchIndexAlias');
+            ->method('switchIndexAlias')
+        ;
 
         $this->resetter->switchIndexAlias('index');
     }
@@ -194,7 +207,8 @@ class ResetterTest extends TestCase
 
         $this->aliasProcessor->expects($this->once())
             ->method('switchIndexAlias')
-            ->with($indexConfig, $index);
+            ->with($indexConfig, $index)
+        ;
 
         $this->resetter->switchIndexAlias('index');
     }
@@ -207,7 +221,8 @@ class ResetterTest extends TestCase
     private function dispatcherExpects(array $events)
     {
         $expectation = $this->dispatcher->expects($this->exactly(\count($events)))
-            ->method('dispatch');
+            ->method('dispatch')
+        ;
 
         \call_user_func_array([$expectation, 'withConsecutive'], $events);
     }
@@ -217,16 +232,19 @@ class ResetterTest extends TestCase
         $this->configManager->expects($this->atLeast(1))
             ->method('getIndexConfiguration')
             ->with($indexName)
-            ->will($this->returnValue($config));
+            ->will($this->returnValue($config))
+        ;
         $index = new Index($this->elasticaClient, $indexName);
         $this->indexManager->expects($this->any())
             ->method('getIndex')
             ->with($indexName)
-            ->willReturn($index);
+            ->willReturn($index)
+        ;
         $this->mappingBuilder->expects($this->any())
             ->method('buildIndexMapping')
             ->with($config)
-            ->willReturn($mapping);
+            ->willReturn($mapping)
+        ;
 
         return $index;
     }

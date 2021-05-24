@@ -21,6 +21,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
+/**
+ * @internal
+ */
 class AbstractElasticaToModelTransformerTest extends TestCase
 {
     /**
@@ -46,7 +49,8 @@ class AbstractElasticaToModelTransformerTest extends TestCase
         $transformer = $this->getMockBuilder(ElasticaToModelTransformer::class)
             ->setMethods(['findByIdentifiers'])
             ->setConstructorArgs([$this->registry, $this->objectClass, ['ignore_missing' => true]])
-            ->getMock();
+            ->getMock()
+        ;
 
         $transformer->setPropertyAccessor(PropertyAccess::createPropertyAccessor());
 
@@ -57,7 +61,8 @@ class AbstractElasticaToModelTransformerTest extends TestCase
         $transformer->expects($this->once())
             ->method('findByIdentifiers')
             ->with([1, 2, 3])
-            ->willReturn([$firstOrmResult, $secondOrmResult]);
+            ->willReturn([$firstOrmResult, $secondOrmResult])
+        ;
 
         $firstElasticaResult = new Result(['_id' => 1]);
         $secondElasticaResult = new Result(['_id' => 2]);
@@ -93,6 +98,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testObjectsAreTransformedByFindingThemByTheirIdentifiers($elasticaResults, $doctrineObjects)
     {
@@ -102,7 +110,8 @@ class AbstractElasticaToModelTransformerTest extends TestCase
             ->expects($this->once())
             ->method('findByIdentifiers')
             ->with($this->equalTo([1, 2, 3]), $this->isType('boolean'))
-            ->will($this->returnValue($doctrineObjects));
+            ->will($this->returnValue($doctrineObjects))
+        ;
 
         $transformedObjects = $transformer->transform($elasticaResults);
 
@@ -111,6 +120,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testAnExceptionIsThrownWhenTheNumberOfFoundObjectsIsLessThanTheNumberOfResults(
         $elasticaResults,
@@ -122,7 +134,8 @@ class AbstractElasticaToModelTransformerTest extends TestCase
             ->expects($this->once())
             ->method('findByIdentifiers')
             ->with($this->equalTo([1, 2, 3]), $this->isType('boolean'))
-            ->will($this->returnValue([]));
+            ->will($this->returnValue([]))
+        ;
 
         $this->expectExceptionMessage(\RuntimeException::class);
         $this->expectExceptionMessage('Cannot find corresponding Doctrine objects (0) for all Elastica results (3). Missing IDs: 1, 2, 3. IDs: 1, 2, 3');
@@ -132,6 +145,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testAnExceptionIsNotThrownWhenTheNumberOfFoundObjectsIsLessThanTheNumberOfResultsIfOptionSet(
         $elasticaResults,
@@ -143,7 +159,8 @@ class AbstractElasticaToModelTransformerTest extends TestCase
             ->expects($this->once())
             ->method('findByIdentifiers')
             ->with($this->equalTo([1, 2, 3]), $this->isType('boolean'))
-            ->will($this->returnValue([]));
+            ->will($this->returnValue([]))
+        ;
 
         $results = $transformer->transform($elasticaResults);
 
@@ -152,6 +169,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testHighlightsAreSetOnTransformedObjects($elasticaResults, $doctrineObjects)
     {
@@ -161,7 +181,8 @@ class AbstractElasticaToModelTransformerTest extends TestCase
             ->expects($this->once())
             ->method('findByIdentifiers')
             ->with($this->equalTo([1, 2, 3]), $this->isType('boolean'))
-            ->will($this->returnValue($doctrineObjects));
+            ->will($this->returnValue($doctrineObjects))
+        ;
 
         $results = $transformer->transform($elasticaResults);
 
@@ -173,6 +194,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testResultsAreSortedByIdentifier($elasticaResults, $doctrineObjects)
     {
@@ -184,7 +208,8 @@ class AbstractElasticaToModelTransformerTest extends TestCase
             ->expects($this->once())
             ->method('findByIdentifiers')
             ->with($this->equalTo([1, 2, 3]), $this->isType('boolean'))
-            ->will($this->returnValue($doctrineObjects));
+            ->will($this->returnValue($doctrineObjects))
+        ;
 
         $results = $transformer->transform($elasticaResults);
 
@@ -195,6 +220,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testHybridTransformReturnsDecoratedResults($elasticaResults, $doctrineObjects)
     {
@@ -204,7 +232,8 @@ class AbstractElasticaToModelTransformerTest extends TestCase
             ->expects($this->once())
             ->method('findByIdentifiers')
             ->with($this->equalTo([1, 2, 3]), $this->isType('boolean'))
-            ->will($this->returnValue($doctrineObjects));
+            ->will($this->returnValue($doctrineObjects))
+        ;
 
         $results = $transformer->hybridTransform($elasticaResults);
 
@@ -226,7 +255,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
     private function createMockPropertyAccessor()
     {
         $callback = function ($object, $identifier) {
-            return $object->$identifier;
+            return $object->{$identifier};
         };
 
         $propertyAccessor = $this->createMock(PropertyAccessorInterface::class);
@@ -234,12 +263,15 @@ class AbstractElasticaToModelTransformerTest extends TestCase
             ->expects($this->any())
             ->method('getValue')
             ->with($this->isType('object'), $this->isType('string'))
-            ->will($this->returnCallback($callback));
+            ->will($this->returnCallback($callback))
+        ;
 
         return $propertyAccessor;
     }
 
     /**
+     * @param mixed $options
+     *
      * @return \PHPUnit\Framework\MockObject\MockObject|AbstractElasticaToModelTransformer
      */
     private function createMockTransformer($options = [])

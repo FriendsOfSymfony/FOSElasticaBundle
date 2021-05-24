@@ -26,6 +26,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @internal
+ */
 class RegisterListenersServiceTest extends TestCase
 {
     public function testCouldBeConstructedWithDispatcherArgument()

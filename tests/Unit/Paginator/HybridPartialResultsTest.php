@@ -15,6 +15,9 @@ use Elastica\ResultSet;
 use FOS\ElasticaBundle\Paginator\HybridPartialResults;
 use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 
+/**
+ * @internal
+ */
 class HybridPartialResultsTest extends UnitTestHelper
 {
     public function testToArray()
@@ -38,12 +41,14 @@ class HybridPartialResultsTest extends UnitTestHelper
         $mock = $this
             ->getMockBuilder(ResultSet::class)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
         $mock
             ->expects($this->exactly(1))
             ->method('getResults')
-            ->willReturn([]);
+            ->willReturn([])
+        ;
 
         return $mock;
     }

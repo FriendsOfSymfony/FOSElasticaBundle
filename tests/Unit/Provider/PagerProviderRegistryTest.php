@@ -16,6 +16,9 @@ use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
+/**
+ * @internal
+ */
 class PagerProviderRegistryTest extends TestCase
 {
     public function testGetProviders()

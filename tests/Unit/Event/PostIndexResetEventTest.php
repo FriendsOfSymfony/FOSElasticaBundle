@@ -14,6 +14,9 @@ namespace FOS\ElasticaBundle\Tests\Unit\Event;
 use FOS\ElasticaBundle\Event\PostIndexResetEvent;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class PostIndexResetEventTest extends TestCase
 {
     public function testReset()

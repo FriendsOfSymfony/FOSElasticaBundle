@@ -16,6 +16,9 @@ use FOS\ElasticaBundle\EventListener\PopulateListener;
 use FOS\ElasticaBundle\Index\Resetter;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class PopulateListenerTest extends TestCase
 {
     public function testOnPostIndexPopulateWithReset()
@@ -53,7 +56,8 @@ class PopulateListenerTest extends TestCase
         $stub
             ->expects($this->exactly($numberOfCalls))
             ->method('switchIndexAlias')
-            ->with($indexName, $deleteOption);
+            ->with($indexName, $deleteOption)
+        ;
 
         return $stub;
     }

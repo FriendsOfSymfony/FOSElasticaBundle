@@ -15,6 +15,9 @@ use FOS\ElasticaBundle\Serializer\Callback;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * @internal
+ */
 class CallbackTest extends TestCase
 {
     public function testSerializerMustHaveSerializeMethod()

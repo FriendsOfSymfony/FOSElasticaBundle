@@ -154,7 +154,7 @@ class PopulateCommand extends Command
     /**
      * Recreates an index, populates it, and refreshes it.
      */
-    private function populateIndex(OutputInterface $output, string $index, bool $reset, $options): void
+    private function populateIndex(OutputInterface $output, string $index, bool $reset, array $options): void
     {
         $this->dispatcher->dispatch($event = new PreIndexPopulateEvent($index, $reset, $options));
 

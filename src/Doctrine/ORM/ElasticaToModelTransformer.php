@@ -40,7 +40,8 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
 
         $qb = $this->getEntityQueryBuilder();
         $qb->andWhere($qb->expr()->in(static::ENTITY_ALIAS.'.'.$this->options['identifier'], ':values'))
-            ->setParameter('values', $identifierValues);
+            ->setParameter('values', $identifierValues)
+        ;
 
         $query = $qb->getQuery();
 
@@ -60,7 +61,8 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
     {
         $repository = $this->registry
             ->getManagerForClass($this->objectClass)
-            ->getRepository($this->objectClass);
+            ->getRepository($this->objectClass)
+        ;
 
         return $repository->{$this->options['query_builder_method']}(static::ENTITY_ALIAS);
     }

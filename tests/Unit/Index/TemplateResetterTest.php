@@ -26,6 +26,8 @@ use Prophecy\Argument;
 
 /**
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
+ *
+ * @internal
  */
 class TemplateResetterTest extends TestCase
 {
@@ -81,20 +83,26 @@ class TemplateResetterTest extends TestCase
         $names = ['first_template'];
         $mapping = ['properties' => []];
         $this->configManager->getIndexNames()
-            ->willReturn($names);
+            ->willReturn($names)
+        ;
         $this->configManager->getIndexConfiguration('first_template')
-            ->willReturn($indexTemplateConfig = $this->prophesize(IndexTemplateConfig::class)->reveal());
+            ->willReturn($indexTemplateConfig = $this->prophesize(IndexTemplateConfig::class)->reveal())
+        ;
         $indexTemplate = $this->prophesize(IndexTemplate::class);
         $this->templateManager->getIndexTemplate('first_template')
-            ->willReturn($indexTemplate->reveal());
+            ->willReturn($indexTemplate->reveal())
+        ;
         $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig)
-            ->willReturn($mapping);
+            ->willReturn($mapping)
+        ;
 
         // assert
         $indexTemplate->create($mapping)
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $this->client->request(Argument::any(), Request::DELETE)
-            ->shouldNotBeCalled();
+            ->shouldNotBeCalled()
+        ;
 
         // act
         $this->resetter->resetAllIndexes();
@@ -106,24 +114,31 @@ class TemplateResetterTest extends TestCase
         $names = ['first_template'];
         $mapping = ['properties' => []];
         $this->configManager->getIndexNames()
-            ->willReturn($names);
+            ->willReturn($names)
+        ;
         $indexTemplateConfig = $this->prophesize(IndexTemplateConfig::class);
         $this->configManager->getIndexConfiguration('first_template')
-            ->willReturn($indexTemplateConfig->reveal());
+            ->willReturn($indexTemplateConfig->reveal())
+        ;
         $indexTemplate = $this->prophesize(IndexTemplate::class);
         $this->templateManager->getIndexTemplate('first_template')
-            ->willReturn($indexTemplate->reveal());
+            ->willReturn($indexTemplate->reveal())
+        ;
         $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig)
-            ->willReturn($mapping);
+            ->willReturn($mapping)
+        ;
 
         // assert
         $indexTemplate->create($mapping)
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $this->client->request('first_template/', Request::DELETE)
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $indexTemplateConfig->getTemplate()
             ->shouldBeCalled()
-            ->willReturn('first_template');
+            ->willReturn('first_template')
+        ;
 
         // act
         $this->resetter->resetAllIndexes(true);
@@ -135,18 +150,23 @@ class TemplateResetterTest extends TestCase
         $name = 'first_template';
         $mapping = ['properties' => []];
         $this->configManager->getIndexConfiguration('first_template')
-            ->willReturn($indexTemplateConfig = $this->prophesize(IndexTemplateConfig::class)->reveal());
+            ->willReturn($indexTemplateConfig = $this->prophesize(IndexTemplateConfig::class)->reveal())
+        ;
         $indexTemplate = $this->prophesize(IndexTemplate::class);
         $this->templateManager->getIndexTemplate('first_template')
-            ->willReturn($indexTemplate->reveal());
+            ->willReturn($indexTemplate->reveal())
+        ;
         $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig)
-            ->willReturn($mapping);
+            ->willReturn($mapping)
+        ;
 
         // assert
         $indexTemplate->create($mapping)
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $this->client->request(Argument::any(), Request::DELETE)
-            ->shouldNotBeCalled();
+            ->shouldNotBeCalled()
+        ;
 
         // act
         $this->resetter->resetIndex($name);
@@ -159,21 +179,27 @@ class TemplateResetterTest extends TestCase
         $mapping = ['properties' => []];
         $indexTemplateConfig = $this->prophesize(IndexTemplateConfig::class);
         $this->configManager->getIndexConfiguration('first_template')
-            ->willReturn($indexTemplateConfig->reveal());
+            ->willReturn($indexTemplateConfig->reveal())
+        ;
         $indexTemplate = $this->prophesize(IndexTemplate::class);
         $this->templateManager->getIndexTemplate('first_template')
-            ->willReturn($indexTemplate->reveal());
+            ->willReturn($indexTemplate->reveal())
+        ;
         $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig)
-            ->willReturn($mapping);
+            ->willReturn($mapping)
+        ;
 
         // assert
         $indexTemplate->create($mapping)
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $this->client->request('first_template/', Request::DELETE)
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $indexTemplateConfig->getTemplate()
             ->shouldBeCalled()
-            ->willReturn('first_template');
+            ->willReturn('first_template')
+        ;
 
         // act
         $this->resetter->resetIndex($name, true);
@@ -188,9 +214,11 @@ class TemplateResetterTest extends TestCase
         // assert
         $template->getTemplate()
             ->shouldBeCalled()
-            ->willReturn($name);
+            ->willReturn($name)
+        ;
         $this->client->request('some_template/', Request::DELETE)
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
 
         $this->resetter->deleteTemplateIndexes($template->reveal());
     }

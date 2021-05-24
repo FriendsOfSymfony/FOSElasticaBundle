@@ -17,6 +17,8 @@ use FOS\ElasticaBundle\Elastica\Client;
 
 /**
  * @group functional
+ *
+ * @internal
  */
 class ClientTest extends WebTestCase
 {

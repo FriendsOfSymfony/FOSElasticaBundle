@@ -15,6 +15,9 @@ use Elastica\Document;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class PostTransformEventTest extends TestCase
 {
     public function testDocument()

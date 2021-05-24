@@ -26,6 +26,8 @@ class Entity
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
+ *
+ * @internal
  */
 class RepositoryManagerTest extends TestCase
 {

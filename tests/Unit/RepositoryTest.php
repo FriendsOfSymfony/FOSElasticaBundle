@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
+ *
+ * @internal
  */
 class RepositoryTest extends TestCase
 {
@@ -80,7 +82,8 @@ class RepositoryTest extends TestCase
         $finderMock = $this->createMock(TransformedFinder::class);
         $finderMock->expects($this->once())
             ->method($name)
-            ->withConsecutive($arguments);
+            ->withConsecutive($arguments)
+        ;
 
         return $finderMock;
     }

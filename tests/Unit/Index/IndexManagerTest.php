@@ -15,6 +15,9 @@ use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\IndexManager;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class IndexManagerTest extends TestCase
 {
     private $indexes = [];
@@ -31,7 +34,8 @@ class IndexManagerTest extends TestCase
 
             $index->expects($this->any())
                 ->method('getName')
-                ->will($this->returnValue($indexName));
+                ->will($this->returnValue($indexName))
+            ;
 
             $this->indexes[$indexName] = $index;
         }

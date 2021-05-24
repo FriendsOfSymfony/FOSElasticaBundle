@@ -14,6 +14,9 @@ namespace FOS\ElasticaBundle\Tests\Unit\Event;
 use FOS\ElasticaBundle\Event\PostIndexPopulateEvent;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class PostIndexPopulateEventTest extends TestCase
 {
     public function testPopulate()

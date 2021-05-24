@@ -15,6 +15,9 @@ use Elastica\Document;
 use FOS\ElasticaBundle\Event\PreTransformEvent;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class PreTransformEventTest extends TestCase
 {
     public function testDocument()

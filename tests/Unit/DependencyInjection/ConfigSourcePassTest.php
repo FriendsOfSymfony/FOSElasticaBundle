@@ -17,6 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
+/**
+ * @internal
+ */
 class ConfigSourcePassTest extends TestCase
 {
     use ProphecyTrait;
@@ -34,7 +37,8 @@ class ConfigSourcePassTest extends TestCase
         $this->container
             ->hasDefinition('fos_elastica.config_manager')
             ->shouldBeCalled()
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $pass = new ConfigSourcePass();
         $pass->process($this->container->reveal());
@@ -48,7 +52,8 @@ class ConfigSourcePassTest extends TestCase
         $this->container
             ->hasDefinition('fos_elastica.config_manager')
             ->shouldBeCalled()
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $this->container
             ->findTaggedServiceIds('fos_elastica.config_source')
@@ -58,39 +63,46 @@ class ConfigSourcePassTest extends TestCase
                     'index_definition_id' => null,
                     'index_template_definition_id' => null,
                 ]
-            );
+            )
+        ;
 
         $indexDefinition = $this->prophesize(Definition::class);
         $indexDefinition->getTag('fos_elastica.config_source')
             ->shouldBeCalled()
-            ->willReturn([]);
+            ->willReturn([])
+        ;
         $this->container
             ->findDefinition('index_definition_id')
             ->shouldBeCalled()
-            ->willReturn($indexDefinition->reveal());
+            ->willReturn($indexDefinition->reveal())
+        ;
 
         $indexTemplateDefinition = $this->prophesize(Definition::class);
         $indexTemplateDefinition->getTag('fos_elastica.config_source')
             ->shouldBeCalled()
-            ->willReturn([]);
+            ->willReturn([])
+        ;
         $this->container
             ->findDefinition('index_template_definition_id')
             ->shouldBeCalled()
-            ->willReturn($indexTemplateDefinition->reveal());
+            ->willReturn($indexTemplateDefinition->reveal())
+        ;
 
         $configManagerDefinition = $this->prophesize(Definition::class);
         $configManagerDefinition->replaceArgument(0, ['index_definition_id']);
         $this->container
             ->getDefinition('fos_elastica.config_manager')
             ->shouldBeCalled()
-            ->willReturn($configManagerDefinition);
+            ->willReturn($configManagerDefinition)
+        ;
 
         $templateConfigManagerDefinition = $this->prophesize(Definition::class);
         $templateConfigManagerDefinition->replaceArgument(0, ['index_template_definition_id']);
         $this->container
             ->getDefinition('fos_elastica.config_manager.index_templates')
             ->shouldBeCalled()
-            ->willReturn($templateConfigManagerDefinition);
+            ->willReturn($templateConfigManagerDefinition)
+        ;
 
         $pass = new ConfigSourcePass();
         $pass->process($this->container->reveal());

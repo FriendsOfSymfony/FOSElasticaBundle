@@ -17,6 +17,8 @@ use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 
 /**
  * @group functional
+ *
+ * @internal
  */
 class MappingToElasticaTest extends WebTestCase
 {
