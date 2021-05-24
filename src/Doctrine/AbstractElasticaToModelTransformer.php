@@ -92,7 +92,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         $propertyAccessor = $this->propertyAccessor;
         $identifier = $this->options['identifier'];
         if (!$this->options['ignore_missing'] && $objectsCnt < $elasticaObjectsCnt) {
-            $missingIds = \array_diff($ids, \array_map(function ($object) use ($propertyAccessor, $identifier) {
+            $missingIds = \array_diff($ids, \array_map(static function ($object) use ($propertyAccessor, $identifier) {
                 return $propertyAccessor->getValue($object, $identifier);
             }, $objects));
 
