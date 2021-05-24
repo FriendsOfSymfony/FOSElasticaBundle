@@ -54,7 +54,7 @@ class SearchCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $indexName = $input->getOption('index');
-        $index = $this->indexManager->getIndex($indexName ? $indexName : null);
+        $index = $this->indexManager->getIndex($indexName ?: null);
         $query = Query::create($input->getArgument('query'));
         $query->setSize($input->getOption('limit'));
         if ($input->getOption('explain')) {
