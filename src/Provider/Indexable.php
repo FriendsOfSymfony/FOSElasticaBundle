@@ -77,7 +77,7 @@ class Indexable implements IndexableInterface
 
         $callback = $this->callbacks[$index];
 
-        if (\is_callable($callback) or \is_callable([$object, $callback])) {
+        if (\is_callable($callback) || \is_callable([$object, $callback])) {
             return $callback;
         }
 
