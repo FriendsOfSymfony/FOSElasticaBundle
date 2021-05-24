@@ -147,9 +147,9 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             }
             $value = $this->propertyAccessor->getValue($object, $path);
 
-            if (isset($mapping['type'])
+            if (isset($mapping['properties'], $mapping['type'])
+                && $mapping['properties']
                 && \in_array($mapping['type'], ['nested', 'object'], true)
-                && isset($mapping['properties']) && !empty($mapping['properties'])
             ) {
                 /* $value is a nested document or object. Transform $value into
                  * an array of documents, respective the mapped properties.
@@ -159,7 +159,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
                 continue;
             }
 
-            if (isset($mapping['type']) && 'attachment' == $mapping['type']) {
+            if ('attachment' === ($mapping['type'] ?? null)) {
                 // $value is an attachment. Add it to the document.
                 if ($value instanceof \SplFileInfo) {
                     $document->addFile($key, $value->getPathName());
