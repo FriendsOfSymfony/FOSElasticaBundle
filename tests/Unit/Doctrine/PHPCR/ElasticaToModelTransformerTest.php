@@ -18,6 +18,9 @@ use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Doctrine\PHPCR\ElasticaToModelTransformer;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class ElasticaToModelTransformerTest extends TestCase
 {
     /**
@@ -48,7 +51,8 @@ class ElasticaToModelTransformerTest extends TestCase
 
         $this->registry->expects($this->any())
             ->method('getManager')
-            ->will($this->returnValue($this->manager));
+            ->will($this->returnValue($this->manager))
+        ;
 
         $this->repository = $this
             ->getMockBuilder(DocumentRepository::class)
@@ -66,19 +70,22 @@ class ElasticaToModelTransformerTest extends TestCase
 
         $this->repository->expects($this->any())
             ->method('findMany')
-            ->will($this->returnValue(new ArrayCollection([new \stdClass(), new \stdClass()])));
+            ->will($this->returnValue(new ArrayCollection([new \stdClass(), new \stdClass()])))
+        ;
 
         $this->manager->expects($this->any())
             ->method('getRepository')
             ->with($this->objectClass)
-            ->will($this->returnValue($this->repository));
+            ->will($this->returnValue($this->repository))
+        ;
     }
 
     public function testTransformUsesFindByIdentifier()
     {
         $this->registry->expects($this->any())
             ->method('getManager')
-            ->will($this->returnValue($this->manager));
+            ->will($this->returnValue($this->manager))
+        ;
 
         $transformer = new ElasticaToModelTransformer($this->registry, $this->objectClass);
 

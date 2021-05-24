@@ -19,6 +19,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
+ *
+ * @internal
  */
 class IndexTemplateTest extends TestCase
 {

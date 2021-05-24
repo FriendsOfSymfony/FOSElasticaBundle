@@ -24,6 +24,9 @@ use Pagerfanta\Doctrine\MongoDBODM\QueryAdapter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
+/**
+ * @internal
+ */
 class MongoDBPagerProviderTest extends TestCase
 {
     protected function setUp(): void
@@ -60,21 +63,24 @@ class MongoDBPagerProviderTest extends TestCase
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($expectedBuilder);
+            ->willReturn($expectedBuilder)
+        ;
 
         $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
             ->with($objectClass)
-            ->willReturn($repository);
+            ->willReturn($repository)
+        ;
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
             ->with($objectClass)
-            ->willReturn($manager);
+            ->willReturn($manager)
+        ;
 
         $provider = new MongoDBPagerProvider($doctrine, $this->createRegisterListenersServiceMock(), $objectClass, $baseConfig);
 
@@ -96,19 +102,22 @@ class MongoDBPagerProviderTest extends TestCase
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
-            ->willReturn($this->createMock(Builder::class));
+            ->willReturn($this->createMock(Builder::class))
+        ;
 
         $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
-            ->willReturn($repository);
+            ->willReturn($repository)
+        ;
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
-            ->willReturn($manager);
+            ->willReturn($manager)
+        ;
 
         $provider = new MongoDBPagerProvider($doctrine, $this->createRegisterListenersServiceMock(), $objectClass, $baseConfig);
 
@@ -126,19 +135,22 @@ class MongoDBPagerProviderTest extends TestCase
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($this->createMock(Builder::class));
+            ->willReturn($this->createMock(Builder::class))
+        ;
 
         $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
-            ->willReturn($repository);
+            ->willReturn($repository)
+        ;
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
-            ->willReturn($manager);
+            ->willReturn($manager)
+        ;
 
         $registerListenersMock = $this->createRegisterListenersServiceMock();
         $registerListenersMock

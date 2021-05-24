@@ -21,6 +21,8 @@ use FOS\ElasticaBundle\Index\TemplateResetter;
  * Class Index templates test.
  *
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
+ *
+ * @internal
  */
 class IndexTemplatesTest extends WebTestCase
 {

@@ -11,6 +11,9 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
+/**
+ * @internal
+ */
 class PersistenceRepositoryTest extends WebTestCase
 {
     public function testRepositoryShouldBeSetCorrectly()
@@ -18,7 +21,8 @@ class PersistenceRepositoryTest extends WebTestCase
         self::bootKernel(['test_case' => 'ORM']);
 
         $repository = self::$container->get('test_alias.fos_elastica.manager.orm')
-            ->getRepository(TypeObject::class);
+            ->getRepository(TypeObject::class)
+        ;
 
         $this->assertInstanceOf(TypeObjectRepository::class, $repository);
     }

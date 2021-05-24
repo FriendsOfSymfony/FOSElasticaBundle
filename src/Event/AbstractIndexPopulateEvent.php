@@ -47,9 +47,9 @@ abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
     }
 
     /**
-     * @return mixed
-     *
      * @throws \InvalidArgumentException if option does not exist
+     *
+     * @return mixed
      */
     public function getOption(string $name)
     {

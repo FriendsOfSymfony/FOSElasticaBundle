@@ -20,6 +20,9 @@ use Doctrine\Persistence\ObjectRepository;
 use FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class ElasticaToModelTransformerTest extends TestCase
 {
     public const OBJECT_CLASS = \stdClass::class;
@@ -47,7 +50,8 @@ class ElasticaToModelTransformerTest extends TestCase
         $this->registry->expects($this->any())
             ->method('getManagerForClass')
             ->with(self::OBJECT_CLASS)
-            ->will($this->returnValue($this->manager));
+            ->will($this->returnValue($this->manager))
+        ;
 
         $this->repository = $this
             ->getMockBuilder(ObjectRepository::class)
@@ -64,7 +68,8 @@ class ElasticaToModelTransformerTest extends TestCase
         $this->manager->expects($this->any())
             ->method('getRepository')
             ->with(self::OBJECT_CLASS)
-            ->will($this->returnValue($this->repository));
+            ->will($this->returnValue($this->repository))
+        ;
     }
 
     /**
@@ -78,9 +83,11 @@ class ElasticaToModelTransformerTest extends TestCase
         $this->repository->expects($this->once())
             ->method('customQueryBuilderCreator')
             ->with($this->equalTo(ElasticaToModelTransformer::ENTITY_ALIAS))
-            ->will($this->returnValue($qb));
+            ->will($this->returnValue($qb))
+        ;
         $this->repository->expects($this->never())
-            ->method('createQueryBuilder');
+            ->method('createQueryBuilder')
+        ;
 
         $transformer = new ElasticaToModelTransformer($this->registry, self::OBJECT_CLASS, [
             'query_builder_method' => 'customQueryBuilderCreator',
@@ -102,11 +109,13 @@ class ElasticaToModelTransformerTest extends TestCase
         $qb = $this->createMock(QueryBuilder::class);
 
         $this->repository->expects($this->never())
-            ->method('customQueryBuilderCreator');
+            ->method('customQueryBuilderCreator')
+        ;
         $this->repository->expects($this->once())
             ->method('createQueryBuilder')
             ->with($this->equalTo(ElasticaToModelTransformer::ENTITY_ALIAS))
-            ->will($this->returnValue($qb));
+            ->will($this->returnValue($qb))
+        ;
 
         $transformer = new ElasticaToModelTransformer($this->registry, self::OBJECT_CLASS);
 
@@ -125,12 +134,14 @@ class ElasticaToModelTransformerTest extends TestCase
         $query = $this->getMockBuilder(AbstractQuery::class)
             ->setMethods(['setHint', 'execute', 'setHydrationMode'])
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMockForAbstractClass()
+        ;
         $query->expects($this->any())->method('setHydrationMode')->willReturnSelf();
         $query->expects($this->once())  //  check if the hint is set
             ->method('setHint')
             ->with('customHintName', 'Custom\Hint\Class')
-            ->willReturnSelf();
+            ->willReturnSelf()
+        ;
 
         $qb = $this->createMock(QueryBuilder::class);
         $qb->expects($this->any())->method('getQuery')->willReturn($query);
@@ -140,7 +151,8 @@ class ElasticaToModelTransformerTest extends TestCase
         $this->repository->expects($this->once())
             ->method('createQueryBuilder')
             ->with($this->equalTo(ElasticaToModelTransformer::ENTITY_ALIAS))
-            ->will($this->returnValue($qb));
+            ->will($this->returnValue($qb))
+        ;
 
         $transformer = new ElasticaToModelTransformer($this->registry, self::OBJECT_CLASS, [
             'hints' => [

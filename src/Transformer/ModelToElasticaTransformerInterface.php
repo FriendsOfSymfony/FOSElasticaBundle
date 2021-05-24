@@ -20,6 +20,6 @@ interface ModelToElasticaTransformerInterface
 {
     /**
      * Transforms an object into an elastica object having the required keys.
-     **/
+     */
     public function transform(object $object, array $fields): Document;
 }

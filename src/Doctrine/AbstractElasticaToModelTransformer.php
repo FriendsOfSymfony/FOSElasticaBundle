@@ -28,14 +28,14 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      *
      * @var ManagerRegistry
      */
-    protected $registry = null;
+    protected $registry;
 
     /**
      * Class of the model to map to the elastica documents.
      *
      * @var string
      */
-    protected $objectClass = null;
+    protected $objectClass;
 
     /**
      * Optional parameters.
@@ -77,7 +77,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      * @throws \RuntimeException
      *
      * @return array
-     **/
+     */
     public function transform(array $elasticaObjects)
     {
         $ids = $highlights = [];

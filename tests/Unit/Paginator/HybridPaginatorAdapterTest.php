@@ -15,6 +15,9 @@ use Elastica\Query;
 use FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter;
 use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 
+/**
+ * @internal
+ */
 class HybridPaginatorAdapterTest extends UnitTestHelper
 {
     public function testGetResults()
@@ -33,14 +36,16 @@ class HybridPaginatorAdapterTest extends UnitTestHelper
             ->getMockBuilder(HybridPaginatorAdapter::class)
             ->setConstructorArgs($args)
             ->setMethods(['getElasticaResults'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $resultSet = $this->mockResultSet();
 
         $mock
             ->expects($this->exactly(1))
             ->method('getElasticaResults')
-            ->willReturn($resultSet);
+            ->willReturn($resultSet)
+        ;
 
         return $mock;
     }

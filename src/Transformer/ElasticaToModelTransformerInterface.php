@@ -23,7 +23,7 @@ interface ElasticaToModelTransformerInterface
      * @param array $elasticaObjects array of elastica objects
      *
      * @return array of model objects
-     **/
+     */
     public function transform(array $elasticaObjects);
 
     /**

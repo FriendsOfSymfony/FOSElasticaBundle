@@ -120,7 +120,8 @@ class Configuration implements ConfigurationInterface
         $node
             ->useAttributeAsKey('name')
             ->prototype('variable')
-                ->treatNullLike([]);
+                ->treatNullLike([])
+        ;
 
         return $node;
     }
@@ -281,7 +282,8 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('service')->end()
                     ->end()
                 ->end()
-            ->end();
+            ->end()
+        ;
 
         return $node;
     }
@@ -304,7 +306,8 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('serialize_null')
                     ->defaultFalse()
                 ->end()
-            ->end();
+            ->end()
+        ;
 
         return $node;
     }
@@ -470,7 +473,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
      */
-    private function createTreeBuilderNode($name)
+    private function createTreeBuilderNode(string $name)
     {
         return (new TreeBuilder($name))->getRootNode();
     }

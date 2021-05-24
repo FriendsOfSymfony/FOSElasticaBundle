@@ -17,6 +17,8 @@ use Psr\Log\LoggerInterface;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
+ *
+ * @internal
  */
 class ElasticaLoggerTest extends TestCase
 {
@@ -98,7 +100,8 @@ class ElasticaLoggerTest extends TestCase
             ->with(
                 $this->equalTo($expectedMessage),
                 $this->equalTo($data)
-            );
+            )
+        ;
 
         $elasticaLogger->logQuery($path, $method, $data, $time);
     }
@@ -122,6 +125,8 @@ class ElasticaLoggerTest extends TestCase
 
     /**
      * @dataProvider logLevels
+     *
+     * @param mixed $level
      */
     public function testMessagesCanBeLoggedAtSpecificLogLevels($level)
     {
@@ -147,7 +152,8 @@ class ElasticaLoggerTest extends TestCase
                 $level,
                 $message,
                 $context
-            );
+            )
+        ;
 
         $elasticaLogger = new ElasticaLogger($loggerMock);
 
@@ -199,10 +205,9 @@ class ElasticaLoggerTest extends TestCase
                 $level,
                 $this->equalTo($message),
                 $this->equalTo($context)
-            );
+            )
+        ;
 
-        $elasticaLogger = new ElasticaLogger($loggerMock);
-
-        return $elasticaLogger;
+        return new ElasticaLogger($loggerMock);
     }
 }

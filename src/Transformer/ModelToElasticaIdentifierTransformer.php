@@ -21,7 +21,7 @@ class ModelToElasticaIdentifierTransformer extends ModelToElasticaAutoTransforme
 {
     /**
      * Creates an elastica document with the id of the doctrine object as id.
-     **/
+     */
     public function transform(object $object, array $fields): Document
     {
         $identifier = $this->propertyAccessor->getValue($object, $this->options['identifier']);

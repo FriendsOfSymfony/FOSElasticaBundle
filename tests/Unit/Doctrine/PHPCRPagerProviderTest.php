@@ -24,6 +24,9 @@ use FOS\ElasticaBundle\Tests\Unit\Mocks\DoctrinePHPCRCustomRepositoryMock;
 use Pagerfanta\Doctrine\PHPCRODM\QueryAdapter;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class PHPCRPagerProviderTest extends TestCase
 {
     protected function setUp(): void
@@ -60,21 +63,24 @@ class PHPCRPagerProviderTest extends TestCase
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($expectedBuilder);
+            ->willReturn($expectedBuilder)
+        ;
 
         $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
             ->with($objectClass)
-            ->willReturn($repository);
+            ->willReturn($repository)
+        ;
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
             ->with($objectClass)
-            ->willReturn($manager);
+            ->willReturn($manager)
+        ;
 
         $provider = new PHPCRPagerProvider($doctrine, $this->createRegisterListenersServiceMock(), $objectClass, $baseConfig);
 
@@ -96,19 +102,22 @@ class PHPCRPagerProviderTest extends TestCase
         $repository
             ->expects($this->once())
             ->method('createCustomQueryBuilder')
-            ->willReturn($this->createMock(QueryBuilder::class));
+            ->willReturn($this->createMock(QueryBuilder::class))
+        ;
 
         $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
-            ->willReturn($repository);
+            ->willReturn($repository)
+        ;
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
-            ->willReturn($manager);
+            ->willReturn($manager)
+        ;
 
         $provider = new PHPCRPagerProvider($doctrine, $this->createRegisterListenersServiceMock(), $objectClass, $baseConfig);
 
@@ -128,19 +137,22 @@ class PHPCRPagerProviderTest extends TestCase
         $repository
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($queryBuilder);
+            ->willReturn($queryBuilder)
+        ;
 
         $manager = $this->createMock(DocumentManager::class);
         $manager
             ->expects($this->once())
             ->method('getRepository')
-            ->willReturn($repository);
+            ->willReturn($repository)
+        ;
 
         $doctrine = $this->createDoctrineMock();
         $doctrine
             ->expects($this->once())
             ->method('getManagerForClass')
-            ->willReturn($manager);
+            ->willReturn($manager)
+        ;
 
         $registerListenersMock = $this->createRegisterListenersServiceMock();
         $registerListenersMock

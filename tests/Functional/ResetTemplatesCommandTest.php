@@ -18,6 +18,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
+ *
+ * @internal
  */
 class ResetTemplatesCommandTest extends WebTestCase
 {

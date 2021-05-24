@@ -20,6 +20,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\NullOutput;
 
+/**
+ * @internal
+ */
 class DeleteCommandTest extends TestCase
 {
     /**
@@ -69,7 +72,8 @@ class DeleteCommandTest extends TestCase
             ->expects($this->exactly(2))
             ->method('getIndex')
             ->withConsecutive(['index1'], ['index2'])
-            ->willReturnOnConsecutiveCalls($index1, $index2);
+            ->willReturnOnConsecutiveCalls($index1, $index2)
+        ;
 
         $index1->expects($this->once())->method('exists')->willReturn(true);
         $index1->expects($this->once())->method('getName')->willReturn('index1');
@@ -102,7 +106,8 @@ class DeleteCommandTest extends TestCase
             ->expects($this->once())
             ->method('getIndex')
             ->with('index_name')
-            ->willReturn($this->indexMock);
+            ->willReturn($this->indexMock)
+        ;
 
         $this->indexMock->expects($this->once())->method('exists')->willReturn(true);
         $this->indexMock->expects($this->once())->method('getName')->willReturn('index_name');

@@ -15,6 +15,9 @@ use Elastica\Result;
 use FOS\ElasticaBundle\HybridResult;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class HybridResultTest extends TestCase
 {
     public function testTransformedResultDefaultsToNull()

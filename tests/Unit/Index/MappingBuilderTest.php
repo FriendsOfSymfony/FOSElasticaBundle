@@ -17,6 +17,9 @@ use FOS\ElasticaBundle\Index\MappingBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @internal
+ */
 class MappingBuilderTest extends TestCase
 {
     /**

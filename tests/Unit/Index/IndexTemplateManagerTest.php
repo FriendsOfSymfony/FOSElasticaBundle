@@ -18,6 +18,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
+ *
+ * @internal
  */
 class IndexTemplateManagerTest extends TestCase
 {

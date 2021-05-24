@@ -14,6 +14,9 @@ namespace FOS\ElasticaBundle\Tests\Unit\Configuration;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class IndexTemplateConfigTest extends TestCase
 {
     public function testInstantiate()

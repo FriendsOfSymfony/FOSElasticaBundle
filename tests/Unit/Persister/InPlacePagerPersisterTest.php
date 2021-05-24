@@ -27,6 +27,9 @@ use Pagerfanta\Pagerfanta;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+/**
+ * @internal
+ */
 class InPlacePagerPersisterTest extends TestCase
 {
     public function testShouldImplementPagerPersisterInterface()
@@ -396,6 +399,8 @@ class InPlacePagerPersisterTest extends TestCase
     }
 
     /**
+     * @param mixed|null $objectPersister
+     *
      * @return PersisterRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createPersisterRegistryStub($objectPersister = null)

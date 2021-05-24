@@ -16,6 +16,9 @@ use Elastica\SearchableInterface;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class UnitTestHelper extends TestCase
 {
     /**
@@ -35,29 +38,26 @@ class UnitTestHelper extends TestCase
 
     protected function mockElasticaToModelTransformer()
     {
-        $mock = $this
+        return $this
             ->getMockBuilder(ElasticaToModelTransformerInterface::class)
-            ->getMock();
-
-        return $mock;
+            ->getMock()
+        ;
     }
 
     protected function mockSearchable()
     {
-        $mock = $this
+        return $this
             ->getMockBuilder(SearchableInterface::class)
-            ->getMock();
-
-        return $mock;
+            ->getMock()
+        ;
     }
 
     protected function mockResultSet()
     {
-        $mock = $this
+        return $this
             ->getMockBuilder(ResultSet::class)
             ->disableOriginalConstructor()
-            ->getMock();
-
-        return $mock;
+            ->getMock()
+        ;
     }
 }

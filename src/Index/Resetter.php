@@ -26,7 +26,7 @@ class Resetter implements ResetterInterface
      */
     private $aliasProcessor;
 
-    /***
+    /**
      * @var ManagerInterface
      */
     private $configManager;

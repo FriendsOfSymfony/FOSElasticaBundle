@@ -16,6 +16,9 @@ use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class FantaPaginatorAdapterTest extends TestCase
 {
     public function testGetNbResults()
@@ -24,7 +27,8 @@ class FantaPaginatorAdapterTest extends TestCase
         $mock
             ->expects($this->exactly(1))
             ->method('getTotalHits')
-            ->willReturn(123);
+            ->willReturn(123)
+        ;
         $adapter = new FantaPaginatorAdapter($mock);
         $this->assertEquals(123, $adapter->getNbResults());
     }
@@ -35,7 +39,8 @@ class FantaPaginatorAdapterTest extends TestCase
         $mock
             ->expects($this->exactly(1))
             ->method('getAggregations')
-            ->willReturn([]);
+            ->willReturn([])
+        ;
         $adapter = new FantaPaginatorAdapter($mock);
         $this->assertEquals([], $adapter->getAggregations());
     }
@@ -46,7 +51,8 @@ class FantaPaginatorAdapterTest extends TestCase
         $mock
             ->expects($this->exactly(1))
             ->method('getSuggests')
-            ->willReturn([]);
+            ->willReturn([])
+        ;
         $adapter = new FantaPaginatorAdapter($mock);
         $this->assertEquals([], $adapter->getSuggests());
     }
@@ -61,7 +67,8 @@ class FantaPaginatorAdapterTest extends TestCase
             ->expects($this->exactly(1))
             ->method('getResults')
             ->with(1, 10)
-            ->willReturn($resultsMock);
+            ->willReturn($resultsMock)
+        ;
         $adapter = new FantaPaginatorAdapter($mock);
         $this->assertEquals($results, $adapter->getSlice(1, 10));
     }
@@ -72,7 +79,8 @@ class FantaPaginatorAdapterTest extends TestCase
         $mock
             ->expects($this->exactly(1))
             ->method('getMaxScore')
-            ->willReturn(123);
+            ->willReturn(123)
+        ;
         $adapter = new FantaPaginatorAdapter($mock);
         $this->assertEquals(123, $adapter->getMaxScore());
     }
@@ -81,21 +89,22 @@ class FantaPaginatorAdapterTest extends TestCase
     {
         $mock = $this
             ->getMockBuilder(PartialResultsInterface::class)
-            ->getMock();
+            ->getMock()
+        ;
         $mock
             ->expects($this->exactly(1))
             ->method('toArray')
-            ->willReturn($results);
+            ->willReturn($results)
+        ;
 
         return $mock;
     }
 
     private function mockPaginatorAdapter()
     {
-        $mock = $this
+        return $this
             ->getMockBuilder(PaginatorAdapterInterface::class)
-            ->getMock();
-
-        return $mock;
+            ->getMock()
+        ;
     }
 }

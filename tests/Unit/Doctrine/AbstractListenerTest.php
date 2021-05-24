@@ -56,7 +56,8 @@ abstract class ListenerTest extends TestCase
 
         $persister->expects($this->once())
             ->method('insertMany')
-            ->with($listener->scheduledForInsertion);
+            ->with($listener->scheduledForInsertion)
+        ;
 
         $listener->postFlush($eventArgs);
     }
@@ -91,9 +92,11 @@ abstract class ListenerTest extends TestCase
         $this->assertEmpty($listener->scheduledForInsertion);
 
         $persister->expects($this->never())
-            ->method('insertOne');
+            ->method('insertOne')
+        ;
         $persister->expects($this->never())
-            ->method('insertMany');
+            ->method('insertMany')
+        ;
 
         $listener->postFlush($eventArgs);
     }
@@ -112,9 +115,11 @@ abstract class ListenerTest extends TestCase
 
         $persister->expects($this->once())
             ->method('replaceMany')
-            ->with([$entity]);
+            ->with([$entity])
+        ;
         $persister->expects($this->never())
-            ->method('deleteById');
+            ->method('deleteById')
+        ;
 
         $listener->postFlush($eventArgs);
     }
@@ -132,12 +137,14 @@ abstract class ListenerTest extends TestCase
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
             ->with(\get_class($entity))
-            ->will($this->returnValue($classMetadata));
+            ->will($this->returnValue($classMetadata))
+        ;
 
         $classMetadata->expects($this->any())
             ->method('getFieldValue')
             ->with($entity, 'id')
-            ->will($this->returnValue($entity->getId()));
+            ->will($this->returnValue($entity->getId()))
+        ;
 
         $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->postUpdate($eventArgs);
@@ -146,10 +153,12 @@ abstract class ListenerTest extends TestCase
         $this->assertSame($entity->getId(), \current($listener->scheduledForDeletion));
 
         $persister->expects($this->never())
-            ->method('replaceOne');
+            ->method('replaceOne')
+        ;
         $persister->expects($this->once())
             ->method('deleteManyByIdentifiers')
-            ->with([$entity->getId()]);
+            ->with([$entity->getId()])
+        ;
 
         $listener->postFlush($eventArgs);
     }
@@ -167,12 +176,14 @@ abstract class ListenerTest extends TestCase
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
             ->with(\get_class($entity))
-            ->will($this->returnValue($classMetadata));
+            ->will($this->returnValue($classMetadata))
+        ;
 
         $classMetadata->expects($this->any())
             ->method('getFieldValue')
             ->with($entity, 'id')
-            ->will($this->returnValue($entity->getId()));
+            ->will($this->returnValue($entity->getId()))
+        ;
 
         $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
         $listener->preRemove($eventArgs);
@@ -181,7 +192,8 @@ abstract class ListenerTest extends TestCase
 
         $persister->expects($this->once())
             ->method('deleteManyByIdentifiers')
-            ->with([$entity->getId()]);
+            ->with([$entity->getId()])
+        ;
 
         $listener->postFlush($eventArgs);
     }
@@ -200,12 +212,14 @@ abstract class ListenerTest extends TestCase
         $objectManager->expects($this->any())
             ->method('getClassMetadata')
             ->with(\get_class($entity))
-            ->will($this->returnValue($classMetadata));
+            ->will($this->returnValue($classMetadata))
+        ;
 
         $classMetadata->expects($this->any())
             ->method('getFieldValue')
             ->with($entity, 'identifier')
-            ->will($this->returnValue($entity->getId()));
+            ->will($this->returnValue($entity->getId()))
+        ;
 
         $listener = $this->createListener($persister, $indexable, ['identifier' => 'identifier', 'indexName' => 'index']);
         $listener->preRemove($eventArgs);
@@ -214,7 +228,8 @@ abstract class ListenerTest extends TestCase
 
         $persister->expects($this->once())
             ->method('deleteManyByIdentifiers')
-            ->with([$entity->identifier]);
+            ->with([$entity->identifier])
+        ;
 
         $listener->postFlush($eventArgs);
     }
@@ -284,12 +299,14 @@ abstract class ListenerTest extends TestCase
         $mock->expects($this->any())
             ->method('handlesObject')
             ->with($object)
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $index = $this->createMock(Index::class);
         $index->expects($this->any())
             ->method('getName')
-            ->will($this->returnValue($indexName));
+            ->will($this->returnValue($indexName))
+        ;
 
         return $mock;
     }
@@ -302,7 +319,8 @@ abstract class ListenerTest extends TestCase
             $mock->expects($this->once())
                 ->method('isObjectIndexable')
                 ->with($indexName, $object)
-                ->will($this->returnValue($return));
+                ->will($this->returnValue($return))
+            ;
         }
 
         return $mock;

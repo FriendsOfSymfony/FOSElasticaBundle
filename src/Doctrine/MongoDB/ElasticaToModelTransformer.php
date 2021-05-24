@@ -38,6 +38,7 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
             ->hydrate($hydrate)
             ->getQuery()
             ->execute()
-            ->toArray();
+            ->toArray()
+        ;
     }
 }

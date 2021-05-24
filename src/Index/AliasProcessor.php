@@ -26,7 +26,8 @@ class AliasProcessor
     public function setRootName(IndexConfig $indexConfig, Index $index)
     {
         $index->overrideName(
-            \sprintf('%s_%s',
+            \sprintf(
+                '%s_%s',
                 $indexConfig->getElasticSearchName(),
                 \date('Y-m-d-His')
             )

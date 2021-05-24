@@ -27,6 +27,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+/**
+ * @internal
+ */
 class AsyncPagerPersisterTest extends TestCase
 {
     public function testShouldImplementPagerPersisterInterface()

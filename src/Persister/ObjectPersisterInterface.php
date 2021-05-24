@@ -38,14 +38,14 @@ interface ObjectPersisterInterface
      * Replaces one object in the type.
      *
      * @param object $object
-     **/
+     */
     public function replaceOne($object);
 
     /**
      * Deletes one object in the type.
      *
      * @param object $object
-     **/
+     */
     public function deleteOne($object);
 
     /**

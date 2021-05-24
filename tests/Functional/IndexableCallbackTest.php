@@ -15,6 +15,8 @@ use FOS\ElasticaBundle\Provider\Indexable;
 
 /**
  * @group functional
+ *
+ * @internal
  */
 class IndexableCallbackTest extends WebTestCase
 {

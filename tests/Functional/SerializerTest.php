@@ -13,6 +13,8 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 /**
  * @group functional
+ *
+ * @internal
  */
 class SerializerTest extends WebTestCase
 {

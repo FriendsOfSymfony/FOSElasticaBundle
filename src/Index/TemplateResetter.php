@@ -23,7 +23,7 @@ use FOS\ElasticaBundle\Configuration\ManagerInterface;
  */
 class TemplateResetter implements ResetterInterface
 {
-    /***
+    /**
      * @var ManagerInterface
      */
     private $configManager;

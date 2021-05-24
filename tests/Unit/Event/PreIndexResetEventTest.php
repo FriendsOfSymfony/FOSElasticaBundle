@@ -14,6 +14,9 @@ namespace FOS\ElasticaBundle\Tests\Unit\Event;
 use FOS\ElasticaBundle\Event\PreIndexResetEvent;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class PreIndexResetEventTest extends TestCase
 {
     public function testReset()

@@ -18,6 +18,9 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\Event;
 
+/**
+ * @internal
+ */
 final class PostInsertObjectsEventTest extends TestCase
 {
     public function testShouldBeSubClassOfEventClass()

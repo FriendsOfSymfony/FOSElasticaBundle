@@ -19,6 +19,9 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * @internal
+ */
 class FilterObjectsListenerTest extends TestCase
 {
     public function testShouldImplementEventSubscriberInterface()

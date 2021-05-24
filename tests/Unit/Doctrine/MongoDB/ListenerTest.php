@@ -13,6 +13,9 @@ namespace FOS\ElasticaBundle\Tests\Unit\Doctrine\MongoDB;
 
 use FOS\ElasticaBundle\Tests\Unit\Doctrine\ListenerTest as BaseListenerTest;
 
+/**
+ * @internal
+ */
 class ListenerTest extends BaseListenerTest
 {
     protected function setUp(): void

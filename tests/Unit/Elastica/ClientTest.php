@@ -21,6 +21,9 @@ use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 class ClientTest extends TestCase
 {
     public function testRequestsAreLogged()
@@ -40,7 +43,8 @@ class ClientTest extends TestCase
                 ),
                 $this->isType('array'),
                 $this->isType('array')
-            );
+            )
+        ;
         $client->setLogger($logger);
 
         $response = $client->request('foo');
@@ -65,12 +69,14 @@ class ClientTest extends TestCase
             ->expects($this->exactly(1))
             ->method('hasConfig')
             ->with('http_error_codes')
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
         $connection
             ->expects($this->exactly(1))
             ->method('getConfig')
             ->with('http_error_codes')
-            ->willReturn([400, 403, 404]);
+            ->willReturn([400, 403, 404])
+        ;
         $client = $this->getClientMock($response, $connection);
 
         $desiredMessage = \sprintf('Error in transportInfo: response code is %d, response body is %s', $httpCode, $responseString);
@@ -108,7 +114,8 @@ class ClientTest extends TestCase
 
         $client = $this->getMockBuilder(Client::class)
             ->setMethods(['getConnection'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $client->expects($this->any())->method('getConnection')->will($this->returnValue($connection));
 

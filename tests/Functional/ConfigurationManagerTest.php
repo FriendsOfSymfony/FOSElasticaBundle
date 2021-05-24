@@ -16,6 +16,8 @@ use FOS\ElasticaBundle\Configuration\IndexConfig;
 
 /**
  * @group functional
+ *
+ * @internal
  */
 class ConfigurationManagerTest extends WebTestCase
 {

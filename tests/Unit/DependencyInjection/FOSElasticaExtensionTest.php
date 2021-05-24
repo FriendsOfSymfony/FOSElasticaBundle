@@ -27,6 +27,9 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @internal
+ */
 class FOSElasticaExtensionTest extends TestCase
 {
     public function testExtensionSupportsDriverlessTypePersistence()

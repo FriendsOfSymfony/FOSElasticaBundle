@@ -15,6 +15,9 @@ use FOS\ElasticaBundle\FOSElasticaBundle;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+/**
+ * @internal
+ */
 class FOSElasticaBundleTest extends TestCase
 {
     public function testCompilerPassesAreRegistered()
@@ -23,7 +26,8 @@ class FOSElasticaBundleTest extends TestCase
 
         $container
             ->expects($this->atLeastOnce())
-            ->method('addCompilerPass');
+            ->method('addCompilerPass')
+        ;
 
         $bundle = new FOSElasticaBundle();
         $bundle->build($container);
