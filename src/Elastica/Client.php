@@ -85,20 +85,14 @@ class Client extends BaseClient
 
     public function getIndex(string $name): BaseIndex
     {
-        if (isset($this->indexCache[$name])) {
-            return $this->indexCache[$name];
-        }
-
-        return $this->indexCache[$name] = new Index($this, $name);
+        // TODO PHP >= 7.4 ??=
+        return $this->indexCache[$name] ?? ($this->indexCache[$name] = new Index($this, $name));
     }
 
     public function getIndexTemplate($name): IndexTemplate
     {
-        if (isset($this->indexTemplateCache[$name])) {
-            return $this->indexTemplateCache[$name];
-        }
-
-        return $this->indexTemplateCache[$name] = new IndexTemplate($this, $name);
+        // TODO PHP >= 7.4 ??=
+        return $this->indexTemplateCache[$name] ?? ($this->indexTemplateCache[$name] = new IndexTemplate($this, $name));
     }
 
     /**

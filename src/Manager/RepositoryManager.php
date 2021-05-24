@@ -69,11 +69,7 @@ class RepositoryManager implements RepositoryManagerInterface
 
     protected function getRepositoryName(string $indexName): string
     {
-        if (isset($this->indexes[$indexName]['repositoryName'])) {
-            return $this->indexes[$indexName]['repositoryName'];
-        }
-
-        return Repository::class;
+        return $this->indexes[$indexName]['repositoryName'] ?? Repository::class;
     }
 
     /**
