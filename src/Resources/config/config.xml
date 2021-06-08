@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="fos_elastica.property_accessor.magicCall">0</parameter>
-        <parameter key="fos_elastica.property_accessor.throwExceptionOnInvalidIndex">false</parameter>
+        <parameter key="fos_elastica.property_accessor.throwExceptionOnInvalidIndex">0</parameter>
     </parameters>
 
     <services>
