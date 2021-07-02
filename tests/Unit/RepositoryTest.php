@@ -48,7 +48,7 @@ class RepositoryTest extends TestCase
         $repository->findPaginated($testQuery);
     }
 
-    public function testCreatePagitatorAdapter()
+    public function testCreatePaginatorAdapter()
     {
         $testQuery = 'Test Query';
 
@@ -74,6 +74,25 @@ class RepositoryTest extends TestCase
         $repository = new Repository($finderMock);
         $repository->findHybrid($testQuery);
     }
+
+    public function testFindScrollPaginated()
+    {
+        $testQuery = 'Test Query';
+
+        $finderMock = $this->mockTransformedFinder('findScrollPaginated', [$testQuery]);
+        $repository = new Repository($finderMock);
+        $repository->findScrollPaginated($testQuery);
+    }
+
+    public function testCreateScrollPaginatorAdapter()
+    {
+        $testQuery = 'Test Query';
+
+        $finderMock = $this->mockTransformedFinder('createScrollPaginatorAdapter', [$testQuery]);
+        $repository = new Repository($finderMock);
+        $repository->createScrollPaginatorAdapter($testQuery);
+    }
+
 
     private function mockTransformedFinder($name, $arguments)
     {

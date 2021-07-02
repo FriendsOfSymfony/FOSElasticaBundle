@@ -17,6 +17,7 @@ use Elastica\SearchableInterface;
 use FOS\ElasticaBundle\Finder\TransformedFinder;
 use FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
+use FOS\ElasticaBundle\Paginator\TransformedScrollPaginatorAdapter;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 use Pagerfanta\Pagerfanta;
 use PHPUnit\Framework\TestCase;
@@ -95,6 +96,28 @@ class TransformedFinderTest extends TestCase
         $finder = new TransformedFinder($searchable, $transformer);
 
         $this->assertInstanceOf(HybridPaginatorAdapter::class, $finder->createHybridPaginatorAdapter(''));
+    }
+
+    public function testFindScrollPaginated()
+    {
+        $searchable = $this->createMock(SearchableInterface::class);
+        $transformer = $this->createMock(ElasticaToModelTransformerInterface::class);
+
+        $finder = new TransformedFinder($searchable, $transformer);
+
+        $pagerfanta = $finder->findScrollPaginated('');
+
+        $this->assertInstanceOf(Pagerfanta::class, $pagerfanta);
+    }
+
+    public function testCreateScrollPaginatorAdapter()
+    {
+        $searchable = $this->createMock(SearchableInterface::class);
+        $transformer = $this->createMock(ElasticaToModelTransformerInterface::class);
+
+        $finder = new TransformedFinder($searchable, $transformer);
+
+        $this->assertInstanceOf(TransformedScrollPaginatorAdapter::class, $finder->createScrollPaginatorAdapter(''));
     }
 
     private function createMockTransformer($transformMethod)
