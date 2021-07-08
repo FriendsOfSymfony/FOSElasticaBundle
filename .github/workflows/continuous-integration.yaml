@@ -44,12 +44,15 @@ jobs:
           - php: '7.3'
             elasticsearch: '7.4.0'
             dependencies: 'highest'
+            symfony_require: '5.3.*'
           - php: '7.4'
             elasticsearch: '7.9.0'
             dependencies: 'highest'
+            symfony_require: '5.3.*'
           - php: '8.0'
             elasticsearch: '7.11.0'
             dependencies: 'highest'
+            symfony_require: '5.3.*'
       fail-fast: false
     steps:
       - name: 'Checkout'
