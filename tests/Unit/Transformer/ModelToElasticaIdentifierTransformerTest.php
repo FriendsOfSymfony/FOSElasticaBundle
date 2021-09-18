@@ -34,6 +34,20 @@ class POPO4
 
 class ModelToElasticaIdentifierTransformerTest extends TestCase
 {
+    public function testIdentifierIsCastedToString()
+    {
+        $idObject = new CastableObject();;
+        $idObject->foo = '00000000-0000-0000-0000-000000000000';
+
+        $object = new \stdClass();
+        $object->id = $idObject;
+
+        $transformer = $this->getTransformer();
+        $document = $transformer->transform($object, []);
+
+        $this->assertSame('00000000-0000-0000-0000-000000000000', $document->getId());
+    }
+
     public function testGetDocumentWithIdentifierOnly()
     {
         $transformer = $this->getTransformer();
