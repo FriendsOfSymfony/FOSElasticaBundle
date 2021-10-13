@@ -121,7 +121,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
 
         // check if the requested sort field is in the sort whitelist
-        if (isset($options['sortFieldWhitelist']) && !\in_array($sortField, $options['sortFieldWhitelist'], true)) {
+        if (isset($options['sortFieldAllowList']) && !\in_array($sortField, $options['sortFieldAllowList'], true)) {
             throw new \UnexpectedValueException(\sprintf('Cannot sort by: [%s] this field is not in whitelist', $sortField));
         }
 
