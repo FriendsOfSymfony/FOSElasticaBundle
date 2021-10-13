@@ -22,7 +22,7 @@ in 5.0 versions.
 ### 5.0.0 (2017-12-18)
 
 * Add `ruflin/elastica` 5.x and 6.x support.
-* Add asnychronous index update option.
+* Add asynchronous index update option.
 * Add ability to close an index.
 * Add support for HTTP authentication.
 * Fix undefined index when `ignore_missing` is active.
