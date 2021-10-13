@@ -220,6 +220,7 @@ class Configuration implements ConfigurationInterface
                             ->treatNullLike(true)
                         ->end()
                         ->scalarNode('query_builder_method')->defaultValue('createQueryBuilder')->end()
+                        ->scalarNode('locale')->end()
                         ->scalarNode('service')->end()
                     ->end()
                 ->end()
