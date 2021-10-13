@@ -9,6 +9,7 @@ in 6.0 versions.
 * Added PHPCR locale support.
 * Dropped PHP 7.2 & 7.3 support.
 * Dropped Symfony 5.1 and 5.2 support.
+* Fixed deprecated `knp_paginator.subscriber` tag.
 * **[BC break]** Changed signature of `FOS\ElasticaBundle\Configuration\Source\SourceInterface::getConfiguration()`.
 * **[BC break]** Changed signature of methods `resetAllIndexes` and `resetIndex` from interface `FOS\ElasticaBundle\Index\ResetterInterface` and its implementations.
 
