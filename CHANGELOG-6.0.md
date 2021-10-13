@@ -4,7 +4,7 @@ CHANGELOG for 6.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
-### 6.0.0-RC1 (2021-xx-xx)
+### 6.0.0 (2021-10-13)
 
 * Added PHPCR locale support.
 * Dropped PHP 7.2 & 7.3 support.
