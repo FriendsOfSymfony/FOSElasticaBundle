@@ -38,7 +38,7 @@ jobs:
       matrix:
         include:
           - php: '7.4'
-            elasticsearch: '7.9.0'
+            elasticsearch: '7.0.0'
             dependencies: 'lowest'
             symfony_require: '4.4.*'
           - php: '7.4'
