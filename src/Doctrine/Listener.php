@@ -107,6 +107,7 @@ class Listener
         if ($this->config['defer']) {
             $this->config['defer'] = false;
             $this->persistScheduled();
+            $this->config['defer'] = true;
         }
     }
 
