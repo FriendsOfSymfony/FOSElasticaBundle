@@ -121,7 +121,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             'defaultSortFieldName' => 'createdAt',
             'sortFieldParameterName' => 'ord',
             'sortDirectionParameterName' => 'az',
-            'sortFieldWhitelist' => ['createdAt', 'updatedAt'],
+            'sortFieldAllowList' => ['createdAt', 'updatedAt'],
         ];
 
         $this->expectException(\UnexpectedValueException::class);
