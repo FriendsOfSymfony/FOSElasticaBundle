@@ -7,6 +7,7 @@ in 6.0 versions.
 ### 6.0.0-RC1 (2021-xx-xx)
 
 * Dropped PHP 7.2 & 7.3 support.
+* Dropped Symfony 5.1 and 5.2 support.
 * **[BC break]** Changed signature of `FOS\ElasticaBundle\Configuration\Source\SourceInterface::getConfiguration()`.
 * **[BC break]** Changed signature of methods `resetAllIndexes` and `resetIndex` from interface `FOS\ElasticaBundle\Index\ResetterInterface` and its implementations.
 
