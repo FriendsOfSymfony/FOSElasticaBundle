@@ -26,7 +26,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var EventDispatcherInterface|LegacyEventDispatcherInterface
+     * @var EventDispatcherInterface
      */
     protected $dispatcher;
 
@@ -51,16 +51,12 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * Instanciates a new Mapper.
      *
      * @param array                                                   $options
-     * @param EventDispatcherInterface|LegacyEventDispatcherInterface $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(array $options = [], /* EventDispatcherInterface */ $dispatcher = null)
     {
         $this->options = array_merge($this->options, $options);
         $this->dispatcher = $dispatcher;
-
-        if (class_exists(LegacyEventDispatcherProxy::class)) {
-            $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
-        }
     }
 
     /**
@@ -174,9 +170,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
                 continue;
             }
 
-            $path = isset($mapping['property_path']) ?
-                $mapping['property_path'] :
-                $key;
+            $path = $mapping['property_path'] ?? $key;
             if (false === $path) {
                 continue;
             }
@@ -220,12 +214,6 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
     private function dispatch($event, $eventName): void
     {
-        if ($this->dispatcher instanceof EventDispatcherInterface) {
-            // Symfony >= 4.3
-            $this->dispatcher->dispatch($event, $eventName);
-        } else {
-            // Symfony 3.4
-            $this->dispatcher->dispatch($eventName, $event);
-        }
+        $this->dispatcher->dispatch($event, $eventName);
     }
 }
