@@ -45,3 +45,5 @@ acme.listener.custom_property:
     tags:
         - { name: kernel.event_subscriber }
 ```
+
+Note that if you use `serializer` you cannot use this, see [#1142](https://github.com/FriendsOfSymfony/FOSElasticaBundle/issues/1142) and [#1185](https://github.com/FriendsOfSymfony/FOSElasticaBundle/issues/1185).
