@@ -51,7 +51,7 @@ class SearchCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $indexName = $input->getOption('index');
         $index = $this->indexManager->getIndex($indexName ?: null);
@@ -72,6 +72,7 @@ class SearchCommand extends Command
     }
 
     /**
+     * @param Result $result
      * @param string $showField
      * @param string $showSource
      * @param string $showId
@@ -79,7 +80,7 @@ class SearchCommand extends Command
      *
      * @return string
      */
-    protected function formatResult(Result $result, $showField, $showSource, $showId, $explain)
+    protected function formatResult(Result $result, $showField, $showSource, $showId, $explain): string
     {
         $source = $result->getSource();
         if ($showField) {

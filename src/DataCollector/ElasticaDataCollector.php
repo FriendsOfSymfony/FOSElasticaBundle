@@ -55,7 +55,7 @@ class ElasticaDataCollector extends DataCollector
     /**
      * @return int
      */
-    public function getTime()
+    public function getTime(): int
     {
         $time = 0;
         foreach ($this->data['queries'] as $query) {
@@ -68,7 +68,7 @@ class ElasticaDataCollector extends DataCollector
     /**
      * @return int
      */
-    public function getExecutionTime()
+    public function getExecutionTime(): int
     {
         $time = 0;
         foreach ($this->data['queries'] as $query) {
@@ -78,7 +78,7 @@ class ElasticaDataCollector extends DataCollector
         return $time;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'elastica';
     }

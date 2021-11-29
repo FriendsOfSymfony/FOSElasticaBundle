@@ -48,7 +48,7 @@ class ResetCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $indexes = (null !== $index = $input->getOption('index')) ? [$index] : \array_keys($this->indexManager->getAllIndexes());
         $force = (bool) $input->getOption('force');
