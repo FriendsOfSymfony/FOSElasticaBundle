@@ -105,7 +105,7 @@
                     <td>
                         <div>
                             {% for data in query.data %}
-                                <pre>{{ data|json_encode }}</pre>
+                                <pre>{{ data|json_encode(constant('JSON_UNESCAPED_UNICODE')) }}</pre>
                             {% endfor %}
                         </div>
                         <div class="font-normal text-small">
@@ -129,7 +129,7 @@
                         <div id="formatted-query-{{ key }}" class="sql-runnable hidden">
                             <code>
                             {% for data in query.data %}
-                                <pre>{{ data|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                <pre>{{ data|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
                             {% endfor %}
                             </code>
                         </div>
