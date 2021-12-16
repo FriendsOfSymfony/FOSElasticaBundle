@@ -78,6 +78,9 @@ class ElasticaDataCollector extends DataCollector
         return $time;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'elastica';
