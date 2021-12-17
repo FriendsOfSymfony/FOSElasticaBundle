@@ -83,7 +83,7 @@ Note : for Elasticsearch v2.1 and above, you will need to "manually" call `_forc
     public function postIndexPopulate(PostIndexPopulateEvent $event)
     {
         $index = $this->indexManager->getIndex($event->getIndex());
-        $index->getClient()->request('_forcemerge', 'POST', ['max_num_segments' => 5]);
+        $index->getClient()->request('_forcemerge?max_num_segments=5', 'POST');
         $index->getSettings()->setRefreshInterval(Settings::DEFAULT_REFRESH_INTERVAL);
     }
 ...
