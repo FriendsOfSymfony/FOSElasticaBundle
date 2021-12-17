@@ -44,7 +44,7 @@ class AppKernel extends Kernel
         parent::__construct($environment, $debug);
     }
 
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         if (!\file_exists($filename = $this->getProjectDir().'/'.$this->testCase.'/bundles.php')) {
             throw new \RuntimeException(\sprintf('The bundles file "%s" does not exist.', $filename));
@@ -53,22 +53,22 @@ class AppKernel extends Kernel
         return include $filename;
     }
 
-    public function getProjectDir()
+    public function getProjectDir(): string
     {
         return __DIR__;
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         return \sys_get_temp_dir().'/'.$this->varDir.'/'.$this->testCase.'/cache/'.$this->environment;
     }
 
-    public function getLogDir()
+    public function getLogDir(): string
     {
         return \sys_get_temp_dir().'/'.$this->varDir.'/'.$this->testCase.'/logs';
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(function (ContainerBuilder $container) {
             $container->setParameter('fos_elastica.host', $_SERVER['FOS_ELASTICA_HOST']);
@@ -77,7 +77,7 @@ class AppKernel extends Kernel
         $loader->load($this->rootConfig);
     }
 
-    protected function getKernelParameters()
+    protected function getKernelParameters(): array
     {
         $parameters = parent::getKernelParameters();
         $parameters['kernel.test_case'] = $this->testCase;

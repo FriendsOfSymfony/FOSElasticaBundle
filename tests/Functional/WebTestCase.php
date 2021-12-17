@@ -13,7 +13,9 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 use FOS\ElasticaBundle\Tests\Functional\app\AppKernel;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase as BaseKernelTestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /*
  * Based on https://github.com/symfony/symfony/blob/2.7/src/Symfony/Bundle/FrameworkBundle/Tests/Functional/WebTestCase.php
@@ -33,7 +35,7 @@ class WebTestCase extends BaseKernelTestCase
         static::deleteTmpDir();
     }
 
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
         require_once __DIR__.'/app/AppKernel.php';
 
@@ -49,7 +51,7 @@ class WebTestCase extends BaseKernelTestCase
         $fs->remove($dir);
     }
 
-    protected static function createKernel(array $options = [])
+    protected static function createKernel(array $options = []): KernelInterface
     {
         $class = self::getKernelClass();
 
@@ -69,5 +71,15 @@ class WebTestCase extends BaseKernelTestCase
     protected static function getVarDir()
     {
         return \substr(\strrchr(static::class, '\\'), 1);
+    }
+
+    // To be removed when dropping support of Symfony < 5.3 and use "self::getContainer()" instead.
+    protected function getContainerBC(): ContainerInterface
+    {
+        if (\method_exists($this, 'getContainer')) {
+            return self::getContainer();
+        }
+
+        return self::$container;
     }
 }

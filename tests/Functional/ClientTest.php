@@ -27,15 +27,15 @@ class ClientTest extends WebTestCase
         self::bootKernel(['test_case' => 'Basic']);
 
         /** @var Client $es */
-        $es = self::$container->get('fos_elastica.client.default');
+        $es = $this->getContainerBC()->get('fos_elastica.client.default');
         $this->assertInstanceOf(RoundRobin::class, $es->getConnectionStrategy());
 
         /** @var Client $es */
-        $es = self::$container->get('fos_elastica.client.second_server');
+        $es = $this->getContainerBC()->get('fos_elastica.client.second_server');
         $this->assertInstanceOf(RoundRobin::class, $es->getConnectionStrategy());
 
         /** @var Client $es */
-        $es = self::$container->get('fos_elastica.client.third');
+        $es = $this->getContainerBC()->get('fos_elastica.client.third');
         $this->assertInstanceOf(Simple::class, $es->getConnectionStrategy());
     }
 }

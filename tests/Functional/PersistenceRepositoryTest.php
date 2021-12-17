@@ -20,7 +20,7 @@ class PersistenceRepositoryTest extends WebTestCase
     {
         self::bootKernel(['test_case' => 'ORM']);
 
-        $repository = self::$container->get('test_alias.fos_elastica.manager.orm')
+        $repository = $this->getContainerBC()->get('test_alias.fos_elastica.manager.orm')
             ->getRepository(TypeObject::class)
         ;
 

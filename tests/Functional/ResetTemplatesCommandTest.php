@@ -44,7 +44,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         // required for old supported Symfony
         $application->all();
 
-        $this->client = self::$container->get('fos_elastica.client');
+        $this->client = $this->getContainerBC()->get('fos_elastica.client');
     }
 
     public function testResetAllTemplates()

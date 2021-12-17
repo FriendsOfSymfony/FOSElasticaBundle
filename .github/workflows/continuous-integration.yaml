@@ -30,7 +30,7 @@ jobs:
 
   phpunit:
     runs-on: 'ubuntu-20.04'
-    name: 'PHPUnit (PHP ${{ matrix.php }}, ES ${{ matrix.elasticsearch }})'
+    name: 'PHPUnit (PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony_require }}, ES ${{ matrix.elasticsearch }})'
     timeout-minutes: 10
     env:
       SYMFONY_REQUIRE: "${{ matrix.symfony_require }}"
@@ -44,11 +44,15 @@ jobs:
           - php: '7.4'
             elasticsearch: '7.9.0'
             dependencies: 'highest'
-            symfony_require: '5.3.*'
+            symfony_require: '5.4.*'
           - php: '8.0'
             elasticsearch: '7.11.0'
             dependencies: 'highest'
-            symfony_require: '5.3.*'
+            symfony_require: '5.4.*'
+          - php: '8.0'
+            elasticsearch: '7.11.0'
+            dependencies: 'highest'
+            symfony_require: '6.0.*'
       fail-fast: false
     steps:
       - name: 'Checkout'
@@ -59,11 +63,8 @@ jobs:
         with:
           php-version: '${{ matrix.php }}'
           coverage: 'none'
-          tools: 'pecl, composer:v2'
+          tools: 'pecl, composer:v2, flex'
           extensions: 'curl, json, mbstring, mongodb-1.9.0, openssl'
-
-      - name: "Globally install symfony/flex"
-        run: "composer global require --no-progress --no-scripts --no-plugins symfony/flex"
 
       - name: "Install Composer dependencies (${{ matrix.dependencies }})"
         uses: "ramsey/composer-install@v1"

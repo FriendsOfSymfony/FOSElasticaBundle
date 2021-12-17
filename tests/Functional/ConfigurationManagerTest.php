@@ -25,7 +25,7 @@ class ConfigurationManagerTest extends WebTestCase
     {
         static::bootKernel(['test_case' => 'Basic']);
         /** @var ConfigManager $manager */
-        $manager = self::$container->get('fos_elastica.config_manager');
+        $manager = $this->getContainerBC()->get('fos_elastica.config_manager');
 
         $index = $manager->getIndexConfiguration('index');
 
