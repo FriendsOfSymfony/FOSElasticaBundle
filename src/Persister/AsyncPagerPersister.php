@@ -88,7 +88,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
         $pager->setCurrentPage($options['first_page']);
 
         $results = $pager->getCurrentPageResults();
-        $objectCount = $results instanceof \Traversable ? \iterator_count($results): \count($results);
+        $objectCount = $results instanceof \Traversable ? \iterator_count($results) : \count($results);
 
         $pagerPersister = $this->pagerPersisterRegistry->getPagerPersister(InPlacePagerPersister::NAME);
         $pagerPersister->insert($pager, $options);
