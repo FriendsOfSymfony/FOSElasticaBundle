@@ -13,7 +13,6 @@ namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
 use Elastica\IndexTemplate;
 use FOS\ElasticaBundle\Index\IndexTemplateManager;
-use FOS\ElasticaBundle\Tests\Unit\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,8 +22,6 @@ use PHPUnit\Framework\TestCase;
  */
 class IndexTemplateManagerTest extends TestCase
 {
-    use ProphecyTrait;
-
     /**
      * Test get index template.
      *
@@ -56,16 +53,16 @@ class IndexTemplateManagerTest extends TestCase
             ],
             'expected template found' => [
                 'templates' => [
-                    'first template' => $firstTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
-                    'second template' => $secondTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
+                    'first template' => $firstTemplate = $this->createStub(IndexTemplate::class),
+                    'second template' => $secondTemplate = $this->createStub(IndexTemplate::class),
                 ],
                 'name' => 'second template',
                 'expectedTemplate' => $secondTemplate,
             ],
             'expected template not found' => [
                 'templates' => [
-                    'first template' => $firstTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
-                    'second template' => $secondTemplate = $this->prophesize(IndexTemplate::class)->reveal(),
+                    'first template' => $firstTemplate = $this->createStub(IndexTemplate::class),
+                    'second template' => $secondTemplate = $this->createStub(IndexTemplate::class),
                 ],
                 'name' => 'some template',
                 'expectedTemplate' => null,
