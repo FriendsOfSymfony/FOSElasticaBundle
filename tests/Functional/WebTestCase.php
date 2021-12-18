@@ -13,7 +13,6 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 use FOS\ElasticaBundle\Tests\Functional\app\AppKernel;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase as BaseKernelTestCase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -73,13 +72,21 @@ class WebTestCase extends BaseKernelTestCase
         return \substr(\strrchr(static::class, '\\'), 1);
     }
 
-    // To be removed when dropping support of Symfony < 5.3 and use "self::getContainer()" instead.
-    protected function getContainerBC(): ContainerInterface
+    /**
+     * To be removed when dropping support of Symfony < 5.3.
+     *
+     * @param mixed $arguments
+     */
+    public static function __callStatic(string $name, $arguments)
     {
-        if (\method_exists($this, 'getContainer')) {
-            return self::getContainer();
+        if ('getContainer' === $name) {
+            if (\method_exists(BaseKernelTestCase::class, $name)) {
+                return self::getContainer();
+            }
+
+            return self::$container;
         }
 
-        return self::$container;
+        throw new \BadMethodCallException("Method {$name} is not supported.");
     }
 }

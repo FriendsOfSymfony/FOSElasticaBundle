@@ -60,7 +60,7 @@ class MappingToElasticaTest extends WebTestCase
     {
         self::bootKernel(['test_case' => 'ORM']);
         /** @var ObjectPersisterInterface $persister */
-        $persister = $this->getContainerBC()->get('fos_elastica.object_persister.index');
+        $persister = self::getContainer()->get('fos_elastica.object_persister.index');
 
         $object = new TypeObj();
         $object->id = 1;
@@ -75,11 +75,11 @@ class MappingToElasticaTest extends WebTestCase
 
     private function getResetter(): ResetterInterface
     {
-        return $this->getContainerBC()->get('fos_elastica.resetter');
+        return self::getContainer()->get('fos_elastica.resetter');
     }
 
     private function getIndex(string $name = 'index'): Index
     {
-        return $this->getContainerBC()->get('fos_elastica.index.'.$name);
+        return self::getContainer()->get('fos_elastica.index.'.$name);
     }
 }
