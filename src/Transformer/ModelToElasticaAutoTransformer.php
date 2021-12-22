@@ -78,10 +78,8 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      *
      * @param array|\Traversable|\ArrayAccess $objects the object to convert
      * @param array                           $fields  the keys we want to have in the returned array
-     *
-     * @return array
      */
-    protected function transformNested($objects, array $fields)
+    protected function transformNested($objects, array $fields): ?array
     {
         if (\is_iterable($objects)) {
             $documents = [];
@@ -99,7 +97,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             return $document->getData();
         }
 
-        return [];
+        return null;
     }
 
     /**

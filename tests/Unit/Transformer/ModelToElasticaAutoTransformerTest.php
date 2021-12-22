@@ -492,7 +492,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ]);
 
         $data = $document->getData();
-        $this->assertIsArray($data['nullValue']);
+        $this->assertNull($data['nullValue']);
         $this->assertEmpty($data['nullValue']);
     }
 
