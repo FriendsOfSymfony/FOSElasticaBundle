@@ -116,7 +116,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             $sortDirection = $options['defaultSortDirection'];
         }
 
-        if ('desc' === \strtolower($sortDirection)) {
+        if (null !== $sortDirection && 'desc' === \strtolower($sortDirection)) {
             $dir = 'desc';
         }
 

@@ -49,7 +49,7 @@ jobs:
             elasticsearch: '7.11.0'
             dependencies: 'highest'
             symfony_require: '5.4.*'
-          - php: '8.0'
+          - php: '8.1'
             elasticsearch: '7.11.0'
             dependencies: 'highest'
             symfony_require: '6.0.*'
@@ -64,7 +64,7 @@ jobs:
           php-version: '${{ matrix.php }}'
           coverage: 'none'
           tools: 'pecl, composer:v2, flex'
-          extensions: 'curl, json, mbstring, mongodb-1.9.0, openssl'
+          extensions: 'curl, json, mbstring, mongodb, openssl'
 
       - name: "Install Composer dependencies (${{ matrix.dependencies }})"
         uses: "ramsey/composer-install@v1"
