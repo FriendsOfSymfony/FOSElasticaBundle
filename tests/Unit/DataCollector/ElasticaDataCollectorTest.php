@@ -115,7 +115,6 @@ class ElasticaDataCollectorTest extends UnitTestHelper
         $loggerMock = $this->createMock(ElasticaLogger::class);
         $loggerMock->expects($this->once())
             ->method('reset')
-            ->willReturn('foo')
         ;
 
         $elasticaDataCollector = new ElasticaDataCollector($loggerMock);
