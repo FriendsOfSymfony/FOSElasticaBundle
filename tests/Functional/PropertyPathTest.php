@@ -26,13 +26,13 @@ class PropertyPathTest extends WebTestCase
     {
         self::bootKernel(['test_case' => 'ORM']);
         /** @var ObjectPersisterInterface $persister */
-        $persister = self::$container->get('fos_elastica.object_persister.property_paths_index');
+        $persister = self::getContainer()->get('fos_elastica.object_persister.property_paths_index');
         $obj = new TypeObj();
         $obj->coll = 'Hello';
         $persister->insertOne($obj);
 
         /** @var Index $index */
-        $index = self::$container->get('fos_elastica.index.index');
+        $index = self::getContainer()->get('fos_elastica.index.index');
         $index->refresh();
 
         $query = new MatchQuery();
