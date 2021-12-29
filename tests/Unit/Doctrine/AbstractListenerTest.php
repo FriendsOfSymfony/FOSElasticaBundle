@@ -40,7 +40,7 @@ class Entity
  *
  * @author Richard Miller <info@limethinking.co.uk>
  */
-abstract class ListenerTest extends TestCase
+abstract class AbstractListenerTest extends TestCase
 {
     public function testObjectInsertedOnPersist()
     {
