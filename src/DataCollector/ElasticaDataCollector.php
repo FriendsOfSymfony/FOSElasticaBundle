@@ -23,7 +23,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
  */
 class ElasticaDataCollector extends DataCollector
 {
-    protected $logger;
+    protected ElasticaLogger $logger;
 
     public function __construct(ElasticaLogger $logger)
     {
@@ -78,15 +78,12 @@ class ElasticaDataCollector extends DataCollector
         return $time;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'elastica';
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->logger->reset();
         $this->data = [];
