@@ -48,10 +48,7 @@ class DeleteCommand extends Command
         ;
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $indexName = $input->getOption('index');
         $indexes = null === $indexName ? \array_keys($this->indexManager->getAllIndexes()) : [$indexName];
