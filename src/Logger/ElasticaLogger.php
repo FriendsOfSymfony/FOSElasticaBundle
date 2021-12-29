@@ -24,20 +24,9 @@ use Psr\Log\LoggerInterface;
  */
 class ElasticaLogger extends AbstractLogger
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var array
-     */
-    protected $queries = [];
-
-    /**
-     * @var bool
-     */
-    protected $debug;
+    protected ?LoggerInterface $logger;
+    protected array $queries = [];
+    protected bool $debug;
 
     public function __construct(?LoggerInterface $logger = null, bool $debug = false)
     {
@@ -111,15 +100,13 @@ class ElasticaLogger extends AbstractLogger
 
     /**
      * {@inheritdoc}
-     *
-     * @return void
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         $this->logger->log($level, $message, $context);
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->queries = [];
     }
