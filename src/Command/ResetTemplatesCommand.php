@@ -60,10 +60,7 @@ final class ResetTemplatesCommand extends Command
         ;
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $indexTemplate = $input->getOption('index');
         $deleteByPattern = $input->getOption('force-delete');
