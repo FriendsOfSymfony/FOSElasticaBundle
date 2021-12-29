@@ -4,6 +4,14 @@ CHANGELOG for 6.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
+### 6.1.0 ()
+* Added Symfony 6.1 support.
+* Dropped Symfony 5.3 supoport.
+* Fixed several deprecation notices.
+* Restore defer config on terminate listener event.
+* Return null instead of empty array for a null object in Elastica Document.
+* Fixed object count in AsyncPagerPersister
+
 ### 6.0.0 (2021-10-13)
 
 * Added PHPCR locale support.
