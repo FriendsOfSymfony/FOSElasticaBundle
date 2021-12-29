@@ -30,29 +30,34 @@ jobs:
 
   phpunit:
     runs-on: 'ubuntu-20.04'
-    name: 'PHPUnit (PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony_require }}, ES ${{ matrix.elasticsearch }})'
+    name: 'PHPUnit (PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} + ${{ matrix.dependencies }} deps, ES ${{ matrix.elasticsearch }})'
     timeout-minutes: 10
     env:
-      SYMFONY_REQUIRE: "${{ matrix.symfony_require }}"
+      SYMFONY_REQUIRE: "${{ matrix.symfony }}"
     strategy:
       matrix:
+        php:
+          - '7.4'
+          - '8.0'
+          - '8.1'
+        symfony:
+          - '4.4.*'
+          - '5.4.*'
+          - '6.0.*'
+        elasticsearch:
+          - '7.11.0'
+        dependencies:
+          - 'highest'
         include:
           - php: '7.4'
             elasticsearch: '7.0.0'
             dependencies: 'lowest'
-            symfony_require: '4.4.*'
+            symfony: '4.4.*'
+        exclude:
           - php: '7.4'
-            elasticsearch: '7.9.0'
+            symfony: '6.0.*'
             dependencies: 'highest'
-            symfony_require: '5.4.*'
-          - php: '8.0'
             elasticsearch: '7.11.0'
-            dependencies: 'highest'
-            symfony_require: '5.4.*'
-          - php: '8.1'
-            elasticsearch: '7.11.0'
-            dependencies: 'highest'
-            symfony_require: '6.0.*'
       fail-fast: false
     steps:
       - name: 'Checkout'
