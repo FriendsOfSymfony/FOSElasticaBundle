@@ -4,7 +4,7 @@ CHANGELOG for 6.0.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
-### 6.1.0 ()
+### 6.1.0 (2022-01-16)
 * Added Symfony 6.0 support.
 * Dropped Symfony 5.3 supoport.
 * Fixed several deprecation notices.
