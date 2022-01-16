@@ -5,7 +5,7 @@ This changelog references the relevant changes (bug and security fixes) done
 in 6.0 versions.
 
 ### 6.1.0 ()
-* Added Symfony 6.1 support.
+* Added Symfony 6.0 support.
 * Dropped Symfony 5.3 supoport.
 * Fixed several deprecation notices.
 * Restore defer config on terminate listener event.
