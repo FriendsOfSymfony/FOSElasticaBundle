@@ -10,7 +10,7 @@ in 6.0 versions.
 * Fixed several deprecation notices.
 * Restore defer config on terminate listener event.
 * Return null instead of empty array for a null object in Elastica Document.
-* Fixed object count in AsyncPagerPersister
+* Fixed object count in `AsyncPagerPersister`.
 
 ### 6.0.0 (2021-10-13)
 
