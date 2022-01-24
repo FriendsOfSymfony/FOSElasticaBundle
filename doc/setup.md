@@ -22,7 +22,7 @@ Instructions for installing and deploying Elasticsearch may be found [here](http
 B: Enable the Bundle
 -------------------------
 
-Then, enable the bundle by adding the following line in the `app/AppKernel.php`
+Then, enable the bundle by adding the following line in the `app/AppKernel.php` (Symfony 3.x)
 file of your project:
 
 ```php
