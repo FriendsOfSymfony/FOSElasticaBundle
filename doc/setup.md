@@ -22,26 +22,19 @@ Instructions for installing and deploying Elasticsearch may be found [here](http
 B: Enable the Bundle
 -------------------------
 
-Then, enable the bundle by adding the following line in the `app/AppKernel.php`
+Then, enable the bundle by adding the following line in the `config/bundles.php`
 file of your project:
 
 ```php
 <?php
-// app/AppKernel.php
 
-// ...
-class AppKernel extends Kernel
-{
-    public function registerBundles()
-    {
-        $bundles = [
-            // ...
-            new FOS\ElasticaBundle\FOSElasticaBundle(),
-        ];
+declare(strict_types=1);
 
-        // ...
-    }
-}
+return [
+    ...
+    FOS\ElasticaBundle\FOSElasticaBundle::class => ['all' => true],
+    ...
+];
 ```
 
 C: Basic Bundle Configuration
