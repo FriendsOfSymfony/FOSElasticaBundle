@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle;
 
+use FOS\ElasticaBundle\Finder\FinderInterface;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 
 /**
@@ -18,6 +19,7 @@ use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
  *
  * Basic repository to be extended to hold custom queries to be run
  * in the finder
+ * @phpstan-import-type TQuery from FinderInterface
  */
 class Repository
 {
@@ -31,6 +33,7 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
      *
      * @return array
      */
@@ -41,6 +44,7 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
      *
      * @return mixed
      */
@@ -51,6 +55,7 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
      *
      * @return \Pagerfanta\Pagerfanta
      */
@@ -61,6 +66,7 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
      *
      * @return Paginator\PaginatorAdapterInterface
      */
@@ -71,6 +77,7 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
      *
      * @return Paginator\HybridPaginatorAdapter
      */

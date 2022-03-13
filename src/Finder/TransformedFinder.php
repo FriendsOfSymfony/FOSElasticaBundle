@@ -22,6 +22,8 @@ use Pagerfanta\Pagerfanta;
 
 /**
  * Finds elastica documents and map them to persisted objects.
+ *
+ * @phpstan-import-type TQuery from FinderInterface
  */
 class TransformedFinder implements PaginatedFinderInterface
 {
@@ -52,7 +54,8 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * @param $query
+     * @param mixed $query
+     * @phpstan-param TQuery $query
      *
      * @return array
      */
@@ -64,7 +67,8 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * @param $query
+     * @param mixed $query
+     * @phpstan-param TQuery $query
      */
     public function findRaw($query, ?int $limit = null, array $options = []): array
     {
@@ -85,6 +89,7 @@ class TransformedFinder implements PaginatedFinderInterface
      * Searches for query hybrid results and returns them wrapped in a paginator.
      *
      * @param mixed $query Can be a string, an array or an \Elastica\Query object
+     * @phpstan-param TQuery $query
      *
      * @return Pagerfanta paginated hybrid results
      */
@@ -126,7 +131,8 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * @param $query
+     * @param mixed $query
+     * @phpstan-param TQuery $query
      *
      * @return array
      */
