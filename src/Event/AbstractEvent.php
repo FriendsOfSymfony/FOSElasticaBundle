@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FOS\ElasticaBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event as LegacyEvent;
-use Symfony\Contracts\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event as LegacyEvent;
 
 if (!class_exists(Event::class)) {
     /**
