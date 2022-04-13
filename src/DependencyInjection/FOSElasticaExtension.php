@@ -147,7 +147,7 @@ class FOSElasticaExtension extends Extension
             if (isset($clientConfig['connections'])) {
                 foreach ($clientConfig['connections'] as $connectionIndex => $connectionConfig) {
                     if (isset($connectionConfig['aws_credential_provider'])) {
-                        $clientConfig[$connectionIndex]['aws_credential_provider'] = new Reference($connectionConfig['aws_credential_provider']);
+                        $clientConfig['connections'][$connectionIndex]['aws_credential_provider'] = new Reference($connectionConfig['aws_credential_provider']);
                     }
                 }
             }
