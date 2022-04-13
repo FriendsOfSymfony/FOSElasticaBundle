@@ -144,6 +144,10 @@ class FOSElasticaExtension extends Extension
         foreach ($clients as $name => $clientConfig) {
             $clientId = \sprintf('fos_elastica.client.%s', $name);
 
+            if (isset($clientConfig['aws_credential_provider'])) {
+                $clientConfig['aws_credential_provider'] = new Reference($clientConfig['aws_credential_provider']);
+            }
+
             $clientDef = new ChildDefinition('fos_elastica.client_prototype');
             $clientDef->replaceArgument(0, $clientConfig);
             $clientDef->replaceArgument(1, null);
