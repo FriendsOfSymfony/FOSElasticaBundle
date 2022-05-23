@@ -112,6 +112,8 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
         $normalizeValue = static function (&$v) {
             if ($v instanceof \DateTimeInterface) {
                 $v = $v->format('c');
+            } elseif (\PHP_VERSION_ID >= 80100 && $v instanceof \BackedEnum) {
+                $v = $v->value;
             } elseif (!\is_scalar($v) && null !== $v) {
                 $v = (string) $v;
             }
