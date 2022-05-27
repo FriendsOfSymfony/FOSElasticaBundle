@@ -25,8 +25,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DeleteCommand extends Command
 {
-    protected static $defaultName = 'fos:elastica:delete';
-
     private $client;
     private $indexManager;
 

@@ -23,8 +23,6 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 final class ResetTemplatesCommand extends Command
 {
-    protected static $defaultName = 'fos:elastica:reset-templates';
-
     /** @var TemplateResetter */
     private $resetter;
 

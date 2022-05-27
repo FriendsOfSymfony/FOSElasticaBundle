@@ -23,8 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ResetCommand extends Command
 {
-    protected static $defaultName = 'fos:elastica:reset';
-
     private $indexManager;
     private $resetter;
 
