@@ -25,8 +25,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CreateCommand extends Command
 {
-    protected static $defaultName = 'fos:elastica:create';
-
     private $indexManager;
     private $mappingBuilder;
     private $configManager;

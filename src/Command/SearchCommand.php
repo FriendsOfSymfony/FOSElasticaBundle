@@ -25,8 +25,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SearchCommand extends Command
 {
-    protected static $defaultName = 'fos:elastica:search';
-
     private $indexManager;
 
     public function __construct(IndexManager $indexManager)

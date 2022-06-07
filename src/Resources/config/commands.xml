@@ -6,7 +6,7 @@
 
     <services>
         <service id="fos_elastica.command.create" class="FOS\ElasticaBundle\Command\CreateCommand">
-            <tag name="console.command" />
+            <tag name="console.command" command="fos:elastica:create" />
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.mapping_builder" />
             <argument type="service" id="fos_elastica.config_manager" />
@@ -14,13 +14,13 @@
         </service>
 
         <service id="fos_elastica.command.delete" class="FOS\ElasticaBundle\Command\DeleteCommand">
-            <tag name="console.command" />
+            <tag name="console.command" command="fos:elastica:delete" />
             <argument type="service" id="fos_elastica.client.default" />
             <argument type="service" id="fos_elastica.index_manager" />
         </service>
 
         <service id="fos_elastica.command.populate" class="FOS\ElasticaBundle\Command\PopulateCommand">
-            <tag name="console.command" />
+            <tag name="console.command" command="fos:elastica:populate" />
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.pager_provider_registry" />
@@ -29,18 +29,18 @@
         </service>
 
         <service id="fos_elastica.command.reset" class="FOS\ElasticaBundle\Command\ResetCommand">
-            <tag name="console.command" />
+            <tag name="console.command" command="fos:elastica:reset" />
             <argument type="service" id="fos_elastica.index_manager" />
             <argument type="service" id="fos_elastica.resetter" />
         </service>
 
         <service id="fos_elastica.command.templates_reset" class="FOS\ElasticaBundle\Command\ResetTemplatesCommand">
-            <tag name="console.command" />
+            <tag name="console.command" command="fos:elastica:reset-templates" />
             <argument type="service" id="fos_elastica.template_resetter" />
         </service>
 
         <service id="fos_elastica.command.search" class="FOS\ElasticaBundle\Command\SearchCommand">
-            <tag name="console.command" />
+            <tag name="console.command" command="fos:elastica:search" />
             <argument type="service" id="fos_elastica.index_manager" />
         </service>
     </services>

@@ -37,8 +37,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class PopulateCommand extends Command
 {
-    protected static $defaultName = 'fos:elastica:populate';
-
     /**
      * @var EventDispatcherInterface
      */
