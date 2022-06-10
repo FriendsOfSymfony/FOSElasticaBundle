@@ -18,7 +18,7 @@
         "symfony/http-kernel": "^5.0|^6.0",
         "symfony/console": "^5.0|^6.0",
         "symfony/property-access": "^5.0|^6.0",
-        "pagerfanta/pagerfanta": "^1.0.5|^2.0",
+        "pagerfanta/pagerfanta": "^3.0",
         "psr/log": "^1.0",
         "ruflin/elastica": "^5.3.5|^6.1.1"
     },

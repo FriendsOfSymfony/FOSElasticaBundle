@@ -14,7 +14,7 @@ namespace FOS\ElasticaBundle\Doctrine;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
-use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
+use Pagerfanta\Doctrine\MongoDBODM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 
 final class MongoDBPagerProvider implements PagerProviderInterface
@@ -64,7 +64,7 @@ final class MongoDBPagerProvider implements PagerProviderInterface
         $repository = $manager->getRepository($this->objectClass);
 
         $pager = new PagerfantaPager(new Pagerfanta(
-            new DoctrineODMMongoDBAdapter(call_user_func([$repository, $options['query_builder_method']]))
+            new QueryAdapter(call_user_func([$repository, $options['query_builder_method']]))
         ));
 
         $this->registerListenersService->register($manager, $pager, $options);

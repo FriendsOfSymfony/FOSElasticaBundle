@@ -14,7 +14,7 @@ namespace FOS\ElasticaBundle\Doctrine;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
-use Pagerfanta\Adapter\DoctrineODMPhpcrAdapter;
+use Pagerfanta\Doctrine\PHPCRODM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 
 final class PHPCRPagerProvider implements PagerProviderInterface
@@ -65,7 +65,7 @@ final class PHPCRPagerProvider implements PagerProviderInterface
         $manager = $this->doctrine->getManagerForClass($this->objectClass);
         $repository = $manager->getRepository($this->objectClass);
 
-        $adapter = new DoctrineODMPhpcrAdapter(
+        $adapter = new QueryAdapter(
             call_user_func([$repository, $options['query_builder_method']], static::ENTITY_ALIAS)
         );
 
