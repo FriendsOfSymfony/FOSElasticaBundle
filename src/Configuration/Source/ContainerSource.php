@@ -12,9 +12,12 @@
 namespace FOS\ElasticaBundle\Configuration\Source;
 
 use FOS\ElasticaBundle\Configuration\IndexConfig;
+use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 
 /**
  * Returns index and type configuration from the container.
+ *
+ * @phpstan-import-type TConfig from IndexConfigInterface
  */
 class ContainerSource implements SourceInterface
 {
@@ -22,9 +25,13 @@ class ContainerSource implements SourceInterface
      * The internal container representation of information.
      *
      * @var array
+     * @phpstan-var list<TConfig>
      */
     private $configArray;
 
+    /**
+     * @param list<TConfig> $configArray
+     */
     public function __construct(array $configArray)
     {
         $this->configArray = $configArray;
@@ -34,6 +41,7 @@ class ContainerSource implements SourceInterface
      * Should return all configuration available from the data source.
      *
      * @return IndexConfig[]
+     * @phpstan-return array<string, IndexConfig>
      */
     public function getConfiguration(): array
     {

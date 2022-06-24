@@ -16,6 +16,10 @@ use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Event\PostIndexMappingBuildEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @phpstan-import-type TMapping from IndexConfigInterface
+ * @phpstan-import-type TSettings from IndexConfigInterface
+ */
 class MappingBuilder
 {
     /**
@@ -30,6 +34,8 @@ class MappingBuilder
 
     /**
      * Builds mappings for an entire index.
+     *
+     * @return array{mappings: TMapping, settings: TSettings}
      */
     public function buildIndexMapping(IndexConfigInterface $indexConfig): array
     {
@@ -53,6 +59,8 @@ class MappingBuilder
 
     /**
      * Builds mappings for an entire index template.
+     *
+     * @return array{mappings: TMapping, settings: TSettings, template: string}
      */
     public function buildIndexTemplateMapping(IndexTemplateConfig $indexTemplateConfig): array
     {
@@ -64,6 +72,8 @@ class MappingBuilder
 
     /**
      * Builds mappings for a single type.
+     *
+     * @phpstan-return TMapping
      */
     public function buildMapping(?string $model, IndexConfigInterface $indexConfig): array
     {
@@ -108,6 +118,8 @@ class MappingBuilder
     /**
      * Fixes any properties and applies basic defaults for any field that does not have
      * required options.
+     *
+     * @param array<string, mixed> $properties
      */
     private function fixProperties(array &$properties): void
     {

@@ -12,8 +12,12 @@
 namespace FOS\ElasticaBundle\Event;
 
 use Elastica\Document;
+use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use Symfony\Contracts\EventDispatcher\Event;
 
+/**
+ * @phpstan-import-type TFields from ModelToElasticaAutoTransformer
+ */
 abstract class AbstractTransformEvent extends Event
 {
     /**
@@ -23,6 +27,7 @@ abstract class AbstractTransformEvent extends Event
 
     /**
      * @var array
+     * @phpstan-var TFields
      */
     private $fields;
 
@@ -31,6 +36,9 @@ abstract class AbstractTransformEvent extends Event
      */
     private $object;
 
+    /**
+     * @phpstan-param TFields $fields
+     */
     public function __construct(Document $document, array $fields, object $object)
     {
         $this->document = $document;
@@ -43,6 +51,9 @@ abstract class AbstractTransformEvent extends Event
         return $this->document;
     }
 
+    /**
+     * @phpstan-return TFields
+     */
     public function getFields(): array
     {
         return $this->fields;

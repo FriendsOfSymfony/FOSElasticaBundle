@@ -20,7 +20,7 @@ class ConfigSourcePass implements CompilerPassInterface
     public const SOURCE_TYPE_INDEX_TEMPLATE = 'index_template';
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function process(ContainerBuilder $container)
     {

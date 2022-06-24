@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class IndexPass implements CompilerPassInterface
 {
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function process(ContainerBuilder $container)
     {

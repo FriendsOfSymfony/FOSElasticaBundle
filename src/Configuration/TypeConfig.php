@@ -11,15 +11,23 @@
 
 namespace FOS\ElasticaBundle\Configuration;
 
+/**
+ * @phpstan-import-type TElasticConfig from IndexConfigInterface
+ * @phpstan-import-type TMapping from IndexConfigInterface
+ * @phpstan-import-type TDynamicDateFormats from IndexConfigInterface
+ * @phpstan-import-type TDynamic from IndexConfigInterface
+ */
 class TypeConfig
 {
     /**
      * @var array
+     * @phpstan-var TElasticConfig
      */
     private $config;
 
     /**
      * @var array
+     * @phpstan-var TMapping
      */
     private $mapping;
 
@@ -28,6 +36,10 @@ class TypeConfig
      */
     private $name;
 
+    /**
+     * @param TMapping $mapping
+     * @phpstan-param TElasticConfig $config
+     */
     public function __construct(string $name, array $mapping, array $config = [])
     {
         $this->config = $config;
@@ -40,6 +52,9 @@ class TypeConfig
         return $this->config['date_detection'] ?? null;
     }
 
+    /**
+     * @phpstan-return ?TDynamicDateFormats
+     */
     public function getDynamicDateFormats(): ?array
     {
         return $this->config['dynamic_date_formats'] ?? null;
@@ -50,6 +65,9 @@ class TypeConfig
         return $this->config['analyzer'] ?? null;
     }
 
+    /**
+     * @phpstan-return TMapping
+     */
     public function getMapping(): array
     {
         return $this->mapping;
@@ -65,8 +83,8 @@ class TypeConfig
         return $this->name;
     }
 
-    /*
-     * @return string|bool|null
+    /**
+     * @phpstan-return ?TDynamic
      */
     public function getDynamic()
     {

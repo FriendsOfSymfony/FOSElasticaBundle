@@ -19,14 +19,20 @@ interface PagerInterface
 
     public function getCurrentPage(): int;
 
+    /**
+     * @return void
+     */
     public function setCurrentPage(int $page);
 
     public function getMaxPerPage(): int;
 
+    /**
+     * @return void
+     */
     public function setMaxPerPage(int $perPage);
 
     /**
-     * @return array
+     * @return array<object>|\Traversable<object>
      */
     public function getCurrentPageResults();
 }

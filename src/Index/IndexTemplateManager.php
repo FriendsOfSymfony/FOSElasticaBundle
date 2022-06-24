@@ -23,10 +23,13 @@ class IndexTemplateManager
     /**
      * Templates.
      *
-     * @var array
+     * @var array<string, IndexTemplate>
      */
     private $templates;
 
+    /**
+     * @param array<string, IndexTemplate> $templates
+     */
     public function __construct(array $templates)
     {
         $this->templates = $templates;

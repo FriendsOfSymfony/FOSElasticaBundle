@@ -90,3 +90,52 @@ jobs:
       - name: 'Run unit tests'
         run: |
           vendor/bin/phpunit
+
+  phpstan:
+    runs-on: 'ubuntu-latest'
+    name: 'PHPStan (PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} + ${{ matrix.dependencies }} deps)'
+    timeout-minutes: 10
+    env:
+      SYMFONY_REQUIRE: "${{ matrix.symfony }}"
+    strategy:
+      matrix:
+        php:
+          - '7.4'
+          - '8.0'
+          - '8.1'
+        symfony:
+          - '4.4.*'
+          - '5.4.*'
+          - '6.0.*'
+        dependencies:
+          - 'highest'
+        include:
+          - php: '7.4'
+            dependencies: 'lowest'
+            symfony: '4.4.*'
+        exclude:
+          - php: '7.4'
+            symfony: '6.0.*'
+            dependencies: 'highest'
+      fail-fast: false
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v2'
+
+      - name: 'Setup PHP'
+        uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '${{ matrix.php }}'
+          coverage: 'none'
+          tools: 'pecl, composer:v2, flex'
+          extensions: 'curl, json, mbstring, mongodb, openssl'
+
+      - name: "Install Composer dependencies (${{ matrix.dependencies }})"
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+          composer-options: "--prefer-dist --prefer-stable"
+
+      - name: 'Run PHPStan'
+        run: |
+          composer sca

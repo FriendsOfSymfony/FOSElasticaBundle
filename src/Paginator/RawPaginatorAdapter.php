@@ -31,35 +31,36 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
     private $query;
 
     /**
-     * @var array search options
+     * @var array<string, mixed> search options
      */
     private $options;
 
     /**
-     * @var int the number of hits
+     * @var ?int the number of hits
      */
     private $totalHits;
 
     /**
-     * @var array for the aggregations
+     * @var array<string, mixed>|null for the aggregations
      */
     private $aggregations;
 
     /**
-     * @var array for the suggesters
+     * @var array<string, mixed>|null for the suggesters
      */
     private $suggests;
 
     /**
-     * @var float
+     * @var ?float
      */
     private $maxScore;
 
     /**
      * @see PaginatorAdapterInterface::__construct
      *
-     * @param SearchableInterface $searchable the object to search in
-     * @param Query               $query      the query to search
+     * @param SearchableInterface  $searchable the object to search in
+     * @param Query                $query      the query to search
+     * @param array<string, mixed> $options
      */
     public function __construct(SearchableInterface $searchable, Query $query, array $options = [])
     {
@@ -80,10 +81,12 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * Returns the number of results.
      *
      * If genuineTotal is provided as true, total hits is returned from the
-     * hits.total value from the search results instead of just returning
+     * `hits.total` value from the search results instead of just returning
      * the requested size.
      *
      * {@inheritdoc}
+     *
+     * @param bool $genuineTotal
      */
     public function getTotalHits($genuineTotal = false)
     {

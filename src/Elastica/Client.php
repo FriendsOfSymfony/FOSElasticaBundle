@@ -30,14 +30,14 @@ class Client extends BaseClient
     /**
      * Stores created indexes to avoid recreation.
      *
-     * @var array
+     * @var array<string, BaseIndex>
      */
     private $indexCache = [];
 
     /**
      * Stores created index template to avoid recreation.
      *
-     * @var array
+     * @var array<string, IndexTemplate>
      */
     private $indexTemplateCache = [];
 
@@ -50,6 +50,9 @@ class Client extends BaseClient
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<mixed> $data
+     * @param array<mixed> $query
      */
     public function request(string $path, string $method = Request::GET, $data = [], array $query = [], string $contentType = Request::DEFAULT_CONTENT_TYPE): Response
     {
@@ -65,7 +68,7 @@ class Client extends BaseClient
         $forbiddenHttpCodes = $connection->hasConfig('http_error_codes') ? $connection->getConfig('http_error_codes') : [];
 
         if (isset($transportInfo['http_code']) && \in_array($transportInfo['http_code'], $forbiddenHttpCodes, true)) {
-            $body = \is_array($responseData) ? \json_encode($responseData) : $responseData;
+            $body = \json_encode($responseData);
             $message = \sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $body);
             throw new ClientException($message);
         }
@@ -89,6 +92,9 @@ class Client extends BaseClient
         return $this->indexCache[$name] ?? ($this->indexCache[$name] = new Index($this, $name));
     }
 
+    /**
+     * @param string $name
+     */
     public function getIndexTemplate($name): IndexTemplate
     {
         // TODO PHP >= 7.4 ??=
@@ -106,9 +112,10 @@ class Client extends BaseClient
     /**
      * Log the query if we have an instance of ElasticaLogger.
      *
-     * @param array|string $data
-     * @param int          $queryTime
-     * @param int          $engineMS
+     * @param array<mixed>|string $data
+     * @param array<mixed>        $query
+     * @param float               $queryTime
+     * @param int                 $engineMS
      */
     private function logQuery(string $path, string $method, $data, array $query, $queryTime, $engineMS = 0, int $itemCount = 0): void
     {

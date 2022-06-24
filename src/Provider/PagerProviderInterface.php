@@ -11,7 +11,16 @@
 
 namespace FOS\ElasticaBundle\Provider;
 
+use FOS\ElasticaBundle\Event\AbstractIndexPopulateEvent;
+
+/**
+ * @phpstan-import-type TOptions from AbstractIndexPopulateEvent
+ * @phpstan-type TPagerProviderOptions = TOptions|array<string, mixed>
+ */
 interface PagerProviderInterface
 {
+    /**
+     * @phpstan-param TPagerProviderOptions $options
+     */
     public function provide(array $options = []): PagerInterface;
 }

@@ -20,6 +20,8 @@ class FOSElasticaBundle extends Bundle
 {
     /**
      * {@inheritdoc}
+     *
+     * @return void todo: remove
      */
     public function build(ContainerBuilder $container)
     {

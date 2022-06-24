@@ -20,6 +20,9 @@ use Elastica\Index as BaseIndex;
  */
 class Index extends BaseIndex
 {
+    /**
+     * @var ?string
+     */
     private $originalName;
 
     /**

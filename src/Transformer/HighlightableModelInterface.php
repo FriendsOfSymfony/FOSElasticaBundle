@@ -13,6 +13,8 @@ namespace FOS\ElasticaBundle\Transformer;
 
 /**
  * Indicates that the model should have elastica highlights injected.
+ *
+ * @phpstan-type THighlight = array<mixed>
  */
 interface HighlightableModelInterface
 {
@@ -27,6 +29,9 @@ interface HighlightableModelInterface
      * Set ElasticSearch highlight data.
      *
      * @param array $highlights array of highlight strings
+     * @phpstan-param list<THighlight> $highlights
+     *
+     * @return void
      */
     public function setElasticHighlights(array $highlights);
 }

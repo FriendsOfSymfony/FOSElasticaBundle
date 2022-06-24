@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Paginator;
 
 use Elastica\ResultSet;
+use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 
 /**
@@ -33,6 +34,9 @@ class HybridPartialResults extends RawPartialResults
 
     /**
      * {@inheritdoc}
+     *
+     * @return list<HybridResult>
+     * @phpstan-ignore-next-line
      */
     public function toArray(): array
     {

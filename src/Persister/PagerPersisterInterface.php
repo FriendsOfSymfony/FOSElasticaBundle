@@ -11,11 +11,18 @@
 
 namespace FOS\ElasticaBundle\Persister;
 
+use FOS\ElasticaBundle\Event\AbstractIndexPopulateEvent;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 
+/**
+ * @phpstan-import-type TOptions from AbstractIndexPopulateEvent
+ * @phpstan-type TPagerPersisterOptions = TOptions|array{}
+ */
 interface PagerPersisterInterface
 {
     /**
+     * @phpstan-param TPagerPersisterOptions $options
+     *
      * @return void
      */
     public function insert(PagerInterface $pager, array $options = []);

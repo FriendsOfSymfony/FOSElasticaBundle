@@ -15,6 +15,17 @@ namespace FOS\ElasticaBundle\Event;
  * Index Populate Event.
  *
  * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
+ *
+ * @phpstan-type TOptions = array{
+ *     delete: bool,
+ *     reset: bool,
+ *     ignore_errors: bool,
+ *     sleep: int,
+ *     first_page: int,
+ *     max_per_page: int,
+ *     last_page?: int,
+ *     indexName?: string
+ * }
  */
 abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
 {
@@ -25,9 +36,13 @@ abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
 
     /**
      * @var array
+     * @phpstan-var TOptions
      */
     protected $options;
 
+    /**
+     * @phpstan-param TOptions $options
+     */
     public function __construct(string $index, bool $reset, array $options)
     {
         parent::__construct($index);
@@ -41,6 +56,9 @@ abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
         return $this->reset;
     }
 
+    /**
+     * @phpstan-return TOptions
+     */
     public function getOptions(): array
     {
         return $this->options;

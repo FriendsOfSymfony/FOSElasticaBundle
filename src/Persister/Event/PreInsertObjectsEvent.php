@@ -28,15 +28,19 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
     private $objectPersister;
 
     /**
-     * @var object[]
+     * @var list<object>
      */
     private $objects;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $options;
 
+    /**
+     * @param list<object>         $objects
+     * @param array<string, mixed> $options
+     */
     public function __construct(PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $objects, array $options)
     {
         $this->pager = $pager;
@@ -50,6 +54,9 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
         return $this->pager;
     }
 
+    /**
+     * @return void
+     */
     public function setPager(PagerInterface $pager)
     {
         $this->pager = $pager;
@@ -60,6 +67,11 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
         return $this->options;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return void
+     */
     public function setOptions(array $options)
     {
         $this->options = $options;
@@ -70,13 +82,16 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
         return $this->objectPersister;
     }
 
+    /**
+     * @return void
+     */
     public function setObjectPersister(ObjectPersisterInterface $objectPersister)
     {
         $this->objectPersister = $objectPersister;
     }
 
     /**
-     * @return object[]
+     * @return list<object>
      */
     public function getObjects()
     {
@@ -84,7 +99,9 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
     }
 
     /**
-     * @param object[] $objects
+     * @param list<object> $objects
+     *
+     * @return void
      */
     public function setObjects($objects)
     {

@@ -22,16 +22,46 @@ use Psr\Log\LoggerInterface;
  * Accepts domain model objects and converts them to elastica documents.
  *
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
+ *
+ * @phpstan-type TOptions = array<string, mixed>
+ * @phpstan-import-type TFields from ModelToElasticaTransformerInterface
+ *
+ * @see https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html for TOptions description
  */
 class ObjectPersister implements ObjectPersisterInterface
 {
+    /**
+     * @var Index
+     */
     protected $index;
+    /**
+     * @var ModelToElasticaTransformerInterface
+     */
     protected $transformer;
+    /**
+     * @var class-string
+     */
     protected $objectClass;
+    /**
+     * @var array
+     * @phpstan-var TFields
+     */
     protected $fields;
+    /**
+     * @var ?LoggerInterface
+     */
     protected $logger;
+    /**
+     * @var array
+     * @phpstan-var TOptions
+     */
     private $options;
 
+    /**
+     * @param class-string $objectClass
+     * @phpstan-param TFields $fields
+     * @phpstan-param TOptions $options
+     */
     public function __construct(Index $index, ModelToElasticaTransformerInterface $transformer, string $objectClass, array $fields, array $options = [])
     {
         $this->index = $index;
@@ -49,6 +79,9 @@ class ObjectPersister implements ObjectPersisterInterface
         return $object instanceof $this->objectClass;
     }
 
+    /**
+     * @return void
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -161,6 +194,8 @@ class ObjectPersister implements ObjectPersisterInterface
      * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw.
      *
      * @throws BulkException
+     *
+     * @return void
      */
     private function log(BulkException $e)
     {

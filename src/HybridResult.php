@@ -15,15 +15,27 @@ use Elastica\Result;
 
 class HybridResult
 {
+    /**
+     * @var Result
+     */
     protected $result;
+    /**
+     * @var ?object
+     */
     protected $transformed;
 
+    /**
+     * @param ?object $transformed
+     */
     public function __construct(Result $result, $transformed = null)
     {
         $this->result = $result;
         $this->transformed = $transformed;
     }
 
+    /**
+     * @return ?object
+     */
     public function getTransformed()
     {
         return $this->transformed;

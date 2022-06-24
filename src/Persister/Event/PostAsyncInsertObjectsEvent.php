@@ -38,10 +38,13 @@ final class PostAsyncInsertObjectsEvent extends Event implements PersistEvent
     private $errorMessage;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $options;
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(PagerInterface $pager, ObjectPersisterInterface $objectPersister, int $objectsCount, ?string $errorMessage, array $options)
     {
         $this->pager = $pager;

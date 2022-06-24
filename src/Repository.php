@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle;
 
+use FOS\ElasticaBundle\Finder\FinderInterface;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 
 /**
@@ -18,6 +19,9 @@ use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
  *
  * Basic repository to be extended to hold custom queries to be run
  * in the finder
+ *
+ * @phpstan-import-type TQuery from FinderInterface
+ * @phpstan-import-type TOptions from FinderInterface
  */
 class Repository
 {
@@ -31,8 +35,10 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
+     * @phpstan-param TOptions $options
      *
-     * @return array
+     * @return array<object>
      */
     public function find($query, ?int $limit = null, array $options = [])
     {
@@ -41,8 +47,10 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
+     * @phpstan-param TOptions $options
      *
-     * @return mixed
+     * @return list<HybridResult>
      */
     public function findHybrid($query, ?int $limit = null, array $options = [])
     {
@@ -51,8 +59,10 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
+     * @phpstan-param TOptions $options
      *
-     * @return \Pagerfanta\Pagerfanta
+     * @return \Pagerfanta\Pagerfanta<object>
      */
     public function findPaginated($query, array $options = [])
     {
@@ -61,6 +71,8 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
+     * @phpstan-param TOptions $options
      *
      * @return Paginator\PaginatorAdapterInterface
      */
@@ -71,8 +83,10 @@ class Repository
 
     /**
      * @param mixed $query
+     * @phpstan-param TQuery $query
+     * @phpstan-param TOptions $options
      *
-     * @return Paginator\HybridPaginatorAdapter
+     * @return Paginator\PaginatorAdapterInterface
      */
     public function createHybridPaginatorAdapter($query, array $options = [])
     {

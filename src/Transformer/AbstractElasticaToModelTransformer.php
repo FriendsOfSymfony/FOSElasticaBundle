@@ -24,6 +24,8 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
 
     /**
      * Set the PropertyAccessor instance.
+     *
+     * @return void
      */
     public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
     {

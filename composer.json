@@ -58,7 +58,11 @@
         "symfony/serializer": "^4.4 || ^5.4 || ^6.0",
         "symfony/twig-bundle": "^4.4 || ^5.4 || ^6.0",
         "symfony/web-profiler-bundle": "^4.4 || ^5.4 || ^6.0",
-        "symfony/yaml": "^4.4 || ^5.4 || ^6.0"
+        "symfony/yaml": "^4.4 || ^5.4 || ^6.0",
+        "phpstan/phpstan": "^1.4",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-symfony": "^1.2",
+        "phpstan/phpstan-phpunit": "^1.1"
     },
     "suggest": {
         "enqueue/elastica-bundle": "For populating Elasticsearch indexes asynchronously and using significanly less resources. Uses Enqueue.",
@@ -78,5 +82,18 @@
         "branch-alias": {
             "dev-master": "6.1.x-dev"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "scripts": {
+        "cs": [
+            "@php vendor/bin/php-cs-fixer fix --allow-risky=yes"
+        ],
+        "sca": [
+            "@php vendor/bin/phpstan --memory-limit=256M"
+        ]
     }
 }

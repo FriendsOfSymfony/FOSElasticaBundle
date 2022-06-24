@@ -30,6 +30,9 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         $this->requestStack = $requestStack;
     }
 
+    /**
+     * @return void
+     */
     public function items(ItemsEvent $event)
     {
         if ($event->target instanceof PaginatorAdapterInterface) {
@@ -50,9 +53,6 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @return array
-     */
     public static function getSubscribedEvents()
     {
         return [
@@ -62,10 +62,13 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 
     /**
      * Adds knp paging sort to query.
+     *
+     * @return void
      */
     protected function setSorting(ItemsEvent $event)
     {
         // Bugfix for PHP 7.4 as options can be null and generate a "Trying to access array offset on value of type null" error
+        // @phpstan-ignore-next-line
         $options = $event->options ?? [];
         $sortField = $this->getFromRequest($options['sortFieldParameterName'] ?? null);
 
@@ -80,6 +83,12 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param string               $sortField
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
+     */
     protected function getSort($sortField, array $options = [])
     {
         $sort = [
@@ -107,6 +116,12 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         return $sort;
     }
 
+    /**
+     * @param string               $sortField
+     * @param array<string, mixed> $options
+     *
+     * @return string
+     */
     protected function getSortDirection($sortField, array $options = [])
     {
         $dir = 'asc';

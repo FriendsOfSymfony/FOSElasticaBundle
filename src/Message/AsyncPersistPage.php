@@ -11,6 +11,11 @@
 
 namespace FOS\ElasticaBundle\Message;
 
+use FOS\ElasticaBundle\Event\AbstractIndexPopulateEvent;
+
+/**
+ * @phpstan-import-type TOptions from AbstractIndexPopulateEvent
+ */
 class AsyncPersistPage
 {
     /**
@@ -20,9 +25,13 @@ class AsyncPersistPage
 
     /**
      * @var array
+     * @phpstan-var TOptions
      */
     private $options;
 
+    /**
+     * @phpstan-param TOptions $options
+     */
     public function __construct(int $page, array $options)
     {
         $this->page = $page;
@@ -34,6 +43,9 @@ class AsyncPersistPage
         return $this->page;
     }
 
+    /**
+     * @phpstan-return TOptions
+     */
     public function getOptions(): array
     {
         return $this->options;

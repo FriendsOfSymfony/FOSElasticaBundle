@@ -38,6 +38,9 @@ class DeleteCommand extends Command
         $this->indexManager = $indexManager;
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this

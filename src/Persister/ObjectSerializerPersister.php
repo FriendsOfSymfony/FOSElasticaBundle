@@ -21,13 +21,20 @@ use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
  * Accepts domain model objects and passes them directly to elastica.
  *
  * @author Lea Haensenberber <lea.haensenberger@gmail.com>
+ *
+ * @phpstan-type TSerializer = (callable(object):array<string, mixed>|string)
  */
 class ObjectSerializerPersister extends ObjectPersister
 {
+    /**
+     * @var callable
+     * @phpstan-var TSerializer
+     */
     protected $serializer;
 
     /**
      * @param callable $serializer
+     * @phpstan-param TSerializer $serializer
      */
     public function __construct(Index $index, ModelToElasticaTransformerInterface $transformer, string $objectClass, $serializer, array $options = [])
     {

@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Command;
 
 use FOS\ElasticaBundle\Configuration\ConfigManager;
+use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Index\AliasProcessor;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\MappingBuilder;
@@ -44,6 +45,9 @@ class CreateCommand extends Command
         $this->aliasProcessor = $aliasProcessor;
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -62,6 +66,9 @@ class CreateCommand extends Command
             $output->writeln(\sprintf('<info>Creating</info> <comment>%s</comment>', $indexName));
 
             $indexConfig = $this->configManager->getIndexConfiguration($indexName);
+            if (!$indexConfig instanceof IndexConfig) {
+                throw new \RuntimeException(\sprintf('Incorrect index configuration object. Expecting IndexConfig, but got: %s ', \get_class($indexConfig)));
+            }
             $index = $this->indexManager->getIndex($indexName);
             if ($indexConfig->isUseAlias()) {
                 $this->aliasProcessor->setRootName($indexConfig, $index);

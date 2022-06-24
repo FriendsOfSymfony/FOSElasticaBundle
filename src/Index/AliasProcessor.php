@@ -22,6 +22,8 @@ class AliasProcessor
 {
     /**
      * Sets the randomised root name for an index.
+     *
+     * @return void
      */
     public function setRootName(IndexConfig $indexConfig, Index $index)
     {
@@ -41,6 +43,8 @@ class AliasProcessor
      * $force will delete an index encountered where an alias is expected.
      *
      * @throws AliasIsIndexException
+     *
+     * @return void
      */
     public function switchIndexAlias(IndexConfig $indexConfig, Index $index, bool $force = false, bool $delete = true)
     {
@@ -68,6 +72,7 @@ class AliasProcessor
             $aliasUpdateRequest = $this->buildAliasUpdateRequest($oldIndexName, $aliasName, $newIndexName);
             $client->request('_aliases', 'POST', $aliasUpdateRequest);
         } catch (ExceptionInterface $e) {
+            \assert($e instanceof \Throwable); // https://github.com/ruflin/Elastica/pull/2083
             $this->cleanupRenameFailure($client, $newIndexName, $e);
         }
 
@@ -83,6 +88,8 @@ class AliasProcessor
 
     /**
      * Builds an ElasticSearch request to rename or create an alias.
+     *
+     * @return array{actions: list<mixed>}
      */
     private function buildAliasUpdateRequest(?string $aliasedIndex, string $aliasName, string $newIndexName): array
     {
@@ -105,7 +112,7 @@ class AliasProcessor
     /**
      * Cleans up an index when we encounter a failure to rename the alias.
      */
-    private function cleanupRenameFailure(Client $client, string $indexName, \Exception $renameAliasException): void
+    private function cleanupRenameFailure(Client $client, string $indexName, \Throwable $renameAliasException): void
     {
         $additionalError = '';
         try {

@@ -21,11 +21,14 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  * Maps Elastica documents with Doctrine objects
  * This mapper assumes an exact match between
  * elastica documents ids and doctrine object ids.
+ *
+ * @phpstan-import-type TFields from ModelToElasticaTransformerInterface
+ * @phpstan-type TOptions = array{identifier: string, index: string}
  */
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var EventDispatcherInterface
+     * @var ?EventDispatcherInterface
      */
     protected $dispatcher;
 
@@ -33,6 +36,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * Optional parameters.
      *
      * @var array
+     * @phpstan-var TOptions
      */
     protected $options = [
         'identifier' => 'id',
@@ -48,6 +52,8 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
     /**
      * Instanciates a new Mapper.
+     *
+     * @phpstan-param array<string, mixed> $options
      */
     public function __construct(array $options = [], ?EventDispatcherInterface $dispatcher = null)
     {
@@ -58,7 +64,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     /**
      * Set the PropertyAccessor.
      */
-    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor): void
     {
         $this->propertyAccessor = $propertyAccessor;
     }
@@ -76,8 +82,11 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     /**
      * transform a nested document or an object property into an array of ElasticaDocument.
      *
-     * @param array|\Traversable|\ArrayAccess $objects the object to convert
-     * @param array                           $fields  the keys we want to have in the returned array
+     * @param array<object>|\Traversable<object>|\ArrayAccess<mixed,mixed>|null $objects the object to convert
+     * @param array                                                             $fields  the keys we want to have in the returned array
+     * @phpstan-param TFields $fields
+     *
+     * @return array<mixed>
      */
     protected function transformNested($objects, array $fields): ?array
     {
@@ -105,7 +114,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      *
      * @param mixed $value
      *
-     * @return string|array
+     * @return string|list<string>
      */
     protected function normalizeValue($value)
     {
@@ -131,6 +140,8 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
     /**
      * Transforms the given object to an elastica document.
+     *
+     * @phpstan-param TFields $fields
      */
     protected function transformObjectToDocument(object $object, array $fields, string $identifier = ''): Document
     {

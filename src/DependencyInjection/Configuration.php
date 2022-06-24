@@ -113,7 +113,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "properties".
      */
-    private function getPropertiesNode()
+    private function getPropertiesNode(): ArrayNodeDefinition
     {
         $node = $this->createTreeBuilderNode('properties');
 
@@ -129,7 +129,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "_id".
      */
-    private function getIdNode()
+    private function getIdNode(): ArrayNodeDefinition
     {
         $node = $this->createTreeBuilderNode('_id');
 
@@ -145,7 +145,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "_source".
      */
-    private function getSourceNode()
+    private function getSourceNode(): ArrayNodeDefinition
     {
         $node = $this->createTreeBuilderNode('_source');
 
@@ -171,7 +171,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns the array node used for "_routing".
      */
-    private function getRoutingNode()
+    private function getRoutingNode(): ArrayNodeDefinition
     {
         $node = $this->createTreeBuilderNode('_routing');
 
@@ -186,7 +186,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
+     * @return ArrayNodeDefinition
      */
     private function getPersistenceNode()
     {
@@ -290,7 +290,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
+     * @return ArrayNodeDefinition
      */
     private function getSerializerNode()
     {
@@ -316,7 +316,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Adds the configuration for the "clients" key.
      */
-    private function addClientsSection(ArrayNodeDefinition $rootNode)
+    private function addClientsSection(ArrayNodeDefinition $rootNode): void
     {
         $rootNode
             ->fixXmlConfig('client')
@@ -425,7 +425,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Adds the configuration for the "indexes" key.
      */
-    private function addIndexesSection(ArrayNodeDefinition $rootNode)
+    private function addIndexesSection(ArrayNodeDefinition $rootNode): void
     {
         $rootNode
             ->fixXmlConfig('index')
@@ -473,7 +473,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @return ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
+     * @return ArrayNodeDefinition
      */
     private function createTreeBuilderNode(string $name)
     {
