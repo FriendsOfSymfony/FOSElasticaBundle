@@ -44,6 +44,7 @@
         "doctrine/mongodb-odm": "^2.2",
         "doctrine/orm": "^2.8",
         "doctrine/phpcr-odm": "^1.4",
+        "ergebnis/composer-normalize": "^2.28",
         "friendsofphp/php-cs-fixer": "^3.0",
         "jackalope/jackalope-doctrine-dbal": "^1.2",
         "jms/serializer": "^3.8",
@@ -52,17 +53,17 @@
         "pagerfanta/doctrine-mongodb-odm-adapter": "^2.4 || ^3.0",
         "pagerfanta/doctrine-orm-adapter": "^2.4 || ^3.0",
         "pagerfanta/doctrine-phpcr-odm-adapter": "^2.4 || ^3.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^1.4",
+        "phpstan/phpstan-phpunit": "^1.1",
+        "phpstan/phpstan-symfony": "^1.2",
         "phpunit/phpunit": "^9.5",
         "symfony/expression-language": "^4.4 || ^5.4 || ^6.0",
         "symfony/messenger": "^4.4 || ^5.4 || ^6.0",
         "symfony/serializer": "^4.4 || ^5.4 || ^6.0",
         "symfony/twig-bundle": "^4.4 || ^5.4 || ^6.0",
         "symfony/web-profiler-bundle": "^4.4 || ^5.4 || ^6.0",
-        "symfony/yaml": "^4.4 || ^5.4 || ^6.0",
-        "phpstan/phpstan": "^1.4",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan-symfony": "^1.2",
-        "phpstan/phpstan-phpunit": "^1.1"
+        "symfony/yaml": "^4.4 || ^5.4 || ^6.0"
     },
     "suggest": {
         "enqueue/elastica-bundle": "For populating Elasticsearch indexes asynchronously and using significanly less resources. Uses Enqueue.",
@@ -78,14 +79,15 @@
             "FOS\\ElasticaBundle\\Tests\\": "tests/"
         }
     },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "ergebnis/composer-normalize": true
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "6.1.x-dev"
-        }
-    },
-    "config": {
-        "allow-plugins": {
-            "phpstan/extension-installer": true
         }
     },
     "scripts": {
