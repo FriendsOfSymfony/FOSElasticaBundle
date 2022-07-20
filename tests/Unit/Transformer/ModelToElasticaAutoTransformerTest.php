@@ -14,6 +14,8 @@ namespace FOS\ElasticaBundle\Tests\Unit\Transformer;
 use Elastica\Document;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use FOS\ElasticaBundle\Event\PreTransformEvent;
+use FOS\ElasticaBundle\Tests\Unit\Transformer\fixtures\FieldEnumInt;
+use FOS\ElasticaBundle\Tests\Unit\Transformer\fixtures\FieldEnumString;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -524,6 +526,23 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $document = $transformer->transform($object, []);
 
         $this->assertSame('00000000-0000-0000-0000-000000000000', $document->getId());
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testBackedEnumIsCastedToItsValue(): void
+    {
+        $object = new \stdClass();
+        $object->id = 123;
+        $object->int = $intEnum = FieldEnumInt::FOO;
+        $object->string = $stringEnum = FieldEnumString::FOO;
+
+        $transformer = $this->getTransformer();
+        $document = $transformer->transform($object, ['int' => 'int', 'string' => 'string']);
+
+        $this->assertSame($intEnum->value, $document->get('int'));
+        $this->assertSame($stringEnum->value, $document->get('string'));
     }
 
     /**
