@@ -70,7 +70,7 @@ class CreateCommand extends Command
             $index->create($mapping);
 
             if ($indexConfig->isUseAlias() && !$input->getOption('no-alias')) {
-                $index->addAlias($indexName);
+                $index->addAlias($indexConfig->getElasticSearchName());
             }
         }
 
