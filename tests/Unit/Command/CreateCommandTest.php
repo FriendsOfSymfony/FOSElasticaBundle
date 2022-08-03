@@ -99,6 +99,7 @@ class CreateCommandTest extends TestCase
         $this->configManager->expects($this->once())->method('getIndexConfiguration')->with($indexName)->willReturn($this->indexConfig);
         $this->indexManager->expects($this->once())->method('getIndex')->with($indexName)->willReturn($this->index);
         $this->indexConfig->expects($this->exactly(2))->method('isUseAlias')->willReturn(true);
+        $this->indexConfig->expects($this->once())->method('getElasticSearchName')->willReturn($indexName);
         $this->aliasProcessor->expects($this->once())->method('setRootName')->with($this->indexConfig, $this->index);
         $this->mappingBuilder->expects($this->once())->method('buildIndexMapping')->with($this->indexConfig)->willReturn($mapping);
         $this->index->expects($this->once())->method('create')->with(['mapping'], false);
