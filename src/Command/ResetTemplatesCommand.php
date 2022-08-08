@@ -24,8 +24,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 final class ResetTemplatesCommand extends Command
 {
-    /** @var TemplateResetter */
-    private $resetter;
+    private TemplateResetter $resetter;
 
     public function __construct(
         TemplateResetter $resetter

@@ -25,8 +25,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DeleteCommand extends Command
 {
-    private $client;
-    private $indexManager;
+    private Client $client;
+    private IndexManager $indexManager;
 
     public function __construct(
         Client $client,
