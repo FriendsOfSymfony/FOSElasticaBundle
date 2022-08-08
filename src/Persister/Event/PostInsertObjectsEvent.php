@@ -28,15 +28,19 @@ final class PostInsertObjectsEvent extends Event implements PersistEvent
     private $objectPersister;
 
     /**
-     * @var object[]
+     * @var list<object>
      */
     private $objects;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $options;
 
+    /**
+     * @param list<object>         $objects
+     * @param array<string, mixed> $options
+     */
     public function __construct(PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $objects, array $options)
     {
         $this->pager = $pager;
@@ -61,7 +65,7 @@ final class PostInsertObjectsEvent extends Event implements PersistEvent
     }
 
     /**
-     * @return object[]
+     * @return list<object>
      */
     public function getObjects(): array
     {

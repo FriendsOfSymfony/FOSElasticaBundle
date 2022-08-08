@@ -66,7 +66,7 @@ class RawPaginatorAdapterTest extends UnitTestHelper
 
         $query = new Query();
         $options = [];
-        $searchable = $this->mockSearchable($query);
+        $searchable = $this->mockSearchable();
 
         $adapter = new RawPaginatorAdapter($searchable, $query, $options);
         $this->assertEquals($query, $adapter->getQuery());

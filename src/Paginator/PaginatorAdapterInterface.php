@@ -33,14 +33,14 @@ interface PaginatorAdapterInterface
     /**
      * Returns Aggregations.
      *
-     * @return mixed
+     * @return array<string, mixed>
      */
     public function getAggregations();
 
     /**
      * Returns Suggests.
      *
-     * @return mixed
+     * @return array<string, mixed>
      */
     public function getSuggests();
 

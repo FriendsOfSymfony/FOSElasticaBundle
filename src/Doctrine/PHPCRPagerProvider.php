@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\Doctrine;
 
+use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use Doctrine\ODM\PHPCR\Translation\LocaleChooser\LocaleChooser;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
@@ -61,6 +62,7 @@ final class PHPCRPagerProvider implements PagerProviderInterface
     {
         $options = \array_replace($this->baseOptions, $options);
 
+        /** @var DocumentManagerInterface $manager */
         $manager = $this->doctrine->getManagerForClass($this->objectClass);
         if (isset($options['locale'])) {
             /** @var LocaleChooser $localeChooser */

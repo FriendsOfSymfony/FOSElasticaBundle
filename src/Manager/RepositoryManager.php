@@ -23,12 +23,12 @@ use FOS\ElasticaBundle\Repository;
 class RepositoryManager implements RepositoryManagerInterface
 {
     /**
-     * @var array
+     * @var array<string, array{finder: FinderInterface, repositoryName: ?class-string}>
      */
     private $indexes = [];
 
     /**
-     * @var array
+     * @var array<string, Repository>
      */
     private $repositories = [];
 
@@ -67,13 +67,16 @@ class RepositoryManager implements RepositoryManagerInterface
         return isset($this->indexes[$indexName]);
     }
 
+    /**
+     * @return class-string
+     */
     protected function getRepositoryName(string $indexName): string
     {
         return $this->indexes[$indexName]['repositoryName'] ?? Repository::class;
     }
 
     /**
-     * @return mixed
+     * @return Repository
      */
     private function createRepository(string $indexName)
     {

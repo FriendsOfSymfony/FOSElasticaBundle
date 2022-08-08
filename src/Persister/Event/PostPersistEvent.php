@@ -28,10 +28,13 @@ final class PostPersistEvent extends Event implements PersistEvent
     private $objectPersister;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $options;
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function __construct(PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $options)
     {
         $this->pager = $pager;

@@ -16,6 +16,9 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+/**
+ * @phpstan-import-type TPagerPersisterOptions from PagerPersisterInterface
+ */
 final class AsyncPagerPersister implements PagerPersisterInterface
 {
     public const NAME = 'async';
@@ -70,6 +73,9 @@ final class AsyncPagerPersister implements PagerPersisterInterface
         } while ($page <= $lastPage);
     }
 
+    /**
+     * @phpstan-param TPagerPersisterOptions $options
+     */
     public function insertPage(int $page, array $options = []): int
     {
         if (!isset($options['indexName'])) {

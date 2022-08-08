@@ -18,11 +18,15 @@ interface ManagerInterface
 {
     /**
      * Returns configuration for an index.
+     *
+     * @throws \InvalidArgumentException if no index configured for the given name
      */
     public function getIndexConfiguration(string $index): IndexConfigInterface;
 
     /**
      * Returns an array of known index names.
+     *
+     * @phpstan-return list<string>
      */
     public function getIndexNames(): array;
 }

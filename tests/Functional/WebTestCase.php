@@ -84,6 +84,7 @@ class WebTestCase extends BaseKernelTestCase
                 return self::getContainer();
             }
 
+            // @phpstan-ignore-next-line
             return self::$container;
         }
 

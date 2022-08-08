@@ -15,6 +15,10 @@ namespace FOS\ElasticaBundle\Configuration;
  * Index configuration trait class.
  *
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
+ *
+ * @phpstan-import-type TMapping from IndexConfigInterface
+ * @phpstan-import-type TSettings from IndexConfigInterface
+ * @phpstan-import-type TConfig from IndexConfigInterface
  */
 trait IndexConfigTrait
 {
@@ -44,16 +48,22 @@ trait IndexConfigTrait
      * An array of settings sent to ElasticSearch when creating the index.
      *
      * @var array
+     * @phpstan-var TSettings
+     * @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
      */
     private $settings;
 
     /**
      * @var array
+     * @phpstan-var TConfig
+     * @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
      */
     private $config;
 
     /**
      * @var array
+     * @phpstan-var TMapping
+     * @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
      */
     private $mapping;
 
@@ -74,36 +84,43 @@ trait IndexConfigTrait
 
     public function getSettings(): array
     {
+        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         return $this->settings;
     }
 
     public function getDateDetection(): ?bool
     {
+        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         return $this->config['date_detection'] ?? null;
     }
 
     public function getDynamicDateFormats(): ?array
     {
+        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         return $this->config['dynamic_date_formats'] ?? null;
     }
 
     public function getAnalyzer(): ?string
     {
+        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         return $this->config['analyzer'] ?? null;
     }
 
     public function getMapping(): array
     {
+        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         return $this->mapping;
     }
 
     public function getNumericDetection(): ?bool
     {
+        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         return $this->config['numeric_detection'] ?? null;
     }
 
     public function getDynamic()
     {
+        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         return $this->config['dynamic'] ?? null;
     }
 }

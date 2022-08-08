@@ -13,13 +13,19 @@ namespace FOS\ElasticaBundle\Provider;
 
 use Pagerfanta\Pagerfanta;
 
+/**
+ * @template T
+ */
 class PagerfantaPager implements PagerInterface
 {
     /**
-     * @var Pagerfanta
+     * @var Pagerfanta<T>
      */
     private $pagerfanta;
 
+    /**
+     * @param Pagerfanta<T> $pagerfanta
+     */
     public function __construct(Pagerfanta $pagerfanta)
     {
         $this->pagerfanta = $pagerfanta;
@@ -74,13 +80,16 @@ class PagerfantaPager implements PagerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @phpstan-return iterable<array-key, T>
      */
     public function getCurrentPageResults()
     {
         return $this->pagerfanta->getCurrentPageResults();
     }
 
+    /**
+     * @return Pagerfanta<T>
+     */
     public function getPagerfanta(): Pagerfanta
     {
         return $this->pagerfanta;

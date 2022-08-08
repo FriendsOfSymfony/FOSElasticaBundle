@@ -34,6 +34,9 @@ class SearchCommand extends Command
         $this->indexManager = $indexManager;
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -54,7 +57,7 @@ class SearchCommand extends Command
         $indexName = $input->getOption('index');
         $index = $this->indexManager->getIndex($indexName ?: null);
         $query = Query::create($input->getArgument('query'));
-        $query->setSize($input->getOption('limit'));
+        $query->setSize((int) $input->getOption('limit'));
         if ($input->getOption('explain')) {
             $query->setExplain(true);
         }

@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Persistence\ManagerRegistry;
+use Elastica\Result;
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Transformer\AbstractElasticaToModelTransformer as BaseTransformer;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -34,6 +35,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      * Class of the model to map to the elastica documents.
      *
      * @var string
+     * @phpstan-var class-string
      */
     protected $objectClass;
 
@@ -72,7 +74,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      * Transforms an array of elastica objects into an array of
      * model objects fetched from the doctrine repository.
      *
-     * @param array $elasticaObjects of elastica objects
+     * @param Result[] $elasticaObjects of elastica objects
      *
      * @throws \RuntimeException
      *

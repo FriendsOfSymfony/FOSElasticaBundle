@@ -17,9 +17,21 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class Callback
 {
+    /**
+     * @var ?object
+     */
     protected $serializer;
+    /**
+     * @var array<mixed>
+     */
     protected $groups = [];
+    /**
+     * @var string
+     */
     protected $version;
+    /**
+     * @var bool
+     */
     protected $serializeNull = false;
 
     public function setSerializer(object $serializer): self
@@ -33,6 +45,9 @@ class Callback
         return $this;
     }
 
+    /**
+     * @param array<mixed> $groups
+     */
     public function setGroups(array $groups): self
     {
         $this->groups = $groups;
@@ -67,7 +82,7 @@ class Callback
     }
 
     /**
-     * @param $object
+     * @param mixed $object
      */
     public function serialize($object): string
     {

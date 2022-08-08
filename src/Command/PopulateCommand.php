@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Command;
 
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
+use FOS\ElasticaBundle\Event\AbstractIndexPopulateEvent;
 use FOS\ElasticaBundle\Event\PostIndexPopulateEvent;
 use FOS\ElasticaBundle\Event\PreIndexPopulateEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
@@ -30,10 +31,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Populate the search index.
+ *
+ * @phpstan-import-type TOptions from AbstractIndexPopulateEvent
  */
 class PopulateCommand extends Command
 {
@@ -83,6 +86,9 @@ class PopulateCommand extends Command
         $this->resetter = $resetter;
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -103,6 +109,9 @@ class PopulateCommand extends Command
         ;
     }
 
+    /**
+     * @return void
+     */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->pagerPersister = $this->pagerPersisterRegistry->getPagerPersister($input->getOption('pager-persister'));
@@ -121,6 +130,7 @@ class PopulateCommand extends Command
         $reset = !$input->getOption('no-reset');
         $delete = !$input->getOption('no-delete');
 
+        /** @var TOptions $options */
         $options = [
             'delete' => $delete,
             'reset' => $reset,
@@ -151,6 +161,8 @@ class PopulateCommand extends Command
 
     /**
      * Recreates an index, populates it, and refreshes it.
+     *
+     * @phpstan-param TOptions $options
      */
     private function populateIndex(OutputInterface $output, string $index, bool $reset, array $options): void
     {

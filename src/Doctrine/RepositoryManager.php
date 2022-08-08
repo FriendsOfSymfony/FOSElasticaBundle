@@ -24,7 +24,9 @@ use FOS\ElasticaBundle\Repository;
  */
 class RepositoryManager implements RepositoryManagerInterface
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     protected $entities = [];
 
     /** @var array */

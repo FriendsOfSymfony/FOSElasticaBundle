@@ -28,17 +28,17 @@ class ElasticaToModelTransformerTest extends TestCase
     public const OBJECT_CLASS = \stdClass::class;
 
     /**
-     * @var \Doctrine\Persistence\ManagerRegistry|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Doctrine\Persistence\ManagerRegistry&\PHPUnit\Framework\MockObject\MockObject
      */
     protected $registry;
 
     /**
-     * @var \Doctrine\ORM\EntityManager|\PHPUnit\Framework\MockObject\MockObject
+     * @var ObjectManager&\PHPUnit\Framework\MockObject\MockObject
      */
     protected $manager;
 
     /**
-     * @var \Doctrine\Persistence\ObjectRepository|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Doctrine\Persistence\ObjectRepository&\PHPUnit\Framework\MockObject\MockObject
      */
     protected $repository;
 

@@ -15,12 +15,17 @@ use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
 
+/**
+ * @phpstan-type TCallbackInput = string|(callable(object):bool)
+ * @phpstan-type TCallbackInternal = callable|string|ExpressionLanguage|null
+ */
 class Indexable implements IndexableInterface
 {
     /**
      * An array of raw configured callbacks for all types.
      *
      * @var array
+     * @phpstan-var array<string, TCallbackInput>
      */
     private $callbacks = [];
 
@@ -35,9 +40,13 @@ class Indexable implements IndexableInterface
      * An array of initialised callbacks.
      *
      * @var array
+     * @phpstan-var array<string, TCallbackInternal>
      */
     private $initialisedCallbacks = [];
 
+    /**
+     * @phpstan-param array<string, TCallbackInput> $callbacks
+     */
     public function __construct(array $callbacks)
     {
         $this->callbacks = $callbacks;
@@ -68,6 +77,7 @@ class Indexable implements IndexableInterface
      * Builds and initialises a callback.
      *
      * @return callable|string|ExpressionLanguage|null
+     * @phpstan-return TCallbackInternal
      */
     private function buildCallback(string $index, object $object)
     {
@@ -85,6 +95,7 @@ class Indexable implements IndexableInterface
             return $this->buildExpressionCallback($index, $object, $callback);
         }
 
+        // @phpstan-ignore-next-line
         throw new \InvalidArgumentException(\sprintf('Callback for index "%s" is not a valid callback.', $index));
     }
 
@@ -114,6 +125,7 @@ class Indexable implements IndexableInterface
      * Retreives a cached callback, or creates a new callback if one is not found.
      *
      * @return mixed
+     * @phpstan-return TCallbackInternal
      */
     private function getCallback(string $index, object $object)
     {
@@ -126,10 +138,12 @@ class Indexable implements IndexableInterface
 
     /**
      * Returns the ExpressionLanguage class if it is available.
+     *
+     * @phpstan-ignore-next-line ExpressionLanguage may be missing -> returns null
      */
     private function getExpressionLanguage(): ?ExpressionLanguage
     {
-        if (null === $this->expressionLanguage) {
+        if (null === $this->expressionLanguage && \class_exists(ExpressionLanguage::class)) {
             $this->expressionLanguage = new ExpressionLanguage();
         }
 

@@ -24,6 +24,7 @@ class ModelToElasticaIdentifierTransformer extends ModelToElasticaAutoTransforme
      */
     public function transform(object $object, array $fields): Document
     {
+        /** @var string|null $identifier */
         $identifier = $this->propertyAccessor->getValue($object, $this->options['identifier']);
 
         return new Document($identifier);

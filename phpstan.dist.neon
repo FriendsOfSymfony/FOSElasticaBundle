@@ -1,0 +1,28 @@
+includes:
+    - phpstan-baseline.neon
+parameters:
+    level: 5
+    reportUnmatchedIgnoredErrors: false
+    inferPrivatePropertyTypeFromConstructor: true
+    treatPhpDocTypesAsCertain: false
+    paths:
+        - src
+#        - tests
+    ignoreErrors:
+        - message: /Trying to mock an undefined method/
+          path: tests/
+        - message: '/Property .* is never read, only written/'
+          path: tests/
+        - message: '/Call to method PHPUnit\\Framework\\Assert::assert\w*\(\).*will always evaluate to (true|false)/'
+          path: tests/
+        - message: '/Parameter #\d \$\w+ of class .+ constructor expects array[{<].+[}>], array{.*} given/'
+          path: tests/
+        # return type was fixed in psr/log v1.0.2 (https://github.com/php-fig/log/releases/tag/1.0.2)
+        - message: '/Return type \(void\) of method FOS\\ElasticaBundle\\Logger\\ElasticaLogger::log\(\) should be compatible with return type \(null\) of method Psr\\Log\\LoggerInterface::log\(\)/'
+          path: src/Logger/ElasticaLogger.php
+        # it became generic in v3.5.2 (https://github.com/BabDev/Pagerfanta/blob/HEAD/CHANGELOG.md#352-2022-01-24)
+        - message: '/PHPDoc tag @implements contains generic type Pagerfanta\\Adapter\\AdapterInterface<mixed> but interface Pagerfanta\\Adapter\\AdapterInterface is not generic/'
+          path: src/Paginator/FantaPaginatorAdapter.php
+        # there are no Enums in php 7.4
+        - message: '/(Class BackedEnum not found)|(Access to property \$value on an unknown class BackedEnum)/'
+          path: src/Transformer/ModelToElasticaAutoTransformer.php

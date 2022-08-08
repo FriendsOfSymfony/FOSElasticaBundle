@@ -19,6 +19,9 @@ use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
  */
 class TransformedPartialResults extends RawPartialResults
 {
+    /**
+     * @var ElasticaToModelTransformerInterface
+     */
     protected $transformer;
 
     public function __construct(ResultSet $resultSet, ElasticaToModelTransformerInterface $transformer)
@@ -29,7 +32,8 @@ class TransformedPartialResults extends RawPartialResults
     }
 
     /**
-     * {@inheritdoc}
+     * @return list<object>
+     * @phpstan-ignore-next-line
      */
     public function toArray(): array
     {

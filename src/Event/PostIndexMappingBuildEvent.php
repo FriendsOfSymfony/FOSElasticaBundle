@@ -13,6 +13,9 @@ namespace FOS\ElasticaBundle\Event;
 
 use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 
+/**
+ * @phpstan-import-type TMapping from IndexConfigInterface
+ */
 final class PostIndexMappingBuildEvent extends AbstractIndexEvent
 {
     /**
@@ -22,9 +25,13 @@ final class PostIndexMappingBuildEvent extends AbstractIndexEvent
 
     /**
      * @var array
+     * @phpstan-var TMapping
      */
     private $mapping;
 
+    /**
+     * @phpstan-param TMapping $mapping
+     */
     public function __construct(IndexConfigInterface $indexConfig, array $mapping)
     {
         $this->indexConfig = $indexConfig;
@@ -38,11 +45,17 @@ final class PostIndexMappingBuildEvent extends AbstractIndexEvent
         return $this->indexConfig;
     }
 
+    /**
+     * @phpstan-return TMapping
+     */
     public function getMapping(): array
     {
         return $this->mapping;
     }
 
+    /**
+     * @phpstan-param TMapping $mapping
+     */
     public function setMapping(array $mapping): void
     {
         $this->mapping = $mapping;

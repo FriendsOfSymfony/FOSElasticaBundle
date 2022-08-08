@@ -24,12 +24,16 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+/**
+ * @phpstan-type TIndexConfig = array<string, mixed>
+ * @phpstan-type TIndexTemplateConfig = array<string, mixed>
+ */
 class FOSElasticaExtension extends Extension
 {
     /**
      * Definition of elastica clients as configured by this extension.
      *
-     * @var array
+     * @var array<string, array{id: string, reference: Reference}>
      */
     private $clients = [];
 
@@ -37,6 +41,7 @@ class FOSElasticaExtension extends Extension
      * An array of indexes as configured by the extension.
      *
      * @var array
+     * @phpstan-var array<string, TIndexConfig>
      */
     private $indexConfigs = [];
 
@@ -44,6 +49,7 @@ class FOSElasticaExtension extends Extension
      * An array of index templates as configured by the extension.
      *
      * @var array
+     * @phpstan-var array<string, TIndexTemplateConfig>
      */
     private $indexTemplateConfigs = [];
 
@@ -51,11 +57,11 @@ class FOSElasticaExtension extends Extension
      * If we've encountered a type mapped to a specific persistence driver, it will be loaded
      * here.
      *
-     * @var array
+     * @var list<string>
      */
     private $loadedDrivers = [];
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
@@ -126,6 +132,8 @@ class FOSElasticaExtension extends Extension
     }
 
     /**
+     * @param array<mixed> $config
+     *
      * @return Configuration
      */
     public function getConfiguration(array $config, ContainerBuilder $container)

@@ -20,6 +20,9 @@ use FOS\ElasticaBundle\Persister\Event\PrePersistEvent;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @phpstan-import-type TPagerPersisterOptions from PagerPersisterInterface
+ */
 final class InPlacePagerPersister implements PagerPersisterInterface
 {
     public const NAME = 'in_place';
@@ -77,6 +80,8 @@ final class InPlacePagerPersister implements PagerPersisterInterface
     }
 
     /**
+     * @phpstan-param TPagerPersisterOptions $options
+     *
      * @throws \Exception
      */
     private function insertPage(int $page, PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $options = []): void

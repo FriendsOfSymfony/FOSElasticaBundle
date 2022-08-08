@@ -11,6 +11,8 @@
 
 namespace FOS\ElasticaBundle\Configuration\Source;
 
+use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
+
 /**
  * Represents a source of index and type information (ie, the Container configuration or
  * annotations).
@@ -21,6 +23,7 @@ interface SourceInterface
      * Should return all configuration available from the data source.
      *
      * @return \FOS\ElasticaBundle\Configuration\IndexConfig[]
+     * @phpstan-return array<string, IndexConfigInterface>
      */
     public function getConfiguration(): array;
 }

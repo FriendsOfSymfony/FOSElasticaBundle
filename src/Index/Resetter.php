@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\Index;
 
+use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\ManagerInterface;
 use FOS\ElasticaBundle\Event\PostIndexResetEvent;
 use FOS\ElasticaBundle\Event\PreIndexResetEvent;
@@ -79,6 +80,9 @@ class Resetter implements ResetterInterface
     public function resetIndex(string $indexName, bool $populating = false, bool $force = false): void
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
+        if (!$indexConfig instanceof IndexConfig) {
+            throw new \RuntimeException(\sprintf('Incorrect index configuration object. Expecting IndexConfig, but got: %s ', \get_class($indexConfig)));
+        }
         $index = $this->indexManager->getIndex($indexName);
 
         if ($indexConfig->isUseAlias()) {
@@ -105,6 +109,9 @@ class Resetter implements ResetterInterface
     public function switchIndexAlias(string $indexName, bool $delete = true): void
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
+        if (!$indexConfig instanceof IndexConfig) {
+            throw new \RuntimeException(\sprintf('Incorrect index configuration object. Expecting IndexConfig, but got: %s ', \get_class($indexConfig)));
+        }
 
         if ($indexConfig->isUseAlias()) {
             $index = $this->indexManager->getIndex($indexName);

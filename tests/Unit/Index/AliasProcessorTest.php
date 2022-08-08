@@ -244,7 +244,7 @@ class AliasProcessorTest extends TestCase
     }
 
     /**
-     * @return array<MockObject>
+     * @return array{0: Index&MockObject, 1: Client&MockObject}
      */
     private function getMockedIndex(string $name): array
     {

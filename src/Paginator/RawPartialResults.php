@@ -19,6 +19,9 @@ use Elastica\ResultSet;
  */
 class RawPartialResults implements PartialResultsInterface
 {
+    /**
+     * @var ResultSet
+     */
     protected $resultSet;
 
     public function __construct(ResultSet $resultSet)
@@ -28,6 +31,8 @@ class RawPartialResults implements PartialResultsInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return list<array<string, mixed>>
      */
     public function toArray(): array
     {
@@ -52,6 +57,9 @@ class RawPartialResults implements PartialResultsInterface
         return $this->resultSet->getAggregations();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getSuggests(): array
     {
         return $this->resultSet->getSuggests();

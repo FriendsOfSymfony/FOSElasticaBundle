@@ -33,12 +33,12 @@ final class OnExceptionEvent extends Event implements PersistEvent
     private $exception;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $options;
 
     /**
-     * @var array
+     * @var list<object>
      */
     private $objects;
 
@@ -47,6 +47,10 @@ final class OnExceptionEvent extends Event implements PersistEvent
      */
     private $ignored = false;
 
+    /**
+     * @param list<object>         $objects
+     * @param array<string, mixed> $options
+     */
     public function __construct(
         PagerInterface $pager,
         ObjectPersisterInterface $objectPersister,
@@ -81,6 +85,9 @@ final class OnExceptionEvent extends Event implements PersistEvent
         return $this->exception;
     }
 
+    /**
+     * @return void
+     */
     public function setException(\Exception $exception)
     {
         $this->exception = $exception;
@@ -91,11 +98,17 @@ final class OnExceptionEvent extends Event implements PersistEvent
         return $this->ignored;
     }
 
+    /**
+     * @return void
+     */
     public function setIgnored(bool $ignored)
     {
         $this->ignored = $ignored;
     }
 
+    /**
+     * @return list<object>
+     */
     public function getObjects(): array
     {
         return $this->objects;

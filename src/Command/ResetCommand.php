@@ -36,6 +36,9 @@ class ResetCommand extends Command
         $this->resetter = $resetter;
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
