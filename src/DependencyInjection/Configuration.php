@@ -22,10 +22,8 @@ class Configuration implements ConfigurationInterface
 
     /**
      * If the kernel is running in debug mode.
-     *
-     * @var bool
      */
-    private $debug;
+    private bool $debug;
 
     public function __construct(bool $debug)
     {
@@ -34,10 +32,8 @@ class Configuration implements ConfigurationInterface
 
     /**
      * Generates the configuration tree.
-     *
-     * @return TreeBuilder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('fos_elastica');
         $rootNode = $treeBuilder->getRootNode();

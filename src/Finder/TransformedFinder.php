@@ -30,15 +30,8 @@ use Pagerfanta\Pagerfanta;
  */
 class TransformedFinder implements PaginatedFinderInterface
 {
-    /**
-     * @var SearchableInterface
-     */
-    protected $searchable;
-
-    /**
-     * @var ElasticaToModelTransformerInterface
-     */
-    protected $transformer;
+    protected SearchableInterface $searchable;
+    protected ElasticaToModelTransformerInterface $transformer;
 
     public function __construct(SearchableInterface $searchable, ElasticaToModelTransformerInterface $transformer)
     {

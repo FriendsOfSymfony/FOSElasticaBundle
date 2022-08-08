@@ -17,10 +17,7 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class AsyncPersistPageHandler implements MessageHandlerInterface
 {
-    /**
-     * @var AsyncPagerPersister
-     */
-    private $persister;
+    private AsyncPagerPersister $persister;
 
     public function __construct(AsyncPagerPersister $persister)
     {
