@@ -20,10 +20,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -53,7 +50,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             'knp_pager.items' => ['items', 1],

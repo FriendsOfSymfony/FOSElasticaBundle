@@ -23,25 +23,10 @@ use FOS\ElasticaBundle\Configuration\ManagerInterface;
  */
 class TemplateResetter implements ResetterInterface
 {
-    /**
-     * @var ManagerInterface
-     */
-    private $configManager;
-
-    /**
-     * @var MappingBuilder
-     */
-    private $mappingBuilder;
-
-    /**
-     * @var Client
-     */
-    private $client;
-
-    /**
-     * @var IndexTemplateManager
-     */
-    private $indexTemplateManager;
+    private ManagerInterface $configManager;
+    private MappingBuilder $mappingBuilder;
+    private Client $client;
+    private IndexTemplateManager $indexTemplateManager;
 
     public function __construct(
         ManagerInterface $configManager,

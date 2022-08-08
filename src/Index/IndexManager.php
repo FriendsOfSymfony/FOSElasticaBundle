@@ -15,10 +15,7 @@ use FOS\ElasticaBundle\Elastica\Index;
 
 class IndexManager
 {
-    /**
-     * @var Index
-     */
-    private $defaultIndex;
+    private Index $defaultIndex;
 
     /**
      * @var array<string, Index>

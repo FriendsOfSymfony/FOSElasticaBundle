@@ -27,55 +27,35 @@ class Listener
 {
     /**
      * Objects scheduled for insertion.
-     *
-     * @var array
      */
-    public $scheduledForInsertion = [];
+    public array $scheduledForInsertion = [];
 
     /**
      * Objects scheduled to be updated or removed.
-     *
-     * @var array
      */
-    public $scheduledForUpdate = [];
+    public array $scheduledForUpdate = [];
 
     /**
      * IDs of objects scheduled for removal.
-     *
-     * @var array
      */
-    public $scheduledForDeletion = [];
+    public array $scheduledForDeletion = [];
     /**
      * Object persister.
-     *
-     * @var ObjectPersisterInterface
      */
-    protected $objectPersister;
+    protected ObjectPersisterInterface $objectPersister;
 
     /**
      * PropertyAccessor instance.
-     *
-     * @var PropertyAccessorInterface
      */
-    protected $propertyAccessor;
+    protected PropertyAccessorInterface $propertyAccessor;
 
     /**
      * Configuration for the listener.
-     *
-     * @var array
      */
-    private $config;
+    private array $config;
 
-    /**
-     * @var IndexableInterface
-     */
-    private $indexable;
+    private IndexableInterface $indexable;
 
-    /**
-     * Constructor.
-     *
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         ObjectPersisterInterface $objectPersister,
         IndexableInterface $indexable,

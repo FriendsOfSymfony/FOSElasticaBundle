@@ -22,10 +22,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RegisterListenersService
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(EventDispatcherInterface $dispatcher)
     {

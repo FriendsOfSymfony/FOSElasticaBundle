@@ -26,25 +26,20 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 {
     /**
      * Manager registry.
-     *
-     * @var ManagerRegistry
      */
-    protected $registry;
+    protected ManagerRegistry $registry;
 
     /**
      * Class of the model to map to the elastica documents.
      *
-     * @var string
      * @phpstan-var class-string
      */
-    protected $objectClass;
+    protected string $objectClass;
 
     /**
      * Optional parameters.
-     *
-     * @var array
      */
-    protected $options = [
+    protected array $options = [
         'hints' => [],
         'hydrate' => true,
         'identifier' => 'id',

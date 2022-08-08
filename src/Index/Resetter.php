@@ -22,30 +22,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class Resetter implements ResetterInterface
 {
-    /**
-     * @var AliasProcessor
-     */
-    private $aliasProcessor;
-
-    /**
-     * @var ManagerInterface
-     */
-    private $configManager;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var IndexManager
-     */
-    private $indexManager;
-
-    /**
-     * @var MappingBuilder
-     */
-    private $mappingBuilder;
+    private AliasProcessor $aliasProcessor;
+    private ManagerInterface $configManager;
+    private EventDispatcherInterface $dispatcher;
+    private IndexManager $indexManager;
+    private MappingBuilder $mappingBuilder;
 
     public function __construct(
         ManagerInterface $configManager,
