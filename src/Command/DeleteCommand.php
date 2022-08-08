@@ -44,6 +44,7 @@ class DeleteCommand extends Command
     protected function configure()
     {
         $this
+            ->setName('fos:elastica:delete')
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'Index that needs to be deleted')
             ->setDescription('Deleting an index')
         ;
