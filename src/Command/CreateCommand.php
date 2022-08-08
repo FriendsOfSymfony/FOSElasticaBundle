@@ -26,10 +26,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CreateCommand extends Command
 {
-    private $indexManager;
-    private $mappingBuilder;
-    private $configManager;
-    private $aliasProcessor;
+    private IndexManager $indexManager;
+    private MappingBuilder $mappingBuilder;
+    private ConfigManager $configManager;
+    private AliasProcessor $aliasProcessor;
 
     public function __construct(
         IndexManager $indexManager,

@@ -25,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SearchCommand extends Command
 {
-    private $indexManager;
+    private IndexManager $indexManager;
 
     public function __construct(IndexManager $indexManager)
     {

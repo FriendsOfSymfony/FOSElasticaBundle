@@ -40,35 +40,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class PopulateCommand extends Command
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var IndexManager
-     */
-    private $indexManager;
-
-    /**
-     * @var PagerProviderRegistry
-     */
-    private $pagerProviderRegistry;
-
-    /**
-     * @var PagerPersisterRegistry
-     */
-    private $pagerPersisterRegistry;
-
-    /**
-     * @var PagerPersisterInterface
-     */
-    private $pagerPersister;
-
-    /**
-     * @var Resetter
-     */
-    private $resetter;
+    private EventDispatcherInterface $dispatcher;
+    private IndexManager $indexManager;
+    private PagerProviderRegistry $pagerProviderRegistry;
+    private PagerPersisterRegistry $pagerPersisterRegistry;
+    private PagerPersisterInterface $pagerPersister;
+    private Resetter $resetter;
 
     public function __construct(
         EventDispatcherInterface $dispatcher,
