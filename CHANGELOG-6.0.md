@@ -1,8 +1,16 @@
-CHANGELOG for 6.0.x
+CHANGELOG for 6.x
 ===================
 
 This changelog references the relevant changes (bug and security fixes) done
-in 6.0 versions.
+in 6.x versions.
+
+### 6.2.0 (2022-08-31)
+* Improved Symfony 6.1 support.
+* Added PHPStan integration.
+* Added support for `aws_credential_provider`.
+* Added `BackedEnum` support in `ModelToElasticaAutoTransformer`.
+* Fix: don't escape unicode in the query log.
+* Fixed index name for aliased index in `CreateCommand`.
 
 ### 6.1.0 (2022-01-16)
 * Added Symfony 6.0 support.
