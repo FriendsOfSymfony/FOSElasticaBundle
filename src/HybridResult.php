@@ -13,6 +13,9 @@ namespace FOS\ElasticaBundle;
 
 use Elastica\Result;
 
+/**
+ * @template T of object
+ */
 class HybridResult
 {
     /**
@@ -20,12 +23,12 @@ class HybridResult
      */
     protected $result;
     /**
-     * @var ?object
+     * @var T|null
      */
     protected $transformed;
 
     /**
-     * @param ?object $transformed
+     * @param T|null $transformed
      */
     public function __construct(Result $result, $transformed = null)
     {
@@ -34,7 +37,7 @@ class HybridResult
     }
 
     /**
-     * @return ?object
+     * @return T|null
      */
     public function getTransformed()
     {
