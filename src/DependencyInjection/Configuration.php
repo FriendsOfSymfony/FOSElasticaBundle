@@ -209,7 +209,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('provider')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('batch_size')->defaultValue(100)->end()
+                        ->scalarNode('max_per_page')->defaultValue(100)->end()
                         ->scalarNode('clear_object_manager')->defaultTrue()->end()
                         ->booleanNode('debug_logging')
                             ->defaultValue($this->debug)
