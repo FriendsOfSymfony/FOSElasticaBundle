@@ -66,11 +66,11 @@ fos_elastica:
     indexes:
         user:
             dynamic_templates:
-                my_template_1:
+                - my_template_1:
                     match: apples_*
                     mapping:
                         type: float
-                my_template_2:
+                - my_template_2:
                     match: *
                     match_mapping_type: text
                     mapping:
