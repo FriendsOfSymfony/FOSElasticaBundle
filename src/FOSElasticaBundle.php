@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle;
 
 use FOS\ElasticaBundle\DependencyInjection\Compiler\ConfigSourcePass;
+use FOS\ElasticaBundle\DependencyInjection\Compiler\FinderPass;
 use FOS\ElasticaBundle\DependencyInjection\Compiler\IndexPass;
 use FOS\ElasticaBundle\DependencyInjection\Compiler\ProviderPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
