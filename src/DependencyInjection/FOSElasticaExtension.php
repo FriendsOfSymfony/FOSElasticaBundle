@@ -641,8 +641,23 @@ class FOSElasticaExtension extends Extension
      */
     private function loadTypeFinder(array $typeConfig, ContainerBuilder $container, string $elasticaToModelId, Reference $indexRef, string $indexName): string
     {
+        $taggedFinders = $container->findTaggedServiceIds('fos_elastica.finder');
+
+        // When the yaml config is set
         if (isset($typeConfig['finder']['service'])) {
             $finderId = $typeConfig['finder']['service'];
+        } else if (!empty($taggedFinders)) { // When the service is tagged
+            $finderId = \sprintf('fos_elastica.finder.%s', $indexName);
+
+            foreach ($taggedFinders as $taggedFinderId => $tags) {
+                foreach ($tags as $tag) {
+                    if (isset($tag['index'])) {
+                        $container->setAlias($finderId, $taggedFinderId);
+
+                        break;
+                    }
+                }
+            }
         } else {
             $finderId = \sprintf('fos_elastica.finder.%s', $indexName);
             $finderDef = new ChildDefinition('fos_elastica.finder');
