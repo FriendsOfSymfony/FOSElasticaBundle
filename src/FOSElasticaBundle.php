@@ -31,5 +31,6 @@ class FOSElasticaBundle extends Bundle
         $container->addCompilerPass(new ConfigSourcePass());
         $container->addCompilerPass(new IndexPass());
         $container->addCompilerPass(new ProviderPass());
+        $container->addCompilerPass(new FinderPass());
     }
 }
