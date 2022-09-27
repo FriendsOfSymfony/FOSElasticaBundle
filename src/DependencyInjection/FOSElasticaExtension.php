@@ -534,7 +534,6 @@ class FOSElasticaExtension extends Extension
          * index and type names were "prototype" and a driver, respectively.
          */
         $providerId = \sprintf('fos_elastica.pager_provider.%s', $indexName);
-        $providerDef->addTag('fos_elastica.pager_provider', ['index' => $indexName]);
 
         $container->setDefinition($providerId, $providerDef);
 
