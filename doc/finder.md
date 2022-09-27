@@ -1,7 +1,9 @@
 # Finder
 
 The service that enables you to fetch objects from Elasticsearch is called `Finder`.
-You can create custom Finder by implementing `FinderInterface` interface and map it in config or via tag.
+You can create a custom Finder by implementing the `FinderInterface` interface and map it in config or via Symfony a tag.
+
+Most projects require pagination. To enable paginationt - implement the `PaginatedFinderInterface`.
 
 ## Via Symfony tags
 ```yaml
