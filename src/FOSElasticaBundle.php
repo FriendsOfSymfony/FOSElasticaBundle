@@ -13,6 +13,7 @@ namespace FOS\ElasticaBundle;
 
 use FOS\ElasticaBundle\DependencyInjection\Compiler\ConfigSourcePass;
 use FOS\ElasticaBundle\DependencyInjection\Compiler\IndexPass;
+use FOS\ElasticaBundle\DependencyInjection\Compiler\ProviderPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -29,5 +30,6 @@ class FOSElasticaBundle extends Bundle
 
         $container->addCompilerPass(new ConfigSourcePass());
         $container->addCompilerPass(new IndexPass());
+        $container->addCompilerPass(new ProviderPass());
     }
 }
