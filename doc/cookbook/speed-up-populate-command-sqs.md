@@ -9,10 +9,10 @@ Prerequisites here are
 
 Both queues can be created by the AWS GUI, or other methods.
 
-Install `enqueue/elastica-bundle@dev-master` and `enqueue/sqs`
+Install `enqueue/elastica-bundle` and `enqueue/sqs`
 
 ```bash
-$ composer require enqueue/elastica-bundle@dev-master
+$ composer require enqueue/elastica-bundle
 $ composer require enqueue/sqs
 ```
 
