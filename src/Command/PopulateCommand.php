@@ -151,12 +151,12 @@ class PopulateCommand extends Command
         }
 
         $offset = 1 < $options['first_page'] ? ($options['first_page'] - 1) * $options['max_per_page'] : 0;
-        $loggerClosure = ProgressClosureBuilder::build($output, 'Populating', $index, $offset);
+        $consoleLogger = new ConsoleProgressLogger($output, 'Populating', $index, $offset);
 
         $this->dispatcher->addListener(
             OnExceptionEvent::class,
-            function (OnExceptionEvent $event) use ($loggerClosure) {
-                $loggerClosure(
+            function (OnExceptionEvent $event) use ($consoleLogger) {
+                $consoleLogger->call(
                     \count($event->getObjects()),
                     $event->getPager()->getNbResults(),
                     \sprintf('<error>%s</error>', $event->getException()->getMessage())
@@ -166,15 +166,15 @@ class PopulateCommand extends Command
 
         $this->dispatcher->addListener(
             PostInsertObjectsEvent::class,
-            function (PostInsertObjectsEvent $event) use ($loggerClosure) {
-                $loggerClosure(\count($event->getObjects()), $event->getPager()->getNbResults());
+            function (PostInsertObjectsEvent $event) use ($consoleLogger) {
+                $consoleLogger->call(\count($event->getObjects()), $event->getPager()->getNbResults());
             }
         );
 
         $this->dispatcher->addListener(
             PostAsyncInsertObjectsEvent::class,
-            function (PostAsyncInsertObjectsEvent $event) use ($loggerClosure) {
-                $loggerClosure($event->getObjectsCount(), $event->getPager()->getNbResults(), $event->getErrorMessage());
+            function (PostAsyncInsertObjectsEvent $event) use ($consoleLogger) {
+                $consoleLogger->call($event->getObjectsCount(), $event->getPager()->getNbResults(), $event->getErrorMessage());
             }
         );
 
@@ -193,6 +193,8 @@ class PopulateCommand extends Command
         $pager = $provider->provide($options);
 
         $this->pagerPersister->insert($pager, \array_merge($options, ['indexName' => $index]));
+
+        $consoleLogger->finish();
 
         $this->dispatcher->dispatch(new PostIndexPopulateEvent($index, $reset, $options));
 
