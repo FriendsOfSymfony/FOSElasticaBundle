@@ -151,12 +151,12 @@ class PopulateCommand extends Command
         }
 
         $offset = 1 < $options['first_page'] ? ($options['first_page'] - 1) * $options['max_per_page'] : 0;
-        $loggerClosure = ProgressClosureBuilder::build($output, 'Populating', $index, $offset);
+        $consoleLogger = new ConsoleProgressLogger($output, 'Populating', $index, $offset);
 
         $this->dispatcher->addListener(
             OnExceptionEvent::class,
-            function (OnExceptionEvent $event) use ($loggerClosure) {
-                $loggerClosure(
+            $exceptionListener = function (OnExceptionEvent $event) use ($consoleLogger) {
+                $consoleLogger->call(
                     \count($event->getObjects()),
                     $event->getPager()->getNbResults(),
                     \sprintf('<error>%s</error>', $event->getException()->getMessage())
@@ -166,22 +166,22 @@ class PopulateCommand extends Command
 
         $this->dispatcher->addListener(
             PostInsertObjectsEvent::class,
-            function (PostInsertObjectsEvent $event) use ($loggerClosure) {
-                $loggerClosure(\count($event->getObjects()), $event->getPager()->getNbResults());
+            $postInsertListener = function (PostInsertObjectsEvent $event) use ($consoleLogger) {
+                $consoleLogger->call(\count($event->getObjects()), $event->getPager()->getNbResults());
             }
         );
 
         $this->dispatcher->addListener(
             PostAsyncInsertObjectsEvent::class,
-            function (PostAsyncInsertObjectsEvent $event) use ($loggerClosure) {
-                $loggerClosure($event->getObjectsCount(), $event->getPager()->getNbResults(), $event->getErrorMessage());
+            $postAsyncInsertListener = function (PostAsyncInsertObjectsEvent $event) use ($consoleLogger) {
+                $consoleLogger->call($event->getObjectsCount(), $event->getPager()->getNbResults(), $event->getErrorMessage());
             }
         );
 
         if ($options['ignore_errors']) {
             $this->dispatcher->addListener(
                 OnExceptionEvent::class,
-                function (OnExceptionEvent $event) {
+                $ignoreExceptionsListener = function (OnExceptionEvent $event) {
                     if ($event->getException() instanceof BulkResponseException) {
                         $event->setIgnored(true);
                     }
@@ -193,6 +193,14 @@ class PopulateCommand extends Command
         $pager = $provider->provide($options);
 
         $this->pagerPersister->insert($pager, \array_merge($options, ['indexName' => $index]));
+
+        $consoleLogger->finish();
+        $this->dispatcher->removeListener(OnExceptionEvent::class, $exceptionListener);
+        $this->dispatcher->removeListener(PostInsertObjectsEvent::class, $postInsertListener);
+        $this->dispatcher->removeListener(PostAsyncInsertObjectsEvent::class, $postAsyncInsertListener);
+        if (isset($ignoreExceptionsListener)) {
+            $this->dispatcher->removeListener(OnExceptionEvent::class, $ignoreExceptionsListener);
+        }
 
         $this->dispatcher->dispatch(new PostIndexPopulateEvent($index, $reset, $options));
 
