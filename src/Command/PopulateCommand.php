@@ -158,6 +158,7 @@ class PopulateCommand extends Command
             $exceptionListener = function (OnExceptionEvent $event) use ($consoleLogger) {
                 $consoleLogger->call(
                     \count($event->getObjects()),
+                    0,
                     $event->getPager()->getNbResults(),
                     \sprintf('<error>%s</error>', $event->getException()->getMessage())
                 );
@@ -167,14 +168,14 @@ class PopulateCommand extends Command
         $this->dispatcher->addListener(
             PostInsertObjectsEvent::class,
             $postInsertListener = function (PostInsertObjectsEvent $event) use ($consoleLogger) {
-                $consoleLogger->call(\count($event->getObjects()), $event->getPager()->getNbResults());
+                $consoleLogger->call(\count($event->getObjects()), $event->getFilteredObjectCount(), $event->getPager()->getNbResults());
             }
         );
 
         $this->dispatcher->addListener(
             PostAsyncInsertObjectsEvent::class,
             $postAsyncInsertListener = function (PostAsyncInsertObjectsEvent $event) use ($consoleLogger) {
-                $consoleLogger->call($event->getObjectsCount(), $event->getPager()->getNbResults(), $event->getErrorMessage());
+                $consoleLogger->call($event->getObjectsCount(), 0, $event->getPager()->getNbResults(), $event->getErrorMessage());
             }
         );
 

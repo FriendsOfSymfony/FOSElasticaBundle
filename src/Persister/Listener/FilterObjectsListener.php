@@ -43,6 +43,7 @@ class FilterObjectsListener implements EventSubscriberInterface
             $filtered[] = $object;
         }
 
+        $event->setFilteredObjectCount(\count($objects) - \count($filtered));
         $event->setObjects($filtered);
     }
 
