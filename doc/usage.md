@@ -285,4 +285,9 @@ works fine with Elasticsearch up to version 7.6, it _will_ result in an error li
 
 >[bool] failed to parse field [should]
 
-with version 7.7 and above.
+with version 7.7 and above. Rewriting your code as follows is a possible workaround:
+
+```php
+$boolQuery->addShould($fieldQuery);
+$boolQuery->addShould($tagsQuery);
+```
