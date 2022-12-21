@@ -26,3 +26,8 @@ parameters:
         # there are no Enums in php 7.4
         - message: '/(Class BackedEnum not found)|(Access to property \$value on an unknown class BackedEnum)/'
           path: src/Transformer/ModelToElasticaAutoTransformer.php
+        # it became generic in v3.2.1 (https://github.com/BabDev/Pagerfanta/blob/HEAD/CHANGELOG.md#321-2021-08-01)
+        - message: '/PHPDoc tag @return contains generic type Pagerfanta\\PagerfantaInterface<FOS\\ElasticaBundle\\HybridResult> but interface Pagerfanta\\PagerfantaInterface is not generic/'
+          path: src/Finder/PaginatedHybridFinderInterface.php
+        - message: '/PHPDoc tag @return contains generic type Pagerfanta\\PagerfantaInterface<Elastica\\Result> but interface Pagerfanta\\PagerfantaInterface is not generic/'
+          path: src/Finder/PaginatedRawFinderInterface.php
