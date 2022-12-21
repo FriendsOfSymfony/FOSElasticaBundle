@@ -26,6 +26,7 @@ final class ConsoleProgressLogger
     private string $action;
     private string $index;
     private int $offset;
+    private int $filteredCount = 0;
     private bool $finished = false;
 
     public function __construct(OutputInterface $output, string $action, string $index, int $offset)
@@ -36,7 +37,7 @@ final class ConsoleProgressLogger
         $this->offset = $offset;
     }
 
-    public function call(int $increment, int $totalObjects, ?string $message = null): void
+    public function call(int $increment, int $filteredIncrement, int $totalObjects, ?string $message = null): void
     {
         if ($this->finished) {
             return;
@@ -47,6 +48,12 @@ final class ConsoleProgressLogger
             $this->progress->setMessage(\sprintf('<info>%s</info> <comment>%s</comment>', $this->action, $this->index));
             $this->progress->start();
             $this->progress->setProgress($this->offset);
+        }
+
+        if (0 !== $filteredIncrement) {
+            $this->filteredCount += $filteredIncrement;
+            $this->progress->setMaxSteps($totalObjects - $this->filteredCount);
+            $this->progress->setMessage(\sprintf('<info>%s</info> <comment>%s</comment> (%d/%d filtered)', $this->action, $this->index, $this->filteredCount, $totalObjects));
         }
 
         if (null !== $message) {

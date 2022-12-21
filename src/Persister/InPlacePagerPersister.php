@@ -95,18 +95,19 @@ final class InPlacePagerPersister implements PagerPersisterInterface
         $pager = $event->getPager();
         $options = $event->getOptions();
         $objects = $event->getObjects();
+        $filteredObjectCount = $event->getFilteredObjectCount();
 
         try {
             if (!empty($objects)) {
                 $objectPersister->insertMany($objects);
             }
 
-            $this->dispatcher->dispatch(new PostInsertObjectsEvent($pager, $objectPersister, $objects, $options));
+            $this->dispatcher->dispatch(new PostInsertObjectsEvent($pager, $objectPersister, $objects, $options, $filteredObjectCount));
         } catch (\Exception $e) {
             $this->dispatcher->dispatch($event = new OnExceptionEvent($pager, $objectPersister, $e, $objects, $options));
 
             if ($event->isIgnored()) {
-                $this->dispatcher->dispatch(new PostInsertObjectsEvent($pager, $objectPersister, $objects, $options));
+                $this->dispatcher->dispatch(new PostInsertObjectsEvent($pager, $objectPersister, $objects, $options, $filteredObjectCount));
             } else {
                 $e = $event->getException();
 

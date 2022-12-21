@@ -37,6 +37,8 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
      */
     private $options;
 
+    private int $filteredObjectCount = 0;
+
     /**
      * @param list<object>         $objects
      * @param array<string, mixed> $options
@@ -106,5 +108,18 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
     public function setObjects($objects)
     {
         $this->objects = $objects;
+    }
+
+    /**
+     * @internal
+     */
+    public function setFilteredObjectCount(int $count): void
+    {
+        $this->filteredObjectCount = $count;
+    }
+
+    public function getFilteredObjectCount(): int
+    {
+        return $this->filteredObjectCount;
     }
 }

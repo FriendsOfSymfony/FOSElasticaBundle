@@ -37,16 +37,19 @@ final class PostInsertObjectsEvent extends Event implements PersistEvent
      */
     private $options;
 
+    private int $filteredObjectCount;
+
     /**
      * @param list<object>         $objects
      * @param array<string, mixed> $options
      */
-    public function __construct(PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $objects, array $options)
+    public function __construct(PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $objects, array $options, int $filteredObjectCount = 0)
     {
         $this->pager = $pager;
         $this->objectPersister = $objectPersister;
         $this->objects = $objects;
         $this->options = $options;
+        $this->filteredObjectCount = $filteredObjectCount;
     }
 
     public function getPager(): PagerInterface
@@ -70,5 +73,10 @@ final class PostInsertObjectsEvent extends Event implements PersistEvent
     public function getObjects(): array
     {
         return $this->objects;
+    }
+
+    public function getFilteredObjectCount(): int
+    {
+        return $this->filteredObjectCount;
     }
 }
