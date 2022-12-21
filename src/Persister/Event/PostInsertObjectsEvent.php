@@ -37,10 +37,7 @@ final class PostInsertObjectsEvent extends Event implements PersistEvent
      */
     private $options;
 
-    /**
-     * @var int
-     */
-    private $filteredObjectCount;
+    private int $filteredObjectCount;
 
     /**
      * @param list<object>         $objects
