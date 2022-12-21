@@ -14,7 +14,6 @@ namespace FOS\ElasticaBundle\Finder;
 use Elastica\Query;
 use Elastica\Result;
 use Elastica\SearchableInterface;
-use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
@@ -28,7 +27,7 @@ use Pagerfanta\Pagerfanta;
  * @phpstan-import-type TQuery from FinderInterface
  * @phpstan-import-type TOptions from FinderInterface
  */
-class TransformedFinder implements PaginatedFinderInterface
+class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderInterface, PaginatedHybridFinderInterface
 {
     protected SearchableInterface $searchable;
     protected ElasticaToModelTransformerInterface $transformer;
@@ -50,11 +49,7 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * @param mixed $query
-     * @phpstan-param TQuery $query
-     * @phpstan-param TOptions $options
-     *
-     * @return list<HybridResult>
+     * {@inheritdoc}
      */
     public function findHybrid($query, ?int $limit = null, array $options = [])
     {
@@ -64,11 +59,7 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * @param mixed $query
-     * @phpstan-param TQuery $query
-     * @phpstan-param TOptions $options
-     *
-     * @return Result[]
+     * {@inheritdoc}
      */
     public function findRaw($query, ?int $limit = null, array $options = []): array
     {
@@ -86,17 +77,21 @@ class TransformedFinder implements PaginatedFinderInterface
     }
 
     /**
-     * Searches for query hybrid results and returns them wrapped in a paginator.
-     *
-     * @param mixed $query Can be a string, an array or an \Elastica\Query object
-     * @phpstan-param TQuery $query
-     * @phpstan-param TOptions $options
-     *
-     * @return Pagerfanta<HybridResult> paginated hybrid results
+     * {@inheritdoc}
      */
     public function findHybridPaginated($query, array $options = [])
     {
         $paginatorAdapter = $this->createHybridPaginatorAdapter($query, $options);
+
+        return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findRawPaginated($query, array $options = [])
+    {
+        $paginatorAdapter = $this->createRawPaginatorAdapter($query, $options);
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
@@ -133,6 +128,7 @@ class TransformedFinder implements PaginatedFinderInterface
 
     /**
      * @param mixed $query
+     *
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
