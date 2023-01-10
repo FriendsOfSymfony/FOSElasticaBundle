@@ -20,6 +20,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * @internal
+ *
+ * @deprecated since 6.3 will be removed in 7.0
  */
 final class PostAsyncInsertObjectsEventTest extends TestCase
 {

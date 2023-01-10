@@ -18,7 +18,6 @@ use FOS\ElasticaBundle\Event\PreIndexPopulateEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\Resetter;
 use FOS\ElasticaBundle\Persister\Event\OnExceptionEvent;
-use FOS\ElasticaBundle\Persister\Event\PostAsyncInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\Event\PostInsertObjectsEvent;
 use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
 use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
@@ -172,13 +171,6 @@ class PopulateCommand extends Command
             }
         );
 
-        $this->dispatcher->addListener(
-            PostAsyncInsertObjectsEvent::class,
-            $postAsyncInsertListener = function (PostAsyncInsertObjectsEvent $event) use ($consoleLogger) {
-                $consoleLogger->call($event->getObjectsCount(), 0, $event->getPager()->getNbResults(), $event->getErrorMessage());
-            }
-        );
-
         if ($options['ignore_errors']) {
             $this->dispatcher->addListener(
                 OnExceptionEvent::class,
@@ -198,7 +190,6 @@ class PopulateCommand extends Command
         $consoleLogger->finish();
         $this->dispatcher->removeListener(OnExceptionEvent::class, $exceptionListener);
         $this->dispatcher->removeListener(PostInsertObjectsEvent::class, $postInsertListener);
-        $this->dispatcher->removeListener(PostAsyncInsertObjectsEvent::class, $postAsyncInsertListener);
         if (isset($ignoreExceptionsListener)) {
             $this->dispatcher->removeListener(OnExceptionEvent::class, $ignoreExceptionsListener);
         }
