@@ -29,6 +29,7 @@ class POPO3
     public $bool = true;
     public $falseBool = false;
     public $date;
+    public $duration;
     public $nullValue;
     public $file;
     public $fileContents;
@@ -41,6 +42,7 @@ class POPO3
     public function __construct()
     {
         $this->date = new \DateTime('1979-05-05');
+        $this->duration = new \DateInterval('P1Y1M1DT1H1M1S');
         $this->file = new \SplFileInfo(__DIR__.'/fixtures/attachment.odt');
         $this->fileContents = \file_get_contents(__DIR__.'/fixtures/attachment.odt');
     }
@@ -97,6 +99,11 @@ class POPO3
     public function getDate()
     {
         return $this->date;
+    }
+    
+    public function getDuration()
+    {
+        return $this->duration;
     }
 
     public function getNullValue()
@@ -226,6 +233,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
                 'float' => [],
                 'bool' => [],
                 'date' => [],
+                'duration' => [],
                 'falseBool' => [],
             ]
         );
@@ -239,6 +247,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertFalse($data['falseBool']);
         $expectedDate = new \DateTime('1979-05-05');
         $this->assertSame($expectedDate->format('c'), $data['date']);
+        $this->assertSame('P1Y1M1DT1H1M1S', $data['duration']);
     }
 
     public function testThatCanTransformObjectWithIteratorValue()
