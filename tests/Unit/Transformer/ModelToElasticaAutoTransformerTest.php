@@ -100,7 +100,7 @@ class POPO3
     {
         return $this->date;
     }
-    
+
     public function getDuration()
     {
         return $this->duration;
