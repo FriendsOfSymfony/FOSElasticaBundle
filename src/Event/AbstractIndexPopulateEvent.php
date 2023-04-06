@@ -24,7 +24,8 @@ namespace FOS\ElasticaBundle\Event;
  *     first_page: int,
  *     max_per_page: int,
  *     last_page?: int,
- *     indexName?: string
+ *     indexName?: string,
+ *     pager_persister: string
  * }
  */
 abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
