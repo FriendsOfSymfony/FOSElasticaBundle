@@ -76,7 +76,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
     /**
      * @phpstan-param TPagerPersisterOptions $options
      */
-    public function insertPage(int $page, array $options = []): int
+    public function insertPage(int $page, array $options = []): void
     {
         if (!isset($options['indexName'])) {
             throw new \RuntimeException('Invalid call. $options is missing the indexName key.');
@@ -93,12 +93,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
         $pager->setMaxPerPage($options['max_per_page']);
         $pager->setCurrentPage($options['first_page']);
 
-        $results = $pager->getCurrentPageResults();
-        $objectCount = $results instanceof \Traversable ? \iterator_count($results) : \count($results);
-
         $pagerPersister = $this->pagerPersisterRegistry->getPagerPersister(InPlacePagerPersister::NAME);
         $pagerPersister->insert($pager, $options);
-
-        return $objectCount;
     }
 }
