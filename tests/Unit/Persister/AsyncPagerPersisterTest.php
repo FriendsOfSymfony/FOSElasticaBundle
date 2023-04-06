@@ -13,17 +13,12 @@ namespace FOS\ElasticaBundle\Tests\Unit\Persister;
 
 use FOS\ElasticaBundle\Message\AsyncPersistPage;
 use FOS\ElasticaBundle\Persister\AsyncPagerPersister;
-use FOS\ElasticaBundle\Persister\InPlacePagerPersister;
-use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\PagerPersisterInterface;
 use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
-use FOS\ElasticaBundle\Persister\PersisterRegistry;
 use FOS\ElasticaBundle\Provider\PagerInterface;
-use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ServiceLocator;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
