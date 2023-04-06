@@ -93,6 +93,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
         $pager->setMaxPerPage($options['max_per_page']);
         $pager->setCurrentPage($options['first_page']);
 
+        /** @var InPlacePagerPersister $pagerPersister */
         $pagerPersister = $this->pagerPersisterRegistry->getPagerPersister(InPlacePagerPersister::NAME);
         $pagerPersister->insert($pager, $options);
     }
