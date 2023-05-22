@@ -5,7 +5,9 @@ This changelog references the relevant changes (bug and security fixes) done
 in 6.x versions.
 
 ### 6.3.0 (2023-05-22)
+* Removed Symfony 6.0 and 6.1 support.
 * Removed unused count from async persister.
+* Added PHP 8.2 support.
 * Normalize `DateInterval` to ISO 8601 string in model transformer.
 * Deprecated `PostAsyncInsertObjectsEvent`.
 * Added missing interfaces to `TransformedFinder`.
