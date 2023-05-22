@@ -4,7 +4,7 @@ CHANGELOG for 6.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.x versions.
 
-### 6.3.0 (2022-08-31)
+### 6.3.0 (2023-05-22)
 * Removed unused count from async persister.
 * Normalize `DateInterval` to ISO 8601 string in model transformer.
 * Deprecated `PostAsyncInsertObjectsEvent`.
