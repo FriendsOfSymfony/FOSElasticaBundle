@@ -4,6 +4,14 @@ CHANGELOG for 6.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.x versions.
 
+### 6.3.0 (2022-08-31)
+* Removed unused count from async persister.
+* Normalize `DateInterval` to ISO 8601 string in model transformer.
+* Deprecated `PostAsyncInsertObjectsEvent`.
+* Added missing interfaces to `TransformedFinder`.
+* Fixed console logger behaviour when populating multiple indexes.
+* Show filtered object count during populate.
+
 ### 6.2.0 (2022-08-31)
 * Improved Symfony 6.1 support.
 * Added PHPStan integration.
