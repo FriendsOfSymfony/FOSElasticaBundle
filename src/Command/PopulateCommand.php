@@ -114,6 +114,7 @@ class PopulateCommand extends Command
             'sleep' => $input->getOption('sleep'),
             'first_page' => $input->getOption('first-page'),
             'max_per_page' => $input->getOption('max-per-page'),
+            'pager_persister' => $input->getOption('pager-persister'),
         ];
 
         if ($input->getOption('last-page')) {
