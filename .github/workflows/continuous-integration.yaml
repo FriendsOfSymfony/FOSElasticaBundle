@@ -38,12 +38,12 @@ jobs:
       matrix:
         php:
           - '7.4'
-          - '8.0'
           - '8.1'
+          - '8.2'
         symfony:
           - '4.4.*'
           - '5.4.*'
-          - '6.0.*'
+          - '6.2.*'
         elasticsearch:
           - '7.11.0'
         dependencies:
@@ -55,7 +55,7 @@ jobs:
             symfony: '4.4.*'
         exclude:
           - php: '7.4'
-            symfony: '6.0.*'
+            symfony: '6.2.*'
             dependencies: 'highest'
             elasticsearch: '7.11.0'
       fail-fast: false
@@ -101,12 +101,12 @@ jobs:
       matrix:
         php:
           - '7.4'
-          - '8.0'
           - '8.1'
+          - '8.2'
         symfony:
           - '4.4.*'
           - '5.4.*'
-          - '6.0.*'
+          - '6.2.*'
         dependencies:
           - 'highest'
         include:
@@ -115,7 +115,7 @@ jobs:
             symfony: '4.4.*'
         exclude:
           - php: '7.4'
-            symfony: '6.0.*'
+            symfony: '6.2.*'
             dependencies: 'highest'
       fail-fast: false
     steps:
