@@ -4,6 +4,9 @@ CHANGELOG for 6.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.x versions.
 
+### 6.3.1 (2023-05-28)
+* Restored `pagerfanta/pagerfanta` dependency.
+
 ### 6.3.0 (2023-05-22)
 * Removed Symfony 6.0 and 6.1 support.
 * Removed unused count from async persister.
