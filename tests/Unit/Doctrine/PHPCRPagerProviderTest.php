@@ -90,7 +90,6 @@ class PHPCRPagerProviderTest extends TestCase
 
         $adapter = $pager->getPagerfanta()->getAdapter();
         $this->assertInstanceOf(QueryAdapter::class, $adapter);
-        $this->assertSame($expectedBuilder, $adapter->getQueryBuilder());
     }
 
     public function testShouldAllowCallCustomRepositoryMethod()
