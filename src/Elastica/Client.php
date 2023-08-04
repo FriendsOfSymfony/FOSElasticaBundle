@@ -13,6 +13,7 @@ namespace FOS\ElasticaBundle\Elastica;
 
 use Elastica\Client as BaseClient;
 use Elastica\Exception\ClientException;
+use Elastica\Exception\ExceptionInterface;
 use Elastica\Index as BaseIndex;
 use Elastica\Request;
 use Elastica\Response;
@@ -58,7 +59,13 @@ class Client extends BaseClient
             $this->stopwatch->start('es_request', 'fos_elastica');
         }
 
-        $response = parent::request($path, $method, $data, $query, $contentType);
+        try {
+            $response = parent::request($path, $method, $data, $query, $contentType);
+        } catch (ExceptionInterface $e) {
+            $this->logQuery($path, $method, $data, $query, 0, 0, 0);
+            throw $e;
+        }
+
         $responseData = $response->getData();
 
         $transportInfo = $response->getTransferInfo();
