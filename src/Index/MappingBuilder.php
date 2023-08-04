@@ -76,7 +76,7 @@ class MappingBuilder
     {
         $mapping = $indexConfig->getMapping();
 
-        if (null !== $indexConfig->getDynamicDateFormats()) {
+        if (null !== $indexConfig->getDynamicDateFormats() && !empty($indexConfig->getDynamicDateFormats())) {
             $mapping['dynamic_date_formats'] = $indexConfig->getDynamicDateFormats();
         }
 
