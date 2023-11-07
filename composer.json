@@ -78,8 +78,8 @@
     },
     "config": {
         "allow-plugins": {
-            "phpstan/extension-installer": true,
-            "ergebnis/composer-normalize": true
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true
         }
     },
     "extra": {
