@@ -43,7 +43,7 @@ jobs:
         symfony:
           - '4.4.*'
           - '5.4.*'
-          - '6.2.*'
+          - '6.3.*'
           - '7.0.*'
         elasticsearch:
           - '7.11.0'
@@ -56,7 +56,7 @@ jobs:
             symfony: '4.4.*'
         exclude:
           - php: '7.4'
-            symfony: '6.2.*'
+            symfony: '6.3.*'
             dependencies: 'highest'
             elasticsearch: '7.11.0'
           - php: '7.4'
@@ -115,7 +115,7 @@ jobs:
         symfony:
           - '4.4.*'
           - '5.4.*'
-          - '6.2.*'
+          - '6.3.*'
           - '7.0.*'
         dependencies:
           - 'highest'
@@ -125,7 +125,7 @@ jobs:
             symfony: '4.4.*'
         exclude:
           - php: '7.4'
-            symfony: '6.2.*'
+            symfony: '6.3.*'
             dependencies: 'highest'
           - php: '7.4'
             symfony: '7.0.*'
