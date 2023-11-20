@@ -44,6 +44,7 @@ jobs:
           - '4.4.*'
           - '5.4.*'
           - '6.2.*'
+          - '7.0.*'
         elasticsearch:
           - '7.11.0'
         dependencies:
@@ -56,6 +57,14 @@ jobs:
         exclude:
           - php: '7.4'
             symfony: '6.2.*'
+            dependencies: 'highest'
+            elasticsearch: '7.11.0'
+          - php: '7.4'
+            symfony: '7.0.*'
+            dependencies: 'highest'
+            elasticsearch: '7.11.0'
+          - php: '8.1'
+            symfony: '7.0.*'
             dependencies: 'highest'
             elasticsearch: '7.11.0'
       fail-fast: false
@@ -107,6 +116,7 @@ jobs:
           - '4.4.*'
           - '5.4.*'
           - '6.2.*'
+          - '7.0.*'
         dependencies:
           - 'highest'
         include:
@@ -116,6 +126,12 @@ jobs:
         exclude:
           - php: '7.4'
             symfony: '6.2.*'
+            dependencies: 'highest'
+          - php: '7.4'
+            symfony: '7.0.*'
+            dependencies: 'highest'
+          - php: '8.1'
+            symfony: '7.0.*'
             dependencies: 'highest'
       fail-fast: false
     steps:
