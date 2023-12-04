@@ -25,6 +25,7 @@ class Indexable implements IndexableInterface
      * An array of raw configured callbacks for all types.
      *
      * @var array
+     *
      * @phpstan-var array<string, TCallbackInput>
      */
     private $callbacks = [];
@@ -40,6 +41,7 @@ class Indexable implements IndexableInterface
      * An array of initialised callbacks.
      *
      * @var array
+     *
      * @phpstan-var array<string, TCallbackInternal>
      */
     private $initialisedCallbacks = [];
@@ -77,6 +79,7 @@ class Indexable implements IndexableInterface
      * Builds and initialises a callback.
      *
      * @return callable|string|ExpressionLanguage|null
+     *
      * @phpstan-return TCallbackInternal
      */
     private function buildCallback(string $index, object $object)
@@ -124,7 +127,6 @@ class Indexable implements IndexableInterface
     /**
      * Retreives a cached callback, or creates a new callback if one is not found.
      *
-     * @return mixed
      * @phpstan-return TCallbackInternal
      */
     private function getCallback(string $index, object $object)
@@ -153,8 +155,6 @@ class Indexable implements IndexableInterface
     /**
      * Returns the variable name to be used to access the object when using the ExpressionLanguage
      * component to parse and evaluate an expression.
-     *
-     * @param mixed $object
      */
     private function getExpressionVar($object = null): string
     {

@@ -33,6 +33,7 @@ class TransformedPartialResults extends RawPartialResults
 
     /**
      * @return list<object>
+     *
      * @phpstan-ignore-next-line
      */
     public function toArray(): array

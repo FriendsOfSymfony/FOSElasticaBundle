@@ -49,8 +49,6 @@ class Client extends BaseClient
     private $stopwatch;
 
     /**
-     * {@inheritdoc}
-     *
      * @param array<mixed> $data
      * @param array<mixed> $query
      */

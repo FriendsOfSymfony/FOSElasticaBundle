@@ -38,9 +38,6 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         $this->transformer = $transformer;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find($query, ?int $limit = null, array $options = [])
     {
         $results = $this->search($query, $limit, $options);
@@ -48,9 +45,6 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         return $this->transformer->transform($results);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findHybrid($query, ?int $limit = null, array $options = [])
     {
         $results = $this->search($query, $limit, $options);
@@ -58,17 +52,11 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         return $this->transformer->hybridTransform($results);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findRaw($query, ?int $limit = null, array $options = []): array
     {
         return $this->search($query, $limit, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findPaginated($query, array $options = [])
     {
         $paginatorAdapter = $this->createPaginatorAdapter($query, $options);
@@ -76,9 +64,6 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findHybridPaginated($query, array $options = [])
     {
         $paginatorAdapter = $this->createHybridPaginatorAdapter($query, $options);
@@ -86,9 +71,6 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findRawPaginated($query, array $options = [])
     {
         $paginatorAdapter = $this->createRawPaginatorAdapter($query, $options);
@@ -96,9 +78,6 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createPaginatorAdapter($query, array $options = [])
     {
         $query = Query::create($query);
@@ -106,9 +85,6 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         return new TransformedPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createHybridPaginatorAdapter($query, array $options = [])
     {
         $query = Query::create($query);
@@ -116,9 +92,6 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         return new HybridPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createRawPaginatorAdapter($query, array $options = [])
     {
         $query = Query::create($query);
@@ -127,8 +100,6 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
     }
 
     /**
-     * @param mixed $query
-     *
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *

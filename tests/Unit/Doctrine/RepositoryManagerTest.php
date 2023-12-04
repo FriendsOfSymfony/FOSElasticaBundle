@@ -18,13 +18,9 @@ use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use FOS\ElasticaBundle\Repository;
 use PHPUnit\Framework\TestCase;
 
-class CustomRepository
-{
-}
+class CustomRepository {}
 
-class NamespacedEntity
-{
-}
+class NamespacedEntity {}
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>

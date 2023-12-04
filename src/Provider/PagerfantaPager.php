@@ -31,49 +31,31 @@ class PagerfantaPager implements PagerInterface
         $this->pagerfanta = $pagerfanta;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNbResults(): int
     {
         return $this->pagerfanta->getNbResults();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNbPages(): int
     {
         return $this->pagerfanta->getNbPages();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCurrentPage(): int
     {
         return $this->pagerfanta->getCurrentPage();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCurrentPage(int $page)
     {
         $this->pagerfanta->setCurrentPage($page);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMaxPerPage(): int
     {
         return $this->pagerfanta->getMaxPerPage();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setMaxPerPage(int $perPage)
     {
         $this->pagerfanta->setMaxPerPage($perPage);

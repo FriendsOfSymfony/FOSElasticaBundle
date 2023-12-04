@@ -36,9 +36,6 @@ final class InPlacePagerPersister implements PagerPersisterInterface
         $this->dispatcher = $dispatcher;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function insert(PagerInterface $pager, array $options = [])
     {
         $pager->setMaxPerPage(empty($options['max_per_page']) ? 100 : $options['max_per_page']);

@@ -81,9 +81,6 @@ class Callback
         return $this;
     }
 
-    /**
-     * @param mixed $object
-     */
     public function serialize($object): string
     {
         $context = $this->serializer instanceof JMSSerializer ? SerializationContext::create()->enableMaxDepthChecks() : [];

@@ -33,9 +33,8 @@ class HybridPartialResults extends RawPartialResults
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return list<HybridResult>
+     *
      * @phpstan-ignore-next-line
      */
     public function toArray(): array

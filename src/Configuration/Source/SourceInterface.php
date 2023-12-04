@@ -23,6 +23,7 @@ interface SourceInterface
      * Should return all configuration available from the data source.
      *
      * @return \FOS\ElasticaBundle\Configuration\IndexConfig[]
+     *
      * @phpstan-return array<string, IndexConfigInterface>
      */
     public function getConfiguration(): array;

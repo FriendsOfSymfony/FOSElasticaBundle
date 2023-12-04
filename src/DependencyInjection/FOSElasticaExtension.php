@@ -41,6 +41,7 @@ class FOSElasticaExtension extends Extension
      * An array of indexes as configured by the extension.
      *
      * @var array
+     *
      * @phpstan-var array<string, TIndexConfig>
      */
     private $indexConfigs = [];
@@ -49,6 +50,7 @@ class FOSElasticaExtension extends Extension
      * An array of index templates as configured by the extension.
      *
      * @var array
+     *
      * @phpstan-var array<string, TIndexTemplateConfig>
      */
     private $indexTemplateConfigs = [];

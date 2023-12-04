@@ -35,9 +35,6 @@ class RepositoryManager implements RepositoryManagerInterface
         $this->repositoryManager = $repositoryManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addIndex(string $indexName, FinderInterface $finder, ?string $repositoryName = null): void
     {
         throw new \LogicException(__METHOD__.' should not be called. Call addIndex on the main repository manager');

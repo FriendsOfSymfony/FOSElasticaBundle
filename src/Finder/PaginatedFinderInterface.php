@@ -19,8 +19,10 @@ use Pagerfanta\Pagerfanta;
  * @phpstan-import-type TQuery from FinderInterface
  *
  * @method Pagerfanta findHybridPaginated(mixed $query) Searches for query hybrid results.
+ *
  * @phpstan-method Pagerfanta<HybridResult> findHybridPaginated(TQuery $query)
  * @phpstan-method HybridResult[] findHybrid(TQuery $query, ?int $limit = null, array $options = [])
+ *
  * @phpstan-import-type TOptions from FinderInterface
  */
 interface PaginatedFinderInterface extends FinderInterface
@@ -29,6 +31,7 @@ interface PaginatedFinderInterface extends FinderInterface
      * Searches for query results and returns them wrapped in a paginator.
      *
      * @param mixed $query Can be a string, an array or an \Elastica\Query object
+     *
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
@@ -39,7 +42,6 @@ interface PaginatedFinderInterface extends FinderInterface
     /**
      * Creates a paginator adapter for this query.
      *
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
@@ -50,7 +52,6 @@ interface PaginatedFinderInterface extends FinderInterface
     /**
      * Creates a hybrid paginator adapter for this query.
      *
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
@@ -61,7 +62,6 @@ interface PaginatedFinderInterface extends FinderInterface
     /**
      * Creates a raw paginator adapter for this query.
      *
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *

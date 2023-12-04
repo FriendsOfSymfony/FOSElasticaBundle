@@ -23,6 +23,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  * elastica documents ids and doctrine object ids.
  *
  * @phpstan-import-type TFields from ModelToElasticaTransformerInterface
+ *
  * @phpstan-type TOptions = array{identifier: string, index: string}
  */
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
@@ -36,6 +37,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * Optional parameters.
      *
      * @var array
+     *
      * @phpstan-var TOptions
      */
     protected $options = [
@@ -84,6 +86,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      *
      * @param array<object>|\Traversable<object>|\ArrayAccess<mixed,mixed>|null $objects the object to convert
      * @param array                                                             $fields  the keys we want to have in the returned array
+     *
      * @phpstan-param TFields $fields
      *
      * @return array<mixed>
@@ -111,8 +114,6 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
     /**
      * Attempts to convert any type to a string or an array of strings.
-     *
-     * @param mixed $value
      *
      * @return string|list<string>
      */

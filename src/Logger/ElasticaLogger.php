@@ -106,8 +106,6 @@ class ElasticaLogger extends AbstractLogger
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @param array<string, mixed> $context
      */
     public function log($level, $message, array $context = []): void

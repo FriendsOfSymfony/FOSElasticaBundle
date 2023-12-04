@@ -18,6 +18,4 @@ use Elastica\IndexTemplate as BaseIndexTemplate;
  *
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
  */
-class IndexTemplate extends BaseIndexTemplate
-{
-}
+class IndexTemplate extends BaseIndexTemplate {}

@@ -19,7 +19,5 @@ if (\trait_exists(BaseProphecyTrait::class)) {
         use BaseProphecyTrait;
     }
 } else {
-    trait ProphecyTrait
-    {
-    }
+    trait ProphecyTrait {}
 }

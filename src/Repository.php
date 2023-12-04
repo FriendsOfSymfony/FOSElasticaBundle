@@ -33,7 +33,6 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
@@ -45,7 +44,6 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
@@ -57,7 +55,6 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
@@ -69,7 +66,6 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
@@ -81,7 +77,6 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *

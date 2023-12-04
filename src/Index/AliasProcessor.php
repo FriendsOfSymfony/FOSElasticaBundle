@@ -42,9 +42,9 @@ class AliasProcessor
      *
      * $force will delete an index encountered where an alias is expected.
      *
-     * @throws AliasIsIndexException
-     *
      * @return void
+     *
+     * @throws AliasIsIndexException
      */
     public function switchIndexAlias(IndexConfig $indexConfig, Index $index, bool $force = false, bool $delete = true)
     {
@@ -180,7 +180,7 @@ class AliasProcessor
         }
 
         if (\count($aliasedIndexes) > 1) {
-            throw new \RuntimeException(\sprintf('Alias "%s" is used for multiple indexes: ["%s"]. Make sure it\'s'.'either not used or is assigned to one index only', $aliasName, \implode('", "', $aliasedIndexes)));
+            throw new \RuntimeException(\sprintf('Alias "%s" is used for multiple indexes: ["%s"]. Make sure it\'seither not used or is assigned to one index only', $aliasName, \implode('", "', $aliasedIndexes)));
         }
 
         return \array_shift($aliasedIndexes);

@@ -37,9 +37,6 @@ final class MongoDBPagerProvider implements PagerProviderInterface
         $this->registerListenersService = $registerListenersService;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function provide(array $options = []): PagerInterface
     {
         $options = \array_replace($this->baseOptions, $options);

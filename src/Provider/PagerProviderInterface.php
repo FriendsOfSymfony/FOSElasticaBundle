@@ -15,6 +15,7 @@ use FOS\ElasticaBundle\Event\AbstractIndexPopulateEvent;
 
 /**
  * @phpstan-import-type TOptions from AbstractIndexPopulateEvent
+ *
  * @phpstan-type TPagerProviderOptions = TOptions|array<string, mixed>
  */
 interface PagerProviderInterface

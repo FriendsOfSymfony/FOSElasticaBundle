@@ -66,7 +66,8 @@ class ElasticaToModelTransformerTest extends TestCase
                 'findOneBy',
                 'getClassName',
                 'findMany',
-            ])->getMock();
+            ])->getMock()
+        ;
 
         $this->repository->expects($this->any())
             ->method('findMany')

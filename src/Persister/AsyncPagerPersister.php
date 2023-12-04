@@ -49,9 +49,6 @@ final class AsyncPagerPersister implements PagerPersisterInterface
         $this->messageBus = $messageBus;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function insert(PagerInterface $pager, array $options = []): void
     {
         $pager->setMaxPerPage(empty($options['max_per_page']) ? self::DEFAULT_PAGE_SIZE : $options['max_per_page']);

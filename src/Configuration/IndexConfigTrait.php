@@ -48,21 +48,27 @@ trait IndexConfigTrait
      * An array of settings sent to ElasticSearch when creating the index.
      *
      * @var array
+     *
      * @phpstan-var TSettings
+     *
      * @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
      */
     private $settings;
 
     /**
      * @var array
+     *
      * @phpstan-var TConfig
+     *
      * @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
      */
     private $config;
 
     /**
      * @var array
+     *
      * @phpstan-var TMapping
+     *
      * @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
      */
     private $mapping;

@@ -69,9 +69,6 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         $this->options = $options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResults($offset, $itemCountPerPage)
     {
         return new RawPartialResults($this->getElasticaResults($offset, $itemCountPerPage));
@@ -99,9 +96,6 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
             : $this->totalHits;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAggregations()
     {
         if (!isset($this->aggregations)) {
@@ -111,9 +105,6 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
         return $this->aggregations;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSuggests()
     {
         if (!isset($this->suggests)) {
@@ -151,9 +142,9 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * @param int $offset
      * @param int $itemCountPerPage
      *
-     * @throws \InvalidArgumentException
-     *
      * @return ResultSet
+     *
+     * @throws \InvalidArgumentException
      */
     protected function getElasticaResults($offset, $itemCountPerPage)
     {
