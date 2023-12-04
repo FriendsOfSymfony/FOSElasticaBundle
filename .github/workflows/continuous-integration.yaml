@@ -45,6 +45,7 @@ jobs:
           - '4.4.*'
           - '5.4.*'
           - '6.2.*'
+          - '7.0.*'
         elasticsearch:
           - '7.11.0'
         dependencies:
@@ -108,6 +109,7 @@ jobs:
           - '4.4.*'
           - '5.4.*'
           - '6.2.*'
+          - '7.0.*'
         dependencies:
           - 'highest'
         include:
