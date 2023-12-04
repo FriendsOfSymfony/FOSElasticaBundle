@@ -155,6 +155,8 @@ class Indexable implements IndexableInterface
     /**
      * Returns the variable name to be used to access the object when using the ExpressionLanguage
      * component to parse and evaluate an expression.
+     *
+     * @param mixed|null $object
      */
     private function getExpressionVar($object = null): string
     {
