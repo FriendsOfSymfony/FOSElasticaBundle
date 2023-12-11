@@ -13,6 +13,8 @@ namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Elastica\Client as ElasticaClient;
 use FOS\ElasticaBundle\Elastica\Client;
+use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Finder\TransformedFinder;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -204,6 +206,12 @@ class FOSElasticaExtension extends Extension
             $indexDef->addTag('fos_elastica.index', [
                 'name' => $name,
             ]);
+
+            $container->registerAliasForArgument(
+                $indexId,
+                Index::class,
+                \sprintf('%s.%s', $name, 'index')
+            )->setPublic(true);
 
             if (isset($index['client'])) {
                 $client = $this->getClient($index['client']);
@@ -650,6 +658,12 @@ class FOSElasticaExtension extends Extension
             $finderDef->replaceArgument(0, $indexRef);
             $finderDef->replaceArgument(1, new Reference($elasticaToModelId));
             $container->setDefinition($finderId, $finderDef);
+
+            $container->registerAliasForArgument(
+                $finderId,
+                TransformedFinder::class,
+                \sprintf('%s.%s', $indexName, 'finder')
+            )->setPublic(true);
         }
 
         $arguments = [$indexName, new Reference($finderId)];
