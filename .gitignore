@@ -6,3 +6,4 @@ composer.phar
 .php-cs-fixer.php
 .php-cs-fixer.cache
 .phpunit.result.cache
+.idea
