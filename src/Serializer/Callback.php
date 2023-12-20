@@ -13,6 +13,7 @@ namespace FOS\ElasticaBundle\Serializer;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface as JMSSerializer;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class Callback
@@ -86,7 +87,7 @@ class Callback
      */
     public function serialize($object): string
     {
-        $context = $this->serializer instanceof JMSSerializer ? SerializationContext::create()->enableMaxDepthChecks() : [];
+        $context = $this->serializer instanceof JMSSerializer ? SerializationContext::create()->enableMaxDepthChecks() : [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true];
 
         if (!empty($this->groups)) {
             if ($context instanceof SerializationContext) {
