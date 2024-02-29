@@ -98,6 +98,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testObjectsAreTransformedByFindingThemByTheirIdentifiers($elasticaResults, $doctrineObjects)
     {
@@ -117,6 +120,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testAnExceptionIsThrownWhenTheNumberOfFoundObjectsIsLessThanTheNumberOfResults(
         $elasticaResults,
@@ -139,6 +145,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testAnExceptionIsNotThrownWhenTheNumberOfFoundObjectsIsLessThanTheNumberOfResultsIfOptionSet(
         $elasticaResults,
@@ -160,6 +169,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testHighlightsAreSetOnTransformedObjects($elasticaResults, $doctrineObjects)
     {
@@ -182,6 +194,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testResultsAreSortedByIdentifier($elasticaResults, $doctrineObjects)
     {
@@ -205,6 +220,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     /**
      * @dataProvider resultsWithMatchingObjects
+     *
+     * @param mixed $elasticaResults
+     * @param mixed $doctrineObjects
      */
     public function testHybridTransformReturnsDecoratedResults($elasticaResults, $doctrineObjects)
     {
@@ -252,6 +270,8 @@ class AbstractElasticaToModelTransformerTest extends TestCase
     }
 
     /**
+     * @param mixed $options
+     *
      * @return \PHPUnit\Framework\MockObject\MockObject|AbstractElasticaToModelTransformer
      */
     private function createMockTransformer($options = [])

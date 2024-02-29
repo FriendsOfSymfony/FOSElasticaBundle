@@ -170,9 +170,9 @@ class ObjectPersister implements ObjectPersisterInterface
     /**
      * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw.
      *
-     * @return void
-     *
      * @throws BulkException
+     *
+     * @return void
      */
     private function log(BulkException $e)
     {

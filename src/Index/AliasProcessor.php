@@ -42,9 +42,9 @@ class AliasProcessor
      *
      * $force will delete an index encountered where an alias is expected.
      *
-     * @return void
-     *
      * @throws AliasIsIndexException
+     *
+     * @return void
      */
     public function switchIndexAlias(IndexConfig $indexConfig, Index $index, bool $force = false, bool $delete = true)
     {

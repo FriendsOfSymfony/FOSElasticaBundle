@@ -142,9 +142,9 @@ class RawPaginatorAdapter implements PaginatorAdapterInterface
      * @param int $offset
      * @param int $itemCountPerPage
      *
-     * @return ResultSet
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return ResultSet
      */
     protected function getElasticaResults($offset, $itemCountPerPage)
     {

@@ -29,6 +29,9 @@ class IndexableTest extends TestCase
 
     /**
      * @dataProvider provideIsIndexableCallbacks
+     *
+     * @param mixed $callback
+     * @param mixed $return
      */
     public function testValidIndexableCallbacks($callback, $return)
     {
@@ -42,6 +45,8 @@ class IndexableTest extends TestCase
 
     /**
      * @dataProvider provideInvalidIsIndexableCallbacks
+     *
+     * @param mixed $callback
      */
     public function testInvalidIsIndexableCallbacks($callback)
     {

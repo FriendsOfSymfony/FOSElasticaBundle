@@ -27,6 +27,7 @@ class IndexTemplateManagerTest extends TestCase
      *
      * @param string      $name
      * @param string|null $expectedException
+     * @param mixed       $expectedTemplate
      *
      * @return void
      *

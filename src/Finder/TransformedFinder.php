@@ -103,6 +103,8 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
+     * @param mixed $query
+     *
      * @return Result[]
      */
     protected function search($query, ?int $limit = null, array $options = [])
