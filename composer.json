@@ -37,7 +37,8 @@
         "symfony/console": "^4.4 || ^5.4 || ^6.3 || ^7.0",
         "symfony/dependency-injection": "^4.4 || ^5.4 || ^6.3 || ^7.0",
         "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.3 || ^7.0",
-        "symfony/property-access": "^4.4 || ^5.4 || ^6.3 || ^7.0"
+        "symfony/property-access": "^4.4 || ^5.4 || ^6.3 || ^7.0",
+        "symfony/stopwatch": "^4.4 || ^5.4 || ^6.3 || ^7.0"
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "^2.1.1",
