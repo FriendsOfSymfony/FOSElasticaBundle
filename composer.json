@@ -40,7 +40,6 @@
         "symfony/property-access": "^4.4 || ^5.4 || ^6.3 || ^7.0"
     },
     "require-dev": {
-        "php-cs-fixer/shim": "^3.8.0",
         "doctrine/doctrine-bundle": "^2.1.1",
         "doctrine/mongodb-odm": "^2.2",
         "doctrine/orm": "^2.8",
@@ -50,6 +49,7 @@
         "jms/serializer": "^3.8",
         "jms/serializer-bundle": "^4.0 || ^5.0",
         "knplabs/knp-components": "^2.4 || ^3.0",
+        "php-cs-fixer/shim": "^3.8.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.4",
         "phpstan/phpstan-phpunit": "^1.1",
