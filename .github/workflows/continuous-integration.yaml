@@ -61,6 +61,10 @@ jobs:
             symfony: '7.0.*'
           - php: '8.1'
             symfony: '4.4.*'
+          - php: '8.2'
+            symfony: '4.4.*'
+          - php: '8.3'
+            symfony: '4.4.*'
       fail-fast: false
     steps:
       - name: 'Checkout'
