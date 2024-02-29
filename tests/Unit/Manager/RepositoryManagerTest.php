@@ -16,9 +16,13 @@ use FOS\ElasticaBundle\Manager\RepositoryManager;
 use FOS\ElasticaBundle\Repository;
 use PHPUnit\Framework\TestCase;
 
-class CustomRepository extends Repository {}
+class CustomRepository extends Repository
+{
+}
 
-class Entity {}
+class Entity
+{
+}
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>

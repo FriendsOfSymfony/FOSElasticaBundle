@@ -11,4 +11,6 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-final class PostIndexPopulateEvent extends AbstractIndexPopulateEvent {}
+final class PostIndexPopulateEvent extends AbstractIndexPopulateEvent
+{
+}

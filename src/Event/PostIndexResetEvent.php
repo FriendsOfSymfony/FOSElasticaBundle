@@ -11,4 +11,6 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-final class PostIndexResetEvent extends AbstractIndexResetEvent {}
+final class PostIndexResetEvent extends AbstractIndexResetEvent
+{
+}

@@ -108,5 +108,7 @@ class IndexableDecider
         return !$entity->isIndexable();
     }
 
-    protected function internalMethod() {}
+    protected function internalMethod()
+    {
+    }
 }
