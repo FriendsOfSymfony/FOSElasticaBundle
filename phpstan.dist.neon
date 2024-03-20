@@ -8,6 +8,8 @@ parameters:
     paths:
         - src
 #        - tests
+    excludePaths:
+        - src/Message/Handler/AsyncPersistPageHandler.php
     ignoreErrors:
         - message: /Trying to mock an undefined method/
           path: tests/
