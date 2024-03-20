@@ -723,7 +723,7 @@ class FOSElasticaExtension extends Extension
         $serializer = $container->getDefinition('fos_elastica.serializer_callback_prototype');
         $serializer->setClass($config['callback_class']);
 
-        if (\is_subclass_of($config['callback_class'], ContainerAwareInterface::class)) {
+        if (\class_exists('Symfony\Component\DependencyInjection\ContainerAwareInterface') && \is_subclass_of($config['callback_class'], ContainerAwareInterface::class)) {
             $serializer->addMethodCall('setContainer', [new Reference('service_container')]);
         }
     }
