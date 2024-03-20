@@ -88,6 +88,7 @@ class ProfilerTest extends WebTestCase
             'request' => $request,
             'collector' => $this->collector,
             'queries' => $this->logger->getQueries(),
+            'profile_type' => 'request',
         ]);
 
         $output = \str_replace('&quot;', '"', $output);
