@@ -10,8 +10,6 @@
         "mongodb",
         "search"
     ],
-    "minimum-stability": "RC",
-    "prefer-stable": true,
     "authors": [
         {
             "name": "FriendsOfSymfony Community",
@@ -69,6 +67,8 @@
         "enqueue/elastica-bundle": "For populating Elasticsearch indexes asynchronously and using significanly less resources. Uses Enqueue.",
         "symfony/messenger": "For populating Elasticsearch indexes asynchronously and using significanly less resources."
     },
+    "minimum-stability": "RC",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "FOS\\ElasticaBundle\\": "src/"
