@@ -18,6 +18,7 @@ class ConfigManager implements ManagerInterface
 {
     /**
      * @var IndexConfig[]
+     *
      * @phpstan-var array<string, IndexConfigInterface>
      */
     private $indexes = [];

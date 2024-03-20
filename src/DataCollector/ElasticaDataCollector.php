@@ -39,17 +39,11 @@ class ElasticaDataCollector extends DataCollector
         $this->data['queries'] = $this->logger->getQueries();
     }
 
-    /**
-     * @return mixed
-     */
     public function getQueryCount()
     {
         return $this->data['nb_queries'];
     }
 
-    /**
-     * @return mixed
-     */
     public function getQueries()
     {
         return $this->data['queries'];

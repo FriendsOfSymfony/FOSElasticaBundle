@@ -37,6 +37,7 @@ abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
 
     /**
      * @var array
+     *
      * @phpstan-var TOptions
      */
     protected $options;
@@ -67,8 +68,6 @@ abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
 
     /**
      * @throws \InvalidArgumentException if option does not exist
-     *
-     * @return mixed
      */
     public function getOption(string $name)
     {

@@ -21,12 +21,14 @@ class TypeConfig
 {
     /**
      * @var array
+     *
      * @phpstan-var TElasticConfig
      */
     private $config;
 
     /**
      * @var array
+     *
      * @phpstan-var TMapping
      */
     private $mapping;
@@ -38,6 +40,7 @@ class TypeConfig
 
     /**
      * @param TMapping $mapping
+     *
      * @phpstan-param TElasticConfig $config
      */
     public function __construct(string $name, array $mapping, array $config = [])

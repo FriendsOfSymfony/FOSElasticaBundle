@@ -27,6 +27,7 @@ abstract class AbstractTransformEvent extends Event
 
     /**
      * @var array
+     *
      * @phpstan-var TFields
      */
     private $fields;

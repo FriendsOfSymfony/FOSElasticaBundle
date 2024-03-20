@@ -25,6 +25,7 @@ class AsyncPersistPage
 
     /**
      * @var array
+     *
      * @phpstan-var TOptions
      */
     private $options;

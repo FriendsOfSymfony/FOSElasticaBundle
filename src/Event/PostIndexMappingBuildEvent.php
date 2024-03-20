@@ -25,6 +25,7 @@ final class PostIndexMappingBuildEvent extends AbstractIndexEvent
 
     /**
      * @var array
+     *
      * @phpstan-var TMapping
      */
     private $mapping;

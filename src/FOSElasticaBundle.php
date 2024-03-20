@@ -19,8 +19,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class FOSElasticaBundle extends Bundle
 {
     /**
-     * {@inheritdoc}
-     *
      * @return void
      */
     public function build(ContainerBuilder $container)

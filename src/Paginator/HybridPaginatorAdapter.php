@@ -34,9 +34,6 @@ class HybridPaginatorAdapter extends RawPaginatorAdapter
         $this->transformer = $transformer;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResults($offset, $length)
     {
         return new HybridPartialResults($this->getElasticaResults($offset, $length), $this->transformer);

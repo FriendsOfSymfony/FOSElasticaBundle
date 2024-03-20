@@ -47,9 +47,6 @@ class FilterObjectsListener implements EventSubscriberInterface
         $event->setObjects($filtered);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents(): array
     {
         return [

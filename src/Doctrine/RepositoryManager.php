@@ -35,9 +35,6 @@ class RepositoryManager implements RepositoryManagerInterface
         $this->repositoryManager = $repositoryManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addIndex(string $indexName, FinderInterface $finder, ?string $repositoryName = null): void
     {
         throw new \LogicException(__METHOD__.' should not be called. Call addIndex on the main repository manager');
@@ -58,7 +55,12 @@ class RepositoryManager implements RepositoryManagerInterface
         $realEntityName = $entityName;
         if (false !== \strpos($entityName, ':')) {
             [$namespaceAlias, $simpleClassName] = \explode(':', $entityName);
-            $realEntityName = $this->managerRegistry->getAliasNamespace($namespaceAlias).'\\'.$simpleClassName;
+            // @link https://github.com/doctrine/persistence/pull/204
+            if (\method_exists($this->managerRegistry, 'getAliasNamespace')) {
+                $realEntityName = $this->managerRegistry->getAliasNamespace($namespaceAlias).'\\'.$simpleClassName;
+            } else {
+                $realEntityName = $simpleClassName.'::class';
+            }
         }
 
         if (isset($this->entities[$realEntityName])) {

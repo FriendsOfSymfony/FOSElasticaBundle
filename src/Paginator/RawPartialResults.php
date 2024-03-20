@@ -30,8 +30,6 @@ class RawPartialResults implements PartialResultsInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return list<array<string, mixed>>
      */
     public function toArray(): array
@@ -41,17 +39,11 @@ class RawPartialResults implements PartialResultsInterface
         }, $this->resultSet->getResults());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTotalHits(): int
     {
         return $this->resultSet->getTotalHits();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAggregations(): array
     {
         return $this->resultSet->getAggregations();

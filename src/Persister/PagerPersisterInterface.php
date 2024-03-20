@@ -16,6 +16,7 @@ use FOS\ElasticaBundle\Provider\PagerInterface;
 
 /**
  * @phpstan-import-type TOptions from AbstractIndexPopulateEvent
+ *
  * @phpstan-type TPagerPersisterOptions = TOptions|array{}
  */
 interface PagerPersisterInterface

@@ -13,9 +13,10 @@ namespace FOS\ElasticaBundle\Message\Handler;
 
 use FOS\ElasticaBundle\Message\AsyncPersistPage;
 use FOS\ElasticaBundle\Persister\AsyncPagerPersister;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class AsyncPersistPageHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+class AsyncPersistPageHandler
 {
     private AsyncPagerPersister $persister;
 

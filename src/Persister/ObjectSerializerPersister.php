@@ -28,12 +28,14 @@ class ObjectSerializerPersister extends ObjectPersister
 {
     /**
      * @var callable
+     *
      * @phpstan-var TSerializer
      */
     protected $serializer;
 
     /**
      * @param callable $serializer
+     *
      * @phpstan-param TSerializer $serializer
      */
     public function __construct(Index $index, ModelToElasticaTransformerInterface $transformer, string $objectClass, $serializer, array $options = [])

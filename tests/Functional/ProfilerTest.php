@@ -55,7 +55,10 @@ class ProfilerTest extends WebTestCase
         $fragmentHandlerMock = $this->createMock(FragmentHandler::class);
         $loaderMock = $this->createMock(RuntimeLoaderInterface::class);
 
-        $this->twig->addExtension(new CodeExtension('', '', ''));
+        if (\class_exists('Symfony\Bridge\Twig\Extension\CodeExtension')) {
+            $this->twig->addExtension(new CodeExtension('', '', ''));
+        }
+
         $this->twig->addExtension(new RoutingExtension($urlGeneratorMock));
         $this->twig->addExtension(new HttpKernelExtension());
 
@@ -85,6 +88,7 @@ class ProfilerTest extends WebTestCase
             'request' => $request,
             'collector' => $this->collector,
             'queries' => $this->logger->getQueries(),
+            'profile_type' => 'request',
         ]);
 
         $output = \str_replace('&quot;', '"', $output);

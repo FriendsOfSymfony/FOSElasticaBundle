@@ -33,9 +33,10 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
+     *
+     * @param mixed $query
      *
      * @return array<object>
      */
@@ -45,9 +46,10 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
+     *
+     * @param mixed $query
      *
      * @return list<HybridResult>
      */
@@ -57,9 +59,10 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
+     *
+     * @param mixed $query
      *
      * @return \Pagerfanta\Pagerfanta<object>
      */
@@ -69,9 +72,10 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
+     *
+     * @param mixed $query
      *
      * @return Paginator\PaginatorAdapterInterface
      */
@@ -81,9 +85,10 @@ class Repository
     }
 
     /**
-     * @param mixed $query
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
+     *
+     * @param mixed $query
      *
      * @return Paginator\PaginatorAdapterInterface
      */

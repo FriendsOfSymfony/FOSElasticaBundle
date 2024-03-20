@@ -30,9 +30,11 @@ interface FinderInterface
      * Searches for query results within a given limit.
      *
      * @param mixed $query Can be a string, an array or an \Elastica\Query object
+     *
      * @phpstan-param TQuery $query
      *
      * @param int|null $limit How many results to get
+     *
      * @phpstan-param TOptions $options
      *
      * @return array<object> results

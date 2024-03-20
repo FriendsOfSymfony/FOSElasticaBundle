@@ -69,6 +69,7 @@ interface IndexConfigInterface
 
     /**
      * @return string|bool|null
+     *
      * @phpstan-return ?TDynamic
      */
     public function getDynamic();

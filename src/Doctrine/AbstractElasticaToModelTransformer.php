@@ -144,9 +144,6 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getIdentifierField(): string
     {
         return $this->options['identifier'];

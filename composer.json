@@ -34,38 +34,41 @@
         "pagerfanta/pagerfanta": "^2.4 || ^3.0 || ^4.0",
         "psr/log": "^1.0 || ^2.0 || ^3.0",
         "ruflin/elastica": "^7.1",
-        "symfony/console": "^4.4 || ^5.4 || ^6.2",
-        "symfony/dependency-injection": "^4.4 || ^5.4 || ^6.2",
-        "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.2",
-        "symfony/property-access": "^4.4 || ^5.4 || ^6.2"
+        "symfony/console": "^5.4 || ^6.3 || ^7.0",
+        "symfony/dependency-injection": "^5.4 || ^6.3 || ^7.0",
+        "symfony/framework-bundle": "^5.4 || ^6.3 || ^7.0",
+        "symfony/property-access": "^5.4 || ^6.3 || ^7.0",
+        "symfony/stopwatch": "^5.4 || ^6.3 || ^7.0"
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "^2.1.1",
         "doctrine/mongodb-odm": "^2.2",
         "doctrine/orm": "^2.8",
-        "doctrine/phpcr-odm": "^1.4",
+        "doctrine/phpcr-odm": "^1.5.3 || ^2.0.0-beta2",
         "ergebnis/composer-normalize": "^2.28",
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "jackalope/jackalope-doctrine-dbal": "^1.2",
+        "jackalope/jackalope-doctrine-dbal": "^1.2 || ^2.0.0-RC1",
         "jms/serializer": "^3.8",
-        "jms/serializer-bundle": "^3.5 || ^4.0",
-        "knplabs/knp-components": "^2.4 || ^3.0",
+        "jms/serializer-bundle": "^4.0 || ^5.0",
+        "knplabs/knp-components": "^2.4 || ^3.0 || ^4.0",
+        "php-cs-fixer/shim": "3.8.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.4",
         "phpstan/phpstan-phpunit": "^1.1",
         "phpstan/phpstan-symfony": "^1.2",
         "phpunit/phpunit": "^9.5",
-        "symfony/expression-language": "^4.4 || ^5.4 || ^6.2",
-        "symfony/messenger": "^4.4 || ^5.4 || ^6.2",
-        "symfony/serializer": "^4.4 || ^5.4 || ^6.2",
-        "symfony/twig-bundle": "^4.4 || ^5.4 || ^6.2",
-        "symfony/web-profiler-bundle": "^4.4 || ^5.4 || ^6.2",
-        "symfony/yaml": "^4.4 || ^5.4 || ^6.2"
+        "symfony/expression-language": "^5.4 || ^6.3 || ^7.0",
+        "symfony/messenger": "^5.4 || ^6.3 || ^7.0",
+        "symfony/serializer": "^5.4 || ^6.3 || ^7.0",
+        "symfony/twig-bundle": "^5.4 || ^6.3 || ^7.0",
+        "symfony/web-profiler-bundle": "^5.4 || ^6.3 || ^7.0",
+        "symfony/yaml": "^5.4 || ^6.3 || ^7.0"
     },
     "suggest": {
         "enqueue/elastica-bundle": "For populating Elasticsearch indexes asynchronously and using significanly less resources. Uses Enqueue.",
         "symfony/messenger": "For populating Elasticsearch indexes asynchronously and using significanly less resources."
     },
+    "minimum-stability": "RC",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "FOS\\ElasticaBundle\\": "src/"
@@ -78,8 +81,8 @@
     },
     "config": {
         "allow-plugins": {
-            "phpstan/extension-installer": true,
-            "ergebnis/composer-normalize": true
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true
         }
     },
     "extra": {

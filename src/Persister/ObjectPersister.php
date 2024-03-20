@@ -24,6 +24,7 @@ use Psr\Log\LoggerInterface;
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  *
  * @phpstan-type TOptions = array<string, mixed>
+ *
  * @phpstan-import-type TFields from ModelToElasticaTransformerInterface
  *
  * @see https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html for TOptions description
@@ -44,6 +45,7 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $objectClass;
     /**
      * @var array
+     *
      * @phpstan-var TFields
      */
     protected $fields;
@@ -53,12 +55,14 @@ class ObjectPersister implements ObjectPersisterInterface
     protected $logger;
     /**
      * @var array
+     *
      * @phpstan-var TOptions
      */
     private $options;
 
     /**
      * @param class-string $objectClass
+     *
      * @phpstan-param TFields $fields
      * @phpstan-param TOptions $options
      */
@@ -71,9 +75,6 @@ class ObjectPersister implements ObjectPersisterInterface
         $this->options = $options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handlesObject($object): bool
     {
         return $object instanceof $this->objectClass;
@@ -87,41 +88,26 @@ class ObjectPersister implements ObjectPersisterInterface
         $this->logger = $logger;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function insertOne($object)
     {
         $this->insertMany([$object]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function replaceOne($object)
     {
         $this->replaceMany([$object]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deleteOne($object)
     {
         $this->deleteMany([$object]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deleteById($id, $routing = false)
     {
         $this->deleteManyByIdentifiers([$id], $routing);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function insertMany(array $objects)
     {
         $documents = [];
@@ -135,9 +121,6 @@ class ObjectPersister implements ObjectPersisterInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function replaceMany(array $objects)
     {
         $documents = [];
@@ -154,9 +137,6 @@ class ObjectPersister implements ObjectPersisterInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deleteMany(array $objects)
     {
         $documents = [];
@@ -170,9 +150,6 @@ class ObjectPersister implements ObjectPersisterInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deleteManyByIdentifiers(array $identifiers, $routing = false)
     {
         try {

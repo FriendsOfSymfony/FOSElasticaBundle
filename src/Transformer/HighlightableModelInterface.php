@@ -20,8 +20,6 @@ interface HighlightableModelInterface
 {
     /**
      * Returns a unique identifier for the model.
-     *
-     * @return mixed
      */
     public function getId();
 
@@ -29,6 +27,7 @@ interface HighlightableModelInterface
      * Set ElasticSearch highlight data.
      *
      * @param array $highlights array of highlight strings
+     *
      * @phpstan-param list<THighlight> $highlights
      *
      * @return void
