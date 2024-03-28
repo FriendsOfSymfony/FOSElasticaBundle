@@ -291,3 +291,27 @@ with version 7.7 and above. Rewriting your code as follows is a possible workaro
 $boolQuery->addShould($fieldQuery);
 $boolQuery->addShould($tagsQuery);
 ```
+
+Autowiring
+-----------
+
+Indexes and Finders are setup to be used with named Autowiring.  For example, if 
+we have an index defined as `blog.post`, we can autowire a controller like:
+
+```php
+namespace App\Controller;
+
+use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Finder\TransformedFinder;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+#[Route('/default', name: 'app_default')]
+public function index(
+    Index $blogPostIndex,
+    TransformedFinder $blogPostFinder
+): Response {
+    $results = $blogPostFinder->findPaginated('search text');
+    $resultsPage = $results->getCurrentPageResults();
+}
+```
