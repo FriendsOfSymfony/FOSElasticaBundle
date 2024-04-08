@@ -4,6 +4,15 @@ CHANGELOG for 6.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.x versions.
 
+### 6.4.0 (2024-xx-xx)
+* Added PHP 8.3 support.
+* Added Symfony 7.0 support.
+* Added Symfony 6.4 support.
+* Added `jms/serializer-bundle` 5 support.
+* Added `pagerfanta/pagerfanta` 4 support.
+* Removed Symfony 6.2 and 6.3 support.
+* Removed Symfony 4 support.
+
 ### 6.3.1 (2023-05-28)
 * Restored `pagerfanta/pagerfanta` dependency.
 
