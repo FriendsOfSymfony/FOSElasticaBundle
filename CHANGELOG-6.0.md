@@ -10,8 +10,8 @@ in 6.x versions.
 * Added Symfony 6.4 support.
 * Added `jms/serializer-bundle` 5 support.
 * Added `pagerfanta/pagerfanta` 4 support.
-* Removed Symfony 6.2 and 6.3 support.
-* Removed Symfony 4 support.
+* Dropped Symfony 6.2 and 6.3 support.
+* Dropped Symfony 4 support.
 
 ### 6.3.1 (2023-05-28)
 * Restored `pagerfanta/pagerfanta` dependency.
