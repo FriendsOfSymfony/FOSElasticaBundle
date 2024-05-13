@@ -30,7 +30,7 @@
     ],
     "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle",
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^7.4 || ^8.1",
         "pagerfanta/pagerfanta": "^2.4 || ^3.0 || ^4.0",
         "psr/log": "^1.0 || ^2.0 || ^3.0",
         "ruflin/elastica": "^7.1",
@@ -86,7 +86,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "6.3.x-dev"
+            "dev-master": "6.4.x-dev"
         }
     },
     "scripts": {
