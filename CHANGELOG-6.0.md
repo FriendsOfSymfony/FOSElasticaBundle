@@ -12,6 +12,8 @@ in 6.x versions.
 * Added `pagerfanta/pagerfanta` 4 support.
 * Dropped Symfony 6.2 and 6.3 support.
 * Dropped Symfony 4 support.
+* Enabled max depth for Symfony serializer.
+* Created service aliases for Indexes and Finders.
 
 ### 6.3.1 (2023-05-28)
 * Restored `pagerfanta/pagerfanta` dependency.
