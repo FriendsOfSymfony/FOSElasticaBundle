@@ -49,7 +49,11 @@ class RegisterListenersService
             });
         }
 
-        if (false === $options['debug_logging'] && $manager instanceof EntityManagerInterface) {
+        if (
+            false === $options['debug_logging']
+            && interface_exists('Doctrine\DBAL\Logging\SQLLogger')
+            && $manager instanceof EntityManagerInterface
+        ) {
             $configuration = $manager->getConnection()->getConfiguration();
             $logger = $configuration->getSQLLogger();
 

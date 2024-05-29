@@ -25,7 +25,7 @@ class ListenerTest extends AbstractListenerTest
 
     protected function getLifecycleEventArgsClass()
     {
-        return \Doctrine\ORM\Event\LifecycleEventArgs::class;
+        return \Doctrine\Persistence\Event\LifecycleEventArgs::class;
     }
 
     protected function getListenerClass()

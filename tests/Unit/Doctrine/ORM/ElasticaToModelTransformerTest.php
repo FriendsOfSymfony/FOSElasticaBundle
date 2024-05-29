@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine\ORM;
 
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -132,7 +133,7 @@ class ElasticaToModelTransformerTest extends TestCase
      */
     public function testUsesHintsConfigurationIfGiven()
     {
-        $query = $this->getMockBuilder(AbstractQuery::class)
+        $query = $this->getMockBuilder(Query::class)
             ->setMethods(['setHint', 'execute', 'setHydrationMode'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass()
