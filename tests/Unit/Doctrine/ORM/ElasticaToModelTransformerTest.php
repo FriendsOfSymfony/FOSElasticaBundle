@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine\ORM;
 
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
