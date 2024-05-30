@@ -49,17 +49,22 @@ class RegisterListenersService
             });
         }
 
-        if (false === $options['debug_logging'] && $manager instanceof EntityManagerInterface) {
+        if (
+            false === $options['debug_logging']
+            && $manager instanceof EntityManagerInterface
+        ) {
             $configuration = $manager->getConnection()->getConfiguration();
-            $logger = $configuration->getSQLLogger();
+            if (\method_exists($configuration, 'getSQLLogger') && \method_exists($configuration, 'setSQLLogger')) {
+                $logger = $configuration->getSQLLogger();
 
-            $this->addListener($pager, PreFetchObjectsEvent::class, function () use ($configuration) {
-                $configuration->setSQLLogger(null);
-            });
+                $this->addListener($pager, PreFetchObjectsEvent::class, function () use ($configuration) {
+                    $configuration->setSQLLogger(null);
+                });
 
-            $this->addListener($pager, PreInsertObjectsEvent::class, function () use ($configuration, $logger) {
-                $configuration->setSQLLogger($logger);
-            });
+                $this->addListener($pager, PreInsertObjectsEvent::class, function () use ($configuration, $logger) {
+                    $configuration->setSQLLogger($logger);
+                });
+            }
         }
     }
 

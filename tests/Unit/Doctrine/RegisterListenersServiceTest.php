@@ -173,6 +173,10 @@ class RegisterListenersServiceTest extends TestCase
 
     public function testShouldRegisterDisableDebugLoggingByDefaultForEntityManager()
     {
+        if (!\interface_exists('Doctrine\DBAL\Logging\SQLLogger')) {
+            $this->markTestSkipped('This is only possible on doctrine/orm 2.');
+        }
+
         $dispatcher = $this->createDispatcherMock();
         $dispatcher->expects($this->exactly(2))
             ->method('addListener')
