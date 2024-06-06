@@ -70,7 +70,7 @@ class PopulateListener
     {
         $index = $this->indexManager->getIndex($event->getIndex());
         $settings = $index->getSettings();
-        $index->optimize(['max_num_segments' => 5]);
+        $index->forcemerge(['max_num_segments' => 5]);
         $settings->setRefreshInterval('1s');
     }
 }
