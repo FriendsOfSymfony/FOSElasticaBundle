@@ -16,29 +16,30 @@ $ composer require enqueue/elastica-bundle
 $ composer require enqueue/sqs
 ```
 
-Define a handful of useful entries in `parameters.yml`
+Add the useful variables to your parameters, usually defined in `services.yaml` :
 
 ```yaml
 parameters:
-    aws_sqs_key: XXXXX
-    aws_sqs_secret_key: XXXXX
-    aws_sqs_region: XXXXX
-    aws_sqs_queue_name: XXXXX
-    aws_sqs_reply_queue_name: XXXXX
+    aws_sqs_key: '%env(AWS_SQS_KEY)%'
+    aws_sqs_secret_key: '%env(AWS_SQS_SECRET_KEY)%'
+    aws_sqs_region: '%env(AWS_SQS_REGION)%'
+    aws_sqs_queue_name: '%env(AWS_SQS_QUEUE_NAME)%'
+    aws_sqs_reply_queue_name: '%env(AWS_SQS_REPLY_QUEUE_NAME)%'
 ```
 
-Your `vendor/enqueue.yml` config should look like, taking three of the parameters defined above.
+You will need to define the corresponding environment variables for a later use.
+
+Your `config/packages/enqueue.yml` config should look like, taking three of the parameters defined above.
 
 ```yaml
 enqueue:
-    transport:
-        default: sqs
-        sqs:
-            key: "%aws_sqs_key%"
-            secret: "%aws_sqs_secret_key%"
-            region: "%aws_sqs_region%"
+    default:
+        transport:
+            dsn: 'sqs:?key=%aws_sqs_key%&secret=%aws_sqs_secret_key%&region=%aws_sqs_region%'
+        client: ~
 
 enqueue_elastica:
+    transport: '%enqueue.default_transport%'
     doctrine: ~
 ```
 
@@ -52,13 +53,13 @@ services:
             $queueName: "%aws_sqs_queue_name%"
             $replyQueueName: "%aws_sqs_reply_queue_name%"
         tags:
-            - { name: kernel.event_listener, event: elastica.pager_persister.pre_persist, method: prePersist }
+            - { name: kernel.event_listener, method: prePersist }
 ```
 
-Here is a simple implementation of `QueuePagerPersister` that is aware of AWS, again it takes the parameters you defined above.
+Here is a simple implementation of `QueuePagerPersister` that is aware of AWS, and takes the parameters you defined above.
 
 ```php
-namespace AppBundle\Listener;
+namespace App\Listener;
 
 use FOS\ElasticaBundle\Persister\Event\PrePersistEvent;
 
@@ -130,7 +131,7 @@ Go the AWS GUI console and you should see the messages added to the queue. If yo
 The messages are now in the AWS SQS queue, ready to be consumed.
 
 ```bash
-php bin/console enqueue:transport:consume enqueue_elastica.populate_processor --queue=acme_fos_elastica_populate -vv
+php bin/console enqueue:transport:consume  enqueue_elastica.populate_processor <queue_name> -vvv
 [info] Start consuming
 [info] Message received from the queue: acme_fos_elastica_populate
 [info] Message processed: enqueue.ack
@@ -138,6 +139,9 @@ php bin/console enqueue:transport:consume enqueue_elastica.populate_processor --
 [info] Message processed: enqueue.ack
 ...
 ```
+
+| `<queue_name>` should be replaced with the name defined as `AWS_SQS_QUEUE_NAME` (not the reply queue)
+
 
 You should now start seeing the progress increase with the fos:elastica:populate, when all the messages are consumed you should get a brand new and re-populated index.
 
