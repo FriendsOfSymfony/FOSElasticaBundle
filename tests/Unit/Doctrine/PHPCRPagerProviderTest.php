@@ -12,7 +12,7 @@ use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Tests\Unit\Mocks\DoctrinePHPCRCustomRepositoryMock;
-use Pagerfanta\Adapter\DoctrineODMPhpcrAdapter;
+use Pagerfanta\Doctrine\PHPCRODM\QueryAdapter;
 use PHPUnit\Framework\TestCase;
 
 class PHPCRPagerProviderTest extends TestCase
@@ -75,9 +75,9 @@ class PHPCRPagerProviderTest extends TestCase
         $this->assertInstanceOf(PagerfantaPager::class, $pager);
 
         $adapter = $pager->getPagerfanta()->getAdapter();
-        $this->assertInstanceOf(DoctrineODMPhpcrAdapter::class, $adapter);
+        $this->assertInstanceOf(QueryAdapter::class, $adapter);
 
-        $this->assertAttributeSame($expectedBuilder, 'queryBuilder', $adapter);
+        $this->assertSame($expectedBuilder, $adapter->getQueryBuilder());
     }
 
     public function testShouldAllowCallCustomRepositoryMethod()

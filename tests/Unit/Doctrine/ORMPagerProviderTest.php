@@ -12,7 +12,7 @@ use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
 use FOS\ElasticaBundle\Tests\Unit\Mocks\DoctrineORMCustomRepositoryMock;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
@@ -72,7 +72,7 @@ class ORMPagerProviderTest extends TestCase
         $this->assertInstanceOf(PagerfantaPager::class, $pager);
 
         $adapter = $pager->getPagerfanta()->getAdapter();
-        $this->assertInstanceOf(DoctrineORMAdapter::class, $adapter);
+        $this->assertInstanceOf(QueryAdapter::class, $adapter);
     }
 
     public function testShouldAllowCallCustomRepositoryMethod()
@@ -148,8 +148,7 @@ class ORMPagerProviderTest extends TestCase
         $registerListenersMock
             ->expects($this->once())
             ->method('register')
-            ->with($this->identicalTo($manager), $this->isInstanceOf(PagerInterface::class), $baseConfig)
-        ;
+            ->with($this->identicalTo($manager), $this->isInstanceOf(PagerInterface::class), $baseConfig);
 
         $provider = new ORMPagerProvider($doctrine, $registerListenersMock, $objectClass, $baseConfig);
 

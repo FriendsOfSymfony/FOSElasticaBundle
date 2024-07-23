@@ -18,19 +18,19 @@ interface PartialResultsInterface
      *
      * @return array
      */
-    public function toArray();
+    public function toArray(): array;
 
     /**
      * Returns the number of results.
      *
      * @return int The number of results
      */
-    public function getTotalHits();
+    public function getTotalHits(): int;
 
     /**
      * Returns the aggregations.
      *
      * @return array
      */
-    public function getAggregations();
+    public function getAggregations(): array;
 }

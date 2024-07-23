@@ -51,11 +51,10 @@ class IndexManagerTest extends TestCase
         $this->assertSame($this->indexes['index3'], $this->indexManager->getIndex('index3'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetIndexShouldThrowExceptionForInvalidName()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->indexManager->getIndex('index4');
     }
 

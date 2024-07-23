@@ -94,9 +94,6 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         $this->assertSame($expected, $query->getParam('sort'));
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     */
     public function testShouldThrowIfFieldIsNotWhitelisted()
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner'])));
@@ -118,6 +115,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             'sortFieldWhitelist' => ['createdAt', 'updatedAt'],
         ];
 
+        $this->expectException(\UnexpectedValueException::class);
         $subscriber->items($event);
     }
 

@@ -16,6 +16,7 @@ use FOS\ElasticaBundle\Event\TransformEvent;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaAutoTransformer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
+use Symfony\Component\PropertyAccess\Exception\RuntimeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -289,12 +290,12 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertTrue(array_key_exists('nullValue', $data));
     }
 
-    /**
-     * @expectedException \Symfony\Component\PropertyAccess\Exception\RuntimeException
-     */
     public function testThatCannotTransformObjectWhenGetterDoesNotExistForPrivateMethod()
     {
         $transformer = $this->getTransformer();
+
+        $this->expectException(RuntimeException::class);
+
         $transformer->transform(new POPO3(), ['desc' => []]);
     }
 

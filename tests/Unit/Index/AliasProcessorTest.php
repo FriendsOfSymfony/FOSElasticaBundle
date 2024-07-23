@@ -26,6 +26,7 @@ use Elastica\Request;
 use Elastica\Response;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Exception\AliasIsIndexException;
 use FOS\ElasticaBundle\Index\AliasProcessor;
 use PHPUnit\Framework\TestCase;
 
@@ -98,9 +99,6 @@ class AliasProcessorTest extends TestCase
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testSwitchAliasThrowsWhenMoreThanOneExists()
     {
         $indexConfig = new IndexConfig('name', [], []);
@@ -114,12 +112,11 @@ class AliasProcessorTest extends TestCase
                 'another_old_unique_name' => ['aliases' => ['name']],
             ]));
 
+        $this->expectException(\RuntimeException::class);
+
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
 
-    /**
-     * @expectedException \FOS\ElasticaBundle\Exception\AliasIsIndexException
-     */
     public function testSwitchAliasThrowsWhenAliasIsAnIndex()
     {
         $indexConfig = new IndexConfig('name', [], []);
@@ -131,6 +128,8 @@ class AliasProcessorTest extends TestCase
             ->willReturn(new Response([
                 'name' => [],
             ]));
+
+        $this->expectException(AliasIsIndexException::class);
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
