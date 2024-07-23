@@ -17,6 +17,21 @@ use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
 
 class HybridPartialResultsTest extends UnitTestHelper
 {
+    public function testToArray()
+    {
+        $transformer = $this->mockElasticaToModelTransformer();
+        $transformer
+            ->expects($this->once())
+            ->method('hybridTransform')
+            ->willReturn([]);
+
+        $resultSet = $this->mockResultSet();
+
+        $results = new HybridPartialResults($resultSet, $transformer);
+
+        $results->toArray();
+    }
+
     protected function mockResultSet()
     {
         $mock = $this
@@ -30,16 +45,5 @@ class HybridPartialResultsTest extends UnitTestHelper
             ->willReturn([]);
 
         return $mock;
-    }
-
-    public function testToArray()
-    {
-        $transformer = $this->mockElasticaToModelTransformer();
-
-        $resultSet = $this->mockResultSet();
-
-        $results = new HybridPartialResults($resultSet, $transformer);
-
-        $results->toArray();
     }
 }
