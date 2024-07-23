@@ -11,7 +11,7 @@
         bootstrap                                  = "vendor/autoload.php"
 >
     <php>
-        <server name="FOS_ELASTICA_HOST" value="localhost" />
+        <server name="FOS_ELASTICA_HOST" value="elasticsearch" />
         <server name="FOS_ELASTICA_PORT" value="9200" />
     </php>
 
