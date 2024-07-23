@@ -116,12 +116,12 @@ class ElasticaToModelTransformerCollectionTest extends TestCase
     {
         $collection = new ElasticaToModelTransformerCollection([]);
         $identifiers = $collection->getIdentifierField();
-        $this->assertInternalType('array', $identifiers);
+        $this->assertIsArray($identifiers);
         $this->assertEmpty($identifiers);
 
         $this->collectionSetup();
         $identifiers = $this->collection->getIdentifierField();
-        $this->assertInternalType('array', $identifiers);
+        $this->assertIsArray($identifiers);
         $this->assertSame(['type1' => 'id', 'type2' => 'id'], $identifiers);
     }
 
@@ -154,7 +154,7 @@ class ElasticaToModelTransformerCollectionTest extends TestCase
 
         $hybridResults = $collection->hybridTransform([$result]);
 
-        $this->assertInternalType('array', $hybridResults);
+        $this->assertIsArray($hybridResults);
         $this->assertNotEmpty($hybridResults);
         $this->assertContainsOnlyInstancesOf(HybridResult::class, $hybridResults);
 

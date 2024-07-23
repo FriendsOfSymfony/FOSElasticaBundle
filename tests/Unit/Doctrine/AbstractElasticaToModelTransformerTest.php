@@ -166,7 +166,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
         $results = $transformer->transform($elasticaResults);
 
         foreach ($results as $result) {
-            $this->assertInternalType('array', $result->highlights);
+            $this->assertIsArray($result->highlights);
             $this->assertNotEmpty($result->highlights);
         }
     }
