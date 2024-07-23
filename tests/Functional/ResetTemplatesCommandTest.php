@@ -26,7 +26,7 @@ class ResetTemplatesCommandTest extends WebTestCase
      */
     private $application;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         static::bootKernel(['test_case' => 'Basic']);
         $this->application = $application = new Application(static::$kernel);

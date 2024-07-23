@@ -17,7 +17,7 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 class MongoDBPagerProviderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine MongoDB ODM is not available.');

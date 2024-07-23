@@ -33,7 +33,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
      */
     protected $objectClass = 'stdClass';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->registry = $this->createMock(ManagerRegistry::class);
     }

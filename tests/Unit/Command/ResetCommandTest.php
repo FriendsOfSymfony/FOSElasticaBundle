@@ -35,7 +35,7 @@ class ResetCommandTest extends TestCase
      */
     private $indexManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->resetter = $this->createMock(Resetter::class);
         $this->indexManager = $this->createMock(IndexManager::class);

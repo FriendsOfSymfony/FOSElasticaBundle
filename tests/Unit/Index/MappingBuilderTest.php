@@ -33,7 +33,7 @@ class MappingBuilderTest extends TestCase
      */
     private $typeMapping;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->typeMapping = [
             'properties' => [

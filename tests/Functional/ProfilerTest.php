@@ -40,7 +40,7 @@ class ProfilerTest extends WebTestCase
     /** @var ElasticaDataCollector */
     private $collector;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->logger = new ElasticaLogger($this->createMock(LoggerInterface::class), true);
         $this->collector = new ElasticaDataCollector($this->logger);

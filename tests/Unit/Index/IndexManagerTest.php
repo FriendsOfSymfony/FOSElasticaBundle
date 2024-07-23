@@ -24,7 +24,7 @@ class IndexManagerTest extends TestCase
      */
     private $indexManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         foreach (['index1', 'index2', 'index3'] as $indexName) {
             $index = $this->createMock(Index::class);

@@ -36,12 +36,12 @@ class WebTestCase extends BaseKernelTestCase
         return AppKernel::class;
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         static::deleteTmpDir();
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         static::deleteTmpDir();
     }

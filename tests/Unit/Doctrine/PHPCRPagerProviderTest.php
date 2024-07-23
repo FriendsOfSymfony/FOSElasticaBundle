@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 class PHPCRPagerProviderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists(DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');

@@ -22,7 +22,7 @@ class TransformEventTest extends TestCase
      */
     private $event;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $document = new Document();
         $object = (object) [];

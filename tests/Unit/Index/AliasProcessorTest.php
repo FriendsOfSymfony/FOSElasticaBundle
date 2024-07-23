@@ -36,7 +36,7 @@ class AliasProcessorTest extends TestCase
      */
     private $processor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->processor = new AliasProcessor();
     }
