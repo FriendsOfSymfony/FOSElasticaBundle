@@ -33,7 +33,7 @@
         "php": "^7.4 || ^8.1",
         "pagerfanta/pagerfanta": "^2.4 || ^3.0 || ^4.0",
         "psr/log": "^1.0 || ^2.0 || ^3.0",
-        "ruflin/elastica": "^7.1",
+        "ruflin/elastica": "^7.1 || ^8.0",
         "symfony/console": "^5.4 || ^6.4 || ^7.0",
         "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.0",
         "symfony/framework-bundle": "^5.4 || ^6.4 || ^7.0",
