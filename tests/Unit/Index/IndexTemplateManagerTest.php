@@ -5,12 +5,15 @@ namespace FOS\ElasticaBundle\Tests\Unit\Index;
 use Elastica\IndexTemplate;
 use FOS\ElasticaBundle\Index\IndexTemplateManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
  */
 class IndexTemplateManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * Test get index template
      *

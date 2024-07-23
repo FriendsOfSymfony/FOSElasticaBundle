@@ -13,12 +13,15 @@ use FOS\ElasticaBundle\Index\ResetterInterface;
 use FOS\ElasticaBundle\Index\TemplateResetter;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
  */
 class TemplateResetterTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ManagerInterface
      */

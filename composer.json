@@ -30,6 +30,7 @@
         "jackalope/jackalope-doctrine-dbal": "^1.2",
         "jms/serializer-bundle": "^2.4|^3.5",
         "phpunit/phpunit": "^9.6",
+        "phpspec/prophecy-phpunit": "^2.2",
         "knplabs/knp-components": "^1.2|^2.3",
         "symfony/expression-language" : "^4.4|^5.4",
         "symfony/twig-bundle": "^4.4|^5.4",
