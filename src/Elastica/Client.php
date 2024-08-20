@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Elastica;
 
 use Elastica\Client as BaseClient;
+use Elastica\ClientConfiguration;
 use Elastica\Exception\ClientException;
 use Elastica\Exception\ExceptionInterface;
 use Elastica\Index as BaseIndex;
@@ -60,7 +61,13 @@ class Client extends BaseClient
         }
 
         try {
-            $response = parent::request($path, $method, $data, $query, $contentType);
+
+            $headers = [
+                'Content-Type' => $contentType,
+            ];
+            $request = $this->createRequest($method, $path, $headers, $query);
+            $es = parent::sendRequest($request);
+            $response = new Response($es->asString(), $es->getStatusCode());
         } catch (ExceptionInterface $e) {
             $this->logQuery($path, $method, $data, $query, 0, 0, 0);
             throw $e;
@@ -68,20 +75,25 @@ class Client extends BaseClient
 
         $responseData = $response->getData();
 
-        $transportInfo = $response->getTransferInfo();
-        $connection = $this->getLastRequest()->getConnection();
-        $forbiddenHttpCodes = $connection->hasConfig('http_error_codes') ? $connection->getConfig('http_error_codes') : [];
+        $statusCode = $response->getStatus();
+        $connections = $this->_config->get('connections');
+        $forbiddenHttpCodes = [];
+        if(!empty($connections)) {
+            $connection = $connections[0];
+            $forbiddenHttpCodes = $connection['http_error_codes'] ?? [];
 
-        if (isset($transportInfo['http_code']) && \in_array($transportInfo['http_code'], $forbiddenHttpCodes, true)) {
+        }
+
+        if (\in_array($statusCode, $forbiddenHttpCodes, true)) {
             $body = \json_encode($responseData);
-            $message = \sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $body);
+            $message = \sprintf('Error in transportInfo: response code is %s, response body is %s', $statusCode, $body);
             throw new ClientException($message);
         }
 
         if (isset($responseData['took'], $responseData['hits'])) {
-            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0);
+//            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0); timtodo
         } else {
-            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), 0, 0);
+//            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), 0, 0); timtodo
         }
 
         if ($this->stopwatch) {
