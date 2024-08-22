@@ -30,6 +30,7 @@ use Pagerfanta\Pagerfanta;
 class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderInterface, PaginatedHybridFinderInterface
 {
     protected SearchableInterface $searchable;
+
     protected ElasticaToModelTransformerInterface $transformer;
 
     public function __construct(SearchableInterface $searchable, ElasticaToModelTransformerInterface $transformer)
@@ -100,10 +101,10 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
     }
 
     /**
-     * @phpstan-param TQuery $query
+     * @phpstan-param TQuery   $query
      * @phpstan-param TOptions $options
      *
-     * @param mixed $query
+     * @param mixed            $query
      *
      * @return Result[]
      */

@@ -61,11 +61,11 @@ class Client extends BaseClient
         }
 
         try {
-
             $headers = [
                 'Content-Type' => $contentType,
+                'Accept' => $contentType,
             ];
-            $request = $this->createRequest($method, $path, $headers, $query);
+            $request = $this->createRequest($method, $path, $headers, $data);
             $es = parent::sendRequest($request);
             $response = new Response($es->asString(), $es->getStatusCode());
         } catch (ExceptionInterface $e) {
@@ -78,10 +78,9 @@ class Client extends BaseClient
         $statusCode = $response->getStatus();
         $connections = $this->_config->get('connections');
         $forbiddenHttpCodes = [];
-        if(!empty($connections)) {
+        if (!empty($connections)) {
             $connection = $connections[0];
             $forbiddenHttpCodes = $connection['http_error_codes'] ?? [];
-
         }
 
         if (\in_array($statusCode, $forbiddenHttpCodes, true)) {
@@ -91,9 +90,9 @@ class Client extends BaseClient
         }
 
         if (isset($responseData['took'], $responseData['hits'])) {
-//            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0); timtodo
+            $this->logQuery($path, $method, $data, $query, $responseData['took'], $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0);
         } else {
-//            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), 0, 0); timtodo
+            $this->logQuery($path, $method, $data, $query, $responseData['took'] ?? 0, 0, 0);
         }
 
         if ($this->stopwatch) {
@@ -140,13 +139,15 @@ class Client extends BaseClient
             return;
         }
 
-        $connection = $this->getLastRequest()->getConnection();
+        $connections = $this->_config->get('connections');
+
+        $connection = $connections[0];
 
         $connectionArray = [
-            'host' => $connection->getHost(),
-            'port' => $connection->getPort(),
-            'transport' => $connection->getTransport(),
-            'headers' => $connection->hasConfig('headers') ? $connection->getConfig('headers') : [],
+            'host' => $connection['host'] ?? null,
+            'port' => $connection['port'] ?? null,
+            'transport' => $connection['transport'] ?? null,
+            'headers' => $connection['headers'] ?? [],
         ];
 
         $this->_logger->logQuery($path, $method, $data, $queryTime, $connectionArray, $query, $engineMS, $itemCount);
