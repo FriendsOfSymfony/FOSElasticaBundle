@@ -11,14 +11,15 @@
 
 namespace FOS\ElasticaBundle\Elastica;
 
+use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastica\Client as BaseClient;
-use Elastica\ClientConfiguration;
 use Elastica\Exception\ClientException;
 use Elastica\Exception\ExceptionInterface;
 use Elastica\Index as BaseIndex;
 use Elastica\Request;
 use Elastica\Response;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
@@ -50,26 +51,32 @@ class Client extends BaseClient
      */
     private $stopwatch;
 
-    /**
-     * @param array<mixed> $data
-     * @param array<mixed> $query
-     */
-    public function request(string $path, string $method = Request::GET, $data = [], array $query = [], string $contentType = Request::DEFAULT_CONTENT_TYPE): Response
+    public function request(string $path, string $method = Request::GET, $data = [], string $contentType = Request::DEFAULT_CONTENT_TYPE): Response
+    {
+        $headers = [
+            'Content-Type' => $contentType,
+            'Accept' => $contentType,
+        ];
+
+        $request = $this->createRequest($method, $path, $headers, $data);
+        $es = $this->sendRequest($request);
+
+        return new Response($es->asString(), $es->getStatusCode());
+    }
+
+    public function sendRequest(RequestInterface $request): Elasticsearch
     {
         if ($this->stopwatch) {
             $this->stopwatch->start('es_request', 'fos_elastica');
         }
 
+        $query = $request->getBody()->__toString();
+
         try {
-            $headers = [
-                'Content-Type' => $contentType,
-                'Accept' => $contentType,
-            ];
-            $request = $this->createRequest($method, $path, $headers, $data);
             $es = parent::sendRequest($request);
             $response = new Response($es->asString(), $es->getStatusCode());
         } catch (ExceptionInterface $e) {
-            $this->logQuery($path, $method, $data, $query, 0, 0, 0);
+            $this->logQuery($request->getUri(), $request->getMethod(), [], $query, 0, 0, 0);
             throw $e;
         }
 
@@ -90,16 +97,16 @@ class Client extends BaseClient
         }
 
         if (isset($responseData['took'], $responseData['hits'])) {
-            $this->logQuery($path, $method, $data, $query, $responseData['took'], $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0);
+            $this->logQuery($request->getUri(), $request->getMethod(), $query, [], $responseData['took'], $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0);
         } else {
-            $this->logQuery($path, $method, $data, $query, $responseData['took'] ?? 0, 0, 0);
+            $this->logQuery($request->getUri(), $request->getMethod(), $query, [], $responseData['took'] ?? 0, 0, 0);
         }
 
         if ($this->stopwatch) {
             $this->stopwatch->stop('es_request');
         }
 
-        return $response;
+        return $es;
     }
 
     public function getIndex(string $name): BaseIndex
