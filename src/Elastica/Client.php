@@ -76,7 +76,7 @@ class Client extends BaseClient
             $es = parent::sendRequest($request);
             $response = new Response($es->asString(), $es->getStatusCode());
         } catch (ExceptionInterface $e) {
-            $this->logQuery($request->getUri(), $request->getMethod(), [], $query, 0, 0, 0);
+            $this->logQuery($request->getUri(), $request->getMethod(), $query, [], 0, 0, 0);
             throw $e;
         }
 
