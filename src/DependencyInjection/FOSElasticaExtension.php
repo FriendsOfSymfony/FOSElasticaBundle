@@ -166,11 +166,10 @@ class FOSElasticaExtension extends Extension
 
             $clientDef = new ChildDefinition('fos_elastica.client_prototype');
             $clientDef->replaceArgument(0, $clientConfig);
-            $clientDef->replaceArgument(1, null);
 
             $logger = $clientConfig['connections'][0]['logger'];
             if (false !== $logger) {
-                $clientDef->addMethodCall('setLogger', [new Reference($logger)]);
+                $clientDef->replaceArgument(1, new Reference($logger));
             }
 
             $clientDef->addTag('fos_elastica.client');

@@ -11,11 +11,10 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
-use Elastica\Client;
-use Elastica\Exception\ResponseException;
-use Elastica\Request;
+use Elastica\Exception\NotFoundException;
 use Elastica\Response;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
+use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Exception\AliasIsIndexException;
 use FOS\ElasticaBundle\Index\AliasProcessor;
@@ -40,7 +39,7 @@ class AliasProcessorTest extends TestCase
     /**
      * @dataProvider getSetRootNameData
      *
-     * @param array  $configArray
+     * @param array $configArray
      * @param string $resultStartsWith
      */
     public function testSetRootName($configArray, $resultStartsWith)
@@ -49,8 +48,7 @@ class AliasProcessorTest extends TestCase
         $index = $this->createMock(Index::class);
         $index->expects($this->once())
             ->method('overrideName')
-            ->with($this->stringStartsWith($resultStartsWith))
-        ;
+            ->with($this->stringStartsWith($resultStartsWith));
 
         $this->processor->setRootName($indexConfig, $index);
     }
@@ -64,12 +62,17 @@ class AliasProcessorTest extends TestCase
             ->method('request')
             ->withConsecutive(
                 ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
-                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]]
+                [
+                    '_aliases',
+                    'POST',
+                    [
+                        'actions' => [
+                            ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                        ],
+                    ],
+                ]
             )
-            ->willReturn(new Response([]))
-        ;
+            ->willReturn(new Response([]));
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
@@ -83,18 +86,23 @@ class AliasProcessorTest extends TestCase
             ->method('request')
             ->withConsecutive(
                 ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
-                    ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
-                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]],
+                [
+                    '_aliases',
+                    'POST',
+                    [
+                        'actions' => [
+                            ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                            ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                        ],
+                    ],
+                ],
                 ['old_unique_name', 'DELETE']
             )
             ->willReturnOnConsecutiveCalls(
                 new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
                 new Response([]),
                 new Response([])
-            )
-        ;
+            );
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
@@ -107,11 +115,12 @@ class AliasProcessorTest extends TestCase
         $client->expects($this->once())
             ->method('request')
             ->with('_aliases', 'GET')
-            ->willReturn(new Response([
-                'old_unique_name' => ['aliases' => ['name' => []]],
-                'another_old_unique_name' => ['aliases' => ['name' => []]],
-            ]))
-        ;
+            ->willReturn(
+                new Response([
+                    'old_unique_name' => ['aliases' => ['name' => []]],
+                    'another_old_unique_name' => ['aliases' => ['name' => []]],
+                ])
+            );
 
         $this->expectException(\RuntimeException::class);
         $this->processor->switchIndexAlias($indexConfig, $index, false);
@@ -125,10 +134,11 @@ class AliasProcessorTest extends TestCase
         $client->expects($this->once())
             ->method('request')
             ->with('_aliases', 'GET')
-            ->willReturn(new Response([
-                'name' => [],
-            ]))
-        ;
+            ->willReturn(
+                new Response([
+                    'name' => [],
+                ])
+            );
 
         $this->expectException(AliasIsIndexException::class);
         $this->processor->switchIndexAlias($indexConfig, $index, false);
@@ -144,16 +154,21 @@ class AliasProcessorTest extends TestCase
             ->withConsecutive(
                 ['_aliases', 'GET'],
                 ['name', 'DELETE'],
-                ['_aliases', 'POST', ['actions' => [
-                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]]
+                [
+                    '_aliases',
+                    'POST',
+                    [
+                        'actions' => [
+                            ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                        ],
+                    ],
+                ]
             )
             ->willReturnOnConsecutiveCalls(
                 new Response(['name' => []]),
                 new Response([]),
                 new Response([])
-            )
-        ;
+            );
 
         $this->processor->switchIndexAlias($indexConfig, $index, true);
     }
@@ -167,18 +182,23 @@ class AliasProcessorTest extends TestCase
             ->method('request')
             ->withConsecutive(
                 ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
-                    ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
-                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]],
+                [
+                    '_aliases',
+                    'POST',
+                    [
+                        'actions' => [
+                            ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                            ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                        ],
+                    ],
+                ],
                 ['old_unique_name/_close', 'POST']
             )
             ->willReturnOnConsecutiveCalls(
                 new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
                 new Response([]),
                 new Response([])
-            )
-        ;
+            );
 
         $this->processor->switchIndexAlias($indexConfig, $index, true, false);
     }
@@ -192,18 +212,23 @@ class AliasProcessorTest extends TestCase
             ->method('request')
             ->withConsecutive(
                 ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
-                    ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
-                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]],
+                [
+                    '_aliases',
+                    'POST',
+                    [
+                        'actions' => [
+                            ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                            ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                        ],
+                    ],
+                ],
                 ['old_unique_name', 'DELETE']
             )
             ->willReturnOnConsecutiveCalls(
                 new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
                 new Response([]),
                 new Response([])
-            )
-        ;
+            );
 
         $this->processor->switchIndexAlias($indexConfig, $index, true);
     }
@@ -217,18 +242,23 @@ class AliasProcessorTest extends TestCase
             ->method('request')
             ->withConsecutive(
                 ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
-                    ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
-                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]],
+                [
+                    '_aliases',
+                    'POST',
+                    [
+                        'actions' => [
+                            ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                            ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                        ],
+                    ],
+                ],
                 ['unique_name', 'DELETE']
             )
             ->willReturnOnConsecutiveCalls(
                 new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
-                $this->throwException(new ResponseException(new Request(''), new Response(''))),
+                $this->throwException(new NotFoundException('')),
                 new Response([])
-            )
-        ;
+            );
 
         $this->expectException(\RuntimeException::class);
 
@@ -253,13 +283,11 @@ class AliasProcessorTest extends TestCase
 
         $index->expects($this->any())
             ->method('getClient')
-            ->willReturn($client)
-        ;
+            ->willReturn($client);
 
         $index->expects($this->any())
             ->method('getName')
-            ->willReturn($name)
-        ;
+            ->willReturn($name);
 
         return [$index, $client];
     }

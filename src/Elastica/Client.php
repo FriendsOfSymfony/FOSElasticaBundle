@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\Elastica;
 
+use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastica\Client as BaseClient;
 use Elastica\Exception\ClientException;
 use Elastica\Exception\ExceptionInterface;
@@ -18,6 +19,7 @@ use Elastica\Index as BaseIndex;
 use Elastica\Request;
 use Elastica\Response;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
@@ -49,46 +51,62 @@ class Client extends BaseClient
      */
     private $stopwatch;
 
-    /**
-     * @param array<mixed> $data
-     * @param array<mixed> $query
-     */
-    public function request(string $path, string $method = Request::GET, $data = [], array $query = [], string $contentType = Request::DEFAULT_CONTENT_TYPE): Response
+    public function request(string $path, string $method = Request::GET, $data = [], string $contentType = Request::DEFAULT_CONTENT_TYPE): Response
+    {
+        $headers = [
+            'Content-Type' => $contentType,
+            'Accept' => $contentType,
+        ];
+
+        $request = $this->createRequest($method, $path, $headers, $data);
+        $es = $this->sendRequest($request);
+
+        return new Response($es->asString(), $es->getStatusCode());
+    }
+
+    public function sendRequest(RequestInterface $request): Elasticsearch
     {
         if ($this->stopwatch) {
             $this->stopwatch->start('es_request', 'fos_elastica');
         }
 
+        $query = $request->getBody()->__toString();
+
         try {
-            $response = parent::request($path, $method, $data, $query, $contentType);
+            $es = parent::sendRequest($request);
+            $response = new Response($es->asString(), $es->getStatusCode());
         } catch (ExceptionInterface $e) {
-            $this->logQuery($path, $method, $data, $query, 0, 0, 0);
+            $this->logQuery($request->getUri(), $request->getMethod(), $query, [], 0, 0, 0);
             throw $e;
         }
 
         $responseData = $response->getData();
 
-        $transportInfo = $response->getTransferInfo();
-        $connection = $this->getLastRequest()->getConnection();
-        $forbiddenHttpCodes = $connection->hasConfig('http_error_codes') ? $connection->getConfig('http_error_codes') : [];
+        $statusCode = $response->getStatus();
+        $connections = $this->_config->get('connections');
+        $forbiddenHttpCodes = [];
+        if (!empty($connections)) {
+            $connection = $connections[0];
+            $forbiddenHttpCodes = $connection['http_error_codes'] ?? [];
+        }
 
-        if (isset($transportInfo['http_code']) && \in_array($transportInfo['http_code'], $forbiddenHttpCodes, true)) {
+        if (\in_array($statusCode, $forbiddenHttpCodes, true)) {
             $body = \json_encode($responseData);
-            $message = \sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $body);
+            $message = \sprintf('Error in transportInfo: response code is %s, response body is %s', $statusCode, $body);
             throw new ClientException($message);
         }
 
         if (isset($responseData['took'], $responseData['hits'])) {
-            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0);
+            $this->logQuery($request->getUri(), $request->getMethod(), $query, [], $responseData['took'], $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0);
         } else {
-            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), 0, 0);
+            $this->logQuery($request->getUri(), $request->getMethod(), $query, [], $responseData['took'] ?? 0, 0, 0);
         }
 
         if ($this->stopwatch) {
             $this->stopwatch->stop('es_request');
         }
 
-        return $response;
+        return $es;
     }
 
     public function getIndex(string $name): BaseIndex
@@ -128,13 +146,15 @@ class Client extends BaseClient
             return;
         }
 
-        $connection = $this->getLastRequest()->getConnection();
+        $connections = $this->_config->get('connections');
+
+        $connection = $connections[0];
 
         $connectionArray = [
-            'host' => $connection->getHost(),
-            'port' => $connection->getPort(),
-            'transport' => $connection->getTransport(),
-            'headers' => $connection->hasConfig('headers') ? $connection->getConfig('headers') : [],
+            'host' => $connection['host'] ?? null,
+            'port' => $connection['port'] ?? null,
+            'transport' => $connection['transport'] ?? null,
+            'headers' => $connection['headers'] ?? [],
         ];
 
         $this->_logger->logQuery($path, $method, $data, $queryTime, $connectionArray, $query, $engineMS, $itemCount);
