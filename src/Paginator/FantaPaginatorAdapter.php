@@ -14,8 +14,14 @@ namespace FOS\ElasticaBundle\Paginator;
 use Pagerfanta\Adapter\AdapterInterface;
 use Traversable;
 
+if (PHP_VERSION_ID < 80000) {
+    class_alias(LegacyGetSliceTrait::class, GetSliceTrait::class);
+}
+
 class FantaPaginatorAdapter implements AdapterInterface
 {
+    use GetSliceTrait;
+
     private $adapter;
 
     /**
@@ -58,19 +64,6 @@ class FantaPaginatorAdapter implements AdapterInterface
     public function getSuggests()
     {
         return $this->adapter->getSuggests();
-    }
-
-    /**
-     * Returns a slice of the results.
-     *
-     * @param int $offset The offset
-     * @param int $length The length
-     *
-     * @return iterable The slice
-     */
-    public function getSlice(int $offset, int $length): iterable
-    {
-        return $this->adapter->getResults($offset, $length)->toArray();
     }
 
     /**
