@@ -47,7 +47,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         ));
 
         $output = $commandTester->getDisplay();
-        $this->assertContains('Resetting all templates', $output);
+        $this->assertStringContainsString('Resetting all templates', $output);
 
         $templates = $this->fetchAllTemplates();
         $this->assertArrayHasKey('index_template_2_name', $templates);
@@ -69,8 +69,8 @@ class ResetTemplatesCommandTest extends WebTestCase
         );
 
         $output = $commandTester->getDisplay();
-        $this->assertContains('You are going to remove all template indexes. Are you sure?', $output);
-        $this->assertContains('Resetting all templates', $output);
+        $this->assertStringContainsString('You are going to remove all template indexes. Are you sure?', $output);
+        $this->assertStringContainsString('Resetting all templates', $output);
 
         $templates = $this->fetchAllTemplates();
         $this->assertArrayHasKey('index_template_2_name', $templates);
@@ -89,8 +89,8 @@ class ResetTemplatesCommandTest extends WebTestCase
         ));
 
         $output = $commandTester->getDisplay();
-        $this->assertContains('Resetting template', $output);
-        $this->assertContains('index_template_example_1', $output);
+        $this->assertStringContainsString('Resetting template', $output);
+        $this->assertStringContainsString('index_template_example_1', $output);
 
         $templates = $this->fetchAllTemplates();
         $this->assertArrayHasKey('index_template_1_name', $templates);
@@ -110,9 +110,9 @@ class ResetTemplatesCommandTest extends WebTestCase
         ));
 
         $output = $commandTester->getDisplay();
-        $this->assertContains('You are going to remove all template indexes. Are you sure?', $output);
-        $this->assertContains('Resetting template', $output);
-        $this->assertContains('index_template_example_1', $output);
+        $this->assertStringContainsString('You are going to remove all template indexes. Are you sure?', $output);
+        $this->assertStringContainsString('Resetting template', $output);
+        $this->assertStringContainsString('index_template_example_1', $output);
 
         $templates = $this->fetchAllTemplates();
         $this->assertArrayHasKey('index_template_1_name', $templates);
