@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Paginator;
 
 use Pagerfanta\Adapter\AdapterInterface;
+use Traversable;
 
 class FantaPaginatorAdapter implements AdapterInterface
 {
@@ -65,9 +66,9 @@ class FantaPaginatorAdapter implements AdapterInterface
      * @param int $offset The offset
      * @param int $length The length
      *
-     * @return array|\Traversable The slice
+     * @return iterable The slice
      */
-    public function getSlice(int $offset, int $length): \Traversable|array
+    public function getSlice(int $offset, int $length): iterable
     {
         return $this->adapter->getResults($offset, $length)->toArray();
     }
