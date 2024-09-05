@@ -52,5 +52,10 @@
         "branch-alias": {
             "dev-master": "5.2.x-dev"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "ocramius/package-versions": true
+        }
     }
 }
