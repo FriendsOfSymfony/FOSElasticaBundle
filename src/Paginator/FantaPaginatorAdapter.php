@@ -34,16 +34,6 @@ class FantaPaginatorAdapter implements AdapterInterface
     }
 
     /**
-     * Returns the number of results.
-     *
-     * @return int The number of results
-     */
-    public function getNbResults(): int
-    {
-        return $this->adapter->getTotalHits();
-    }
-
-    /**
      * Returns Aggregations.
      *
      * @return mixed
