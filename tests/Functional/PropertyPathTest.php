@@ -22,6 +22,10 @@ namespace FOS\ElasticaBundle\Tests\Functional;
 
 use Elastica\Query\MatchQuery;
 
+if (PHP_VERSION_ID < 80000) {
+    class_alias('Elastica\Query\Match', MatchQuery::class);
+}
+
 /**
  * @group functional
  */
