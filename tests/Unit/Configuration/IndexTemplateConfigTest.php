@@ -27,12 +27,12 @@ class IndexTemplateConfigTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testIncorrectInstantiate()
     {
         $name = 'index_template1';
+
+        $this->expectException(\InvalidArgumentException::class);
+
         new IndexTemplateConfig($name, array(), array());
     }
 }

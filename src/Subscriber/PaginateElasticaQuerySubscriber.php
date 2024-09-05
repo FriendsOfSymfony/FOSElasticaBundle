@@ -42,7 +42,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             // Add sort to query
             $this->setSorting($event);
 
-            /** @var $results PartialResultsInterface */
+            /** @var PartialResultsInterface $results */
             $results = $event->target->getResults($event->getOffset(), $event->getLimit());
 
             $event->count = $results->getTotalHits();
@@ -73,7 +73,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
      */
     protected function setSorting(ItemsEvent $event)
     {
-        $options = $event->options;
+        $options = $event->options ?? [];
         $sortField = $this->getFromRequest($options['sortFieldParameterName'] ?? null);
 
         if (!$sortField && isset($options['defaultSortFieldName'])) {
@@ -123,12 +123,12 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             $sortDirection = $options['defaultSortDirection'];
         }
 
-        if ('desc' === strtolower($sortDirection)) {
+        if (null !== $sortDirection && 'desc' === strtolower($sortDirection)) {
             $dir = 'desc';
         }
 
         // check if the requested sort field is in the sort whitelist
-        if (isset($options['sortFieldWhitelist']) && !in_array($sortField, $options['sortFieldWhitelist'])) {
+        if (isset($options['sortFieldWhitelist']) && !in_array($sortField, $options['sortFieldWhitelist'], true)) {
             throw new \UnexpectedValueException(sprintf('Cannot sort by: [%s] this field is not in whitelist', $sortField));
         }
 

@@ -12,31 +12,32 @@
         { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" }
     ],
     "require": {
-        "php": "^7.1 || ^8.0",
-        "symfony/framework-bundle": "^3.4|^4.3|^5",
-        "symfony/console": "^3.4|^4.3|^5",
-        "symfony/dependency-injection": "^3.4|^4.3|^5",
-        "symfony/property-access": "^3.4|^4.3|^5",
-        "pagerfanta/pagerfanta": "^1.0.5|^2.0",
+        "php": "^7.4 || ^8.1",
+        "symfony/framework-bundle": "^4.4|^5.4",
+        "symfony/console": "^4.4|^5.4",
+        "symfony/dependency-injection": "^4.4|^5.4",
+        "symfony/property-access": "^4.4|^5.4",
+        "pagerfanta/pagerfanta": "^2.4|^3.0|^4.0",
         "psr/log": "^1.0",
-        "ruflin/elastica": "^5.3.5|^6.1.1"
+        "ruflin/elastica": "^5.3.5|^6.1.2"
     },
     "require-dev": {
-        "doctrine/orm": "^2.5",
-        "doctrine/doctrine-bundle": "^1.6|^2",
-        "doctrine/persistence": "^1.3.4",
-        "doctrine/phpcr-bundle": "^1.3|^2.0",
-        "doctrine/phpcr-odm": "^1.4",
-        "jackalope/jackalope-doctrine-dbal": "^1.2",
+        "doctrine/orm": "^2.7",
+        "doctrine/doctrine-bundle": "^2.2",
+        "doctrine/persistence": "^2.5",
+        "doctrine/phpcr-bundle": "^2.0",
+        "doctrine/phpcr-odm": "^1.5",
+        "jackalope/jackalope-doctrine-dbal": "^1.3",
         "jms/serializer-bundle": "^2.4|^3.5",
-        "phpunit/phpunit": "^6.5.14",
-        "knplabs/knp-components": "^1.2|^2.3",
-        "symfony/expression-language" : "^3.4|^4.3|^5",
-        "symfony/twig-bundle": "^3.4|^4.3|^5",
-        "symfony/serializer": "^3.4|^4.3|^5",
-        "symfony/yaml": "^3.4|^4.3|^5",
-        "friendsofphp/php-cs-fixer": "^2.2",
-        "symfony/web-profiler-bundle": "^3.4|^4.3|^5"
+        "phpunit/phpunit": "^9.6",
+        "phpspec/prophecy-phpunit": "^2.2",
+        "knplabs/knp-components": "^3.0|^4.0",
+        "symfony/expression-language" : "^4.4|^5.4",
+        "symfony/twig-bundle": "^4.4|^5.4",
+        "symfony/serializer": "^4.4|^5.4",
+        "symfony/yaml": "^4.4|^5.4",
+        "friendsofphp/php-cs-fixer": "^3.4",
+        "symfony/web-profiler-bundle": "^4.4|^5.4"
     },
     "suggest": {
         "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
@@ -51,5 +52,13 @@
         "branch-alias": {
             "dev-master": "5.2.x-dev"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "ocramius/package-versions": true
+        }
+    },
+    "conflict": {
+        "jms/serializer": "<3.8"
     }
 }

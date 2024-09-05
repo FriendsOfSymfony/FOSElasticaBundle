@@ -26,6 +26,7 @@ use Elastica\Request;
 use Elastica\Response;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Exception\AliasIsIndexException;
 use FOS\ElasticaBundle\Index\AliasProcessor;
 use PHPUnit\Framework\TestCase;
 
@@ -36,7 +37,7 @@ class AliasProcessorTest extends TestCase
      */
     private $processor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->processor = new AliasProcessor();
     }
@@ -80,46 +81,43 @@ class AliasProcessorTest extends TestCase
     public function testSwitchAliasExistingAliasSet()
     {
         $indexConfig = new IndexConfig('name', [], []);
-        list($index, $client) = $this->getMockedIndex('unique_name');
+        [$index, $client] = $this->getMockedIndex('unique_name');
 
-        $client->expects($this->at(0))
+        $client->expects($this->exactly(3))
             ->method('request')
-            ->with('_aliases', 'GET')
-            ->willReturn(new Response([
-                'old_unique_name' => ['aliases' => ['name']],
-            ]));
-        $client->expects($this->at(1))
-            ->method('request')
-            ->with('_aliases', 'POST', ['actions' => [
-                ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
-                ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-            ]]);
+            ->withConsecutive(
+                ['_aliases', 'GET'],
+                ['_aliases', 'POST', ['actions' => [
+                    ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                ]]],
+                ['old_unique_name', 'DELETE']
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
+                new Response([]),
+                new Response([])
+            );
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testSwitchAliasThrowsWhenMoreThanOneExists()
     {
         $indexConfig = new IndexConfig('name', [], []);
-        list($index, $client) = $this->getMockedIndex('unique_name');
-
-        $client->expects($this->at(0))
+        [$index, $client] = $this->getMockedIndex('unique_name');
+        $client->expects($this->once())
             ->method('request')
             ->with('_aliases', 'GET')
             ->willReturn(new Response([
-                'old_unique_name' => ['aliases' => ['name']],
-                'another_old_unique_name' => ['aliases' => ['name']],
+                'old_unique_name' => ['aliases' => ['name' => []]],
+                'another_old_unique_name' => ['aliases' => ['name' => []]],
             ]));
 
+        $this->expectException(\RuntimeException::class);
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
 
-    /**
-     * @expectedException \FOS\ElasticaBundle\Exception\AliasIsIndexException
-     */
     public function testSwitchAliasThrowsWhenAliasIsAnIndex()
     {
         $indexConfig = new IndexConfig('name', [], []);
@@ -131,6 +129,8 @@ class AliasProcessorTest extends TestCase
             ->willReturn(new Response([
                 'name' => [],
             ]));
+
+        $this->expectException(AliasIsIndexException::class);
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
     }
@@ -156,23 +156,23 @@ class AliasProcessorTest extends TestCase
     public function testSwitchAliasDeletesOldIndex()
     {
         $indexConfig = new IndexConfig('name', [], []);
-        list($index, $client) = $this->getMockedIndex('unique_name');
+        [$index, $client] = $this->getMockedIndex('unique_name');
 
-        $client->expects($this->at(0))
+        $client->expects($this->exactly(3))
             ->method('request')
-            ->with('_aliases', 'GET')
-            ->willReturn(new Response([
-                'old_unique_name' => ['aliases' => ['name']],
-            ]));
-        $client->expects($this->at(1))
-            ->method('request')
-            ->with('_aliases', 'POST', ['actions' => [
-                ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
-                ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-            ]]);
-        $client->expects($this->at(2))
-            ->method('request')
-            ->with('old_unique_name', 'DELETE');
+            ->withConsecutive(
+                ['_aliases', 'GET'],
+                ['_aliases', 'POST', ['actions' => [
+                    ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                ]]],
+                ['old_unique_name', 'DELETE']
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
+                new Response([]),
+                new Response([])
+            );
 
         $this->processor->switchIndexAlias($indexConfig, $index, true);
     }
@@ -180,25 +180,24 @@ class AliasProcessorTest extends TestCase
     public function testSwitchAliasCleansUpOnRenameFailure()
     {
         $indexConfig = new IndexConfig('name', [], []);
-        list($index, $client) = $this->getMockedIndex('unique_name');
+        [$index, $client] = $this->getMockedIndex('unique_name');
 
-        $client->expects($this->at(0))
+        $client->expects($this->exactly(3))
             ->method('request')
-            ->with('_aliases', 'GET')
-            ->willReturn(new Response([
-                'old_unique_name' => ['aliases' => ['name']],
-            ]));
-        $client->expects($this->at(1))
-            ->method('request')
-            ->with('_aliases', 'POST', ['actions' => [
-                ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
-                ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-            ]])
-            ->will($this->throwException(new ResponseException(new Request(''), new Response(''))));
-        $client->expects($this->at(2))
-            ->method('request')
-            ->with('unique_name', 'DELETE');
-        // Not an annotation: we do not want a RuntimeException until now.
+            ->withConsecutive(
+                ['_aliases', 'GET'],
+                ['_aliases', 'POST', ['actions' => [
+                    ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
+                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
+                ]]],
+                ['unique_name', 'DELETE']
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
+                $this->throwException(new ResponseException(new Request(''), new Response(''))),
+                new Response([])
+            );
+
         $this->expectException(\RuntimeException::class);
 
         $this->processor->switchIndexAlias($indexConfig, $index, true);

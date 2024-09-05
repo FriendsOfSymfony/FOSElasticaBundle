@@ -41,7 +41,7 @@ class ResetterTest extends TestCase
     private $indexManager;
     private $mappingBuilder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->aliasProcessor = $this->createMock(AliasProcessor::class);
         $this->configManager = $this->createMock(ConfigManager::class);
@@ -141,9 +141,6 @@ class ResetterTest extends TestCase
         $this->resetter->resetIndex('index1');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testFailureWhenMissingIndexDoesntDispatch()
     {
         $this->configManager->expects($this->once())
@@ -153,6 +150,8 @@ class ResetterTest extends TestCase
 
         $this->indexManager->expects($this->never())
             ->method('getIndex');
+
+        $this->expectException(\InvalidArgumentException::class);
 
         $this->resetter->resetIndex('nonExistant');
     }
@@ -198,9 +197,6 @@ class ResetterTest extends TestCase
         $this->resetter->resetIndexType('index', 'type');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testNonExistantResetType()
     {
         $this->configManager->expects($this->once())
@@ -210,6 +206,8 @@ class ResetterTest extends TestCase
 
         $this->indexManager->expects($this->never())
             ->method('getIndex');
+
+        $this->expectException(\InvalidArgumentException::class);
 
         $this->resetter->resetIndexType('index', 'nonExistant');
     }

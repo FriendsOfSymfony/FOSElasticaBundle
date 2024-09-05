@@ -20,7 +20,11 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
-use Elastica\Query\Match;
+use Elastica\Query\MatchQuery;
+
+if (PHP_VERSION_ID < 80000) {
+    class_alias('Elastica\Query\Match', MatchQuery::class);
+}
 
 /**
  * @group functional
@@ -40,7 +44,7 @@ class PropertyPathTest extends WebTestCase
         $index = static::$kernel->getContainer()->get('fos_elastica.index.index');
         $index->refresh();
 
-        $query = new Match();
+        $query = new MatchQuery();
         $query->setField('something', 'Hello');
         $search = $index->createSearch($query);
 

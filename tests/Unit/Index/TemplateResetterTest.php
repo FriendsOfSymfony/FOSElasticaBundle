@@ -13,12 +13,15 @@ use FOS\ElasticaBundle\Index\ResetterInterface;
 use FOS\ElasticaBundle\Index\TemplateResetter;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Dmitry Balabka <dmitry.balabka@intexsys.lv>
  */
 class TemplateResetterTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ManagerInterface
      */
@@ -44,7 +47,7 @@ class TemplateResetterTest extends TestCase
      */
     private $resetter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->configManager = $this->prophesize(ManagerInterface::class);
         $this->mappingBuilder = $this->prophesize(MappingBuilder::class);

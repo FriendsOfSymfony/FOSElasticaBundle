@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [v5.2.1-php8]
+  pull_request:
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php }} + ${{ matrix.dependencies }} + symfony ${{ matrix.symfony-require }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['7.4', '8.1', '8.2', '8.3']
+        dependencies: [highest]
+        symfony-require: [highest]
+        elasticsearch: ['5.6-alpine']
+        include:
+          - php: '7.4'
+            dependencies: lowest
+            symfony-require: highest
+            elasticsearch: 5.6-alpine
+          - php: '8.3'
+            dependencies: highest
+            symfony-require: 4.4.*
+            elasticsearch: 5.6-alpine
+          - php: '8.3'
+            dependencies: highest
+            symfony-require: 5.4.*
+            elasticsearch: 5.6-alpine
+    env:
+      SYMFONY_REQUIRE: ${{matrix.symfony-require}}
+    services:
+      elasticsearch:
+        image: elasticsearch:${{ matrix.elasticsearch }}
+        options: >-
+          -e "discovery.type=single-node"
+        ports:
+          - 9200:9200
+          - 9300:9300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: zip
+          ini-values: pcov.directory=packages
+          coverage: pcov
+      - run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - if: matrix.symfony-require != 'highest'
+        run: |
+            composer global config --no-plugins allow-plugins.symfony/flex true
+            composer global require --no-progress --no-scripts --no-plugins symfony/flex
+      - uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+      - run: vendor/bin/phpunit

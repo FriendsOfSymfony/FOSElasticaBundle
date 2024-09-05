@@ -39,13 +39,15 @@ class IndexableTest extends TestCase
 
     /**
      * @dataProvider provideInvalidIsIndexableCallbacks
-     * @expectedException \InvalidArgumentException
      */
     public function testInvalidIsIndexableCallbacks($callback)
     {
         $indexable = new Indexable([
             'index/type' => $callback,
         ]);
+
+        $this->expectException(\InvalidArgumentException::class);
+
         $indexable->isObjectIndexable('index', 'type', new Entity());
     }
 

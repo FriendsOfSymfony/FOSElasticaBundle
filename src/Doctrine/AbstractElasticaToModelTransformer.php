@@ -121,10 +121,10 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
                     return $idPos[(string) $propertyAccessor->getValue(
                         $a,
                         $identifier
-                    )] > $idPos[(string) $propertyAccessor->getValue($b, $identifier)];
+                    )] <=> $idPos[(string) $propertyAccessor->getValue($b, $identifier)];
                 }
 
-                return $idPos[$a[$identifier]] > $idPos[$b[$identifier]];
+                return $idPos[$a[$identifier]] <=> $idPos[$b[$identifier]];
             }
         );
 

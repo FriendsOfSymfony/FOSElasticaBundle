@@ -42,9 +42,6 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->replaceOne(new POPO());
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testThatErrorIsHandledWhenCannotReplaceObject()
     {
         $transformer = $this->getTransformer();
@@ -58,6 +55,9 @@ class ObjectPersisterTest extends TestCase
         $fields = ['name' => []];
 
         $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+
+        $this->expectException(\BadMethodCallException::class);
+
         $objectPersister->replaceOne(new POPO());
     }
 
@@ -77,9 +77,6 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->insertOne(new POPO());
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testThatErrorIsHandledWhenCannotInsertObject()
     {
         $transformer = $this->getTransformer();
@@ -93,6 +90,9 @@ class ObjectPersisterTest extends TestCase
         $fields = ['name' => []];
 
         $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+
+        $this->expectException(\BadMethodCallException::class);
+
         $objectPersister->insertOne(new POPO());
     }
 
@@ -112,9 +112,6 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->deleteOne(new POPO());
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testThatErrorIsHandledWhenCannotDeleteObject()
     {
         $transformer = $this->getTransformer();
@@ -128,6 +125,9 @@ class ObjectPersisterTest extends TestCase
         $fields = ['name' => []];
 
         $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+
+        $this->expectException(\BadMethodCallException::class);
+
         $objectPersister->deleteOne(new POPO());
     }
 
@@ -149,9 +149,6 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testThatErrorIsHandledWhenCannotInsertManyObject()
     {
         $transformer = $this->getTransformer();
@@ -167,6 +164,9 @@ class ObjectPersisterTest extends TestCase
         $fields = ['name' => []];
 
         $objectPersister = new InvalidObjectPersister($typeMock, $transformer, 'SomeClass', $fields);
+
+        $this->expectException(\BadMethodCallException::class);
+
         $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 

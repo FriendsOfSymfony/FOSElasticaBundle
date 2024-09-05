@@ -16,7 +16,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\ElasticaBundle\Provider\PagerfantaPager;
 use FOS\ElasticaBundle\Provider\PagerProviderInterface;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 
 final class ORMPagerProvider implements PagerProviderInterface
@@ -92,7 +92,7 @@ final class ORMPagerProvider implements PagerProviderInterface
             }
         }
 
-        $pager = new PagerfantaPager(new Pagerfanta(new DoctrineORMAdapter($qb)));
+        $pager = new PagerfantaPager(new Pagerfanta(new QueryAdapter($qb)));
 
         $this->registerListenersService->register($manager, $pager, $options);
 

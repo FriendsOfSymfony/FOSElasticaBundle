@@ -1,5 +1,6 @@
 framework:
     secret: secret
+    annotations: true
 
 services:
     logger: { class: Psr\Log\NullLogger }

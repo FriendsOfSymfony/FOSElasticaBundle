@@ -21,7 +21,7 @@ class IndexEventTest extends TestCase
      */
     private $event;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->event = new IndexEvent('index');
     }
