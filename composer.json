@@ -1,9 +1,9 @@
 {
-    "name": "friendsofsymfony/elastica-bundle",
+    "name": "runroom/fos-elastica-bundle",
     "type": "symfony-bundle",
     "description": "Elasticsearch PHP integration for your Symfony project using Elastica",
     "keywords": ["doctrine2", "elastica", "elasticsearch", "mongodb", "search"],
-    "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle",
+    "homepage": "https://github.com/Runroom/FOSElasticaBundle",
     "license": "MIT",
     "authors": [
         { "name": "FriendsOfSymfony Community", "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle/contributors" },
