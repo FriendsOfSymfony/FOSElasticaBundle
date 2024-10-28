@@ -13,10 +13,10 @@
     ],
     "require": {
         "php": "^7.4 || ^8.1",
-        "symfony/framework-bundle": "^4.4|^5.4",
-        "symfony/console": "^4.4|^5.4",
-        "symfony/dependency-injection": "^4.4|^5.4",
-        "symfony/property-access": "^4.4|^5.4",
+        "symfony/framework-bundle": "^4.4|^5.4|^6.4",
+        "symfony/console": "^4.4|^5.4|^6.4",
+        "symfony/dependency-injection": "^4.4|^5.4|^6.4",
+        "symfony/property-access": "^4.4|^5.4|^6.4",
         "pagerfanta/pagerfanta": "^2.4|^3.0|^4.0",
         "psr/log": "^1.0",
         "ruflin/elastica": "^5.3.5|^6.1.2"
@@ -37,7 +37,7 @@
         "symfony/serializer": "^4.4|^5.4",
         "symfony/yaml": "^4.4|^5.4",
         "friendsofphp/php-cs-fixer": "^3.4",
-        "symfony/web-profiler-bundle": "^4.4|^5.4"
+        "symfony/web-profiler-bundle": "^4.4|^5.4|^6.4"
     },
     "suggest": {
         "enqueue/elastica-bundle": "The bundle adds extra features to FOSElasticaBundle bundle. Aimed to improve performance."
