@@ -7,6 +7,7 @@ in 6.x versions.
 ### 6.5.0 (2025-01-27)
 * Added `doctrine/orm` 3 support.
 * Dropped PHP 8.0 support.
+* Dropped Symfony 7.0 support.
 * Updated documentation.
 
 ### 6.4.0 (2024-05-13)
