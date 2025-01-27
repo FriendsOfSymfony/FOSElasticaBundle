@@ -44,18 +44,18 @@ jobs:
         symfony:
           - '5.4.*'
           - '6.4.*'
-          - '7.0.*'
+          - '7.1.*'
         elasticsearch:
           - '7.11.0'
         dependencies:
           - 'highest'
         exclude:
           - php: '7.4'
-            symfony: '7.0.*'
+            symfony: '7.1.*'
           - php: '7.4'
             symfony: '6.4.*'
           - php: '8.1'
-            symfony: '7.0.*'
+            symfony: '7.1.*'
       fail-fast: false
     steps:
       - name: 'Checkout'
@@ -105,7 +105,7 @@ jobs:
         symfony:
           - '5.4.*'
           - '6.4.*'
-          - '7.0.*'
+          - '7.1.*'
         dependencies:
           - 'highest'
         include:
@@ -114,11 +114,11 @@ jobs:
             symfony: '5.4.*'
         exclude:
           - php: '7.4'
-            symfony: '7.0.*'
+            symfony: '7.1.*'
           - php: '7.4'
             symfony: '6.4.*'
           - php: '8.1'
-            symfony: '7.0.*'
+            symfony: '7.1.*'
           - php: '8.1'
             symfony: '4.4.*'
 
