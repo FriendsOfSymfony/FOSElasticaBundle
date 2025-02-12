@@ -15,7 +15,6 @@
 
         <service id="fos_elastica.command.delete" class="FOS\ElasticaBundle\Command\DeleteCommand">
             <tag name="console.command" command="fos:elastica:delete" />
-            <argument type="service" id="fos_elastica.client.default" />
             <argument type="service" id="fos_elastica.index_manager" />
         </service>
 
