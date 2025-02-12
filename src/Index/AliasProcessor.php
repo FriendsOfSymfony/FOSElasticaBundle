@@ -11,9 +11,8 @@
 
 namespace FOS\ElasticaBundle\Index;
 
+use Elastic\Elasticsearch\Exception\ElasticsearchException;
 use Elastica\Client;
-use Elastica\Exception\ExceptionInterface;
-use Elastica\Request;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Exception\AliasIsIndexException;
@@ -62,26 +61,25 @@ class AliasProcessor
             }
 
             if ($delete) {
-                $this->deleteIndex($client, $aliasName);
+                $this->deleteIndex($index, $aliasName);
             } else {
-                $this->closeIndex($client, $aliasName);
+                $this->closeIndex($index, $aliasName);
             }
         }
 
         try {
             $aliasUpdateRequest = $this->buildAliasUpdateRequest($oldIndexName, $aliasName, $newIndexName);
-            $client->request('_aliases', 'POST', $aliasUpdateRequest);
-        } catch (ExceptionInterface $e) {
-            \assert($e instanceof \Throwable); // https://github.com/ruflin/Elastica/pull/2083
-            $this->cleanupRenameFailure($client, $newIndexName, $e);
+            $client->indices()->updateAliases(['body' => $aliasUpdateRequest]);
+        } catch (ElasticsearchException $e) {
+            $this->cleanupRenameFailure($index, $newIndexName, $e);
         }
 
         // Delete the old index after the alias has been switched
         if (null !== $oldIndexName) {
             if ($delete) {
-                $this->deleteIndex($client, $oldIndexName);
+                $this->deleteIndex($index, $oldIndexName);
             } else {
-                $this->closeIndex($client, $oldIndexName);
+                $this->closeIndex($index, $oldIndexName);
             }
         }
     }
@@ -112,12 +110,12 @@ class AliasProcessor
     /**
      * Cleans up an index when we encounter a failure to rename the alias.
      */
-    private function cleanupRenameFailure(Client $client, string $indexName, \Throwable $renameAliasException): void
+    private function cleanupRenameFailure(Index $index, string $indexName, \Throwable $renameAliasException): void
     {
         $additionalError = '';
         try {
-            $this->deleteIndex($client, $indexName);
-        } catch (ExceptionInterface $deleteNewIndexException) {
+            $this->deleteIndex($index, $indexName);
+        } catch (\Throwable $deleteNewIndexException) {
             $additionalError = \sprintf(
                 'Tried to delete newly built index %s, but also failed: %s',
                 $indexName,
@@ -131,12 +129,11 @@ class AliasProcessor
     /**
      * Delete an index.
      */
-    private function deleteIndex(Client $client, string $indexName): void
+    private function deleteIndex(Index $index, string $indexName): void
     {
         try {
-            $path = $indexName;
-            $client->request($path, Request::DELETE);
-        } catch (ExceptionInterface $deleteOldIndexException) {
+            $index->getClient()->indices()->delete(['index' => $indexName]);
+        } catch (ElasticsearchException $deleteOldIndexException) {
             throw new \RuntimeException(\sprintf('Failed to delete index "%s" with message: "%s"', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
         }
     }
@@ -144,12 +141,11 @@ class AliasProcessor
     /**
      * Close an index.
      */
-    private function closeIndex(Client $client, string $indexName): void
+    private function closeIndex(Index $index, string $indexName): void
     {
         try {
-            $path = $indexName.'/_close';
-            $client->request($path, Request::POST);
-        } catch (ExceptionInterface $e) {
+            $index->getClient()->indices()->close(['index' => $indexName]);
+        } catch (ElasticsearchException $e) {
             throw new \RuntimeException(\sprintf('Failed to close index "%s" with message: "%s"', $indexName, $e->getMessage()), 0, $e);
         }
     }
@@ -162,7 +158,8 @@ class AliasProcessor
      */
     private function getAliasedIndex(Client $client, string $aliasName): ?string
     {
-        $aliasesInfo = $client->request('_aliases', 'GET')->getData();
+        $response = $client->indices()->getAlias(['name' => '*']);
+        $aliasesInfo = $response->asArray();
         $aliasedIndexes = [];
 
         foreach ($aliasesInfo as $indexName => $indexInfo) {
