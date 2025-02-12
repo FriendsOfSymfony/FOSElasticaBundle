@@ -11,18 +11,19 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Elastica;
 
-use Elastica\Connection;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
+use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastica\Exception\ClientException;
 use Elastica\JSON;
 use Elastica\Request;
-use Elastica\Response;
-use Elastica\Transport\NullTransport;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Event\ElasticaRequestExceptionEvent;
 use FOS\ElasticaBundle\Event\PostElasticaRequestEvent;
 use FOS\ElasticaBundle\Event\PreElasticaRequestEvent;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -32,7 +33,6 @@ class ClientTest extends TestCase
 {
     public function testRequestsAreLogged()
     {
-        $client = $this->getClientMock();
         $logger = $this->createMock(ElasticaLogger::class);
         $logger
             ->expects($this->once())
@@ -49,11 +49,20 @@ class ClientTest extends TestCase
                 $this->isType('array')
             )
         ;
-        $client->setLogger($logger);
 
-        $response = $client->request('foo');
+        $response = new \GuzzleHttp\Psr7\Response(
+            200,
+            ['Content-Type' => 'application/json', Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
+            json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR)
+        );
+        $client = $this->getClient($logger, $response);
 
-        $this->assertInstanceOf(Response::class, $response);
+        $response = $client->sendRequest(new \GuzzleHttp\Psr7\Request(
+            Request::GET,
+            'https://some.tld/foo'
+        ));
+
+        $this->assertInstanceOf(Elasticsearch::class, $response);
     }
 
     public function testSendsNormalEvents(): void
@@ -171,33 +180,21 @@ class ClientTest extends TestCase
     {
         $httpCode = 403;
         $responseString = JSON::stringify(['message' => 'some AWS error']);
-        $transferInfo = [
-            'request_header' => 'bar',
-            'http_code' => $httpCode,
-            'body' => $responseString,
-        ];
-        $response = new Response($responseString);
-        $response->setTransferInfo($transferInfo);
+        $response = new \GuzzleHttp\Psr7\Response(
+            $httpCode,
+            ['Content-Type' => 'application/json', Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
+            $responseString
+        );
 
-        $connection = $this->getConnectionMock();
-        $connection
-            ->expects($this->exactly(1))
-            ->method('hasConfig')
-            ->with('http_error_codes')
-            ->willReturn(true)
-        ;
-        $connection
-            ->expects($this->exactly(1))
-            ->method('getConfig')
-            ->with('http_error_codes')
-            ->willReturn([400, 403, 404])
-        ;
-        $client = $this->getClientMock($response, $connection);
+        $client = $this->getClient($this->createMock(LoggerInterface::class), $response);
 
         $desiredMessage = \sprintf('Error in transportInfo: response code is %d, response body is %s', $httpCode, $responseString);
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage($desiredMessage);
-        $response = $client->request('foo');
+        $client->sendRequest(new \GuzzleHttp\Psr7\Request(
+            Request::GET,
+            'https://some.tld/foo'
+        ));
     }
 
     public function testGetIndexTemplate()
@@ -207,33 +204,13 @@ class ClientTest extends TestCase
         $this->assertSame($template, $client->getIndexTemplate('some_index'));
     }
 
-    private function getConnectionMock()
+    private function getClient(LoggerInterface $logger, \GuzzleHttp\Psr7\Response $response): Client
     {
-        $connection = $this->createMock(Connection::class);
-        $connection->expects($this->any())->method('toArray')->will($this->returnValue([]));
+        $httpClient = $this->createMock(ClientInterface::class);
+        $httpClient->expects($this->any())
+            ->method('sendRequest')
+            ->willReturn($response);
 
-        return $connection;
-    }
-
-    private function getClientMock(?Response $response = null, $connection = null)
-    {
-        $transport = new NullTransport();
-        if ($response) {
-            $transport->setResponse($response);
-        }
-
-        if (!$connection) {
-            $connection = $this->getConnectionMock();
-        }
-        $connection->expects($this->any())->method('getTransportObject')->will($this->returnValue($transport));
-
-        $client = $this->getMockBuilder(Client::class)
-            ->setMethods(['getConnection'])
-            ->getMock()
-        ;
-
-        $client->expects($this->any())->method('getConnection')->will($this->returnValue($connection));
-
-        return $client;
+        return new Client(['transport_config' => ['http_client' => $httpClient]], [401, 402, 403], $logger);
     }
 }
