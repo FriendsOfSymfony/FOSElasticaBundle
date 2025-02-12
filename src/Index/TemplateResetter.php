@@ -11,8 +11,7 @@
 
 namespace FOS\ElasticaBundle\Index;
 
-use Elastica\Client;
-use Elastica\Request;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Configuration\ManagerInterface;
 
@@ -25,18 +24,15 @@ class TemplateResetter implements ResetterInterface
 {
     private ManagerInterface $configManager;
     private MappingBuilder $mappingBuilder;
-    private Client $client;
     private IndexTemplateManager $indexTemplateManager;
 
     public function __construct(
         ManagerInterface $configManager,
         MappingBuilder $mappingBuilder,
-        Client $client,
         IndexTemplateManager $indexTemplateManager
     ) {
         $this->configManager = $configManager;
         $this->mappingBuilder = $mappingBuilder;
-        $this->client = $client;
         $this->indexTemplateManager = $indexTemplateManager;
     }
 
@@ -55,18 +51,19 @@ class TemplateResetter implements ResetterInterface
         }
         $indexTemplate = $this->indexTemplateManager->getIndexTemplate($indexName);
 
-        $mapping = $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig);
         if ($deleteIndexes) {
-            $this->deleteTemplateIndexes($indexTemplateConfig);
+            try {
+                $indexTemplate->delete();
+            } catch (ClientResponseException $e) {
+                if ($e->getResponse()->getStatusCode() === 404) {
+                    // Template does not exist, so can not be removed.
+                } else {
+                    throw $e;
+                }
+            }
         }
-        $indexTemplate->create($mapping);
-    }
 
-    /**
-     * Delete all template indexes.
-     */
-    public function deleteTemplateIndexes(IndexTemplateConfig $template): void
-    {
-        $this->client->request($template->getTemplate().'/', Request::DELETE);
+        $mapping = $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig);
+        $indexTemplate->create($mapping);
     }
 }
