@@ -102,7 +102,7 @@ class CreateCommandTest extends TestCase
         $this->indexConfig->expects($this->once())->method('getElasticSearchName')->willReturn($indexName);
         $this->aliasProcessor->expects($this->once())->method('setRootName')->with($this->indexConfig, $this->index);
         $this->mappingBuilder->expects($this->once())->method('buildIndexMapping')->with($this->indexConfig)->willReturn($mapping);
-        $this->index->expects($this->once())->method('create')->with(['mapping'], false);
+        $this->index->expects($this->once())->method('create')->with(['mapping'], []);
         $this->index->expects($this->once())->method('addAlias')->with($indexName);
 
         $this->command->run($input, $output);
@@ -128,7 +128,7 @@ class CreateCommandTest extends TestCase
         $this->indexConfig->expects($this->exactly(2))->method('isUseAlias')->willReturn(true);
         $this->aliasProcessor->expects($this->once())->method('setRootName')->with($this->indexConfig, $this->index);
         $this->mappingBuilder->expects($this->once())->method('buildIndexMapping')->with($this->indexConfig)->willReturn($mapping);
-        $this->index->expects($this->once())->method('create')->with(['mapping'], false);
+        $this->index->expects($this->once())->method('create')->with(['mapping'], []);
         $this->index->expects($this->never())->method('addAlias')->with($indexName);
 
         $this->command->run($input, $output);
@@ -149,7 +149,7 @@ class CreateCommandTest extends TestCase
         $this->indexConfig->expects($this->exactly(2))->method('isUseAlias')->willReturn(false);
         $this->aliasProcessor->expects($this->never())->method('setRootName');
         $this->mappingBuilder->expects($this->once())->method('buildIndexMapping')->with($this->indexConfig)->willReturn($mapping);
-        $this->index->expects($this->once())->method('create')->with(['mapping'], false);
+        $this->index->expects($this->once())->method('create')->with(['mapping'], []);
         $this->index->expects($this->never())->method('addAlias');
 
         $this->command->run($input, $output);
@@ -192,9 +192,9 @@ class CreateCommandTest extends TestCase
             ->willReturn($mapping)
         ;
 
-        $index1->expects($this->once())->method('create')->with(['mapping'], false);
+        $index1->expects($this->once())->method('create')->with(['mapping'], []);
         $index1->expects($this->never())->method('addAlias');
-        $index2->expects($this->once())->method('create')->with(['mapping'], false);
+        $index2->expects($this->once())->method('create')->with(['mapping'], []);
         $index2->expects($this->never())->method('addAlias');
 
         $this->command->run($input, $output);
