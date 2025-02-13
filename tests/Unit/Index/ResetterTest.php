@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
-use Elastica\Client;
 use FOS\ElasticaBundle\Configuration\ConfigManager;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Elastica\Index;
@@ -22,6 +21,7 @@ use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Index\MappingBuilder;
 use FOS\ElasticaBundle\Index\Resetter;
 use FOS\ElasticaBundle\Index\ResetterInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -38,7 +38,6 @@ class ResetterTest extends TestCase
     private $aliasProcessor;
     private $configManager;
     private $dispatcher;
-    private $elasticaClient;
     private $indexManager;
     private $mappingBuilder;
 
@@ -47,7 +46,6 @@ class ResetterTest extends TestCase
         $this->aliasProcessor = $this->createMock(AliasProcessor::class);
         $this->configManager = $this->createMock(ConfigManager::class);
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
-        $this->elasticaClient = $this->createMock(Client::class);
         $this->indexManager = $this->createMock(IndexManager::class);
         $this->mappingBuilder = $this->createMock(MappingBuilder::class);
 
@@ -69,11 +67,12 @@ class ResetterTest extends TestCase
             'mapping' => [],
             'model' => [],
         ]);
-        $this->mockIndex($indexName, $indexConfig);
+        $mapping = ['map' => 'ping'];
+        $index = $this->mockIndex($indexName, $indexConfig, $mapping);
 
         $this->configManager->expects($this->once())
             ->method('getIndexNames')
-            ->will($this->returnValue([$indexName]))
+            ->willReturn([$indexName])
         ;
 
         $this->dispatcherExpects([
@@ -81,8 +80,9 @@ class ResetterTest extends TestCase
             [$this->isInstanceOf(PostIndexResetEvent::class)],
         ]);
 
-        $this->elasticaClient->expects($this->exactly(2))
-            ->method('requestEndpoint')
+        $index->expects($this->once())
+            ->method('create')
+            ->with($mapping, ['recreate' => true])
         ;
 
         $this->resetter->resetAllIndexes();
@@ -96,36 +96,17 @@ class ResetterTest extends TestCase
             'mapping' => [],
             'model' => [],
         ]);
-        $this->mockIndex('index1', $indexConfig);
+        $mapping = ['map' => 'ping'];
+        $index = $this->mockIndex('index1', $indexConfig, $mapping);
 
         $this->dispatcherExpects([
             [$this->isInstanceOf(PreIndexResetEvent::class)],
             [$this->isInstanceOf(PostIndexResetEvent::class)],
         ]);
 
-        $this->elasticaClient->expects($this->exactly(2))
-            ->method('requestEndpoint')
-        ;
-
-        $this->resetter->resetIndex('index1');
-    }
-
-    public function testResetIndexWithDifferentName()
-    {
-        $indexConfig = new IndexConfig([
-            'name' => 'index1',
-            'config' => [],
-            'mapping' => [],
-            'model' => [],
-        ]);
-        $this->mockIndex('index1', $indexConfig);
-        $this->dispatcherExpects([
-            [$this->isInstanceOf(PreIndexResetEvent::class)],
-            [$this->isInstanceOf(PostIndexResetEvent::class)],
-        ]);
-
-        $this->elasticaClient->expects($this->exactly(2))
-            ->method('requestEndpoint')
+        $index->expects($this->once())
+            ->method('create')
+            ->with($mapping, ['recreate' => true])
         ;
 
         $this->resetter->resetIndex('index1');
@@ -141,7 +122,8 @@ class ResetterTest extends TestCase
             'mapping' => [],
             'model' => [],
         ]);
-        $index = $this->mockIndex('index1', $indexConfig);
+        $mapping = ['map' => 'ping'];
+        $index = $this->mockIndex('index1', $indexConfig, $mapping);
         $this->dispatcherExpects([
             [$this->isInstanceOf(PreIndexResetEvent::class)],
             [$this->isInstanceOf(PostIndexResetEvent::class)],
@@ -152,8 +134,9 @@ class ResetterTest extends TestCase
             ->with($indexConfig, $index, false)
         ;
 
-        $this->elasticaClient->expects($this->exactly(2))
-            ->method('requestEndpoint')
+        $index->expects($this->once())
+            ->method('create')
+            ->with($mapping, ['recreate' => true])
         ;
 
         $this->resetter->resetIndex('index1');
@@ -227,14 +210,14 @@ class ResetterTest extends TestCase
         \call_user_func_array([$expectation, 'withConsecutive'], $events);
     }
 
-    private function mockIndex($indexName, IndexConfig $config, $mapping = [])
+    private function mockIndex(string $indexName, IndexConfig $config, array $mapping = []): Index&MockObject
     {
         $this->configManager->expects($this->atLeast(1))
             ->method('getIndexConfiguration')
             ->with($indexName)
-            ->will($this->returnValue($config))
+            ->willReturn($config)
         ;
-        $index = new Index($this->elasticaClient, $indexName);
+        $index = $this->createMock(Index::class);
         $this->indexManager->expects($this->any())
             ->method('getIndex')
             ->with($indexName)
