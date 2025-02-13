@@ -4,6 +4,9 @@ CHANGELOG for 6.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.x versions.
 
+### 6.5.1 (2025-02-13)
+* Replaced deprecated `Symfony\Component\HttpKernel\DependencyInjection\Extension`.
+
 ### 6.5.0 (2025-01-27)
 * Added PHP 8.4 support.
 * Added `doctrine/orm` 3 support.
