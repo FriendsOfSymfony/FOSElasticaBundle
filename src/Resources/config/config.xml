@@ -11,9 +11,9 @@
 
     <services>
         <service id="fos_elastica.client_prototype" class="FOS\ElasticaBundle\Elastica\Client" abstract="true">
-            <argument type="collection" /> <!-- configuration -->
-            <argument type="collection"/> <!-- forbidden codes -->
-            <argument /> <!-- logger -->
+            <argument key="$config" type="abstract">configuration for Ruflin Client</argument>
+            <argument key="$forbiddenCodes" type="abstract">list of forbidden codes for Client</argument>
+            <argument key="$logger" type="abstract">logger for Ruflin Client</argument>
 
             <call method="setStopwatch">
                 <argument type="service" id="debug.stopwatch" on-invalid="null" />
