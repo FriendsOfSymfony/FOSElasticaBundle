@@ -10,8 +10,7 @@ They can be set using the username and password configuration keys:
 fos_elastica:
     clients:
         default:
-            host: example.com
-            port: 80
+            hosts: ['http://example.com:80']
             username: 'username'
             password: 'password'
 ```
