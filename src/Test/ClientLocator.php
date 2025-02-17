@@ -15,7 +15,7 @@ namespace FOS\ElasticaBundle\Test;
 
 class ClientLocator
 {
-    private array $clients = [];
+    private array $clients; // @phpstan-ignore-line is never read, only written. Used only in tests to forbid container to remove clients.
 
     public function __construct(array $clients)
     {
