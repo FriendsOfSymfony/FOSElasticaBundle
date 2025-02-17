@@ -47,7 +47,7 @@ index.
 #app/config/config.yml
 fos_elastica:
     clients:
-        default: { host: localhost, port: 9200 }
+        default: { hosts: ['http://localhost:9200'] }
     indexes:
         app: ~
 ```

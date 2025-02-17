@@ -26,7 +26,7 @@ To use the custom repository specify it in the mapping for the entity:
 ```yaml
 fos_elastica:
     clients:
-        default: { host: localhost, port: 9200 }
+        default: { hosts: ['http://localhost:9200'] }
     indexes:
         user:
             client: default

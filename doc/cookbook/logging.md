@@ -15,7 +15,7 @@ service you wish to use.
 fos_elastica:
     clients:
         default:
-            host: example.com
+            hosts: ['http://example.com:80']
             logger: true
 ```
 
@@ -30,6 +30,6 @@ specifying the service id of the logger you wish to use.
 fos_elastica:
     clients:
         default:
-            host: example.com
+            hosts: ['http://example.com:80']
             logger: 'acme.custom.logger'
 ```
