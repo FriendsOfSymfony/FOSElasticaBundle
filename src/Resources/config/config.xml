@@ -12,7 +12,8 @@
     <services>
         <service id="fos_elastica.client_prototype" class="FOS\ElasticaBundle\Elastica\Client" abstract="true">
             <argument type="collection" /> <!-- configuration -->
-            <argument /> <!-- callback -->
+            <argument type="collection"/> <!-- forbidden codes -->
+            <argument /> <!-- logger -->
 
             <call method="setStopwatch">
                 <argument type="service" id="debug.stopwatch" on-invalid="null" />
@@ -20,6 +21,14 @@
             <call method="setEventDispatcher">
                 <argument type="service" id="event_dispatcher" on-invalid="null" />
             </call>
+        </service>
+
+        <service id="FOS\ElasticaBundle\Elastica\NodePool\RoundRobinResurrect">
+            <factory method="create"/>
+        </service>
+
+        <service id="FOS\ElasticaBundle\Elastica\NodePool\RoundRobinNoResurrect">
+            <factory method="create"/>
         </service>
 
         <service id="fos_elastica.config_manager" class="FOS\ElasticaBundle\Configuration\ConfigManager">

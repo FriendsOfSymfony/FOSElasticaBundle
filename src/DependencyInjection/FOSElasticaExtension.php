@@ -14,11 +14,12 @@ namespace FOS\ElasticaBundle\DependencyInjection;
 use Elastica\Client as ElasticaClient;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Elastica\NodePool\RoundRobinNoResurrect;
+use FOS\ElasticaBundle\Elastica\NodePool\RoundRobinResurrect;
 use FOS\ElasticaBundle\Finder\TransformedFinder;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -156,21 +157,52 @@ class FOSElasticaExtension extends Extension
         foreach ($clients as $name => $clientConfig) {
             $clientId = \sprintf('fos_elastica.client.%s', $name);
 
-            if (isset($clientConfig['connections'])) {
-                foreach ($clientConfig['connections'] as $connectionIndex => $connectionConfig) {
-                    if (isset($connectionConfig['aws_credential_provider'])) {
-                        $clientConfig['connections'][$connectionIndex]['aws_credential_provider'] = new Reference($connectionConfig['aws_credential_provider']);
+            $httpsClientConfig = [];
+            if (isset($clientConfig['client_config'])) {
+                foreach ($clientConfig['client_config'] as $key => $value) {
+                    if ('' !== $value && null !== $value) {
+                        $httpsClientConfig[$key] = $value;
                     }
                 }
             }
 
-            $clientDef = new ChildDefinition('fos_elastica.client_prototype');
-            $clientDef->replaceArgument(0, $clientConfig);
-            $clientDef->replaceArgument(1, null);
+            $config = [
+                'hosts' => $clientConfig['hosts'],
+                'retryOnConflict' => $clientConfig['retry_on_conflict'],
+                'username' => $clientConfig['username'] ?? null,
+                'password' => $clientConfig['password'] ?? null,
+                'cloud_id' => $clientConfig['cloud_id'] ?? null,
+                'retries' => $clientConfig['retries'] ?? null,
+                'api_key' => $clientConfig['api_key'] ?? null,
+                'transport_config' => [
+                    'http_client' => isset($clientConfig['http_client']) ? new Reference($clientConfig['http_client']) : null,
+                    'http_client_config' => $httpsClientConfig,
+                    'http_client_options' => array_replace(
+                        [
+                            'headers' => $clientConfig['headers'],
+                            'timeout' => $clientConfig['timeout'],
+                        ],
+                        $clientConfig['client_options'],
+                    ),
+                    'node_pool' => null,
+                ]
+            ];
 
-            $logger = $clientConfig['connections'][0]['logger'];
+            $httpErrorCodes = $clientConfig['http_error_codes'];
+
+            if ($clientConfig['connection_strategy'] === 'RoundRobin') {
+                $config['transport_config']['node_pool'] = new Reference(RoundRobinResurrect::class);
+            } elseif ($clientConfig['connection_strategy'] === 'RoundRobinNoResurrect') {
+                $config['transport_config']['node_pool'] = new Reference(RoundRobinNoResurrect::class);
+            }
+
+            $clientDef = new ChildDefinition('fos_elastica.client_prototype');
+            $clientDef->replaceArgument(0, $config);
+            $clientDef->replaceArgument(1, $httpErrorCodes);
+
+            $logger = $clientConfig['logger'];
             if (false !== $logger) {
-                $clientDef->addMethodCall('setLogger', [new Reference($logger)]);
+                $clientDef->replaceArgument(2, new Reference($logger));
             }
 
             $clientDef->addTag('fos_elastica.client');
