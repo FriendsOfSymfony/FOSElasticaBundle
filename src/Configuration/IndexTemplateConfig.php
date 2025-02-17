@@ -25,7 +25,7 @@ class IndexTemplateConfig implements IndexConfigInterface
     /**
      * Index name pattern.
      *
-     * @var array<string>
+     * @var list<non-empty-string>
      */
     private array $indexPatterns;
 
@@ -42,8 +42,8 @@ class IndexTemplateConfig implements IndexConfigInterface
         $this->config = $config['config'];
         $this->mapping = $config['mapping'];
 
-        if (empty($config['index_patterns'])) {
-            throw new \InvalidArgumentException("Property 'index_patterns' must be set for index template {$this->name}");
+        if (!isset($config['index_patterns']) || !\is_array($config['index_patterns']) || \count($config['index_patterns']) < 1) {
+            throw new \InvalidArgumentException('Index patterns value(s) must be set');
         }
 
         $this->indexPatterns = $config['index_patterns'];
@@ -51,6 +51,8 @@ class IndexTemplateConfig implements IndexConfigInterface
 
     /**
      * Gets index name pattern.
+     *
+     * @return list<non-empty-string>
      */
     public function getIndexPatterns(): array
     {

@@ -244,7 +244,7 @@ class ConfigurationTest extends TestCase
             [
                 'index_templates' => [
                     'some_template' => [
-                        'template' => 'some_template_*',
+                        'index_patterns' => ['some_template_*'],
                         'client' => 'default',
                         'properties' => [
                             'some_field' => [],
@@ -254,7 +254,7 @@ class ConfigurationTest extends TestCase
             ]
         );
         $indexTemplate = $configuration['index_templates']['some_template'];
-        $this->assertSame('some_template_*', $indexTemplate['template']);
+        $this->assertSame(['some_template_*'], $indexTemplate['index_patterns']);
         $this->assertSame('default', $indexTemplate['client']);
         $this->assertSame([], $indexTemplate['settings']);
         $this->assertArrayHasKey('some_field', $indexTemplate['properties']);
