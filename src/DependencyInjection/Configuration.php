@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\DependencyInjection;
 
+use Elastic\Elasticsearch\Transport\RequestOptions;
 use FOS\ElasticaBundle\Serializer\Callback as SerializerCallback;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -359,10 +360,10 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->arrayNode('client_config')
                                 ->children()
-                                    ->scalarNode('ssl_verify')->end()
-                                    ->scalarNode('ssl_cert')->end()
-                                    ->scalarNode('ssl_key')->end()
-                                    ->scalarNode('ssl_ca')->end()
+                                    ->scalarNode(RequestOptions::SSL_CERT)->end()
+                                    ->scalarNode(RequestOptions::SSL_KEY)->end()
+                                    ->scalarNode(RequestOptions::SSL_VERIFY)->end()
+                                    ->scalarNode(RequestOptions::SSL_CA)->end()
                                 ->end()
                             ->end()
                             ->arrayNode('client_options')
