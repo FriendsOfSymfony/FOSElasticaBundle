@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
-use Elastica\Request;
 use FOS\ElasticaBundle\Elastica\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;

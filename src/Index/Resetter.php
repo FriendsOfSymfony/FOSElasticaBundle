@@ -33,7 +33,7 @@ class Resetter implements ResetterInterface
         IndexManager $indexManager,
         AliasProcessor $aliasProcessor,
         MappingBuilder $mappingBuilder,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
     ) {
         $this->aliasProcessor = $aliasProcessor;
         $this->configManager = $configManager;

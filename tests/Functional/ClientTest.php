@@ -12,8 +12,6 @@
 namespace FOS\ElasticaBundle\Tests\Functional;
 
 use Elastic\Transport\NodePool\SimpleNodePool;
-use Elastica\Connection\Strategy\RoundRobin;
-use Elastica\Connection\Strategy\Simple;
 use FOS\ElasticaBundle\Elastica\Client;
 
 /**

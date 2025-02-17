@@ -177,7 +177,7 @@ class FOSElasticaExtension extends Extension
                 'transport_config' => [
                     'http_client' => isset($clientConfig['http_client']) ? new Reference($clientConfig['http_client']) : null,
                     'http_client_config' => $httpsClientConfig,
-                    'http_client_options' => array_replace(
+                    'http_client_options' => \array_replace(
                         [
                             'headers' => $clientConfig['headers'],
                             'timeout' => $clientConfig['timeout'],
@@ -185,14 +185,14 @@ class FOSElasticaExtension extends Extension
                         $clientConfig['client_options'],
                     ),
                     'node_pool' => null,
-                ]
+                ],
             ];
 
             $httpErrorCodes = $clientConfig['http_error_codes'];
 
-            if ($clientConfig['connection_strategy'] === 'RoundRobin') {
+            if ('RoundRobin' === $clientConfig['connection_strategy']) {
                 $config['transport_config']['node_pool'] = new Reference(RoundRobinResurrect::class);
-            } elseif ($clientConfig['connection_strategy'] === 'RoundRobinNoResurrect') {
+            } elseif ('RoundRobinNoResurrect' === $clientConfig['connection_strategy']) {
                 $config['transport_config']['node_pool'] = new Reference(RoundRobinNoResurrect::class);
             }
 

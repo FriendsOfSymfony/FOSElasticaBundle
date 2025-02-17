@@ -71,9 +71,9 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      *
      * @param Result[] $elasticaObjects of elastica objects
      *
-     * @throws \RuntimeException
-     *
      * @return array
+     *
+     * @throws \RuntimeException
      */
     public function transform(array $elasticaObjects)
     {

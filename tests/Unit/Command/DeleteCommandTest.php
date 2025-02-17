@@ -11,9 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Command;
 
-use Elastica\Request;
 use FOS\ElasticaBundle\Command\DeleteCommand;
-use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\IndexManager;
 use PHPUnit\Framework\TestCase;
