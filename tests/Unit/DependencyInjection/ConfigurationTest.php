@@ -51,37 +51,30 @@ class ConfigurationTest extends TestCase
         $configuration = $this->getConfigs([
             'clients' => [
                 'default' => [
-                    'url' => 'http://localhost:9200',
-                    'retryOnConflict' => 5,
+                    'hosts' => ['http://localhost:9200'],
+                    'retry_on_conflict' => 5,
                 ],
                 'clustered' => [
-                    'connections' => [
-                        [
-                            'url' => 'http://es1:9200',
-                            'headers' => [
-                                'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==',
-                            ],
-                        ],
-                        [
-                            'url' => 'http://es2:9200',
-                            'headers' => [
-                                'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==',
-                            ],
-                        ],
+                    'hosts' => [
+                        'http://es1:9200',
+                        'http://es2:9200'
+                    ],
+                    'headers' => [
+                        'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==',
                     ],
                 ],
             ],
         ]);
 
         $this->assertCount(2, $configuration['clients']);
-        $this->assertCount(1, $configuration['clients']['default']['connections']);
-        $this->assertCount(0, $configuration['clients']['default']['connections'][0]['headers']);
-        $this->assertSame(5, $configuration['clients']['default']['connections'][0]['retryOnConflict']);
+        $this->assertCount(1, $configuration['clients']['default']['hosts']);
+        $this->assertCount(0, $configuration['clients']['default']['headers']);
+        $this->assertSame(5, $configuration['clients']['default']['retry_on_conflict']);
 
-        $this->assertCount(2, $configuration['clients']['clustered']['connections']);
-        $this->assertSame('http://es2:9200/', $configuration['clients']['clustered']['connections'][1]['url']);
-        $this->assertCount(1, $configuration['clients']['clustered']['connections'][1]['headers']);
-        $this->assertSame('Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==', $configuration['clients']['clustered']['connections'][0]['headers'][0]);
+        $this->assertCount(2, $configuration['clients']['clustered']['hosts']);
+        $this->assertSame('http://es2:9200/', $configuration['clients']['clustered']['hosts'][1]);
+        $this->assertCount(1, $configuration['clients']['clustered']['headers']);
+        $this->assertSame('Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==', $configuration['clients']['clustered']['headers'][0]);
     }
 
     public function testLogging()
@@ -89,18 +82,18 @@ class ConfigurationTest extends TestCase
         $configuration = $this->getConfigs([
             'clients' => [
                 'logging_enabled' => [
-                    'url' => 'http://localhost:9200',
+                    'hosts' => ['http://localhost:9200'],
                     'logger' => true,
                 ],
                 'logging_disabled' => [
-                    'url' => 'http://localhost:9200',
+                    'hosts' => ['http://localhost:9200'],
                     'logger' => false,
                 ],
                 'logging_not_mentioned' => [
-                    'url' => 'http://localhost:9200',
+                    'hosts' => ['http://localhost:9200'],
                 ],
                 'logging_custom' => [
-                    'url' => 'http://localhost:9200',
+                    'hosts' => ['http://localhost:9200'],
                     'logger' => 'custom.service',
                 ],
             ],
@@ -108,29 +101,29 @@ class ConfigurationTest extends TestCase
 
         $this->assertCount(4, $configuration['clients']);
 
-        $this->assertSame('fos_elastica.logger', $configuration['clients']['logging_enabled']['connections'][0]['logger']);
-        $this->assertFalse($configuration['clients']['logging_disabled']['connections'][0]['logger']);
-        $this->assertSame('fos_elastica.logger', $configuration['clients']['logging_not_mentioned']['connections'][0]['logger']);
-        $this->assertSame('custom.service', $configuration['clients']['logging_custom']['connections'][0]['logger']);
+        $this->assertSame('fos_elastica.logger', $configuration['clients']['logging_enabled']['logger']);
+        $this->assertFalse($configuration['clients']['logging_disabled']['logger']);
+        $this->assertSame('fos_elastica.logger', $configuration['clients']['logging_not_mentioned']['logger']);
+        $this->assertSame('custom.service', $configuration['clients']['logging_custom']['logger']);
     }
 
     public function testSlashIsAddedAtTheEndOfServerUrl()
     {
         $config = [
             'clients' => [
-                'default' => ['url' => 'http://www.github.com'],
+                'default' => ['hosts' => ['http://www.github.com']],
             ],
         ];
         $configuration = $this->getConfigs($config);
 
-        $this->assertSame('http://www.github.com/', $configuration['clients']['default']['connections'][0]['url']);
+        $this->assertSame('http://www.github.com/', $configuration['clients']['default']['hosts'][0]);
     }
 
     public function testIndexConfig()
     {
         $this->getConfigs([
             'clients' => [
-                'default' => ['url' => 'http://localhost:9200'],
+                'default' => ['hosts' => ['http://localhost:9200']],
             ],
             'indexes' => [
                 'test' => [
@@ -160,25 +153,11 @@ class ConfigurationTest extends TestCase
         ]);
     }
 
-    public function testClientConfigurationNoUrl()
-    {
-        $configuration = $this->getConfigs([
-            'clients' => [
-                'default' => [
-                    'host' => 'localhost',
-                    'port' => 9200,
-                ],
-            ],
-        ]);
-
-        $this->assertTrue(empty($configuration['clients']['default']['connections'][0]['url']));
-    }
-
     public function testUnconfiguredIndex()
     {
         $configuration = $this->getConfigs([
             'clients' => [
-                'default' => ['url' => 'http://localhost:9200'],
+                'default' => ['hosts' => ['http://localhost:9200']],
             ],
             'indexes' => [
                 'test' => null,
@@ -192,7 +171,7 @@ class ConfigurationTest extends TestCase
     {
         $this->getConfigs([
             'clients' => [
-                'default' => ['url' => 'http://localhost:9200'],
+                'default' => ['hosts' => ['http://localhost:9200']],
             ],
             'indexes' => [
                 'test' => [
@@ -221,73 +200,18 @@ class ConfigurationTest extends TestCase
         ]);
     }
 
-    public function testCompressionConfig()
-    {
-        $configuration = $this->getConfigs([
-            'clients' => [
-                'compression_enabled' => [
-                    'compression' => true,
-                ],
-                'compression_disabled' => [
-                    'compression' => false,
-                ],
-            ],
-        ]);
-
-        $this->assertTrue($configuration['clients']['compression_enabled']['connections'][0]['compression']);
-        $this->assertFalse($configuration['clients']['compression_disabled']['connections'][0]['compression']);
-    }
-
-    public function testCompressionDefaultConfig()
-    {
-        $configuration = $this->getConfigs([
-            'clients' => [
-                'default' => [],
-            ],
-        ]);
-
-        $this->assertFalse($configuration['clients']['default']['connections'][0]['compression']);
-    }
-
     public function testTimeoutConfig()
     {
         $configuration = $this->getConfigs([
             'clients' => [
                 'simple_timeout' => [
-                    'url' => 'http://localhost:9200',
+                    'hosts' => ['http://localhost:9200'],
                     'timeout' => 123,
                 ],
-                'connect_timeout' => [
-                    'url' => 'http://localhost:9200',
-                    'connectTimeout' => 234,
-                ],
             ],
         ]);
 
-        $this->assertSame(123, $configuration['clients']['simple_timeout']['connections'][0]['timeout']);
-        $this->assertSame(234, $configuration['clients']['connect_timeout']['connections'][0]['connectTimeout']);
-    }
-
-    public function testAWSConfig()
-    {
-        $configuration = $this->getConfigs([
-            'clients' => [
-                'default' => [
-                    'aws_access_key_id' => 'AWS_KEY',
-                    'aws_secret_access_key' => 'AWS_SECRET',
-                    'aws_region' => 'AWS_REGION',
-                    'aws_session_token' => 'AWS_SESSION_TOKEN',
-                    'ssl' => true,
-                ],
-            ],
-        ]);
-
-        $connection = $configuration['clients']['default']['connections'][0];
-        $this->assertSame('AWS_KEY', $connection['aws_access_key_id']);
-        $this->assertSame('AWS_SECRET', $connection['aws_secret_access_key']);
-        $this->assertSame('AWS_REGION', $connection['aws_region']);
-        $this->assertSame('AWS_SESSION_TOKEN', $connection['aws_session_token']);
-        $this->assertTrue($connection['ssl']);
+        $this->assertSame(123, $configuration['clients']['simple_timeout']['timeout']);
     }
 
     public function testHttpErrorCodesConfig()
@@ -299,8 +223,8 @@ class ConfigurationTest extends TestCase
                 ],
             ],
         ]);
-        $connection = $configuration['clients']['default']['connections'][0];
-        $this->assertSame([400, 403, 404], $connection['http_error_codes']);
+        $connection = $configuration['clients']['default'];
+        $this->assertSame([400, 403], $connection['http_error_codes']);
 
         // test custom
         $configuration = $this->getConfigs([
@@ -310,7 +234,7 @@ class ConfigurationTest extends TestCase
                 ],
             ],
         ]);
-        $connection = $configuration['clients']['default']['connections'][0];
+        $connection = $configuration['clients']['default'];
         $this->assertSame(['HTTP_ERROR_CODE'], $connection['http_error_codes']);
     }
 

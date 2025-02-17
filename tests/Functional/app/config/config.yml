@@ -4,9 +4,7 @@ framework:
 
 services:
     logger: { class: Psr\Log\NullLogger }
-    fos_elastica.client.second_server:
-        alias: fos_elastica.client
+    FOS\ElasticaBundle\Test\ClientLocator:
         public: true
-    fos_elastica.client.third:
-        alias: fos_elastica.client
-        public: true
+        arguments:
+            - !tagged_iterator fos_elastica.client
