@@ -23,12 +23,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class ResetTemplatesCommandTest extends WebTestCase
 {
-    /**
-     * Client.
-     *
-     * @var Client
-     */
-    private $client;
+    private Client $elasticClient;
 
     /**
      * Application.
@@ -44,7 +39,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         // required for old supported Symfony
         $application->all();
 
-        $this->client = self::getContainer()->get('fos_elastica.client');
+        $this->elasticClient = self::getContainer()->get('fos_elastica.client');
     }
 
     public function testResetAllTemplates()
@@ -131,13 +126,13 @@ class ResetTemplatesCommandTest extends WebTestCase
 
     private function clearTemplates()
     {
-        $this->client->request('_template/*', Request::DELETE);
+        $this->elasticClient->indices()->deleteTemplate(['name' => '*']);
     }
 
     private function fetchAllTemplates()
     {
-        $reponse = $this->client->request('_template', Request::GET);
+        $reponse = $this->elasticClient->indices()->getTemplate();
 
-        return $reponse->getData();
+        return $this->elasticClient->toElasticaResponse($reponse)->getData();
     }
 }

@@ -24,7 +24,7 @@ jms_serializer:
 fos_elastica:
     clients:
         default:
-            url: "http://%fos_elastica.host%:%fos_elastica.port%"
+            hosts: ["http://%fos_elastica.host%:%fos_elastica.port%"]
     serializer:
         serializer: jms_serializer
     indexes:
