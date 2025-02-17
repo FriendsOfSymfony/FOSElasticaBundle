@@ -198,12 +198,14 @@ class FOSElasticaExtension extends Extension
             }
 
             $clientDef = new ChildDefinition('fos_elastica.client_prototype');
-            $clientDef->replaceArgument(0, $config);
-            $clientDef->replaceArgument(1, $httpErrorCodes);
+            $clientDef->replaceArgument('$config', $config);
+            $clientDef->replaceArgument('$forbiddenCodes', $httpErrorCodes);
 
             $logger = $clientConfig['logger'];
             if (false !== $logger) {
-                $clientDef->replaceArgument(2, new Reference($logger));
+                $clientDef->replaceArgument('$logger', new Reference($logger));
+            } else {
+                $clientDef->replaceArgument('$logger', null);
             }
 
             $clientDef->addTag('fos_elastica.client');

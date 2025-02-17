@@ -73,7 +73,7 @@ class FOSElasticaExtensionTest extends TestCase
                 \CURLOPT_RANDOM_FILE => '/dev/urandom',
             ],
             'node_pool' => null,
-        ], $defaultClientDefinition->getArgument(0)['transport_config']);
+        ], $defaultClientDefinition->getArgument('$config')['transport_config']);
     }
 
     public function testShouldRegisterDoctrineORMPagerProviderIfEnabled()
