@@ -98,7 +98,6 @@ class Indexable implements IndexableInterface
             return $this->buildExpressionCallback($index, $object, $callback);
         }
 
-        // @phpstan-ignore-next-line
         throw new \InvalidArgumentException(\sprintf('Callback for index "%s" is not a valid callback.', $index));
     }
 
