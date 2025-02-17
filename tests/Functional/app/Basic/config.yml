@@ -28,7 +28,7 @@ fos_elastica:
                             filter: [my_ngram]
                     filter:
                         my_ngram:
-                            type: "nGram"
+                            type: "ngram"
                             min_gram: 3
                             max_gram: 4
             dynamic: strict
@@ -49,15 +49,15 @@ fos_elastica:
                 field1: ~
                 field2:
                     store: false
-                date: { boost: 5 }
+                date: ~
                 completion:
                     type: completion
-                title: { boost: 8, analyzer: my_analyzer }
+                title: { analyzer: my_analyzer }
                 content: ~
                 comments:
                     type: "nested"
                     properties:
-                        date: { boost: 5 }
+                        date: ~
                         content: ~
                 multiple:
                     type: text
@@ -69,7 +69,7 @@ fos_elastica:
                 approver:
                     type: "object"
                     properties:
-                        date: { boost: 5 }
+                        date: ~
                 lastlogin: { type: date, format: basic_date_time }
                 birthday: { type: date, format: "yyyy-MM-dd" }
                 dynamic_allowed: { type: object, dynamic: true }
