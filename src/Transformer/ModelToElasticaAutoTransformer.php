@@ -115,8 +115,6 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     /**
      * Attempts to convert any type to a string or an array of strings.
      *
-     * @param mixed $value
-     *
      * @return string|list<string>
      */
     protected function normalizeValue($value)

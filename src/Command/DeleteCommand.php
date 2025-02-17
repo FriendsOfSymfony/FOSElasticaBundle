@@ -11,13 +11,7 @@
 
 namespace FOS\ElasticaBundle\Command;
 
-use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ElasticsearchException;
-use Elastic\Elasticsearch\Exception\MissingParameterException;
-use Elastic\Elasticsearch\Exception\ServerResponseException;
-use Elastica\Exception\ExceptionInterface;
-use Elastica\Request;
-use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Index\IndexManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,7 +26,7 @@ class DeleteCommand extends Command
     private IndexManager $indexManager;
 
     public function __construct(
-        IndexManager $indexManager
+        IndexManager $indexManager,
     ) {
         parent::__construct();
 

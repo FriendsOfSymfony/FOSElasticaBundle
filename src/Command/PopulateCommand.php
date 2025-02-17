@@ -51,7 +51,7 @@ class PopulateCommand extends Command
         IndexManager $indexManager,
         PagerProviderRegistry $pagerProviderRegistry,
         PagerPersisterRegistry $pagerPersisterRegistry,
-        Resetter $resetter
+        Resetter $resetter,
     ) {
         parent::__construct();
 

@@ -329,7 +329,7 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('scalar')
                                     ->validate()
                                     ->ifTrue(function ($url) {
-                                        return $url && !str_ends_with($url, '/');
+                                        return $url && !\str_ends_with($url, '/');
                                     })
                                     ->then(function ($url) {
                                         return $url.'/';

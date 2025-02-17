@@ -34,7 +34,6 @@ use Symfony\Contracts\Service\ResetInterface;
  */
 class Client extends BaseClient implements ResetInterface
 {
-
     private array $forbiddenCodes;
 
     public function __construct(array|string $config = [], array $forbiddenCodes = [400, 403, 404], ?LoggerInterface $logger = null)
@@ -73,15 +72,15 @@ class Client extends BaseClient implements ResetInterface
             $this->stopwatch->start('es_request', 'fos_elastica');
         }
 
-        $path = ltrim($request->getUri()->getPath(), '/'); // to have the same result as in the 6.0
+        $path = \ltrim($request->getUri()->getPath(), '/'); // to have the same result as in the 6.0
         $method = $request->getMethod();
         try {
-            $data = json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR);
+            $data = \json_decode((string) $request->getBody(), true, 512, \JSON_THROW_ON_ERROR);
         } catch (\JsonException) {
             $data = [];
         }
         $query = [];
-        parse_str($request->getUri()->getQuery(), $query);
+        \parse_str($request->getUri()->getQuery(), $query);
 
         if ($this->dispatcher) {
             $this->dispatcher->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $contentType));
@@ -176,10 +175,8 @@ class Client extends BaseClient implements ResetInterface
      *
      * @param array<mixed>|string $data
      * @param array<mixed>        $query
-     * @param float               $queryTime
-     * @param int                 $engineMS
      */
-    private function logQuery(string $path, string $method, $data, array $query, float $queryTime, $engineMS = 0, int $itemCount = 0): void
+    private function logQuery(string $path, string $method, $data, array $query, float $queryTime, int $engineMS = 0, int $itemCount = 0): void
     {
         if (!$this->_logger instanceof ElasticaLogger) {
             return;

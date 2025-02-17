@@ -18,6 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Persistence\ObjectRepository;
 use FOS\ElasticaBundle\Doctrine\ORM\ElasticaToModelTransformer;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,17 +29,17 @@ class ElasticaToModelTransformerTest extends TestCase
     public const OBJECT_CLASS = \stdClass::class;
 
     /**
-     * @var \Doctrine\Persistence\ManagerRegistry&\PHPUnit\Framework\MockObject\MockObject
+     * @var ManagerRegistry&MockObject
      */
     protected $registry;
 
     /**
-     * @var ObjectManager&\PHPUnit\Framework\MockObject\MockObject
+     * @var ObjectManager&MockObject
      */
     protected $manager;
 
     /**
-     * @var \Doctrine\Persistence\ObjectRepository&\PHPUnit\Framework\MockObject\MockObject
+     * @var ObjectRepository&MockObject
      */
     protected $repository;
 

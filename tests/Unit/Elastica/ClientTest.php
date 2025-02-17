@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Elastica;
 
-use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastica\Exception\ClientException;
 use Elastica\JSON;
@@ -53,7 +52,7 @@ class ClientTest extends TestCase
         $response = new \GuzzleHttp\Psr7\Response(
             200,
             ['Content-Type' => 'application/json', Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
-            json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR)
+            \json_encode(['foo' => 'bar'], \JSON_THROW_ON_ERROR)
         );
         $client = $this->getClient($logger, $response);
 
@@ -209,7 +208,8 @@ class ClientTest extends TestCase
         $httpClient = $this->createMock(ClientInterface::class);
         $httpClient->expects($this->any())
             ->method('sendRequest')
-            ->willReturn($response);
+            ->willReturn($response)
+        ;
 
         return new Client(['transport_config' => ['http_client' => $httpClient]], [401, 402, 403], $logger);
     }

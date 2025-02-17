@@ -57,7 +57,7 @@ class ConfigurationTest extends TestCase
                 'clustered' => [
                     'hosts' => [
                         'http://es1:9200',
-                        'http://es2:9200'
+                        'http://es2:9200',
                     ],
                     'headers' => [
                         'Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==',
