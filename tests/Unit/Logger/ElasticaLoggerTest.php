@@ -125,8 +125,6 @@ class ElasticaLoggerTest extends TestCase
 
     /**
      * @dataProvider logLevels
-     *
-     * @param mixed $level
      */
     public function testMessagesCanBeLoggedAtSpecificLogLevels($level)
     {

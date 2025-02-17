@@ -71,8 +71,6 @@ class ProfilerTest extends WebTestCase
 
     /**
      * @dataProvider queryProvider
-     *
-     * @param mixed $query
      */
     public function testRender($query)
     {

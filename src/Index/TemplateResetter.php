@@ -14,6 +14,7 @@ namespace FOS\ElasticaBundle\Index;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Configuration\ManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class Template resetter.
@@ -29,7 +30,7 @@ class TemplateResetter implements ResetterInterface
     public function __construct(
         ManagerInterface $configManager,
         MappingBuilder $mappingBuilder,
-        IndexTemplateManager $indexTemplateManager
+        IndexTemplateManager $indexTemplateManager,
     ) {
         $this->configManager = $configManager;
         $this->mappingBuilder = $mappingBuilder;
@@ -55,7 +56,7 @@ class TemplateResetter implements ResetterInterface
             try {
                 $indexTemplate->delete();
             } catch (ClientResponseException $e) {
-                if ($e->getResponse()->getStatusCode() === 404) {
+                if (Response::HTTP_NOT_FOUND === $e->getResponse()->getStatusCode()) {
                     // Template does not exist, so can not be removed.
                 } else {
                     throw $e;
