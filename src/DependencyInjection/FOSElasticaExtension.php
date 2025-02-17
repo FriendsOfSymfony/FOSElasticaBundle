@@ -322,7 +322,7 @@ class FOSElasticaExtension extends Extension
                 'reference' => $reference,
                 'name' => $name,
                 'settings' => $indexTemplate['settings'],
-                'template' => $indexTemplate['template'],
+                'index_patterns' => $indexTemplate['index_patterns'],
             ];
 
             $this->loadIndexConfig((array) $indexTemplate, $this->indexTemplateConfigs[$name]);

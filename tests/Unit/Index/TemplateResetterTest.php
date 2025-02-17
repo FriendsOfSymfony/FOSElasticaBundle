@@ -146,7 +146,7 @@ class TemplateResetterTest extends TestCase
         ;
         $indexTemplateConfig
             ->expects($this->never())
-            ->method('getTemplate')
+            ->method('getIndexPatterns')
         ;
 
         // act
@@ -226,7 +226,7 @@ class TemplateResetterTest extends TestCase
         ;
         $indexTemplateConfig
             ->expects($this->never())
-            ->method('getTemplate')
+            ->method('getIndexPatterns')
         ;
 
         // act
