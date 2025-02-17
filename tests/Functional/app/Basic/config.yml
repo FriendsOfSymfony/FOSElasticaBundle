@@ -7,17 +7,15 @@ twig:
 fos_elastica:
     clients:
         default:
-            connections:
-                - url: http://%fos_elastica.host%:%fos_elastica.port%
-                - host: "%fos_elastica.host%"
-                  port: "%fos_elastica.port%"
-            connectionStrategy: RoundRobin
+            hosts: [http://%fos_elastica.host%:%fos_elastica.port%, http://%fos_elastica.host%:%fos_elastica.port%]
+            client_config:
+                ssl_verify: false
+            connection_strategy: RoundRobin
         second_server:
-            connections:
-                - url: http://%fos_elastica.host%:%fos_elastica.port%
+            hosts: [http://%fos_elastica.host%:%fos_elastica.port%]
             connection_strategy: RoundRobin
         third:
-            url: http://%fos_elastica.host%:%fos_elastica.port%
+            hosts: [http://%fos_elastica.host%:%fos_elastica.port%]
     indexes:
         index:
             index_name: foselastica_basic_test_%kernel.environment%
