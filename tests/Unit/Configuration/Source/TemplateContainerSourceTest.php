@@ -45,7 +45,7 @@ class TemplateContainerSourceTest extends TestCase
                     'settings' => [
                         'some_setting' => 'setting_value',
                     ],
-                    'template' => 'some_index_config_*',
+                    'index_patterns' => ['some_index_config_*'],
                 ],
             ]
         );
@@ -53,7 +53,7 @@ class TemplateContainerSourceTest extends TestCase
         $this->assertInstanceOf(IndexTemplateConfig::class, $indexes['some_index_template']);
         $templateConfig = $indexes['some_index_template'];
         $this->assertEquals('some_index_template', $templateConfig->getName());
-        $this->assertEquals('some_index_config_*', $templateConfig->getTemplate());
+        $this->assertEquals(['some_index_config_*'], $templateConfig->getIndexPatterns());
         $this->assertEquals(
             [
                 'some_setting' => 'setting_value',

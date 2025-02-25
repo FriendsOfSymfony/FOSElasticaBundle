@@ -11,9 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Command;
 
-use Elastica\Request;
 use FOS\ElasticaBundle\Command\DeleteCommand;
-use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\IndexManager;
 use PHPUnit\Framework\TestCase;
@@ -31,11 +29,6 @@ class DeleteCommandTest extends TestCase
     private $command;
 
     /**
-     * @var Client|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $clientMock;
-
-    /**
      * @var IndexManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexManagerMock;
@@ -47,11 +40,10 @@ class DeleteCommandTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->clientMock = $this->createMock(Client::class);
         $this->indexManagerMock = $this->createMock(IndexManager::class);
         $this->indexMock = $this->createMock(Index::class);
 
-        $this->command = new DeleteCommand($this->clientMock, $this->indexManagerMock);
+        $this->command = new DeleteCommand($this->indexManagerMock);
     }
 
     public function testDeleteAllIndexes()
@@ -65,26 +57,22 @@ class DeleteCommandTest extends TestCase
         $this->indexManagerMock
             ->expects($this->once())
             ->method('getAllIndexes')
-            ->will($this->returnValue(['index1' => true, 'index2' => true]))
+            ->willReturn(['index1' => true, 'index2' => true])
         ;
 
         $this->indexManagerMock
             ->expects($this->exactly(2))
             ->method('getIndex')
-            ->withConsecutive(['index1'], ['index2'])
-            ->willReturnOnConsecutiveCalls($index1, $index2)
+            ->willReturnMap([
+                ['index1', $index1],
+                ['index2', $index2],
+            ])
         ;
 
         $index1->expects($this->once())->method('exists')->willReturn(true);
-        $index1->expects($this->once())->method('getName')->willReturn('index1');
+        $index1->expects($this->once())->method('delete');
         $index2->expects($this->once())->method('exists')->willReturn(true);
-        $index2->expects($this->once())->method('getName')->willReturn('index2');
-
-        $this->clientMock
-            ->expects($this->exactly(2))
-            ->method('request')
-            ->withConsecutive(['index1', Request::DELETE], ['index2', Request::DELETE])
-        ;
+        $index2->expects($this->once())->method('delete');
 
         $this->command->run(
             $input,
@@ -110,13 +98,7 @@ class DeleteCommandTest extends TestCase
         ;
 
         $this->indexMock->expects($this->once())->method('exists')->willReturn(true);
-        $this->indexMock->expects($this->once())->method('getName')->willReturn('index_name');
-
-        $this->clientMock
-            ->expects($this->once())
-            ->method('request')
-            ->with('index_name', Request::DELETE)
-        ;
+        $this->indexMock->expects($this->once())->method('delete');
 
         $this->command->run(
             $input,

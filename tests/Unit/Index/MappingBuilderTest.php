@@ -97,11 +97,11 @@ class MappingBuilderTest extends TestCase
     public function testBuildIndexTemplateMapping()
     {
         $config = new IndexTemplateConfig(
-            ['template' => 'index_template_*', 'name' => 'some_template', 'config' => [], 'mapping' => $this->indexConfig->getMapping()]
+            ['index_patterns' => ['index_template_*'], 'name' => 'some_template', 'config' => [], 'mapping' => $this->indexConfig->getMapping()]
         );
         $this->assertEquals(
             [
-                'template' => 'index_template_*',
+                'index_patterns' => ['index_template_*'],
                 'mappings' => $this->indexConfig->getMapping(),
             ],
             $this->builder->buildIndexTemplateMapping($config)

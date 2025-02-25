@@ -74,8 +74,6 @@ class WebTestCase extends BaseKernelTestCase
 
     /**
      * To be removed when dropping support of Symfony < 5.3.
-     *
-     * @param mixed $arguments
      */
     public static function __callStatic(string $name, $arguments)
     {

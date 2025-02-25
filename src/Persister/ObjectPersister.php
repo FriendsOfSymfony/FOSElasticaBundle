@@ -105,7 +105,7 @@ class ObjectPersister implements ObjectPersisterInterface
 
     public function deleteById($id, $routing = false)
     {
-        $this->deleteManyByIdentifiers([$id], $routing);
+        $this->deleteManyByIdentifiers([(string) $id], $routing);
     }
 
     public function insertMany(array $objects)
@@ -170,9 +170,9 @@ class ObjectPersister implements ObjectPersisterInterface
     /**
      * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw.
      *
-     * @throws BulkException
-     *
      * @return void
+     *
+     * @throws BulkException
      */
     private function log(BulkException $e)
     {

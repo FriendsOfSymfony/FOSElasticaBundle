@@ -1,9 +1,10 @@
 fos_elastica:
     clients:
         default:
-            url: http://localhost:9200
-            curl:
-                !php/const CURLOPT_SSL_VERIFYPEER: false
+            hosts: [http://localhost:9200]
+            client_config:
+                ssl_verify: false
+            client_options:
                 !php/const \CURLOPT_RANDOM_FILE: /dev/urandom
     indexes:
         test_index:

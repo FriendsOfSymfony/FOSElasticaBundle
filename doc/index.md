@@ -27,7 +27,6 @@ Cookbook Entries
 * [Populate Events](cookbook/populate-events.md)
 * Performance
    - [Logging](cookbook/logging.md)
-   - [Compression](cookbook/compression.md)
    - [Speed up populate command](cookbook/speed-up-populate-command.md)
    - [Speed up populate command (AWS SQS)](cookbook/speed-up-populate-command-sqs.md)
    - [Doctrine queue listener](cookbook/doctrine-queue-listener.md)

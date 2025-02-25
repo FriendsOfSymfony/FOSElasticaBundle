@@ -60,7 +60,7 @@ class Listener
         ObjectPersisterInterface $objectPersister,
         IndexableInterface $indexable,
         array $config = [],
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
     ) {
         $this->config = \array_merge([
             'identifier' => 'id',
@@ -195,7 +195,7 @@ class Listener
     private function scheduleForDeletion($object)
     {
         if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
-            $this->scheduledForDeletion[] = !\is_scalar($identifierValue) ? (string) $identifierValue : $identifierValue;
+            $this->scheduledForDeletion[] = (string) $identifierValue;
         }
     }
 

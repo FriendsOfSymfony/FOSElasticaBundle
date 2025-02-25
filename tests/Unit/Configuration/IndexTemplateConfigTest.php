@@ -26,7 +26,7 @@ class IndexTemplateConfigTest extends TestCase
             'elasticsearch_name' => 'index_template_elastic_name1',
             'name' => 'index_template1',
             'settings' => [1],
-            'template' => 't*',
+            'index_patterns' => ['t*'],
             'config' => [],
             'mapping' => [],
         ];
@@ -38,7 +38,7 @@ class IndexTemplateConfigTest extends TestCase
                 'elasticsearch_name' => $indexTemplate->getElasticSearchName(),
                 'name' => $indexTemplate->getName(),
                 'settings' => $indexTemplate->getSettings(),
-                'template' => $indexTemplate->getTemplate(),
+                'index_patterns' => $indexTemplate->getIndexPatterns(),
                 'config' => [],
                 'mapping' => [],
             ]

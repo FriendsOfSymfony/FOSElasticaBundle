@@ -28,7 +28,7 @@ class ResetCommand extends Command
 
     public function __construct(
         IndexManager $indexManager,
-        Resetter $resetter
+        Resetter $resetter,
     ) {
         parent::__construct();
 

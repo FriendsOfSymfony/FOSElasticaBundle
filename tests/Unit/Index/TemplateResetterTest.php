@@ -11,8 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
-use Elastica\Client;
-use Elastica\Request;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Configuration\ManagerInterface;
 use FOS\ElasticaBundle\Elastica\IndexTemplate;
@@ -41,11 +39,6 @@ class TemplateResetterTest extends TestCase
     private $mappingBuilder;
 
     /**
-     * @var Client&MockObject
-     */
-    private $client;
-
-    /**
      * @var IndexTemplateManager&MockObject
      */
     private $templateManager;
@@ -59,12 +52,10 @@ class TemplateResetterTest extends TestCase
     {
         $this->configManager = $this->createMock(ManagerInterface::class);
         $this->mappingBuilder = $this->createMock(MappingBuilder::class);
-        $this->client = $this->createMock(Client::class);
         $this->templateManager = $this->createMock(IndexTemplateManager::class);
         $this->resetter = new TemplateResetter(
             $this->configManager,
             $this->mappingBuilder,
-            $this->client,
             $this->templateManager
         );
     }
@@ -106,10 +97,9 @@ class TemplateResetterTest extends TestCase
             ->method('create')
             ->with($mapping)
         ;
-        $this->client
+        $indexTemplate
             ->expects($this->never())
-            ->method('request')
-            ->with($this->any(), Request::DELETE)
+            ->method('delete')
         ;
 
         // act
@@ -149,15 +139,14 @@ class TemplateResetterTest extends TestCase
             ->method('create')
             ->with($mapping)
         ;
-        $this->client
+        $indexTemplate
             ->expects($this->once())
-            ->method('request')
-            ->with('first_template/', Request::DELETE)
+            ->method('delete')
+            ->with()
         ;
         $indexTemplateConfig
-            ->expects($this->once())
-            ->method('getTemplate')
-            ->willReturn('first_template')
+            ->expects($this->never())
+            ->method('getIndexPatterns')
         ;
 
         // act
@@ -192,10 +181,9 @@ class TemplateResetterTest extends TestCase
             ->method('create')
             ->with($mapping)
         ;
-        $this->client
+        $indexTemplate
             ->expects($this->never())
-            ->method('request')
-            ->with($this->any(), Request::DELETE)
+            ->method('delete')
         ;
 
         // act
@@ -231,40 +219,17 @@ class TemplateResetterTest extends TestCase
             ->method('create')
             ->with($mapping)
         ;
-        $this->client
+        $indexTemplate
             ->expects($this->once())
-            ->method('request')
-            ->with('first_template/', Request::DELETE)
+            ->method('delete')
+            ->with()
         ;
         $indexTemplateConfig
-            ->expects($this->once())
-            ->method('getTemplate')
-            ->willReturn('first_template')
+            ->expects($this->never())
+            ->method('getIndexPatterns')
         ;
 
         // act
         $this->resetter->resetIndex($name, true);
-    }
-
-    public function testDeleteTemplateIndexes()
-    {
-        // assemble
-        $name = 'some_template';
-        $template = $this->createMock(IndexTemplateConfig::class);
-
-        // assert
-        $template
-            ->expects($this->once())
-            ->method('getTemplate')
-            ->willReturn($name)
-        ;
-
-        $this->client
-            ->expects($this->once())
-            ->method('request')
-            ->with('some_template/', Request::DELETE)
-        ;
-
-        $this->resetter->deleteTemplateIndexes($template);
     }
 }
