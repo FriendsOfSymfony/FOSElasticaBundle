@@ -105,7 +105,7 @@ class ObjectPersister implements ObjectPersisterInterface
 
     public function deleteById($id, $routing = false)
     {
-        $this->deleteManyByIdentifiers([$id], $routing);
+        $this->deleteManyByIdentifiers([(string) $id], $routing);
     }
 
     public function insertMany(array $objects)
