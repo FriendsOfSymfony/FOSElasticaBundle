@@ -18,7 +18,7 @@ fos_elastica:
         <name>:
             client: default
             template_name: <template name>
-            template: some_index_*
+            index_patterns: ["some_index_*", "some_other_index_*"]
             settings:
                 number_of_shards: 1
                 number_of_replicas: 0
@@ -32,7 +32,7 @@ fos_elastica:
 Index template is similar to index configuration and has the same fields like `settings`, `client`, etc. with additional fields:
 
 1. `template_name` - template name. If omitted then used key (`<name>`) of `index_templates` section. Example: `template_1`
-2. `template` - template pattern. Example: `te*` or `bar*`
+2. `index_patterns` - index pattern(s) on which to apply the template. Example: `te*` or `bar*`
 
 To apply templates changes, you should run `fos:elastica:reset-templates` command:
 

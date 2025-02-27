@@ -269,6 +269,10 @@ class FOSElasticaExtension extends Extension
             $indexId = \sprintf('fos_elastica.index_template.%s', $name);
             $indexTemplateName = $indexTemplate['template_name'] ?? $name;
 
+            if (empty($indexTemplate['index_patterns']) && empty($indexTemplate['template'])) {
+                throw new \InvalidArgumentException("One of 'template', 'index_patterns' must be provided for index template {$indexTemplateName}");
+            }
+
             $indexDef = new ChildDefinition('fos_elastica.index_template_prototype');
             $indexDef->setFactory([new Reference('fos_elastica.client'), 'getIndexTemplate']);
             $indexDef->replaceArgument(0, $indexTemplateName);
@@ -289,7 +293,7 @@ class FOSElasticaExtension extends Extension
                 'reference' => $reference,
                 'name' => $name,
                 'settings' => $indexTemplate['settings'],
-                'template' => $indexTemplate['template'],
+                'index_patterns' => !empty($indexTemplate['index_patterns']) ? $indexTemplate['index_patterns'] : [$indexTemplate['template']],
             ];
 
             $this->loadIndexConfig((array) $indexTemplate, $this->indexTemplateConfigs[$name]);

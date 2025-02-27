@@ -28,7 +28,7 @@ namespace FOS\ElasticaBundle\Configuration;
  *     config: TElasticConfig,
  *     mapping: TMapping,
  *     model: mixed,
- *     template?: string,
+ *     index_patterns?: array,
  * }
  * @phpstan-type TElasticConfig = array{
  *     date_detection?: bool,
