@@ -156,8 +156,8 @@ class TemplateResetterTest extends TestCase
         ;
         $indexTemplateConfig
             ->expects($this->once())
-            ->method('getTemplate')
-            ->willReturn('first_template')
+            ->method('getIndexPatterns')
+            ->willReturn(['first_template'])
         ;
 
         // act
@@ -238,8 +238,8 @@ class TemplateResetterTest extends TestCase
         ;
         $indexTemplateConfig
             ->expects($this->once())
-            ->method('getTemplate')
-            ->willReturn('first_template')
+            ->method('getIndexPatterns')
+            ->willReturn(['first_template'])
         ;
 
         // act
@@ -255,8 +255,8 @@ class TemplateResetterTest extends TestCase
         // assert
         $template
             ->expects($this->once())
-            ->method('getTemplate')
-            ->willReturn($name)
+            ->method('getIndexPatterns')
+            ->willReturn([$name])
         ;
 
         $this->client

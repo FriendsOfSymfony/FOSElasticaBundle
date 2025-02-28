@@ -67,6 +67,8 @@ class TemplateResetter implements ResetterInterface
      */
     public function deleteTemplateIndexes(IndexTemplateConfig $template): void
     {
-        $this->client->request($template->getTemplate().'/', Request::DELETE);
+        foreach ($template->getIndexPatterns() as $pattern) {
+            $this->client->request($pattern.'/', Request::DELETE);
+        }
     }
 }
