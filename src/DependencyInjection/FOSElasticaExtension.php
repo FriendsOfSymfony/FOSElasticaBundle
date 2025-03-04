@@ -14,6 +14,8 @@ namespace FOS\ElasticaBundle\DependencyInjection;
 use Elastica\Client as ElasticaClient;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Elastica\Index;
+use FOS\ElasticaBundle\Elastica\NodePool\RoundRobinNoResurrect;
+use FOS\ElasticaBundle\Elastica\NodePool\RoundRobinResurrect;
 use FOS\ElasticaBundle\Finder\TransformedFinder;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Symfony\Component\Config\FileLocator;
@@ -156,21 +158,54 @@ class FOSElasticaExtension extends Extension
         foreach ($clients as $name => $clientConfig) {
             $clientId = \sprintf('fos_elastica.client.%s', $name);
 
-            if (isset($clientConfig['connections'])) {
-                foreach ($clientConfig['connections'] as $connectionIndex => $connectionConfig) {
-                    if (isset($connectionConfig['aws_credential_provider'])) {
-                        $clientConfig['connections'][$connectionIndex]['aws_credential_provider'] = new Reference($connectionConfig['aws_credential_provider']);
+            $httpsClientConfig = [];
+            if (isset($clientConfig['client_config'])) {
+                foreach ($clientConfig['client_config'] as $key => $value) {
+                    if ('' !== $value && null !== $value) {
+                        $httpsClientConfig[$key] = $value;
                     }
                 }
             }
 
-            $clientDef = new ChildDefinition('fos_elastica.client_prototype');
-            $clientDef->replaceArgument(0, $clientConfig);
-            $clientDef->replaceArgument(1, null);
+            $config = [
+                'hosts' => $clientConfig['hosts'],
+                'retryOnConflict' => $clientConfig['retry_on_conflict'],
+                'username' => $clientConfig['username'] ?? null,
+                'password' => $clientConfig['password'] ?? null,
+                'cloud_id' => $clientConfig['cloud_id'] ?? null,
+                'retries' => $clientConfig['retries'] ?? null,
+                'api_key' => $clientConfig['api_key'] ?? null,
+                'transport_config' => [
+                    'http_client' => isset($clientConfig['http_client']) ? new Reference($clientConfig['http_client']) : null,
+                    'http_client_config' => $httpsClientConfig,
+                    'http_client_options' => \array_replace(
+                        [
+                            'headers' => $clientConfig['headers'],
+                            'timeout' => $clientConfig['timeout'],
+                        ],
+                        $clientConfig['client_options'],
+                    ),
+                    'node_pool' => null,
+                ],
+            ];
 
-            $logger = $clientConfig['connections'][0]['logger'];
+            $httpErrorCodes = $clientConfig['http_error_codes'];
+
+            if ('RoundRobin' === $clientConfig['connection_strategy']) {
+                $config['transport_config']['node_pool'] = new Reference(RoundRobinResurrect::class);
+            } elseif ('RoundRobinNoResurrect' === $clientConfig['connection_strategy']) {
+                $config['transport_config']['node_pool'] = new Reference(RoundRobinNoResurrect::class);
+            }
+
+            $clientDef = new ChildDefinition('fos_elastica.client_prototype');
+            $clientDef->replaceArgument('$config', $config);
+            $clientDef->replaceArgument('$forbiddenCodes', $httpErrorCodes);
+
+            $logger = $clientConfig['logger'];
             if (false !== $logger) {
-                $clientDef->addMethodCall('setLogger', [new Reference($logger)]);
+                $clientDef->replaceArgument('$logger', new Reference($logger));
+            } else {
+                $clientDef->replaceArgument('$logger', null);
             }
 
             $clientDef->addTag('fos_elastica.client');
@@ -269,8 +304,8 @@ class FOSElasticaExtension extends Extension
             $indexId = \sprintf('fos_elastica.index_template.%s', $name);
             $indexTemplateName = $indexTemplate['template_name'] ?? $name;
 
-            if (empty($indexTemplate['index_patterns']) && empty($indexTemplate['template'])) {
-                throw new \InvalidArgumentException("One of 'template', 'index_patterns' must be provided for index template {$indexTemplateName}");
+            if (empty($indexTemplate['index_patterns'])) {
+                throw new \InvalidArgumentException("One 'index_patterns' must be provided for index template {$indexTemplateName}");
             }
 
             $indexDef = new ChildDefinition('fos_elastica.index_template_prototype');
@@ -293,7 +328,7 @@ class FOSElasticaExtension extends Extension
                 'reference' => $reference,
                 'name' => $name,
                 'settings' => $indexTemplate['settings'],
-                'index_patterns' => !empty($indexTemplate['index_patterns']) ? $indexTemplate['index_patterns'] : [$indexTemplate['template']],
+                'index_patterns' => $indexTemplate['index_patterns'],
             ];
 
             $this->loadIndexConfig((array) $indexTemplate, $this->indexTemplateConfigs[$name]);

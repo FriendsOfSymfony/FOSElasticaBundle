@@ -56,7 +56,7 @@ final class OnExceptionEvent extends Event implements PersistEvent
         ObjectPersisterInterface $objectPersister,
         \Exception $exception,
         array $objects,
-        array $options
+        array $options,
     ) {
         $this->pager = $pager;
         $this->objectPersister = $objectPersister;

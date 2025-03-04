@@ -35,7 +35,7 @@ class CreateCommand extends Command
         IndexManager $indexManager,
         MappingBuilder $mappingBuilder,
         ConfigManager $configManager,
-        AliasProcessor $aliasProcessor
+        AliasProcessor $aliasProcessor,
     ) {
         parent::__construct();
 

@@ -29,7 +29,7 @@ final class MongoDBPagerProvider implements PagerProviderInterface
         ManagerRegistry $doctrine,
         RegisterListenersService $registerListenersService,
         string $objectClass,
-        array $baseOptions
+        array $baseOptions,
     ) {
         $this->doctrine = $doctrine;
         $this->objectClass = $objectClass;

@@ -11,10 +11,10 @@
 
 namespace FOS\ElasticaBundle\Index;
 
-use Elastica\Client;
-use Elastica\Request;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Configuration\ManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class Template resetter.
@@ -25,18 +25,15 @@ class TemplateResetter implements ResetterInterface
 {
     private ManagerInterface $configManager;
     private MappingBuilder $mappingBuilder;
-    private Client $client;
     private IndexTemplateManager $indexTemplateManager;
 
     public function __construct(
         ManagerInterface $configManager,
         MappingBuilder $mappingBuilder,
-        Client $client,
-        IndexTemplateManager $indexTemplateManager
+        IndexTemplateManager $indexTemplateManager,
     ) {
         $this->configManager = $configManager;
         $this->mappingBuilder = $mappingBuilder;
-        $this->client = $client;
         $this->indexTemplateManager = $indexTemplateManager;
     }
 
@@ -58,6 +55,16 @@ class TemplateResetter implements ResetterInterface
         $mapping = $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig);
         if ($deleteIndexes) {
             $this->deleteTemplateIndexes($indexTemplateConfig);
+
+            try {
+                $indexTemplate->delete();
+            } catch (ClientResponseException $e) {
+                if (Response::HTTP_NOT_FOUND === $e->getResponse()->getStatusCode()) {
+                    // Template does not exist, so can not be removed.
+                } else {
+                    throw $e;
+                }
+            }
         }
         $indexTemplate->create($mapping);
     }
@@ -67,8 +74,17 @@ class TemplateResetter implements ResetterInterface
      */
     public function deleteTemplateIndexes(IndexTemplateConfig $template): void
     {
+        $indexTemplate = $this->indexTemplateManager->getIndexTemplate($template->getName());
         foreach ($template->getIndexPatterns() as $pattern) {
-            $this->client->request($pattern.'/', Request::DELETE);
+            try {
+                $indexTemplate->getClient()->indices()->delete(['index' => $pattern.'/']);
+            } catch (ClientResponseException $e) {
+                if (404 === $e->getResponse()->getStatusCode()) {
+                    // Index does not exist, so can not be removed.
+                } else {
+                    throw $e;
+                }
+            }
         }
     }
 }

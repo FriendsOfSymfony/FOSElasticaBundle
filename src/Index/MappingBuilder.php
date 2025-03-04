@@ -57,7 +57,7 @@ class MappingBuilder
     /**
      * Builds mappings for an entire index template.
      *
-     * @return array{mappings: TMapping, settings: TSettings, index_patterns: array<string>}
+     * @return array{mappings: TMapping, settings: TSettings, index_patterns: list<non-empty-string>}
      */
     public function buildIndexTemplateMapping(IndexTemplateConfig $indexTemplateConfig): array
     {

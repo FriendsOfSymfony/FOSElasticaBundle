@@ -40,9 +40,9 @@ class IndexTemplateManager
      *
      * @param string $name Index template to return
      *
-     * @throws \InvalidArgumentException if no index template exists for the given name
-     *
      * @return IndexTemplate
+     *
+     * @throws \InvalidArgumentException if no index template exists for the given name
      */
     public function getIndexTemplate($name)
     {

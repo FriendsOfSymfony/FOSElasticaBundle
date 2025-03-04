@@ -7,17 +7,15 @@ twig:
 fos_elastica:
     clients:
         default:
-            connections:
-                - url: http://%fos_elastica.host%:%fos_elastica.port%
-                - host: "%fos_elastica.host%"
-                  port: "%fos_elastica.port%"
-            connectionStrategy: RoundRobin
+            hosts: ['http://%fos_elastica.host%:%fos_elastica.port%', 'http://%fos_elastica.host%:%fos_elastica.port%']
+            client_config:
+                ssl_verify: false
+            connection_strategy: RoundRobin
         second_server:
-            connections:
-                - url: http://%fos_elastica.host%:%fos_elastica.port%
+            hosts: ['http://%fos_elastica.host%:%fos_elastica.port%']
             connection_strategy: RoundRobin
         third:
-            url: http://%fos_elastica.host%:%fos_elastica.port%
+            hosts: ['http://%fos_elastica.host%:%fos_elastica.port%']
     indexes:
         index:
             index_name: foselastica_basic_test_%kernel.environment%
@@ -30,7 +28,7 @@ fos_elastica:
                             filter: [my_ngram]
                     filter:
                         my_ngram:
-                            type: "nGram"
+                            type: "ngram"
                             min_gram: 3
                             max_gram: 4
             dynamic: strict
@@ -51,15 +49,15 @@ fos_elastica:
                 field1: ~
                 field2:
                     store: false
-                date: { boost: 5 }
+                date: ~
                 completion:
                     type: completion
-                title: { boost: 8, analyzer: my_analyzer }
+                title: { analyzer: my_analyzer }
                 content: ~
                 comments:
                     type: "nested"
                     properties:
-                        date: { boost: 5 }
+                        date: ~
                         content: ~
                 multiple:
                     type: text
@@ -71,7 +69,7 @@ fos_elastica:
                 approver:
                     type: "object"
                     properties:
-                        date: { boost: 5 }
+                        date: ~
                 lastlogin: { type: date, format: basic_date_time }
                 birthday: { type: date, format: "yyyy-MM-dd" }
                 dynamic_allowed: { type: object, dynamic: true }
@@ -84,7 +82,7 @@ fos_elastica:
         index_template_example_1:
             client: 'default'
             template_name: 'index_template_1_name'
-            template: 'index_template_1_name_*'
+            index_patterns: ['index_template_1_name_*']
             settings:
                 # templates should accept custom settings
                 number_of_shards: 2
@@ -94,7 +92,17 @@ fos_elastica:
         index_template_example_2:
             client: 'default'
             template_name: 'index_template_2_name'
-            template: 'index_template_2_name_*'
+            index_patterns: ['index_template_2_name_*']
+            settings:
+                # templates should accept custom settings
+                number_of_shards: 2
+                number_of_replicas: 0
+            properties:
+                document_name_field_2: { type: text, index: false }
+        index_template_example_3:
+            client: 'default'
+            template_name: 'index_template_3_name'
+            index_patterns: ['index_template_3_name_index']
             settings:
                 # templates should accept custom settings
                 number_of_shards: 2
