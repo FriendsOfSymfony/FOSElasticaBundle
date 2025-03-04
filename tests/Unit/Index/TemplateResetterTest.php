@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
+use Elastic\Elasticsearch\Endpoints\Indices;
 use Elastica\Client;
 use Elastica\Request;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
@@ -41,11 +42,6 @@ class TemplateResetterTest extends TestCase
     private $mappingBuilder;
 
     /**
-     * @var Client&MockObject
-     */
-    private $client;
-
-    /**
      * @var IndexTemplateManager&MockObject
      */
     private $templateManager;
@@ -59,12 +55,10 @@ class TemplateResetterTest extends TestCase
     {
         $this->configManager = $this->createMock(ManagerInterface::class);
         $this->mappingBuilder = $this->createMock(MappingBuilder::class);
-        $this->client = $this->createMock(Client::class);
         $this->templateManager = $this->createMock(IndexTemplateManager::class);
         $this->resetter = new TemplateResetter(
             $this->configManager,
             $this->mappingBuilder,
-            $this->client,
             $this->templateManager
         );
     }
@@ -106,10 +100,9 @@ class TemplateResetterTest extends TestCase
             ->method('create')
             ->with($mapping)
         ;
-        $this->client
+        $indexTemplate
             ->expects($this->never())
-            ->method('request')
-            ->with($this->any(), Request::DELETE)
+            ->method('delete')
         ;
 
         // act
@@ -119,7 +112,9 @@ class TemplateResetterTest extends TestCase
     public function testResetAllIndexesAndDelete()
     {
         // assemble
-        $names = ['first_template'];
+        $indexName = 'templated_index';
+        $templateNames = ['first_template'];
+        $names = [$indexName];
         $mapping = ['properties' => []];
         $this->configManager
             ->method('getIndexNames')
@@ -128,13 +123,13 @@ class TemplateResetterTest extends TestCase
         $indexTemplateConfig = $this->createMock(IndexTemplateConfig::class);
         $this->configManager
             ->method('getIndexConfiguration')
-            ->with('first_template')
+            ->with($indexName)
             ->willReturn($indexTemplateConfig)
         ;
         $indexTemplate = $this->createMock(IndexTemplate::class);
         $this->templateManager
             ->method('getIndexTemplate')
-            ->with('first_template')
+            ->with($indexName)
             ->willReturn($indexTemplate)
         ;
         $this->mappingBuilder
@@ -149,15 +144,26 @@ class TemplateResetterTest extends TestCase
             ->method('create')
             ->with($mapping)
         ;
-        $this->client
+        $indexTemplate
             ->expects($this->once())
-            ->method('request')
-            ->with('first_template/', Request::DELETE)
+            ->method('delete')
+            ->with()
         ;
+        $indices = $this->createMock(Indices::class);
+        $indices->expects($this->once())
+            ->method('delete')
+            ->with(['index' => $templateNames[0].'/']);
+        $client = $this->createMock(Client::class);
+        $client->expects($this->once())
+            ->method('indices')
+            ->willReturn($indices);
+        $indexTemplate->expects($this->once())
+            ->method('getClient')
+            ->willReturn($client);
         $indexTemplateConfig
             ->expects($this->once())
             ->method('getIndexPatterns')
-            ->willReturn(['first_template'])
+            ->willReturn($templateNames)
         ;
 
         // act
@@ -192,10 +198,9 @@ class TemplateResetterTest extends TestCase
             ->method('create')
             ->with($mapping)
         ;
-        $this->client
+        $indexTemplate
             ->expects($this->never())
-            ->method('request')
-            ->with($this->any(), Request::DELETE)
+            ->method('delete')
         ;
 
         // act
@@ -205,18 +210,19 @@ class TemplateResetterTest extends TestCase
     public function testResetIndexIndexeAndDelete()
     {
         // assemble
-        $name = 'first_template';
+        $indexName = 'templated_index';
+        $templateNames = ['first_template'];
         $mapping = ['properties' => []];
         $indexTemplateConfig = $this->createMock(IndexTemplateConfig::class);
         $this->configManager
             ->method('getIndexConfiguration')
-            ->with('first_template')
+            ->with($indexName)
             ->willReturn($indexTemplateConfig)
         ;
         $indexTemplate = $this->createMock(IndexTemplate::class);
         $this->templateManager
             ->method('getIndexTemplate')
-            ->with('first_template')
+            ->with($indexName)
             ->willReturn($indexTemplate)
         ;
         $this->mappingBuilder
@@ -231,40 +237,59 @@ class TemplateResetterTest extends TestCase
             ->method('create')
             ->with($mapping)
         ;
-        $this->client
+        $indexTemplate
             ->expects($this->once())
-            ->method('request')
-            ->with('first_template/', Request::DELETE)
+            ->method('delete')
+            ->with()
         ;
         $indexTemplateConfig
             ->expects($this->once())
             ->method('getIndexPatterns')
-            ->willReturn(['first_template'])
+            ->willReturn($templateNames)
+        ;
+        $indices = $this->createMock(Indices::class);
+        $indices->expects($this->once())
+            ->method('delete')
+            ->with(['index' => $templateNames[0].'/'])
+        ;
+        $client = $this->createMock(Client::class);
+        $client->expects($this->once())
+            ->method('indices')
+            ->willReturn($indices)
+        ;
+        $indexTemplate->expects($this->once())
+            ->method('getClient')
+            ->willReturn($client)
         ;
 
         // act
-        $this->resetter->resetIndex($name, true);
+        $this->resetter->resetIndex($indexName, true);
     }
 
     public function testDeleteTemplateIndexes()
     {
         // assemble
-        $name = 'some_template';
+        $templateNames = ['some_template'];
         $template = $this->createMock(IndexTemplateConfig::class);
 
         // assert
         $template
             ->expects($this->once())
             ->method('getIndexPatterns')
-            ->willReturn([$name])
+            ->willReturn($templateNames)
         ;
 
-        $this->client
-            ->expects($this->once())
-            ->method('request')
-            ->with('some_template/', Request::DELETE)
+        $indices = $this->createMock(Indices::class);
+        $indices->expects($this->once())
+            ->method('delete')
+            ->with(['index' => $templateNames[0].'/'])
+        ;
+        $client = $this->createMock(Client::class);
+        $client->expects($this->once())
+            ->method('indices')
+            ->willReturn($indices)
         ;
 
-        $this->resetter->deleteTemplateIndexes($template);
+        $this->resetter->deleteTemplateIndexes($template, $client);
     }
 }
