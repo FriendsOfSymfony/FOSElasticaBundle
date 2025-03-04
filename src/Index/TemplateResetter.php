@@ -12,8 +12,6 @@
 namespace FOS\ElasticaBundle\Index;
 
 use Elastic\Elasticsearch\Exception\ClientResponseException;
-use Elastica\Client;
-use Elastica\IndexTemplate;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
 use FOS\ElasticaBundle\Configuration\ManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +54,7 @@ class TemplateResetter implements ResetterInterface
 
         $mapping = $this->mappingBuilder->buildIndexTemplateMapping($indexTemplateConfig);
         if ($deleteIndexes) {
-            $this->deleteTemplateIndexes($indexTemplateConfig, $indexTemplate->getClient());
+            $this->deleteTemplateIndexes($indexTemplateConfig);
 
             try {
                 $indexTemplate->delete();
@@ -74,13 +72,14 @@ class TemplateResetter implements ResetterInterface
     /**
      * Delete all template indexes.
      */
-    public function deleteTemplateIndexes(IndexTemplateConfig $template, Client $client): void
+    public function deleteTemplateIndexes(IndexTemplateConfig $template): void
     {
+        $indexTemplate = $this->indexTemplateManager->getIndexTemplate($template->getName());
         foreach ($template->getIndexPatterns() as $pattern) {
             try {
-                $client->indices()->delete(['index' => $pattern . '/']);
+                $indexTemplate->getClient()->indices()->delete(['index' => $pattern.'/']);
             } catch (ClientResponseException $e) {
-                if ($e->getResponse()->getStatusCode() === 404) {
+                if (404 === $e->getResponse()->getStatusCode()) {
                     // Index does not exist, so can not be removed.
                 } else {
                     throw $e;

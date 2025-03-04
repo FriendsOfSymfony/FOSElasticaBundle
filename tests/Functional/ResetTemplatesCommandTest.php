@@ -78,6 +78,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         $this->assertStringContainsString('Resetting all templates', $output);
 
         $templates = $this->fetchAllTemplates();
+        $this->assertArrayHasKey('index_template_3_name', $templates);
         $this->assertArrayHasKey('index_template_2_name', $templates);
         $this->assertArrayHasKey('index_template_1_name', $templates);
     }
@@ -110,17 +111,17 @@ class ResetTemplatesCommandTest extends WebTestCase
         $commandTester->setInputs(['yes']);
         $commandTester->execute([
             'command' => $command->getName(),
-            '--index' => 'index_template_example_1',
+            '--index' => 'index_template_example_3',
             '--force-delete' => true,
         ]);
 
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('You are going to remove all template indexes. Are you sure?', $output);
         $this->assertStringContainsString('Resetting template', $output);
-        $this->assertStringContainsString('index_template_example_1', $output);
+        $this->assertStringContainsString('index_template_example_3', $output);
 
         $templates = $this->fetchAllTemplates();
-        $this->assertArrayHasKey('index_template_1_name', $templates);
+        $this->assertArrayHasKey('index_template_3_name', $templates);
     }
 
     private function clearTemplates()

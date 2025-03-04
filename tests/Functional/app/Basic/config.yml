@@ -7,15 +7,15 @@ twig:
 fos_elastica:
     clients:
         default:
-            hosts: [http://%fos_elastica.host%:%fos_elastica.port%, http://%fos_elastica.host%:%fos_elastica.port%]
+            hosts: ['http://%fos_elastica.host%:%fos_elastica.port%', 'http://%fos_elastica.host%:%fos_elastica.port%']
             client_config:
                 ssl_verify: false
             connection_strategy: RoundRobin
         second_server:
-            hosts: [http://%fos_elastica.host%:%fos_elastica.port%]
+            hosts: ['http://%fos_elastica.host%:%fos_elastica.port%']
             connection_strategy: RoundRobin
         third:
-            hosts: [http://%fos_elastica.host%:%fos_elastica.port%]
+            hosts: ['http://%fos_elastica.host%:%fos_elastica.port%']
     indexes:
         index:
             index_name: foselastica_basic_test_%kernel.environment%
@@ -93,6 +93,16 @@ fos_elastica:
             client: 'default'
             template_name: 'index_template_2_name'
             index_patterns: ['index_template_2_name_*']
+            settings:
+                # templates should accept custom settings
+                number_of_shards: 2
+                number_of_replicas: 0
+            properties:
+                document_name_field_2: { type: text, index: false }
+        index_template_example_3:
+            client: 'default'
+            template_name: 'index_template_3_name'
+            index_patterns: ['index_template_3_name_index']
             settings:
                 # templates should accept custom settings
                 number_of_shards: 2
