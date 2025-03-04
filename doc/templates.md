@@ -37,7 +37,7 @@ Index template is similar to index configuration and has the same fields like `s
 To apply templates changes, you should run `fos:elastica:reset-templates` command:
 
 * `--index` - index template name to reset. If no index template name specified than all templates will be reset
-* `--force-delete` - will delete all indexes that match index templates patterns. Aware that pattern may match various indexes.
+* `--force-delete` - will delete all indexes that match index templates patterns. Aware that pattern may match various indexes. Note that in order to use this feature in Elasticsearch 8+ you *MUST* set the configuration option `action.destructive_requires_name` to `false`.
 
 You must run the following command to sync templates configuration on ES server with YAML configurations:
 ```bash
