@@ -117,7 +117,8 @@ class ClientTest extends TestCase
 
         $connection = $this->getConnectionMock();
         $connection->method('getTransportObject')
-            ->willThrowException(new ClientException());
+            ->willThrowException(new ClientException())
+        ;
 
         $client = $this->getClientMock($response, $connection);
 
