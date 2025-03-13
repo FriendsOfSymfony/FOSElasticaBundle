@@ -18,8 +18,12 @@ use Elastica\Request;
 use Elastica\Response;
 use Elastica\Transport\NullTransport;
 use FOS\ElasticaBundle\Elastica\Client;
+use FOS\ElasticaBundle\Event\ElasticaRequestExceptionEvent;
+use FOS\ElasticaBundle\Event\PostElasticaRequestEvent;
+use FOS\ElasticaBundle\Event\PreElasticaRequestEvent;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @internal
@@ -50,6 +54,114 @@ class ClientTest extends TestCase
         $response = $client->request('foo');
 
         $this->assertInstanceOf(Response::class, $response);
+    }
+
+    public function testSendsNormalEvents(): void
+    {
+        $client = $this->getClientMock();
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $dispatcher->expects($invoke = $this->exactly(2))
+            ->method('dispatch')
+            ->with($this->callback(function ($o) use ($invoke): bool {
+                $counter = $invoke->getInvocationCount() - 1;
+
+                if ($counter > 1) {
+                    return false;
+                }
+
+                if (0 === $counter) {
+                    if (!($o instanceof PreElasticaRequestEvent)) {
+                        return false;
+                    }
+
+                    $this->assertEquals('event', $o->getPath());
+                    $this->assertEquals(Request::GET, $o->getMethod());
+                    $this->assertEquals(['some' => 'data'], $o->getData());
+                    $this->assertEquals(['query' => 'data'], $o->getQuery());
+                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $o->getContentType());
+                } elseif (1 === $counter) {
+                    if (!($o instanceof PostElasticaRequestEvent)) {
+                        return false;
+                    }
+
+                    $request = $o->getRequest();
+
+                    $this->assertEquals('event', $request->getPath());
+                    $this->assertEquals(Request::GET, $request->getMethod());
+                    $this->assertEquals(['some' => 'data'], $request->getData());
+                    $this->assertEquals(['query' => 'data'], $request->getQuery());
+                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $request->getContentType());
+
+                    $this->assertInstanceOf(Response::class, $o->getResponse());
+                }
+
+                return true;
+            }));
+
+        $client->setEventDispatcher($dispatcher);
+        $client->request('event', Request::GET, ['some' => 'data'], ['query' => 'data']);
+    }
+
+    public function testSendsExceptionEvents(): void
+    {
+        $httpCode = 403;
+        $responseString = JSON::stringify(['message' => 'some AWS error']);
+        $transferInfo = [
+            'request_header' => 'bar',
+            'http_code' => $httpCode,
+            'body' => $responseString,
+        ];
+        $response = new Response($responseString);
+        $response->setTransferInfo($transferInfo);
+
+        $connection = $this->getConnectionMock();
+        $connection->method('getTransportObject')
+            ->willThrowException(new ClientException());
+
+        $client = $this->getClientMock($response, $connection);
+
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $dispatcher->expects($invoke = $this->exactly(2))
+            ->method('dispatch')
+            ->with($this->callback(function ($o) use ($invoke): bool {
+                $counter = $invoke->getInvocationCount() - 1;
+
+                if ($counter > 1) {
+                    return false;
+                }
+
+                if (0 === $counter) {
+                    if (!($o instanceof PreElasticaRequestEvent)) {
+                        return false;
+                    }
+
+                    $this->assertEquals('event', $o->getPath());
+                    $this->assertEquals(Request::GET, $o->getMethod());
+                    $this->assertEquals(['some' => 'data'], $o->getData());
+                    $this->assertEquals(['query' => 'data'], $o->getQuery());
+                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $o->getContentType());
+                } elseif (1 === $counter) {
+                    if (!($o instanceof ElasticaRequestExceptionEvent)) {
+                        return false;
+                    }
+
+                    $request = $o->getRequest();
+
+                    $this->assertEquals('event', $request->getPath());
+                    $this->assertEquals(Request::GET, $request->getMethod());
+                    $this->assertEquals(['some' => 'data'], $request->getData());
+                    $this->assertEquals(['query' => 'data'], $request->getQuery());
+                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $request->getContentType());
+
+                    $this->assertInstanceOf(ClientException::class, $o->getException());
+                }
+
+                return true;
+            }));
+
+        $client->setEventDispatcher($dispatcher);
+        $this->expectException(ClientException::class);
+        $client->request('event', Request::GET, ['some' => 'data'], ['query' => 'data']);
     }
 
     public function testRequestsWithTransportInfoErrorsRaiseExceptions()
