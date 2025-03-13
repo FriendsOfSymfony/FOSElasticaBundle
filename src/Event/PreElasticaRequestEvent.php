@@ -16,7 +16,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class PreElasticaRequestEvent extends Event
 {
-
     private string $path;
     private string $method;
 
