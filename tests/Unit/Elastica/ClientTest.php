@@ -96,7 +96,8 @@ class ClientTest extends TestCase
                 }
 
                 return true;
-            }));
+            }))
+        ;
 
         $client->setEventDispatcher($dispatcher);
         $client->request('event', Request::GET, ['some' => 'data'], ['query' => 'data']);
@@ -157,7 +158,8 @@ class ClientTest extends TestCase
                 }
 
                 return true;
-            }));
+            }))
+        ;
 
         $client->setEventDispatcher($dispatcher);
         $this->expectException(ClientException::class);
