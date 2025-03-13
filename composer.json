@@ -38,7 +38,8 @@
         "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.1",
         "symfony/framework-bundle": "^5.4 || ^6.4 || ^7.1",
         "symfony/property-access": "^5.4 || ^6.4 || ^7.1",
-        "symfony/stopwatch": "^5.4 || ^6.4 || ^7.1"
+        "symfony/stopwatch": "^5.4 || ^6.4 || ^7.1",
+        "symfony/event-dispatcher": "^5.4 || ^6.4 || ^7.1"
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "^2.1.1",
