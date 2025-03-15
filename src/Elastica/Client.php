@@ -65,7 +65,6 @@ class Client extends BaseClient
             $this->stopwatch->start('es_request', 'fos_elastica');
         }
 
-        // todo: 8.1 change into nullable call
         if ($this->dispatcher) {
             $this->dispatcher->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $contentType));
         }
