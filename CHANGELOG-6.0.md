@@ -4,7 +4,7 @@ CHANGELOG for 6.x
 This changelog references the relevant changes (bug and security fixes) done
 in 6.x versions.
 
-### 6.6.0 (2025-xx-xx)
+### 6.6.0 (2025-03-15)
 * Added `PreElasticaRequestEvent`, `PostElasticaRequestEvent` and `ElasticaRequestExceptionEvent` for requests.
 * Made index template configuration compatible with Elasticsearch 6.
 
