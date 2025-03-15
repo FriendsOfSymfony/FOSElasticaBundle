@@ -17,7 +17,11 @@ use Elastica\Exception\ExceptionInterface;
 use Elastica\Index as BaseIndex;
 use Elastica\Request;
 use Elastica\Response;
+use FOS\ElasticaBundle\Event\ElasticaRequestExceptionEvent;
+use FOS\ElasticaBundle\Event\PostElasticaRequestEvent;
+use FOS\ElasticaBundle\Event\PreElasticaRequestEvent;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
@@ -49,6 +53,8 @@ class Client extends BaseClient
      */
     private $stopwatch;
 
+    private ?EventDispatcherInterface $dispatcher = null;
+
     /**
      * @param array<mixed> $data
      * @param array<mixed> $query
@@ -59,10 +65,24 @@ class Client extends BaseClient
             $this->stopwatch->start('es_request', 'fos_elastica');
         }
 
+        // todo: 8.1 change into nullable call
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $contentType));
+        }
+
         try {
             $response = parent::request($path, $method, $data, $query, $contentType);
+
+            if ($this->dispatcher) {
+                $this->dispatcher->dispatch(new PostElasticaRequestEvent($this->getLastRequest(), $this->getLastResponse()));
+            }
         } catch (ExceptionInterface $e) {
             $this->logQuery($path, $method, $data, $query, 0, 0, 0);
+
+            if ($this->dispatcher) {
+                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($this->getLastRequest(), $e));
+            }
+
             throw $e;
         }
 
@@ -112,6 +132,11 @@ class Client extends BaseClient
     public function setStopwatch(?Stopwatch $stopwatch = null): void
     {
         $this->stopwatch = $stopwatch;
+    }
+
+    public function setEventDispatcher(?EventDispatcherInterface $dispatcher = null): void
+    {
+        $this->dispatcher = $dispatcher;
     }
 
     /**

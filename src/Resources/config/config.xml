@@ -17,6 +17,9 @@
             <call method="setStopwatch">
                 <argument type="service" id="debug.stopwatch" on-invalid="null" />
             </call>
+            <call method="setEventDispatcher">
+                <argument type="service" id="event_dispatcher" on-invalid="null" />
+            </call>
         </service>
 
         <service id="fos_elastica.config_manager" class="FOS\ElasticaBundle\Configuration\ConfigManager">
