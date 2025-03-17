@@ -17,6 +17,8 @@ in 7.x versions.
 * **[BC break]** Configuration options: `host`, `port`, `url` are no longer available and replaced with single `hosts`.
 * **[BC break]** Configuration options: `proxy`, `auth_type`, `aws_*`, `ssl`, `curl`, `persistent`, `compression`, `connectTimeout` are no longer available.
 * **[BC break]** Configuration `connectionStrategy` is renamed to `connection_strategy`.
+* **[BC break]** Event `PostElasticaRequestEvent` now operates with `Psr\Http\Message\RequestInterface` instead of `Elastica\Request`.
+* **[BC break]** Event `ElasticaRequestExceptionEvent` now operates with `Psr\Http\Message\RequestInterface` instead of `Elastica\Request`, and `Elastic\Elasticsearch\Exception\ElasticsearchException` instead of `Elastica\Exception\ExceptionInterface`.
 
 Main change is the configuration of the bundle:
 * There are no `connections` level anymore.

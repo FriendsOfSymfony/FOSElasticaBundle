@@ -11,28 +11,28 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Elastica\Exception\ExceptionInterface;
-use Elastica\Request;
+use Elastic\Elasticsearch\Exception\ElasticsearchException;
+use Psr\Http\Message\RequestInterface;
 
 class ElasticaRequestExceptionEvent
 {
-    private Request $request;
-    private ExceptionInterface $exception;
+    private RequestInterface $request;
+    private ElasticsearchException $exception;
 
     public function __construct(
-        Request $request,
-        ExceptionInterface $exception
+        RequestInterface $request,
+        ElasticsearchException $exception
     ) {
         $this->request = $request;
         $this->exception = $exception;
     }
 
-    public function getRequest(): Request
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }
 
-    public function getException(): ExceptionInterface
+    public function getException(): ElasticsearchException
     {
         return $this->exception;
     }

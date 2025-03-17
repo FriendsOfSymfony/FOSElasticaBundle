@@ -11,10 +11,12 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Elastica;
 
+use Elastic\Elasticsearch\Exception\ElasticsearchException;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastica\Exception\ClientException;
 use Elastica\JSON;
 use Elastica\Request;
+use Elastica\Response;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Event\ElasticaRequestExceptionEvent;
 use FOS\ElasticaBundle\Event\PostElasticaRequestEvent;
@@ -66,7 +68,6 @@ class ClientTest extends TestCase
 
     public function testSendsNormalEvents(): void
     {
-        $client = $this->getClientMock();
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects($invoke = $this->exactly(2))
             ->method('dispatch')
@@ -94,11 +95,21 @@ class ClientTest extends TestCase
 
                     $request = $o->getRequest();
 
-                    $this->assertEquals('event', $request->getPath());
-                    $this->assertEquals(Request::GET, $request->getMethod());
-                    $this->assertEquals(['some' => 'data'], $request->getData());
-                    $this->assertEquals(['query' => 'data'], $request->getQuery());
-                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $request->getContentType());
+                    $path = \ltrim($request->getUri()->getPath(), '/'); // to have the same result as in the 6.0
+                    $method = $request->getMethod();
+                    try {
+                        $data = \json_decode((string) $request->getBody(), true, 512, \JSON_THROW_ON_ERROR);
+                    } catch (\JsonException) {
+                        $data = [];
+                    }
+                    $query = [];
+                    \parse_str($request->getUri()->getQuery(), $query);
+
+                    $this->assertEquals('event', $path);
+                    $this->assertEquals(Request::GET, $method);
+                    $this->assertEquals(['some' => 'data'], $data);
+                    $this->assertEquals(['query' => 'data'], $query);
+                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $request->getHeaderLine('Content-Type'));
 
                     $this->assertInstanceOf(Response::class, $o->getResponse());
                 }
@@ -107,28 +118,34 @@ class ClientTest extends TestCase
             }))
         ;
 
+        $response = new \GuzzleHttp\Psr7\Response(
+            200,
+            ['Content-Type' => 'application/json', Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
+            \json_encode(['foo' => 'bar'], \JSON_THROW_ON_ERROR)
+        );
+        $logger = $this->createMock(ElasticaLogger::class);
+        $client = $this->getClient($logger, $response);
         $client->setEventDispatcher($dispatcher);
-        $client->request('event', Request::GET, ['some' => 'data'], ['query' => 'data']);
+
+        $client->sendRequest(new \GuzzleHttp\Psr7\Request(
+            Request::GET,
+            'https://some.tld/event?'.\http_build_query(['query' => 'data']),
+            ['Content-Type' => 'application/json'],
+            \json_encode(['some' => 'data'], \JSON_THROW_ON_ERROR)
+        ));
     }
 
     public function testSendsExceptionEvents(): void
     {
         $httpCode = 403;
         $responseString = JSON::stringify(['message' => 'some AWS error']);
-        $transferInfo = [
-            'request_header' => 'bar',
-            'http_code' => $httpCode,
-            'body' => $responseString,
-        ];
-        $response = new Response($responseString);
-        $response->setTransferInfo($transferInfo);
+        $response = new \GuzzleHttp\Psr7\Response(
+            $httpCode,
+            ['Content-Type' => 'application/json', Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
+            $responseString
+        );
 
-        $connection = $this->getConnectionMock();
-        $connection->method('getTransportObject')
-            ->willThrowException(new ClientException())
-        ;
-
-        $client = $this->getClientMock($response, $connection);
+        $client = $this->getClient($this->createMock(LoggerInterface::class), $response);
 
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects($invoke = $this->exactly(2))
@@ -157,13 +174,23 @@ class ClientTest extends TestCase
 
                     $request = $o->getRequest();
 
-                    $this->assertEquals('event', $request->getPath());
-                    $this->assertEquals(Request::GET, $request->getMethod());
-                    $this->assertEquals(['some' => 'data'], $request->getData());
-                    $this->assertEquals(['query' => 'data'], $request->getQuery());
-                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $request->getContentType());
+                    $path = \ltrim($request->getUri()->getPath(), '/'); // to have the same result as in the 6.0
+                    $method = $request->getMethod();
+                    try {
+                        $data = \json_decode((string) $request->getBody(), true, 512, \JSON_THROW_ON_ERROR);
+                    } catch (\JsonException) {
+                        $data = [];
+                    }
+                    $query = [];
+                    \parse_str($request->getUri()->getQuery(), $query);
 
-                    $this->assertInstanceOf(ClientException::class, $o->getException());
+                    $this->assertEquals('event', $path);
+                    $this->assertEquals(Request::GET, $method);
+                    $this->assertEquals(['some' => 'data'], $data);
+                    $this->assertEquals(['query' => 'data'], $query);
+                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $request->getHeaderLine('Content-Type'));
+
+                    $this->assertInstanceOf(ElasticsearchException::class, $o->getException());
                 }
 
                 return true;
@@ -172,7 +199,12 @@ class ClientTest extends TestCase
 
         $client->setEventDispatcher($dispatcher);
         $this->expectException(ClientException::class);
-        $client->request('event', Request::GET, ['some' => 'data'], ['query' => 'data']);
+        $client->sendRequest(new \GuzzleHttp\Psr7\Request(
+            Request::GET,
+            'https://some.tld/event?'.\http_build_query(['query' => 'data']),
+            ['Content-Type' => 'application/json'],
+            \json_encode(['some' => 'data'], \JSON_THROW_ON_ERROR)
+        ));
     }
 
     public function testRequestsWithTransportInfoErrorsRaiseExceptions()

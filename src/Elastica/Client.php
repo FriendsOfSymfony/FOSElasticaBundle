@@ -16,10 +16,10 @@ use Elastic\Elasticsearch\Exception\ElasticsearchException;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastica\Client as BaseClient;
 use Elastica\Exception\ClientException;
-use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use FOS\ElasticaBundle\Event\ElasticaRequestExceptionEvent;
 use FOS\ElasticaBundle\Event\PostElasticaRequestEvent;
 use FOS\ElasticaBundle\Event\PreElasticaRequestEvent;
+use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -82,8 +82,8 @@ class Client extends BaseClient implements ResetInterface
         $query = [];
         \parse_str($request->getUri()->getQuery(), $query);
 
-        if ($this->dispatcher) {
-            $this->dispatcher->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $contentType));
+        if (null !== $this->dispatcher) {
+            $this->dispatcher->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $request->getHeaderLine('Content-Type')));
         }
 
         $start = \microtime(true);
@@ -91,29 +91,30 @@ class Client extends BaseClient implements ResetInterface
             $elasticResponse = parent::sendRequest($request);
             $response = $this->toElasticaResponse($elasticResponse);
 
-            if ($this->dispatcher) {
+            if (null !== $this->dispatcher) {
                 $this->dispatcher->dispatch(new PostElasticaRequestEvent($request, $response));
             }
         } catch (ClientResponseException $responseException) {
             $this->logQuery($path, $method, $data, $query, 0.0, 0, 0);
 
             $response = $responseException->getResponse();
+
+            if (null !== $this->dispatcher) {
+                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($request, $responseException));
+            }
+
             if (\in_array($response->getStatusCode(), $this->forbiddenCodes, true)) {
                 $body = (string) $response->getBody();
                 $message = \sprintf('Error in transportInfo: response code is %s, response body is %s', $response->getStatusCode(), $body);
-                throw new ClientException($message);
-            }
-
-            if ($this->dispatcher) {
-                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($this->getLastRequest(), $e));
+                throw new ClientException($message, 0, $responseException);
             }
 
             throw $responseException;
         } catch (ElasticsearchException $e) {
             $this->logQuery($path, $method, $data, $query, 0.0, 0, 0);
 
-            if ($this->dispatcher) {
-                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($this->getLastRequest(), $e));
+            if (null !== $this->dispatcher) {
+                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($request, $e));
             }
 
             throw $e;
