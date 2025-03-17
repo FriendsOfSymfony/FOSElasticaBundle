@@ -11,18 +11,20 @@
 
 namespace FOS\ElasticaBundle\Elastica;
 
+use Elastic\Elasticsearch\Exception\ClientResponseException;
+use Elastic\Elasticsearch\Exception\ElasticsearchException;
+use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastica\Client as BaseClient;
 use Elastica\Exception\ClientException;
-use Elastica\Exception\ExceptionInterface;
-use Elastica\Index as BaseIndex;
-use Elastica\Request;
-use Elastica\Response;
 use FOS\ElasticaBundle\Event\ElasticaRequestExceptionEvent;
 use FOS\ElasticaBundle\Event\PostElasticaRequestEvent;
 use FOS\ElasticaBundle\Event\PreElasticaRequestEvent;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
+use Psr\Http\Message\RequestInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Extends the default Elastica client to provide logging for errors that occur
@@ -30,12 +32,21 @@ use Symfony\Component\Stopwatch\Stopwatch;
  *
  * @author Gordon Franke <info@nevalon.de>
  */
-class Client extends BaseClient
+class Client extends BaseClient implements ResetInterface
 {
+    private array $forbiddenCodes;
+
+    public function __construct(array|string $config = [], array $forbiddenCodes = [400, 403, 404], ?LoggerInterface $logger = null)
+    {
+        parent::__construct($config, $logger);
+
+        $this->forbiddenCodes = $forbiddenCodes;
+    }
+
     /**
      * Stores created indexes to avoid recreation.
      *
-     * @var array<string, BaseIndex>
+     * @var array<string, Index>
      */
     private $indexCache = [];
 
@@ -55,62 +66,77 @@ class Client extends BaseClient
 
     private ?EventDispatcherInterface $dispatcher = null;
 
-    /**
-     * @param array<mixed> $data
-     * @param array<mixed> $query
-     */
-    public function request(string $path, string $method = Request::GET, $data = [], array $query = [], string $contentType = Request::DEFAULT_CONTENT_TYPE): Response
+    public function sendRequest(RequestInterface $request): Elasticsearch
     {
         if ($this->stopwatch) {
             $this->stopwatch->start('es_request', 'fos_elastica');
         }
 
-        if ($this->dispatcher) {
-            $this->dispatcher->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $contentType));
+        $path = \ltrim($request->getUri()->getPath(), '/'); // to have the same result as in the 6.0
+        $method = $request->getMethod();
+        try {
+            $data = \json_decode((string) $request->getBody(), true, 512, \JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            $data = [];
+        }
+        $query = [];
+        \parse_str($request->getUri()->getQuery(), $query);
+
+        if (null !== $this->dispatcher) {
+            $this->dispatcher->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $request->getHeaderLine('Content-Type')));
         }
 
+        $start = \microtime(true);
         try {
-            $response = parent::request($path, $method, $data, $query, $contentType);
+            $elasticResponse = parent::sendRequest($request);
+            $response = $this->toElasticaResponse($elasticResponse);
 
-            if ($this->dispatcher) {
-                $this->dispatcher->dispatch(new PostElasticaRequestEvent($this->getLastRequest(), $this->getLastResponse()));
+            if (null !== $this->dispatcher) {
+                $this->dispatcher->dispatch(new PostElasticaRequestEvent($request, $response));
             }
-        } catch (ExceptionInterface $e) {
-            $this->logQuery($path, $method, $data, $query, 0, 0, 0);
+        } catch (ClientResponseException $responseException) {
+            $this->logQuery($path, $method, $data, $query, 0.0, 0, 0);
 
-            if ($this->dispatcher) {
-                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($this->getLastRequest(), $e));
+            $response = $responseException->getResponse();
+
+            if (null !== $this->dispatcher) {
+                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($request, $responseException));
+            }
+
+            if (\in_array($response->getStatusCode(), $this->forbiddenCodes, true)) {
+                $body = (string) $response->getBody();
+                $message = \sprintf('Error in transportInfo: response code is %s, response body is %s', $response->getStatusCode(), $body);
+                throw new ClientException($message, 0, $responseException);
+            }
+
+            throw $responseException;
+        } catch (ElasticsearchException $e) {
+            $this->logQuery($path, $method, $data, $query, 0.0, 0, 0);
+
+            if (null !== $this->dispatcher) {
+                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($request, $e));
             }
 
             throw $e;
         }
+        $end = \microtime(true);
 
         $responseData = $response->getData();
 
-        $transportInfo = $response->getTransferInfo();
-        $connection = $this->getLastRequest()->getConnection();
-        $forbiddenHttpCodes = $connection->hasConfig('http_error_codes') ? $connection->getConfig('http_error_codes') : [];
-
-        if (isset($transportInfo['http_code']) && \in_array($transportInfo['http_code'], $forbiddenHttpCodes, true)) {
-            $body = \json_encode($responseData);
-            $message = \sprintf('Error in transportInfo: response code is %s, response body is %s', $transportInfo['http_code'], $body);
-            throw new ClientException($message);
-        }
-
         if (isset($responseData['took'], $responseData['hits'])) {
-            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0);
+            $this->logQuery($path, $method, $data, $query, $end - $start, $response->getEngineTime(), $responseData['hits']['total']['value'] ?? 0);
         } else {
-            $this->logQuery($path, $method, $data, $query, $response->getQueryTime(), 0, 0);
+            $this->logQuery($path, $method, $data, $query, $end - $start, 0, 0);
         }
 
         if ($this->stopwatch) {
             $this->stopwatch->stop('es_request');
         }
 
-        return $response;
+        return $elasticResponse;
     }
 
-    public function getIndex(string $name): BaseIndex
+    public function getIndex(string $name): Index
     {
         // TODO PHP >= 7.4 ??=
         return $this->indexCache[$name] ?? ($this->indexCache[$name] = new Index($this, $name));
@@ -138,27 +164,36 @@ class Client extends BaseClient
         $this->dispatcher = $dispatcher;
     }
 
+    public function reset(): void
+    {
+        $this->indexCache = [];
+        $this->indexTemplateCache = [];
+        $this->stopwatch = null;
+    }
+
     /**
      * Log the query if we have an instance of ElasticaLogger.
      *
      * @param array<mixed>|string $data
      * @param array<mixed>        $query
-     * @param float               $queryTime
-     * @param int                 $engineMS
      */
-    private function logQuery(string $path, string $method, $data, array $query, $queryTime, $engineMS = 0, int $itemCount = 0): void
+    private function logQuery(string $path, string $method, $data, array $query, float $queryTime, int $engineMS = 0, int $itemCount = 0): void
     {
         if (!$this->_logger instanceof ElasticaLogger) {
             return;
         }
 
-        $connection = $this->getLastRequest()->getConnection();
+        $uri = $this->getLastRequest()?->getUri();
+
+        if (null === $uri) {
+            return;
+        }
 
         $connectionArray = [
-            'host' => $connection->getHost(),
-            'port' => $connection->getPort(),
-            'transport' => $connection->getTransport(),
-            'headers' => $connection->hasConfig('headers') ? $connection->getConfig('headers') : [],
+            'host' => $uri->getHost(),
+            'port' => $uri->getPort(),
+            'transport' => $uri->getScheme(),
+            'headers' => $this->getLastRequest()?->getHeaders() ?? [],
         ];
 
         $this->_logger->logQuery($path, $method, $data, $queryTime, $connectionArray, $query, $engineMS, $itemCount);

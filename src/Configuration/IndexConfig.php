@@ -35,12 +35,9 @@ class IndexConfig implements IndexConfigInterface
     {
         $this->elasticSearchName = $config['elasticsearch_name'] ?? $config['name'];
         $this->name = $config['name'];
-        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         $this->settings = $config['settings'] ?? [];
         $this->useAlias = $config['use_alias'] ?? false;
-        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         $this->config = $config['config'];
-        // @phpstan-ignore-next-line Ignored because of a bug in PHPStan (https://github.com/phpstan/phpstan/issues/5091)
         $this->mapping = $config['mapping'];
         $this->model = $config['model'];
     }

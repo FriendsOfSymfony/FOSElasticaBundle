@@ -11,9 +11,7 @@
 
 namespace FOS\ElasticaBundle\Command;
 
-use Elastica\Exception\ExceptionInterface;
-use Elastica\Request;
-use FOS\ElasticaBundle\Elastica\Client;
+use Elastic\Elasticsearch\Exception\ElasticsearchException;
 use FOS\ElasticaBundle\Index\IndexManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,16 +23,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DeleteCommand extends Command
 {
-    private Client $client;
     private IndexManager $indexManager;
 
     public function __construct(
-        Client $client,
-        IndexManager $indexManager
+        IndexManager $indexManager,
     ) {
         parent::__construct();
 
-        $this->client = $client;
         $this->indexManager = $indexManager;
     }
 
@@ -68,19 +63,13 @@ class DeleteCommand extends Command
                 continue;
             }
 
-            $this->deleteIndex($index->getName());
+            try {
+                $index->delete();
+            } catch (ElasticsearchException $deleteOldIndexException) {
+                throw new \RuntimeException(\sprintf('Failed to delete index "%s" with message: "%s"', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
+            }
         }
 
         return 0;
-    }
-
-    private function deleteIndex(string $indexName): void
-    {
-        try {
-            $path = $indexName;
-            $this->client->request($path, Request::DELETE);
-        } catch (ExceptionInterface $deleteOldIndexException) {
-            throw new \RuntimeException(\sprintf('Failed to delete index "%s" with message: "%s"', $indexName, $deleteOldIndexException->getMessage()), 0, $deleteOldIndexException);
-        }
     }
 }

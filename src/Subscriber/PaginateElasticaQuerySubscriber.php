@@ -64,8 +64,6 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
      */
     protected function setSorting(ItemsEvent $event)
     {
-        // Bugfix for PHP 7.4 as options can be null and generate a "Trying to access array offset on value of type null" error
-        // @phpstan-ignore-next-line
         $options = $event->options ?? [];
         $sortField = $this->getFromRequest($options['sortFieldParameterName'] ?? null);
 

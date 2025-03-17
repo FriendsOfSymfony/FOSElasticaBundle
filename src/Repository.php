@@ -36,8 +36,6 @@ class Repository
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
-     * @param mixed $query
-     *
      * @return array<object>
      */
     public function find($query, ?int $limit = null, array $options = [])
@@ -48,8 +46,6 @@ class Repository
     /**
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
-     *
-     * @param mixed $query
      *
      * @return list<HybridResult>
      */
@@ -62,8 +58,6 @@ class Repository
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
-     * @param mixed $query
-     *
      * @return \Pagerfanta\Pagerfanta<object>
      */
     public function findPaginated($query, array $options = [])
@@ -75,8 +69,6 @@ class Repository
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
-     * @param mixed $query
-     *
      * @return Paginator\PaginatorAdapterInterface
      */
     public function createPaginatorAdapter($query, array $options = [])
@@ -87,8 +79,6 @@ class Repository
     /**
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
-     *
-     * @param mixed $query
      *
      * @return Paginator\PaginatorAdapterInterface
      */

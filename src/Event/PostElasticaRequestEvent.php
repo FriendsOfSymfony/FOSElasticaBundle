@@ -11,23 +11,23 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Elastica\Request;
 use Elastica\Response;
+use Psr\Http\Message\RequestInterface;
 
 class PostElasticaRequestEvent
 {
-    private Request $request;
+    private RequestInterface $request;
     private Response $response;
 
     public function __construct(
-        Request $request,
+        RequestInterface $request,
         Response $response
     ) {
         $this->request = $request;
         $this->response = $response;
     }
 
-    public function getRequest(): Request
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }

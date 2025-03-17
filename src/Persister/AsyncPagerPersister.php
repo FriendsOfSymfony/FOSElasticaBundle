@@ -42,7 +42,7 @@ final class AsyncPagerPersister implements PagerPersisterInterface
     public function __construct(
         PagerPersisterRegistry $pagerPersisterRegistry,
         PagerProviderRegistry $pagerProviderRegistry,
-        MessageBusInterface $messageBus
+        MessageBusInterface $messageBus,
     ) {
         $this->pagerPersisterRegistry = $pagerPersisterRegistry;
         $this->pagerProviderRegistry = $pagerProviderRegistry;

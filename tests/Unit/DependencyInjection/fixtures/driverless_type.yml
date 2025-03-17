@@ -1,7 +1,7 @@
 fos_elastica:
     clients:
         default:
-            url: http://localhost:9200
+            hosts: [http://localhost:9200]
     indexes:
         test_index:
             client: default

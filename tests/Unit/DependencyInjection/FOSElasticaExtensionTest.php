@@ -11,6 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\DependencyInjection;
 
+use Elastic\Elasticsearch\Transport\RequestOptions;
 use FOS\ElasticaBundle\DependencyInjection\FOSElasticaExtension;
 use FOS\ElasticaBundle\Doctrine\MongoDBPagerProvider;
 use FOS\ElasticaBundle\Doctrine\ORMPagerProvider;
@@ -64,9 +65,15 @@ class FOSElasticaExtensionTest extends TestCase
 
         $defaultClientDefinition = $containerBuilder->findDefinition('fos_elastica.client.default');
         $this->assertSame([
-            \CURLOPT_SSL_VERIFYPEER => false,
-            \CURLOPT_RANDOM_FILE => '/dev/urandom',
-        ], $defaultClientDefinition->getArgument(0)['connections'][0]['curl']);
+            'http_client' => null,
+            'http_client_config' => [RequestOptions::SSL_VERIFY => false],
+            'http_client_options' => [
+                'headers' => [],
+                'timeout' => 30,
+                \CURLOPT_RANDOM_FILE => '/dev/urandom',
+            ],
+            'node_pool' => null,
+        ], $defaultClientDefinition->getArgument('$config')['transport_config']);
     }
 
     public function testShouldRegisterDoctrineORMPagerProviderIfEnabled()
@@ -79,7 +86,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'acme_index' => [
@@ -144,7 +151,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'acme_index' => [
@@ -209,7 +216,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'acme_index' => [
@@ -270,7 +277,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'acme_index' => [
@@ -318,7 +325,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'acme_index' => [
@@ -356,7 +363,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'acme_index' => [
@@ -396,7 +403,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'acme_index' => [
@@ -432,7 +439,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'acme_index' => [
@@ -464,7 +471,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'acme_index' => [
@@ -498,7 +505,7 @@ class FOSElasticaExtensionTest extends TestCase
             [
                 'fos_elastica' => [
                     'clients' => [
-                        'default' => ['host' => 'a_host', 'port' => 'a_port'],
+                        'default' => ['hosts' => ['a_host:a_port']],
                     ],
                     'indexes' => [
                         'some_index' => [
@@ -506,7 +513,7 @@ class FOSElasticaExtensionTest extends TestCase
                     ],
                     'index_templates' => [
                         'some_index_template' => [
-                            'template' => 'some_index_template_*',
+                            'index_patterns' => ['some_index_template_*'],
                             'client' => 'default',
                             'properties' => ['text' => null],
                         ],

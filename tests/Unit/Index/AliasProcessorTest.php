@@ -11,10 +11,10 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
+use Elastic\Elasticsearch\Endpoints\Indices;
+use Elastic\Elasticsearch\Exception\HttpClientException;
+use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastica\Client;
-use Elastica\Exception\ResponseException;
-use Elastica\Request;
-use Elastica\Response;
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Exception\AliasIsIndexException;
@@ -58,17 +58,34 @@ class AliasProcessorTest extends TestCase
     public function testSwitchAliasNoAliasSet()
     {
         $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
-        [$index, $client] = $this->getMockedIndex('unique_name');
+        $index = $this->getIndexMock('unique_name');
+        $indices = $this->getIndicesMock($this->getClientMock($index));
 
-        $client->expects($this->exactly(2))
-            ->method('request')
-            ->withConsecutive(
-                ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
+        $aliasesResponse = $this->createMock(Elasticsearch::class);
+        $aliasesResponse->expects($this->once())
+            ->method('asArray')
+            ->willReturn([])
+        ;
+        $indices->expects($this->once())
+            ->method('getAlias')
+            ->with(['name' => '*'])
+            ->willreturn($aliasesResponse)
+        ;
+
+        $indices->expects($this->once())
+            ->method('updateAliases')
+            ->with([
+                'body' => ['actions' => [
                     ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]]
-            )
-            ->willReturn(new Response([]))
+                ]],
+            ])
+        ;
+
+        $indices->expects($this->never())
+            ->method('delete')
+        ;
+        $indices->expects($this->never())
+            ->method('close')
         ;
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
@@ -77,23 +94,36 @@ class AliasProcessorTest extends TestCase
     public function testSwitchAliasExistingAliasSet()
     {
         $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
-        [$index, $client] = $this->getMockedIndex('unique_name');
+        $index = $this->getIndexMock('unique_name');
+        $indices = $this->getIndicesMock($this->getClientMock($index));
 
-        $client->expects($this->exactly(3))
-            ->method('request')
-            ->withConsecutive(
-                ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
+        $aliasesResponse = $this->createMock(Elasticsearch::class);
+        $aliasesResponse->expects($this->once())
+            ->method('asArray')
+            ->willReturn(['old_unique_name' => ['aliases' => ['name' => []]]])
+        ;
+        $indices->expects($this->once())
+            ->method('getAlias')
+            ->with(['name' => '*'])
+            ->willreturn($aliasesResponse)
+        ;
+
+        $indices->expects($this->once())
+            ->method('updateAliases')
+            ->with([
+                'body' => ['actions' => [
                     ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
                     ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]],
-                ['old_unique_name', 'DELETE']
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
-                new Response([]),
-                new Response([])
-            )
+                ]],
+            ])
+        ;
+
+        $indices->expects($this->once())
+            ->method('delete')
+            ->with(['index' => 'old_unique_name'])
+        ;
+        $indices->expects($this->never())
+            ->method('close')
         ;
 
         $this->processor->switchIndexAlias($indexConfig, $index, false);
@@ -102,15 +132,32 @@ class AliasProcessorTest extends TestCase
     public function testSwitchAliasThrowsWhenMoreThanOneExists()
     {
         $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
-        [$index, $client] = $this->getMockedIndex('unique_name');
+        $index = $this->getIndexMock('unique_name');
+        $indices = $this->getIndicesMock($this->getClientMock($index));
 
-        $client->expects($this->once())
-            ->method('request')
-            ->with('_aliases', 'GET')
-            ->willReturn(new Response([
+        $aliasesResponse = $this->createMock(Elasticsearch::class);
+        $aliasesResponse->expects($this->once())
+            ->method('asArray')
+            ->willReturn([
                 'old_unique_name' => ['aliases' => ['name' => []]],
                 'another_old_unique_name' => ['aliases' => ['name' => []]],
-            ]))
+            ])
+        ;
+        $indices->expects($this->once())
+            ->method('getAlias')
+            ->with(['name' => '*'])
+            ->willreturn($aliasesResponse)
+        ;
+
+        $indices->expects($this->never())
+            ->method('updateAliases')
+        ;
+
+        $indices->expects($this->never())
+            ->method('delete')
+        ;
+        $indices->expects($this->never())
+            ->method('close')
         ;
 
         $this->expectException(\RuntimeException::class);
@@ -120,14 +167,31 @@ class AliasProcessorTest extends TestCase
     public function testSwitchAliasThrowsWhenAliasIsAnIndex()
     {
         $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
-        [$index, $client] = $this->getMockedIndex('unique_name');
+        $index = $this->getIndexMock('unique_name');
+        $indices = $this->getIndicesMock($this->getClientMock($index));
 
-        $client->expects($this->once())
-            ->method('request')
-            ->with('_aliases', 'GET')
-            ->willReturn(new Response([
+        $aliasesResponse = $this->createMock(Elasticsearch::class);
+        $aliasesResponse->expects($this->once())
+            ->method('asArray')
+            ->willReturn([
                 'name' => [],
-            ]))
+            ])
+        ;
+        $indices->expects($this->once())
+            ->method('getAlias')
+            ->with(['name' => '*'])
+            ->willreturn($aliasesResponse)
+        ;
+
+        $indices->expects($this->never())
+            ->method('updateAliases')
+        ;
+
+        $indices->expects($this->never())
+            ->method('delete')
+        ;
+        $indices->expects($this->never())
+            ->method('close')
         ;
 
         $this->expectException(AliasIsIndexException::class);
@@ -137,22 +201,37 @@ class AliasProcessorTest extends TestCase
     public function testSwitchAliasDeletesIndexCollisionIfForced()
     {
         $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
-        [$index, $client] = $this->getMockedIndex('unique_name');
+        $index = $this->getIndexMock('unique_name');
+        $indices = $this->getIndicesMock($this->getClientMock($index));
 
-        $client->expects($this->exactly(3))
-            ->method('request')
-            ->withConsecutive(
-                ['_aliases', 'GET'],
-                ['name', 'DELETE'],
-                ['_aliases', 'POST', ['actions' => [
+        $aliasesResponse = $this->createMock(Elasticsearch::class);
+        $aliasesResponse->expects($this->once())
+            ->method('asArray')
+            ->willReturn([
+                'name' => [],
+            ])
+        ;
+        $indices->expects($this->once())
+            ->method('getAlias')
+            ->with(['name' => '*'])
+            ->willreturn($aliasesResponse)
+        ;
+
+        $indices->expects($this->once())
+            ->method('updateAliases')
+            ->with([
+                'body' => ['actions' => [
                     ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]]
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(['name' => []]),
-                new Response([]),
-                new Response([])
-            )
+                ]],
+            ])
+        ;
+
+        $indices->expects($this->once())
+            ->method('delete')
+            ->with(['index' => 'name'])
+        ;
+        $indices->expects($this->never())
+            ->method('close')
         ;
 
         $this->processor->switchIndexAlias($indexConfig, $index, true);
@@ -161,73 +240,75 @@ class AliasProcessorTest extends TestCase
     public function testSwitchAliasCloseOldIndex()
     {
         $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
-        [$index, $client] = $this->getMockedIndex('unique_name');
+        $index = $this->getIndexMock('unique_name');
+        $indices = $this->getIndicesMock($this->getClientMock($index));
 
-        $client->expects($this->exactly(3))
-            ->method('request')
-            ->withConsecutive(
-                ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
+        $aliasesResponse = $this->createMock(Elasticsearch::class);
+        $aliasesResponse->expects($this->once())
+            ->method('asArray')
+            ->willReturn(['old_unique_name' => ['aliases' => ['name' => []]]])
+        ;
+        $indices->expects($this->once())
+            ->method('getAlias')
+            ->with(['name' => '*'])
+            ->willreturn($aliasesResponse)
+        ;
+
+        $indices->expects($this->once())
+            ->method('updateAliases')
+            ->with([
+                'body' => ['actions' => [
                     ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
                     ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]],
-                ['old_unique_name/_close', 'POST']
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
-                new Response([]),
-                new Response([])
-            )
+                ]],
+            ])
+        ;
+
+        $indices->expects($this->never())
+            ->method('delete')
+        ;
+        $indices->expects($this->once())
+            ->method('close')
+            ->with(['index' => 'old_unique_name'])
         ;
 
         $this->processor->switchIndexAlias($indexConfig, $index, true, false);
     }
 
-    public function testSwitchAliasDeletesOldIndex()
-    {
-        $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
-        [$index, $client] = $this->getMockedIndex('unique_name');
-
-        $client->expects($this->exactly(3))
-            ->method('request')
-            ->withConsecutive(
-                ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
-                    ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
-                    ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]],
-                ['old_unique_name', 'DELETE']
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
-                new Response([]),
-                new Response([])
-            )
-        ;
-
-        $this->processor->switchIndexAlias($indexConfig, $index, true);
-    }
-
     public function testSwitchAliasCleansUpOnRenameFailure()
     {
         $indexConfig = new IndexConfig(['name' => 'name', 'config' => [], 'mapping' => [], 'model' => null]);
-        [$index, $client] = $this->getMockedIndex('unique_name');
+        $index = $this->getIndexMock('unique_name');
+        $indices = $this->getIndicesMock($this->getClientMock($index));
 
-        $client->expects($this->exactly(3))
-            ->method('request')
-            ->withConsecutive(
-                ['_aliases', 'GET'],
-                ['_aliases', 'POST', ['actions' => [
+        $aliasesResponse = $this->createMock(Elasticsearch::class);
+        $aliasesResponse->expects($this->once())
+            ->method('asArray')
+            ->willReturn(['old_unique_name' => ['aliases' => ['name' => []]]])
+        ;
+        $indices->expects($this->once())
+            ->method('getAlias')
+            ->with(['name' => '*'])
+            ->willreturn($aliasesResponse)
+        ;
+
+        $indices->expects($this->once())
+            ->method('updateAliases')
+            ->with([
+                'body' => ['actions' => [
                     ['remove' => ['index' => 'old_unique_name', 'alias' => 'name']],
                     ['add' => ['index' => 'unique_name', 'alias' => 'name']],
-                ]]],
-                ['unique_name', 'DELETE']
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(['old_unique_name' => ['aliases' => ['name' => []]]]),
-                $this->throwException(new ResponseException(new Request(''), new Response(''))),
-                new Response([])
-            )
+                ]],
+            ])
+            ->willThrowException(new HttpClientException())
+        ;
+
+        $indices->expects($this->once())
+            ->method('delete')
+            ->with(['index' => 'unique_name'])
+        ;
+        $indices->expects($this->never())
+            ->method('close')
         ;
 
         $this->expectException(\RuntimeException::class);
@@ -243,12 +324,20 @@ class AliasProcessorTest extends TestCase
         ];
     }
 
-    /**
-     * @return array{0: Index&MockObject, 1: Client&MockObject}
-     */
-    private function getMockedIndex(string $name): array
+    private function getIndexMock(string $name): Index&MockObject
     {
         $index = $this->createMock(Index::class);
+
+        $index->expects($this->any())
+            ->method('getName')
+            ->willReturn($name)
+        ;
+
+        return $index;
+    }
+
+    private function getClientMock(Index&MockObject $index): Client&MockObject
+    {
         $client = $this->createMock(Client::class);
 
         $index->expects($this->any())
@@ -256,11 +345,18 @@ class AliasProcessorTest extends TestCase
             ->willReturn($client)
         ;
 
-        $index->expects($this->any())
-            ->method('getName')
-            ->willReturn($name)
+        return $client;
+    }
+
+    private function getIndicesMock(Client&MockObject $client): Indices&MockObject
+    {
+        $indices = $this->createMock(Indices::class);
+
+        $client->expects($this->any())
+            ->method('indices')
+            ->willReturn($indices)
         ;
 
-        return [$index, $client];
+        return $indices;
     }
 }

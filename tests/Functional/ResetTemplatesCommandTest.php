@@ -11,7 +11,6 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
-use Elastica\Request;
 use FOS\ElasticaBundle\Elastica\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -23,12 +22,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class ResetTemplatesCommandTest extends WebTestCase
 {
-    /**
-     * Client.
-     *
-     * @var Client
-     */
-    private $client;
+    private Client $elasticClient;
 
     /**
      * Application.
@@ -44,7 +38,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         // required for old supported Symfony
         $application->all();
 
-        $this->client = self::getContainer()->get('fos_elastica.client');
+        $this->elasticClient = self::getContainer()->get('fos_elastica.client');
     }
 
     public function testResetAllTemplates()
@@ -84,6 +78,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         $this->assertStringContainsString('Resetting all templates', $output);
 
         $templates = $this->fetchAllTemplates();
+        $this->assertArrayHasKey('index_template_3_name', $templates);
         $this->assertArrayHasKey('index_template_2_name', $templates);
         $this->assertArrayHasKey('index_template_1_name', $templates);
     }
@@ -116,28 +111,28 @@ class ResetTemplatesCommandTest extends WebTestCase
         $commandTester->setInputs(['yes']);
         $commandTester->execute([
             'command' => $command->getName(),
-            '--index' => 'index_template_example_1',
+            '--index' => 'index_template_example_3',
             '--force-delete' => true,
         ]);
 
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('You are going to remove all template indexes. Are you sure?', $output);
         $this->assertStringContainsString('Resetting template', $output);
-        $this->assertStringContainsString('index_template_example_1', $output);
+        $this->assertStringContainsString('index_template_example_3', $output);
 
         $templates = $this->fetchAllTemplates();
-        $this->assertArrayHasKey('index_template_1_name', $templates);
+        $this->assertArrayHasKey('index_template_3_name', $templates);
     }
 
     private function clearTemplates()
     {
-        $this->client->request('_template/*', Request::DELETE);
+        $this->elasticClient->indices()->deleteTemplate(['name' => '*']);
     }
 
     private function fetchAllTemplates()
     {
-        $reponse = $this->client->request('_template', Request::GET);
+        $reponse = $this->elasticClient->indices()->getTemplate();
 
-        return $reponse->getData();
+        return $this->elasticClient->toElasticaResponse($reponse)->getData();
     }
 }

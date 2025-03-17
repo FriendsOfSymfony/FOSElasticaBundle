@@ -45,8 +45,6 @@ interface PaginatedFinderInterface extends FinderInterface
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
-     * @param mixed $query
-     *
      * @return PaginatorAdapterInterface
      */
     public function createPaginatorAdapter($query, array $options = []);
@@ -57,8 +55,6 @@ interface PaginatedFinderInterface extends FinderInterface
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
-     * @param mixed $query
-     *
      * @return PaginatorAdapterInterface
      */
     public function createHybridPaginatorAdapter($query, array $options = []);
@@ -68,8 +64,6 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
-     *
-     * @param mixed $query
      *
      * @return PaginatorAdapterInterface
      */

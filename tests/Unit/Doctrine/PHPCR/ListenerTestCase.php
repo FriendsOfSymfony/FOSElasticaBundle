@@ -9,30 +9,30 @@
  * file that was distributed with this source code.
  */
 
-namespace FOS\ElasticaBundle\Tests\Unit\Doctrine\MongoDB;
+namespace FOS\ElasticaBundle\Tests\Unit\Doctrine\PHPCR;
 
-use FOS\ElasticaBundle\Tests\Unit\Doctrine\AbstractListenerTest;
+use FOS\ElasticaBundle\Tests\Unit\Doctrine\AbstractListenerTestCase;
 
 /**
  * @internal
  */
-class ListenerTest extends AbstractListenerTest
+class ListenerTestCase extends AbstractListenerTestCase
 {
     protected function setUp(): void
     {
-        if (!\class_exists(\Doctrine\ODM\MongoDB\DocumentManager::class)) {
-            $this->markTestSkipped('Doctrine MongoDB ODM is not available.');
+        if (!\class_exists(\Doctrine\ODM\PHPCR\DocumentManager::class)) {
+            $this->markTestSkipped('Doctrine PHPCR is not present');
         }
     }
 
     protected function getClassMetadataClass()
     {
-        return \Doctrine\ODM\MongoDB\Mapping\ClassMetadata::class;
+        return \Doctrine\ODM\PHPCR\Mapping\ClassMetadata::class;
     }
 
     protected function getLifecycleEventArgsClass()
     {
-        return \Doctrine\ODM\MongoDB\Event\LifecycleEventArgs::class;
+        return \Doctrine\Persistence\Event\LifecycleEventArgs::class;
     }
 
     protected function getListenerClass()
@@ -42,6 +42,6 @@ class ListenerTest extends AbstractListenerTest
 
     protected function getObjectManagerClass()
     {
-        return \Doctrine\ODM\MongoDB\DocumentManager::class;
+        return \Doctrine\ODM\PHPCR\DocumentManager::class;
     }
 }

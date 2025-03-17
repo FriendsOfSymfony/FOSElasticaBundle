@@ -11,12 +11,12 @@
 
 namespace FOS\ElasticaBundle\Tests\Unit\Doctrine\ORM;
 
-use FOS\ElasticaBundle\Tests\Unit\Doctrine\AbstractListenerTest;
+use FOS\ElasticaBundle\Tests\Unit\Doctrine\AbstractListenerTestCase;
 
 /**
  * @internal
  */
-class ListenerTest extends AbstractListenerTest
+class ListenerTestCase extends AbstractListenerTestCase
 {
     protected function getClassMetadataClass()
     {

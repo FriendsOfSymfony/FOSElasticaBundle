@@ -11,8 +11,7 @@
 
 namespace FOS\ElasticaBundle\Tests\Functional;
 
-use Elastica\Connection\Strategy\RoundRobin;
-use Elastica\Connection\Strategy\Simple;
+use Elastic\Transport\NodePool\SimpleNodePool;
 use FOS\ElasticaBundle\Elastica\Client;
 
 /**
@@ -28,14 +27,20 @@ class ClientTest extends WebTestCase
 
         /** @var Client $es */
         $es = self::getContainer()->get('fos_elastica.client.default');
-        $this->assertInstanceOf(RoundRobin::class, $es->getConnectionStrategy());
+        $transportConfig = $es->getConfig('transport_config');
+        self::assertArrayHasKey('node_pool', $transportConfig);
+        $this->assertInstanceOf(SimpleNodePool::class, $transportConfig['node_pool']);
 
         /** @var Client $es */
         $es = self::getContainer()->get('fos_elastica.client.second_server');
-        $this->assertInstanceOf(RoundRobin::class, $es->getConnectionStrategy());
+        $transportConfig = $es->getConfig('transport_config');
+        self::assertArrayHasKey('node_pool', $transportConfig);
+        $this->assertInstanceOf(SimpleNodePool::class, $transportConfig['node_pool']);
 
         /** @var Client $es */
         $es = self::getContainer()->get('fos_elastica.client.third');
-        $this->assertInstanceOf(Simple::class, $es->getConnectionStrategy());
+        $transportConfig = $es->getConfig('transport_config');
+        self::assertArrayHasKey('node_pool', $transportConfig);
+        self::assertNull($transportConfig['node_pool']);
     }
 }

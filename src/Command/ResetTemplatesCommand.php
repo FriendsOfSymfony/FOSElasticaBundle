@@ -27,7 +27,7 @@ final class ResetTemplatesCommand extends Command
     private TemplateResetter $resetter;
 
     public function __construct(
-        TemplateResetter $resetter
+        TemplateResetter $resetter,
     ) {
         parent::__construct();
 
