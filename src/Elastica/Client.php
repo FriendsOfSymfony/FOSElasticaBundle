@@ -48,29 +48,25 @@ class Client extends BaseClient implements ResetInterface
      *
      * @var array<string, Index>
      */
-    private $indexCache = [];
+    private array $indexCache = [];
 
     /**
      * Stores created index template to avoid recreation.
      *
      * @var array<string, IndexTemplate>
      */
-    private $indexTemplateCache = [];
+    private array $indexTemplateCache = [];
 
     /**
      * Symfony's debugging Stopwatch.
-     *
-     * @var Stopwatch|null
      */
-    private $stopwatch;
+    private ?Stopwatch $stopwatch = null;
 
     private ?EventDispatcherInterface $dispatcher = null;
 
     public function sendRequest(RequestInterface $request): Elasticsearch
     {
-        if ($this->stopwatch) {
-            $this->stopwatch->start('es_request', 'fos_elastica');
-        }
+        $this->stopwatch?->start('es_request', 'fos_elastica');
 
         $path = \ltrim($request->getUri()->getPath(), '/'); // to have the same result as in the 6.0
         $method = $request->getMethod();
@@ -82,26 +78,20 @@ class Client extends BaseClient implements ResetInterface
         $query = [];
         \parse_str($request->getUri()->getQuery(), $query);
 
-        if (null !== $this->dispatcher) {
-            $this->dispatcher->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $request->getHeaderLine('Content-Type')));
-        }
+        $this->dispatcher?->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $request->getHeaderLine('Content-Type')));
 
         $start = \microtime(true);
         try {
             $elasticResponse = parent::sendRequest($request);
             $response = $this->toElasticaResponse($elasticResponse);
 
-            if (null !== $this->dispatcher) {
-                $this->dispatcher->dispatch(new PostElasticaRequestEvent($request, $response));
-            }
+            $this->dispatcher?->dispatch(new PostElasticaRequestEvent($request, $response));
         } catch (ClientResponseException $responseException) {
             $this->logQuery($path, $method, $data, $query, 0.0, 0, 0);
 
             $response = $responseException->getResponse();
 
-            if (null !== $this->dispatcher) {
-                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($request, $responseException));
-            }
+            $this->dispatcher?->dispatch(new ElasticaRequestExceptionEvent($request, $responseException));
 
             if (\in_array($response->getStatusCode(), $this->forbiddenCodes, true)) {
                 $body = (string) $response->getBody();
@@ -113,9 +103,7 @@ class Client extends BaseClient implements ResetInterface
         } catch (ElasticsearchException $e) {
             $this->logQuery($path, $method, $data, $query, 0.0, 0, 0);
 
-            if (null !== $this->dispatcher) {
-                $this->dispatcher->dispatch(new ElasticaRequestExceptionEvent($request, $e));
-            }
+            $this->dispatcher?->dispatch(new ElasticaRequestExceptionEvent($request, $e));
 
             throw $e;
         }
@@ -129,26 +117,19 @@ class Client extends BaseClient implements ResetInterface
             $this->logQuery($path, $method, $data, $query, $end - $start, 0, 0);
         }
 
-        if ($this->stopwatch) {
-            $this->stopwatch->stop('es_request');
-        }
+        $this->stopwatch?->stop('es_request');
 
         return $elasticResponse;
     }
 
     public function getIndex(string $name): Index
     {
-        // TODO PHP >= 7.4 ??=
-        return $this->indexCache[$name] ?? ($this->indexCache[$name] = new Index($this, $name));
+        return $this->indexCache[$name] ??= new Index($this, $name);
     }
 
-    /**
-     * @param string $name
-     */
-    public function getIndexTemplate($name): IndexTemplate
+    public function getIndexTemplate(string $name): IndexTemplate
     {
-        // TODO PHP >= 7.4 ??=
-        return $this->indexTemplateCache[$name] ?? ($this->indexTemplateCache[$name] = new IndexTemplate($this, $name));
+        return $this->indexTemplateCache[$name] ??= new IndexTemplate($this, $name);
     }
 
     /**
