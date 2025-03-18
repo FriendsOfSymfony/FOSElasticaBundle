@@ -90,7 +90,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "6.6.x-dev"
+            "dev-master": "7.0.x-dev"
         }
     },
     "scripts": {
