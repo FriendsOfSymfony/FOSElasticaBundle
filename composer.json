@@ -56,7 +56,7 @@
         "phpstan/phpstan": "^1.12",
         "phpstan/phpstan-phpunit": "^1.4",
         "phpstan/phpstan-symfony": "^1.4",
-        "phpunit/phpunit": "^11.0",
+        "phpunit/phpunit": "^10.0",
         "symfony/expression-language": "^6.4 || ^7.1",
         "symfony/messenger": "^6.4 || ^7.1",
         "symfony/serializer": "^6.4 || ^7.1",
