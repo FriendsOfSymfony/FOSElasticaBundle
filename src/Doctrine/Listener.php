@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Doctrine;
 
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use FOS\ElasticaBundle\Doctrine\ConditionalUpdate;
 use FOS\ElasticaBundle\Persister\ObjectPersister;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Provider\IndexableInterface;
@@ -96,7 +97,9 @@ class Listener
         $entity = $eventArgs->getObject();
 
         if ($this->objectPersister->handlesObject($entity) && $this->isObjectIndexable($entity)) {
-            $this->scheduledForInsertion[] = $entity;
+            if (!$entity instanceof ConditionalUpdate || $entity->shouldBeUpdated()) {
+                $this->scheduledForInsertion[] = $entity;
+            }
         }
     }
 
@@ -109,7 +112,9 @@ class Listener
 
         if ($this->objectPersister->handlesObject($entity)) {
             if ($this->isObjectIndexable($entity)) {
-                $this->scheduledForUpdate[] = $entity;
+                if (!$entity instanceof ConditionalUpdate || $entity->shouldBeUpdated()) {
+                    $this->scheduledForUpdate[] = $entity;
+                }
             } else {
                 // Delete if no longer indexable
                 $this->scheduleForDeletion($entity);
