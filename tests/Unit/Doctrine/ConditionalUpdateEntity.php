@@ -34,7 +34,7 @@ class ConditionalUpdateEntity implements ConditionalUpdate
     {
         return $this->shouldBeUpdated;
     }
-    
+
     public function setShouldBeUpdated(bool $shouldBeUpdated): void
     {
         $this->shouldBeUpdated = $shouldBeUpdated;

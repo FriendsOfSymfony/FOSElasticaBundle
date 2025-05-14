@@ -28,29 +28,33 @@ class ConditionalUpdateListenerTest extends TestCase
         $entity = $this->createMock(ConditionalUpdate::class);
         $entity->expects($this->once())
             ->method('shouldBeUpdated')
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $persister = $this->createMock(ObjectPersisterInterface::class);
         $persister->expects($this->once())
             ->method('handlesObject')
             ->with($entity)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $indexable = $this->createMock(IndexableInterface::class);
         $indexable->expects($this->once())
             ->method('isObjectIndexable')
             ->with('index_name', $entity)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $eventArgs = $this->createMock(LifecycleEventArgs::class);
         $eventArgs->expects($this->once())
             ->method('getObject')
-            ->willReturn($entity);
+            ->willReturn($entity)
+        ;
 
         $listener = new Listener($persister, $indexable, ['indexName' => 'index_name']);
-        
+
         $listener->postPersist($eventArgs);
-        
+
         $this->assertContains($entity, $listener->scheduledForInsertion);
     }
 
@@ -60,33 +64,37 @@ class ConditionalUpdateListenerTest extends TestCase
         $entity = $this->createMock(ConditionalUpdate::class);
         $entity->expects($this->once())
             ->method('shouldBeUpdated')
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         // Mock dependencies
         $persister = $this->createMock(ObjectPersisterInterface::class);
         $persister->expects($this->once())
             ->method('handlesObject')
             ->with($entity)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $indexable = $this->createMock(IndexableInterface::class);
         $indexable->expects($this->once())
             ->method('isObjectIndexable')
             ->with('index_name', $entity)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         // Create the event args
         $eventArgs = $this->createMock(LifecycleEventArgs::class);
         $eventArgs->expects($this->once())
             ->method('getObject')
-            ->willReturn($entity);
+            ->willReturn($entity)
+        ;
 
         // Create listener
         $listener = new Listener($persister, $indexable, ['indexName' => 'index_name']);
-        
+
         // Test postPersist
         $listener->postPersist($eventArgs);
-        
+
         // Check if entity is NOT in scheduledForInsertion
         $this->assertEmpty($listener->scheduledForInsertion);
     }
@@ -97,33 +105,37 @@ class ConditionalUpdateListenerTest extends TestCase
         $entity = $this->createMock(ConditionalUpdate::class);
         $entity->expects($this->once())
             ->method('shouldBeUpdated')
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         // Mock dependencies
         $persister = $this->createMock(ObjectPersisterInterface::class);
         $persister->expects($this->once())
             ->method('handlesObject')
             ->with($entity)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $indexable = $this->createMock(IndexableInterface::class);
         $indexable->expects($this->once())
             ->method('isObjectIndexable')
             ->with('index_name', $entity)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         // Create the event args
         $eventArgs = $this->createMock(LifecycleEventArgs::class);
         $eventArgs->expects($this->once())
             ->method('getObject')
-            ->willReturn($entity);
+            ->willReturn($entity)
+        ;
 
         // Create listener
         $listener = new Listener($persister, $indexable, ['indexName' => 'index_name']);
-        
+
         // Test postUpdate
         $listener->postUpdate($eventArgs);
-        
+
         // Check if entity is in scheduledForUpdate
         $this->assertContains($entity, $listener->scheduledForUpdate);
     }
@@ -134,33 +146,37 @@ class ConditionalUpdateListenerTest extends TestCase
         $entity = $this->createMock(ConditionalUpdate::class);
         $entity->expects($this->once())
             ->method('shouldBeUpdated')
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         // Mock dependencies
         $persister = $this->createMock(ObjectPersisterInterface::class);
         $persister->expects($this->once())
             ->method('handlesObject')
             ->with($entity)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $indexable = $this->createMock(IndexableInterface::class);
         $indexable->expects($this->once())
             ->method('isObjectIndexable')
             ->with('index_name', $entity)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         // Create the event args
         $eventArgs = $this->createMock(LifecycleEventArgs::class);
         $eventArgs->expects($this->once())
             ->method('getObject')
-            ->willReturn($entity);
+            ->willReturn($entity)
+        ;
 
         // Create listener
         $listener = new Listener($persister, $indexable, ['indexName' => 'index_name']);
-        
+
         // Test postUpdate
         $listener->postUpdate($eventArgs);
-        
+
         // Check if entity is NOT in scheduledForUpdate
         $this->assertEmpty($listener->scheduledForUpdate);
     }
