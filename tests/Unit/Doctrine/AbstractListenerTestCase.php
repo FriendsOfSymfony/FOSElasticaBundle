@@ -35,6 +35,22 @@ class Entity
     }
 }
 
+class ConditionalUpdateEntity extends Entity
+{
+    private $shouldBeUpdated;
+
+    public function __construct($id, $shouldBeUpdated)
+    {
+        parent::__construct($id);
+        $this->shouldBeUpdated = $shouldBeUpdated;
+    }
+
+    public function shouldBeUpdated(): bool
+    {
+        return $this->shouldBeUpdated;
+    }
+}
+
 /**
  * See concrete MongoDB/ORM instances of this abstract test.
  *
@@ -252,6 +268,90 @@ abstract class AbstractListenerTestCase extends TestCase
         $persister->expects($this->once())->method('insertMany')->with($scheduledForInsertion);
 
         $listener->onTerminate();
+    }
+
+    public function testConditionalUpdateObjectInsertedOnPersistWhenShouldBeUpdatedIsTrue()
+    {
+        $entity = new ConditionalUpdateEntity(1, true);
+        $persister = $this->getMockPersister($entity, 'index');
+        $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', $entity, true);
+
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
+        $listener->postPersist($eventArgs);
+
+        $this->assertSame($entity, \current($listener->scheduledForInsertion));
+
+        $persister->expects($this->once())
+            ->method('insertMany')
+            ->with($listener->scheduledForInsertion)
+        ;
+
+        $listener->postFlush($eventArgs);
+    }
+
+    public function testConditionalUpdateObjectNotInsertedOnPersistWhenShouldBeUpdatedIsFalse()
+    {
+        $entity = new ConditionalUpdateEntity(1, false);
+        $persister = $this->getMockPersister($entity, 'index');
+        $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', $entity, true);
+
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
+        $listener->postPersist($eventArgs);
+
+        $this->assertEmpty($listener->scheduledForInsertion);
+
+        $persister->expects($this->never())
+            ->method('insertMany')
+        ;
+
+        $listener->postFlush($eventArgs);
+    }
+
+    public function testConditionalUpdateObjectReplacedOnUpdateWhenShouldBeUpdatedIsTrue()
+    {
+        $entity = new ConditionalUpdateEntity(1, true);
+        $persister = $this->getMockPersister($entity, 'index');
+        $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', $entity, true);
+
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
+        $listener->postUpdate($eventArgs);
+
+        $this->assertSame($entity, \current($listener->scheduledForUpdate));
+
+        $persister->expects($this->once())
+            ->method('replaceMany')
+            ->with([$entity])
+        ;
+        $persister->expects($this->never())
+            ->method('deleteById')
+        ;
+
+        $listener->postFlush($eventArgs);
+    }
+
+    public function testConditionalUpdateObjectNotReplacedOnUpdateWhenShouldBeUpdatedIsFalse()
+    {
+        $entity = new ConditionalUpdateEntity(1, false);
+        $persister = $this->getMockPersister($entity, 'index');
+        $eventArgs = $this->createLifecycleEventArgs($entity, $this->getMockObjectManager());
+        $indexable = $this->getMockIndexable('index', $entity, true);
+
+        $listener = $this->createListener($persister, $indexable, ['indexName' => 'index']);
+        $listener->postUpdate($eventArgs);
+
+        $this->assertEmpty($listener->scheduledForUpdate);
+
+        $persister->expects($this->never())
+            ->method('replaceMany')
+        ;
+        $persister->expects($this->never())
+            ->method('deleteById')
+        ;
+
+        $listener->postFlush($eventArgs);
     }
 
     abstract protected function getLifecycleEventArgsClass();
