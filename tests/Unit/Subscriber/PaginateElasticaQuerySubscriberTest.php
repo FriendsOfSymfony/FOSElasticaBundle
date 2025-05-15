@@ -15,6 +15,7 @@ use Elastica\Query;
 use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber;
+use Knp\Component\Pager\ArgumentAccess\ArgumentAccessInterface;
 use Knp\Component\Pager\Event\ItemsEvent;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +38,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             ->willReturn($this->getResultSetMock())
         ;
 
-        $event = new ItemsEvent(0, 10);
+        $event = new ItemsEvent(0, 10, $this->getMockBuilder(ArgumentAccessInterface::class)->getMock());
         $event->target = $adapter;
 
         $subscriber->items($event);
@@ -88,7 +89,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             ->willReturn($this->getResultSetMock())
         ;
 
-        $event = new ItemsEvent(0, 10);
+        $event = new ItemsEvent(0, 10, $this->getMockBuilder(ArgumentAccessInterface::class)->getMock());
         $event->target = $adapter;
         $event->options = [
             'defaultSortFieldName' => 'createdAt',
@@ -115,7 +116,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             ->willReturn($this->getResultSetMock())
         ;
 
-        $event = new ItemsEvent(0, 10);
+        $event = new ItemsEvent(0, 10, $this->getMockBuilder(ArgumentAccessInterface::class)->getMock());
         $event->target = $adapter;
         $event->options = [
             'defaultSortFieldName' => 'createdAt',
@@ -142,7 +143,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             ->willReturn($this->getResultSetMock())
         ;
 
-        $event = new ItemsEvent(0, 10);
+        $event = new ItemsEvent(0, 10, $this->getMockBuilder(ArgumentAccessInterface::class)->getMock());
         $event->target = $adapter;
         $event->options = [
             'defaultSortFieldName' => 'createdAt',
@@ -174,7 +175,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             ->willReturn($this->getResultSetMock())
         ;
 
-        $event = new ItemsEvent(0, 10);
+        $event = new ItemsEvent(0, 10, $this->getMockBuilder(ArgumentAccessInterface::class)->getMock());
         $event->target = $adapter;
         $event->options = [
             'defaultSortFieldName' => 'createdAt',
@@ -210,7 +211,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             ->willReturn($this->getResultSetMock())
         ;
 
-        $event = new ItemsEvent(0, 10);
+        $event = new ItemsEvent(0, 10, $this->getMockBuilder(ArgumentAccessInterface::class)->getMock());
         $event->target = $adapter;
         $event->options = [
             'defaultSortFieldName' => 'createdAt',
@@ -253,7 +254,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             ->willReturn($this->getResultSetMock())
         ;
 
-        $event = new ItemsEvent(0, 10);
+        $event = new ItemsEvent(0, 10, $this->getMockBuilder(ArgumentAccessInterface::class)->getMock());
         $event->target = $adapter;
         $event->options = [
             'defaultSortFieldName' => 'createdAt',
@@ -298,7 +299,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             ->willReturn($this->getResultSetMock())
         ;
 
-        $event = new ItemsEvent(0, 10);
+        $event = new ItemsEvent(0, 10, $this->getMockBuilder(ArgumentAccessInterface::class)->getMock());
         $event->target = $adapter;
 
         $subscriber->items($event);
