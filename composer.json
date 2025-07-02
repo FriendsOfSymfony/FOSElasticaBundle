@@ -65,7 +65,7 @@
         "symfony/yaml": "^6.4 || ^7.1"
     },
     "conflict": {
-        "phpstan/phpstan": "<1.12.0"
+        "phpstan/phpstan": "<1.8.0"
     },
     "suggest": {
         "enqueue/elastica-bundle": "For populating Elasticsearch indexes asynchronously and using significanly less resources. Uses Enqueue.",
