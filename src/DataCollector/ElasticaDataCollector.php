@@ -33,7 +33,7 @@ class ElasticaDataCollector extends DataCollector
     /**
      * @return void
      */
-    public function collect(Request $request, Response $response, ?\Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?\Throwable $exception = null): void
     {
         $this->data['nb_queries'] = $this->logger->getNbQueries();
         $this->data['queries'] = $this->logger->getQueries();
