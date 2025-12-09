@@ -20,7 +20,7 @@ class IndexPass implements CompilerPassInterface
     /**
      * @return void
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('fos_elastica.index_manager')) {
             return;
