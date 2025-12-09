@@ -142,7 +142,7 @@ class FOSElasticaExtension extends Extension
      *
      * @return Configuration
      */
-    public function getConfiguration(array $config, ContainerBuilder $container)
+    public function getConfiguration(array $config, ContainerBuilder $container): Configuration
     {
         return new Configuration($container->getParameter('kernel.debug'));
     }
