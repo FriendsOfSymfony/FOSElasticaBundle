@@ -22,10 +22,13 @@ use FOS\ElasticaBundle\Persister\Listener\FilterObjectsListener;
 use FOS\ElasticaBundle\Persister\PagerPersisterRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -536,5 +539,99 @@ class FOSElasticaExtensionTest extends TestCase
             $tag
         );
         $this->assertTrue($container->hasDefinition('fos_elastica.index_template.some_index_template'));
+    }
+
+    public function testShouldRegisterCustomRepositoryAsService()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['hosts' => ['a_host:a_port']],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                                'repository' => 'App\Repository\CustomElasticaRepository',
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
+                ],
+            ],
+            $container
+        );
+
+        // Custom repository is registered as a DI service
+        $this->assertTrue($container->hasDefinition('fos_elastica.repository.acme_index'));
+
+        $repositoryDefinition = $container->getDefinition('fos_elastica.repository.acme_index');
+        $this->assertSame('App\Repository\CustomElasticaRepository', $repositoryDefinition->getClass());
+        $this->assertTrue($repositoryDefinition->isAutowired());
+
+        // Finder is injected into the custom repository
+        $finderArgument = $repositoryDefinition->getArgument('$finder');
+        $this->assertInstanceOf(Reference::class, $finderArgument);
+        $this->assertSame('fos_elastica.finder.acme_index', (string) $finderArgument);
+
+        // Repository manager receives a ServiceLocator with the custom repository
+        $repositoryManagerDef = $container->getDefinition('fos_elastica.repository_manager');
+        $locatorDefinition = $repositoryManagerDef->getArgument(0);
+        $this->assertInstanceOf(Definition::class, $locatorDefinition);
+        $this->assertSame(ServiceLocator::class, $locatorDefinition->getClass());
+
+        $locatorArguments = $locatorDefinition->getArguments();
+        $this->assertArrayHasKey(0, $locatorArguments);
+        $this->assertArrayHasKey('acme_index', $locatorArguments[0]);
+        $this->assertInstanceOf(ServiceClosureArgument::class, $locatorArguments[0]['acme_index']);
+    }
+
+    public function testShouldNotRegisterRepositoryServiceWhenNoCustomRepository()
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.debug', true);
+
+        $extension = new FOSElasticaExtension();
+        $extension->load(
+            [
+                'fos_elastica' => [
+                    'clients' => [
+                        'default' => ['hosts' => ['a_host:a_port']],
+                    ],
+                    'indexes' => [
+                        'acme_index' => [
+                            'persistence' => [
+                                'driver' => 'orm',
+                                'model' => 'theModelClass',
+                                'provider' => null,
+                                'listener' => null,
+                                'finder' => null,
+                            ],
+                            'properties' => ['text' => null],
+                        ],
+                    ],
+                ],
+            ],
+            $container
+        );
+
+        // No custom repository service should be registered
+        $this->assertFalse($container->hasDefinition('fos_elastica.repository.acme_index'));
+
+        // ServiceLocator should be empty
+        $repositoryManagerDef = $container->getDefinition('fos_elastica.repository_manager');
+        $locatorDefinition = $repositoryManagerDef->getArgument(0);
+        $this->assertInstanceOf(Definition::class, $locatorDefinition);
+        $locatorArguments = $locatorDefinition->getArguments();
+        $this->assertEmpty($locatorArguments[0]);
     }
 }

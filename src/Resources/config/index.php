@@ -25,7 +25,9 @@ use FOS\ElasticaBundle\Provider\Indexable;
 return static function (ContainerConfigurator $container): void {
     $services = $container->services();
 
-    $services->set('fos_elastica.repository_manager', RepositoryManager::class);
+    $services->set('fos_elastica.repository_manager', RepositoryManager::class)
+        ->args([abstract_arg('repository service locator')])
+    ;
 
     $services->set('fos_elastica.alias_processor', AliasProcessor::class);
 
