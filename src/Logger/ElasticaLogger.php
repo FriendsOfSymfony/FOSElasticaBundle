@@ -13,6 +13,7 @@ namespace FOS\ElasticaBundle\Logger;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Logger for the Elastica.
@@ -22,7 +23,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author Gordon Franke <info@nevalon.de>
  */
-class ElasticaLogger extends AbstractLogger
+class ElasticaLogger extends AbstractLogger implements ResetInterface
 {
     protected ?LoggerInterface $logger;
     /**

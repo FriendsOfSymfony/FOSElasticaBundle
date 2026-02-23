@@ -209,6 +209,7 @@ class FOSElasticaExtension extends Extension
             }
 
             $clientDef->addTag('fos_elastica.client');
+            $clientDef->addTag('kernel.reset', ['method' => 'reset']);
 
             $container->setDefinition($clientId, $clientDef);
             $container->registerAliasForArgument($clientId, Client::class, $name.'.client');

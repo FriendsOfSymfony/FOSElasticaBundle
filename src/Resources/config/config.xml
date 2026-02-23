@@ -43,6 +43,7 @@
         <service id="fos_elastica.data_collector" class="FOS\ElasticaBundle\DataCollector\ElasticaDataCollector">
             <tag name="data_collector" template="@FOSElastica/Collector/elastica.html.twig" id="elastica" />
             <argument type="service" id="fos_elastica.logger" />
+            <tag name="kernel.reset" method="reset" />
         </service>
 
         <service id="fos_elastica.paginator.subscriber" class="FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber">
@@ -54,6 +55,7 @@
             <argument type="service" id="logger" on-invalid="null" />
             <argument>%kernel.debug%</argument>
             <tag name="monolog.logger" channel="elastica" />
+            <tag name="kernel.reset" method="reset" />
         </service>
 
         <service id="fos_elastica.mapping_builder" class="FOS\ElasticaBundle\Index\MappingBuilder">
