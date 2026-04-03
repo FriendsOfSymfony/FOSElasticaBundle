@@ -15,7 +15,6 @@ use Elastic\Elasticsearch\Exception\ElasticsearchException;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastica\Exception\ClientException;
 use Elastica\JSON;
-use Elastica\Request;
 use Elastica\Response;
 use FOS\ElasticaBundle\Elastica\Client;
 use FOS\ElasticaBundle\Event\ElasticaRequestExceptionEvent;
@@ -40,7 +39,7 @@ class ClientTest extends TestCase
             ->method('logQuery')
             ->with(
                 'foo',
-                Request::GET,
+                'GET',
                 $this->isType('array'),
                 $this->logicalOr(
                     $this->isType('float'),
@@ -53,13 +52,13 @@ class ClientTest extends TestCase
 
         $response = new \GuzzleHttp\Psr7\Response(
             200,
-            ['Content-Type' => 'application/json', Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
+            ['Content-Type' => PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE, Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
             \json_encode(['foo' => 'bar'], \JSON_THROW_ON_ERROR)
         );
         $client = $this->getClient($logger, $response);
 
         $response = $client->sendRequest(new \GuzzleHttp\Psr7\Request(
-            Request::GET,
+            'GET',
             'https://some.tld/foo'
         ));
 
@@ -84,10 +83,10 @@ class ClientTest extends TestCase
                     }
 
                     $this->assertEquals('event', $o->getPath());
-                    $this->assertEquals(Request::GET, $o->getMethod());
+                    $this->assertEquals('GET', $o->getMethod());
                     $this->assertEquals(['some' => 'data'], $o->getData());
                     $this->assertEquals(['query' => 'data'], $o->getQuery());
-                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $o->getContentType());
+                    $this->assertEquals(PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE, $o->getContentType());
                 } elseif (1 === $counter) {
                     if (!($o instanceof PostElasticaRequestEvent)) {
                         return false;
@@ -106,10 +105,10 @@ class ClientTest extends TestCase
                     \parse_str($request->getUri()->getQuery(), $query);
 
                     $this->assertEquals('event', $path);
-                    $this->assertEquals(Request::GET, $method);
+                    $this->assertEquals('GET', $method);
                     $this->assertEquals(['some' => 'data'], $data);
                     $this->assertEquals(['query' => 'data'], $query);
-                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $request->getHeaderLine('Content-Type'));
+                    $this->assertEquals(PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE, $request->getHeaderLine('Content-Type'));
 
                     $this->assertInstanceOf(Response::class, $o->getResponse());
                 }
@@ -120,7 +119,7 @@ class ClientTest extends TestCase
 
         $response = new \GuzzleHttp\Psr7\Response(
             200,
-            ['Content-Type' => 'application/json', Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
+            ['Content-Type' => PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE, Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
             \json_encode(['foo' => 'bar'], \JSON_THROW_ON_ERROR)
         );
         $logger = $this->createMock(ElasticaLogger::class);
@@ -128,9 +127,9 @@ class ClientTest extends TestCase
         $client->setEventDispatcher($dispatcher);
 
         $client->sendRequest(new \GuzzleHttp\Psr7\Request(
-            Request::GET,
+            'GET',
             'https://some.tld/event?'.\http_build_query(['query' => 'data']),
-            ['Content-Type' => 'application/json'],
+            ['Content-Type' => PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE],
             \json_encode(['some' => 'data'], \JSON_THROW_ON_ERROR)
         ));
     }
@@ -141,7 +140,7 @@ class ClientTest extends TestCase
         $responseString = JSON::stringify(['message' => 'some AWS error']);
         $response = new \GuzzleHttp\Psr7\Response(
             $httpCode,
-            ['Content-Type' => 'application/json', Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
+            ['Content-Type' => PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE, Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
             $responseString
         );
 
@@ -163,10 +162,10 @@ class ClientTest extends TestCase
                     }
 
                     $this->assertEquals('event', $o->getPath());
-                    $this->assertEquals(Request::GET, $o->getMethod());
+                    $this->assertEquals('GET', $o->getMethod());
                     $this->assertEquals(['some' => 'data'], $o->getData());
                     $this->assertEquals(['query' => 'data'], $o->getQuery());
-                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $o->getContentType());
+                    $this->assertEquals(PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE, $o->getContentType());
                 } elseif (1 === $counter) {
                     if (!($o instanceof ElasticaRequestExceptionEvent)) {
                         return false;
@@ -185,10 +184,10 @@ class ClientTest extends TestCase
                     \parse_str($request->getUri()->getQuery(), $query);
 
                     $this->assertEquals('event', $path);
-                    $this->assertEquals(Request::GET, $method);
+                    $this->assertEquals('GET', $method);
                     $this->assertEquals(['some' => 'data'], $data);
                     $this->assertEquals(['query' => 'data'], $query);
-                    $this->assertEquals(Request::DEFAULT_CONTENT_TYPE, $request->getHeaderLine('Content-Type'));
+                    $this->assertEquals(PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE, $request->getHeaderLine('Content-Type'));
 
                     $this->assertInstanceOf(ElasticsearchException::class, $o->getException());
                 }
@@ -200,9 +199,9 @@ class ClientTest extends TestCase
         $client->setEventDispatcher($dispatcher);
         $this->expectException(ClientException::class);
         $client->sendRequest(new \GuzzleHttp\Psr7\Request(
-            Request::GET,
+            'GET',
             'https://some.tld/event?'.\http_build_query(['query' => 'data']),
-            ['Content-Type' => 'application/json'],
+            ['Content-Type' => PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE],
             \json_encode(['some' => 'data'], \JSON_THROW_ON_ERROR)
         ));
     }
@@ -213,7 +212,7 @@ class ClientTest extends TestCase
         $responseString = JSON::stringify(['message' => 'some AWS error']);
         $response = new \GuzzleHttp\Psr7\Response(
             $httpCode,
-            ['Content-Type' => 'application/json', Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
+            ['Content-Type' => PreElasticaRequestEvent::DEFAULT_CONTENT_TYPE, Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME],
             $responseString
         );
 
@@ -223,7 +222,7 @@ class ClientTest extends TestCase
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage($desiredMessage);
         $client->sendRequest(new \GuzzleHttp\Psr7\Request(
-            Request::GET,
+            'GET',
             'https://some.tld/foo'
         ));
     }

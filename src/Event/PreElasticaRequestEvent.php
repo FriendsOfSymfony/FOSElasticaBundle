@@ -11,11 +11,12 @@
 
 namespace FOS\ElasticaBundle\Event;
 
-use Elastica\Request;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class PreElasticaRequestEvent extends Event
 {
+    public const DEFAULT_CONTENT_TYPE = 'application/json';
+
     private string $path;
     private string $method;
 
@@ -35,7 +36,7 @@ class PreElasticaRequestEvent extends Event
         string $method,
         $data,
         array $query,
-        string $contentType = Request::DEFAULT_CONTENT_TYPE
+        string $contentType = self::DEFAULT_CONTENT_TYPE
     ) {
         $this->path = $path;
         $this->method = $method;

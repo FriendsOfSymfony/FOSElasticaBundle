@@ -5,7 +5,7 @@ services:
     container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ES_VERSION:-8.11.1}
     command: >
-      /bin/sh -c "(./bin/elasticsearch-plugin list | grep -q ingest-attachment || ./bin/elasticsearch-plugin install --batch ingest-attachment) && /usr/local/bin/docker-entrypoint.sh"
+      /bin/sh -c "(./bin/elasticsearch-plugin list | grep -q ingest-attachment || ./bin/elasticsearch-plugin install --batch ingest-attachment || true) && /usr/local/bin/docker-entrypoint.sh"
     environment:
       node.name: elasticsearch
       cluster.name: es-docker-cluster

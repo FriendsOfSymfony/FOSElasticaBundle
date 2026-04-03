@@ -57,14 +57,16 @@ class MappingBuilder
     /**
      * Builds mappings for an entire index template.
      *
-     * @return array{mappings: TMapping, settings: TSettings, index_patterns: list<non-empty-string>}
+     * @return array{template: array{mappings: TMapping, settings: TSettings}, index_patterns: list<non-empty-string>}
      */
     public function buildIndexTemplateMapping(IndexTemplateConfig $indexTemplateConfig): array
     {
-        $mapping = $this->buildIndexMapping($indexTemplateConfig);
-        $mapping['index_patterns'] = $indexTemplateConfig->getIndexPatterns();
+        $template = $this->buildIndexMapping($indexTemplateConfig);
 
-        return $mapping;
+        return [
+            'index_patterns' => $indexTemplateConfig->getIndexPatterns(),
+            'template' => $template,
+        ];
     }
 
     /**
