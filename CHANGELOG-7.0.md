@@ -4,7 +4,7 @@ CHANGELOG for 7.x
 This changelog references the relevant changes (bug and security fixes) done
 in 7.x versions.
 
-### 7.1.0 (2026-xx-xx)
+### 7.1.0 (2026-04-24)
 * Added Symfony 8.0 support.
 * Added PHP 8.5 test coverage.
 * Dropped Symfony 7.1, 7.2 and 7.3 support.
