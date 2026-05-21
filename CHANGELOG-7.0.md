@@ -4,6 +4,9 @@ CHANGELOG for 7.x
 This changelog references the relevant changes (bug and security fixes) done
 in 7.x versions.
 
+### 7.1.1 (2026-05-22)
+* Fix deprecated Symfony method call.
+
 ### 7.1.0 (2026-04-24)
 * Added Symfony 8.0 support.
 * Added PHP 8.5 test coverage.
