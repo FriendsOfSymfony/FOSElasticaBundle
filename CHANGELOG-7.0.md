@@ -4,7 +4,7 @@ CHANGELOG for 7.x
 This changelog references the relevant changes (bug and security fixes) done
 in 7.x versions.
 
-### 7.1.1 (2026-05-22)
+### 7.1.1 (2026-xx-xx)
 * Fix deprecated Symfony method call.
 
 ### 7.1.0 (2026-04-24)
