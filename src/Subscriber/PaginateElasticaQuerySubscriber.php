@@ -12,7 +12,6 @@
 namespace FOS\ElasticaBundle\Subscriber;
 
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
-use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use Knp\Component\Pager\Event\ItemsEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,31 +19,21 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {
-    private RequestStack $requestStack;
-
-    public function __construct(RequestStack $requestStack)
+    public function __construct(private RequestStack $requestStack)
     {
-        $this->requestStack = $requestStack;
     }
 
-    /**
-     * @return void
-     */
-    public function items(ItemsEvent $event)
+    public function items(ItemsEvent $event): void
     {
         if ($event->target instanceof PaginatorAdapterInterface) {
             // Add sort to query
             $this->setSorting($event);
 
-            /** @var PartialResultsInterface $results */
             $results = $event->target->getResults($event->getOffset(), $event->getLimit());
 
             $event->count = $results->getTotalHits();
             $event->items = $results->toArray();
-            $aggregations = $results->getAggregations();
-            if (null != $aggregations) {
-                $event->setCustomPaginationParameter('aggregations', $aggregations);
-            }
+            $event->setCustomPaginationParameter('aggregations', $results->getAggregations());
 
             $event->stopPropagation();
         }
@@ -59,10 +48,8 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 
     /**
      * Adds knp paging sort to query.
-     *
-     * @return void
      */
-    protected function setSorting(ItemsEvent $event)
+    protected function setSorting(ItemsEvent $event): void
     {
         $options = $event->options ?? [];
         $sortField = $this->getFromRequest($options['sortFieldParameterName'] ?? null);
@@ -79,12 +66,11 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param string               $sortField
      * @param array<string, mixed> $options
      *
      * @return array<string, mixed>
      */
-    protected function getSort($sortField, array $options = [])
+    protected function getSort(string $sortField, array $options = []): array
     {
         $sort = [
             'order' => $this->getSortDirection($sortField, $options),
@@ -112,12 +98,9 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param string               $sortField
      * @param array<string, mixed> $options
-     *
-     * @return string
      */
-    protected function getSortDirection($sortField, array $options = [])
+    protected function getSortDirection(string $sortField, array $options = []): string
     {
         $dir = 'asc';
         $sortDirection = $this->getFromRequest($options['sortDirectionParameterName']);
@@ -143,13 +126,10 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
         return $this->requestStack->getCurrentRequest();
     }
 
-    /**
-     * @return mixed|null
-     */
-    private function getFromRequest(?string $key)
+    private function getFromRequest(?string $key): mixed
     {
         if (null !== $key && null !== $request = $this->getRequest()) {
-            return $request->get($key);
+            return $request->query->get($key);
         }
 
         return null;
