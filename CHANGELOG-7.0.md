@@ -6,6 +6,7 @@ in 7.x versions.
 
 ### 7.1.1 (2026-xx-xx)
 * Fix deprecated Symfony method call.
+* Use DI service locator for custom repository instantiation.
 
 ### 7.1.0 (2026-04-24)
 * Added Symfony 8.0 support.
