@@ -52,3 +52,42 @@ $repository = $repositoryManager->getRepository('UserBundle:User');
 /** var array of Acme\UserBundle\Entity\User */
 $users = $repository->findWithCustomQuery('bob');
 ```
+
+##### Injecting dependencies into custom repositories
+
+Custom repositories are registered as autowired services in the dependency injection
+container. This means you can inject any service into your repository constructor,
+alongside the finder:
+
+```php
+<?php
+
+namespace Acme\ElasticaBundle\SearchRepository;
+
+use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
+use FOS\ElasticaBundle\Repository;
+use Psr\Log\LoggerInterface;
+
+class UserRepository extends Repository
+{
+    private LoggerInterface $logger;
+
+    public function __construct(PaginatedFinderInterface $finder, LoggerInterface $logger)
+    {
+        parent::__construct($finder);
+
+        $this->logger = $logger;
+    }
+
+    public function findWithCustomQuery($searchText)
+    {
+        $this->logger->info('Searching for users with query: {query}', ['query' => $searchText]);
+
+        // build $query with Elastica objects
+        return $this->find($query);
+    }
+}
+```
+
+The `$finder` argument is automatically provided by the bundle. Any additional
+constructor arguments will be resolved by the container's autowiring.

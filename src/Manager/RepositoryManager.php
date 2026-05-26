@@ -12,7 +12,9 @@
 namespace FOS\ElasticaBundle\Manager;
 
 use FOS\ElasticaBundle\Finder\FinderInterface;
+use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 use FOS\ElasticaBundle\Repository;
+use Psr\Container\ContainerInterface;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -31,6 +33,13 @@ class RepositoryManager implements RepositoryManagerInterface
      * @var array<string, Repository>
      */
     private $repositories = [];
+
+    private ContainerInterface $repositoryLocator;
+
+    public function __construct(ContainerInterface $repositoryLocator)
+    {
+        $this->repositoryLocator = $repositoryLocator;
+    }
 
     public function addIndex(string $indexName, FinderInterface $finder, ?string $repositoryName = null): void
     {
@@ -80,10 +89,16 @@ class RepositoryManager implements RepositoryManagerInterface
      */
     private function createRepository(string $indexName)
     {
-        if (!\class_exists($repositoryName = $this->getRepositoryName($indexName))) {
-            throw new \RuntimeException(\sprintf('%s repository for index "%s" does not exist', $repositoryName, $indexName));
+        if ($this->repositoryLocator->has($indexName)) {
+            return $this->repositoryLocator->get($indexName);
         }
 
-        return new $repositoryName($this->indexes[$indexName]['finder']);
+        $finder = $this->indexes[$indexName]['finder'];
+
+        if (!$finder instanceof PaginatedFinderInterface) {
+            throw new \RuntimeException(\sprintf('Finder for index "%s" must implement PaginatedFinderInterface', $indexName));
+        }
+
+        return new Repository($finder);
     }
 }

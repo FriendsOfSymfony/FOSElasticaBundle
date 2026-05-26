@@ -19,13 +19,16 @@ use FOS\ElasticaBundle\Elastica\NodePool\RoundRobinResurrect;
 use FOS\ElasticaBundle\Finder\TransformedFinder;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
@@ -66,6 +69,13 @@ class FOSElasticaExtension extends Extension
      * @var list<string>
      */
     private $loadedDrivers = [];
+
+    /**
+     * Custom repository service references keyed by index name.
+     *
+     * @var array<string, ServiceClosureArgument>
+     */
+    private $customRepositories = [];
 
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -133,6 +143,10 @@ class FOSElasticaExtension extends Extension
 
         $this->loadIndexManager($container);
         $this->loadIndexTemplateManager($container);
+
+        $container->getDefinition('fos_elastica.repository_manager')
+            ->replaceArgument(0, new Definition(ServiceLocator::class, [$this->customRepositories]))
+        ;
 
         $this->createDefaultManagerAlias($config['default_manager'], $container);
     }
@@ -708,6 +722,14 @@ class FOSElasticaExtension extends Extension
         $arguments = [$indexName, new Reference($finderId)];
         if (isset($typeConfig['repository'])) {
             $arguments[] = $typeConfig['repository'];
+
+            $repositoryId = \sprintf('fos_elastica.repository.%s', $indexName);
+            $repositoryDef = new Definition($typeConfig['repository']);
+            $repositoryDef->setArgument('$finder', new Reference($finderId));
+            $repositoryDef->setAutowired(true);
+            $container->setDefinition($repositoryId, $repositoryDef);
+
+            $this->customRepositories[$indexName] = new ServiceClosureArgument(new Reference($repositoryId));
         }
 
         $container->getDefinition('fos_elastica.repository_manager')
