@@ -21,7 +21,7 @@ class ConfigManager implements ManagerInterface
      *
      * @phpstan-var array<string, IndexConfigInterface>
      */
-    private $indexes = [];
+    private array $indexes = [];
 
     /**
      * @param Source\SourceInterface[] $sources

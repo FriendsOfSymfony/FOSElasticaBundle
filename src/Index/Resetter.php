@@ -22,24 +22,16 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class Resetter implements ResetterInterface
 {
-    private AliasProcessor $aliasProcessor;
-    private ManagerInterface $configManager;
-    private EventDispatcherInterface $dispatcher;
-    private IndexManager $indexManager;
-    private MappingBuilder $mappingBuilder;
+    private readonly EventDispatcherInterface $dispatcher;
 
     public function __construct(
-        ManagerInterface $configManager,
-        IndexManager $indexManager,
-        AliasProcessor $aliasProcessor,
-        MappingBuilder $mappingBuilder,
+        private readonly ManagerInterface $configManager,
+        private readonly IndexManager $indexManager,
+        private readonly AliasProcessor $aliasProcessor,
+        private readonly MappingBuilder $mappingBuilder,
         EventDispatcherInterface $eventDispatcher,
     ) {
-        $this->aliasProcessor = $aliasProcessor;
-        $this->configManager = $configManager;
         $this->dispatcher = $eventDispatcher;
-        $this->indexManager = $indexManager;
-        $this->mappingBuilder = $mappingBuilder;
     }
 
     /**
@@ -62,7 +54,7 @@ class Resetter implements ResetterInterface
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
         if (!$indexConfig instanceof IndexConfig) {
-            throw new \RuntimeException(\sprintf('Incorrect index configuration object. Expecting IndexConfig, but got: %s ', \get_class($indexConfig)));
+            throw new \RuntimeException(\sprintf('Incorrect index configuration object. Expecting IndexConfig, but got: %s ', $indexConfig::class));
         }
         $index = $this->indexManager->getIndex($indexName);
 
@@ -91,7 +83,7 @@ class Resetter implements ResetterInterface
     {
         $indexConfig = $this->configManager->getIndexConfiguration($indexName);
         if (!$indexConfig instanceof IndexConfig) {
-            throw new \RuntimeException(\sprintf('Incorrect index configuration object. Expecting IndexConfig, but got: %s ', \get_class($indexConfig)));
+            throw new \RuntimeException(\sprintf('Incorrect index configuration object. Expecting IndexConfig, but got: %s ', $indexConfig::class));
         }
 
         if ($indexConfig->isUseAlias()) {

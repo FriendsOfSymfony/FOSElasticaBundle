@@ -25,22 +25,22 @@ class ListenerTestCase extends AbstractListenerTestCase
         }
     }
 
-    protected function getClassMetadataClass()
+    protected function getClassMetadataClass(): string
     {
         return \Doctrine\ODM\MongoDB\Mapping\ClassMetadata::class;
     }
 
-    protected function getLifecycleEventArgsClass()
+    protected function getLifecycleEventArgsClass(): string
     {
         return \Doctrine\ODM\MongoDB\Event\LifecycleEventArgs::class;
     }
 
-    protected function getListenerClass()
+    protected function getListenerClass(): string
     {
         return \FOS\ElasticaBundle\Doctrine\Listener::class;
     }
 
-    protected function getObjectManagerClass()
+    protected function getObjectManagerClass(): string
     {
         return \Doctrine\ODM\MongoDB\DocumentManager::class;
     }

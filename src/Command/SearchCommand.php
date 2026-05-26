@@ -25,13 +25,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SearchCommand extends Command
 {
-    private IndexManager $indexManager;
-
-    public function __construct(IndexManager $indexManager)
+    public function __construct(private readonly IndexManager $indexManager)
     {
         parent::__construct();
-
-        $this->indexManager = $indexManager;
     }
 
     protected function configure(): void
@@ -80,11 +76,7 @@ class SearchCommand extends Command
     protected function formatResult(Result $result, $showField, $showSource, $showId, $explain)
     {
         $source = $result->getSource();
-        if ($showField) {
-            $toString = $source[$showField] ?? '-';
-        } else {
-            $toString = \reset($source);
-        }
+        $toString = $showField ? $source[$showField] ?? '-' : \reset($source);
         $string = \sprintf('[%0.2f] %s', $result->getScore(), \var_export($toString, true));
         if ($showSource) {
             $string = \sprintf('%s %s', $string, \json_encode($source));
@@ -93,7 +85,7 @@ class SearchCommand extends Command
             $string = \sprintf('{%s} %s', $result->getId(), $string);
         }
         if ($explain) {
-            $string = \sprintf('%s %s', $string, \json_encode($result->getExplanation()));
+            return \sprintf('%s %s', $string, \json_encode($result->getExplanation()));
         }
 
         return $string;

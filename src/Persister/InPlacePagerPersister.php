@@ -26,17 +26,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 final class InPlacePagerPersister implements PagerPersisterInterface
 {
     public const NAME = 'in_place';
+    private readonly EventDispatcherInterface $dispatcher;
 
-    private PersisterRegistry $registry;
-    private EventDispatcherInterface $dispatcher;
-
-    public function __construct(PersisterRegistry $registry, EventDispatcherInterface $dispatcher)
+    public function __construct(private readonly PersisterRegistry $registry, EventDispatcherInterface $dispatcher)
     {
-        $this->registry = $registry;
         $this->dispatcher = $dispatcher;
     }
 
-    public function insert(PagerInterface $pager, array $options = [])
+    public function insert(PagerInterface $pager, array $options = []): void
     {
         $pager->setMaxPerPage(empty($options['max_per_page']) ? 100 : $options['max_per_page']);
 

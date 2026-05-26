@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  */
 class PagerProviderRegistry
 {
-    private ServiceLocator $providers;
+    private readonly ServiceLocator $providers;
 
     public function __construct(ServiceLocator $providers)
     {
@@ -34,9 +34,7 @@ class PagerProviderRegistry
      */
     public function getProviders(): array
     {
-        return \array_reduce(\array_keys($this->providers->getProvidedServices()), function ($carry, $index) {
-            return $carry + [$index => $this->providers->get($index)];
-        }, []);
+        return \array_reduce(\array_keys($this->providers->getProvidedServices()), fn ($carry, int|string $index) => $carry + [$index => $this->providers->get($index)], []);
     }
 
     /**

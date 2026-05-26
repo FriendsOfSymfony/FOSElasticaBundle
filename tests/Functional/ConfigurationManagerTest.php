@@ -21,7 +21,7 @@ use FOS\ElasticaBundle\Configuration\IndexConfig;
  */
 class ConfigurationManagerTest extends WebTestCase
 {
-    public function testContainerSource()
+    public function testContainerSource(): void
     {
         static::bootKernel(['test_case' => 'Basic']);
         /** @var ConfigManager $manager */

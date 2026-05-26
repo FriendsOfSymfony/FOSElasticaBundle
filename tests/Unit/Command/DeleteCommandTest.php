@@ -23,20 +23,17 @@ use Symfony\Component\Console\Output\NullOutput;
  */
 class DeleteCommandTest extends TestCase
 {
-    /**
-     * @var DeleteCommand
-     */
-    private $command;
+    private DeleteCommand $command;
 
     /**
      * @var IndexManager|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $indexManagerMock;
+    private \PHPUnit\Framework\MockObject\MockObject $indexManagerMock;
 
     /**
      * @var Index|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $indexMock;
+    private \PHPUnit\Framework\MockObject\MockObject $indexMock;
 
     protected function setUp(): void
     {
@@ -46,7 +43,7 @@ class DeleteCommandTest extends TestCase
         $this->command = new DeleteCommand($this->indexManagerMock);
     }
 
-    public function testDeleteAllIndexes()
+    public function testDeleteAllIndexes(): void
     {
         $input = $this->createMock(InputInterface::class);
         $input->expects($this->once())->method('getOption')->with('index')->willReturn(null);
@@ -80,7 +77,7 @@ class DeleteCommandTest extends TestCase
         );
     }
 
-    public function testDeleteIndex()
+    public function testDeleteIndex(): void
     {
         $input = $this->createMock(InputInterface::class);
         $input->expects($this->once())->method('getOption')->with('index')->willReturn('index_name');

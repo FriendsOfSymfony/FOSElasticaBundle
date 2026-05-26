@@ -22,16 +22,10 @@ use FOS\ElasticaBundle\Index\Resetter;
 class PopulateListener
 {
     /**
-     * @var Resetter
-     */
-    private $resetter;
-
-    /**
      * PopulateListener constructor.
      */
-    public function __construct(Resetter $resetter)
+    public function __construct(private readonly Resetter $resetter)
     {
-        $this->resetter = $resetter;
     }
 
     public function onPostIndexPopulate(PostIndexPopulateEvent $event): void

@@ -34,13 +34,9 @@ use Symfony\Contracts\Service\ResetInterface;
  */
 class Client extends BaseClient implements ResetInterface
 {
-    private array $forbiddenCodes;
-
-    public function __construct(array|string $config = [], array $forbiddenCodes = [400, 403, 404], ?LoggerInterface $logger = null)
+    public function __construct(array|string $config = [], private readonly array $forbiddenCodes = [400, 403, 404], ?LoggerInterface $logger = null)
     {
         parent::__construct($config, $logger);
-
-        $this->forbiddenCodes = $forbiddenCodes;
     }
 
     /**
@@ -68,7 +64,7 @@ class Client extends BaseClient implements ResetInterface
     {
         $this->stopwatch?->start('es_request', 'fos_elastica');
 
-        $path = \ltrim($request->getUri()->getPath(), '/'); // to have the same result as in the 6.0
+        $path = \ltrim((string) $request->getUri()->getPath(), '/'); // to have the same result as in the 6.0
         $method = $request->getMethod();
         try {
             $data = \json_decode((string) $request->getBody(), true, 512, \JSON_THROW_ON_ERROR);
@@ -76,7 +72,7 @@ class Client extends BaseClient implements ResetInterface
             $data = [];
         }
         $query = [];
-        \parse_str($request->getUri()->getQuery(), $query);
+        \parse_str((string) $request->getUri()->getQuery(), $query);
 
         $this->dispatcher?->dispatch(new PreElasticaRequestEvent($path, $method, $data, $query, $request->getHeaderLine('Content-Type')));
 

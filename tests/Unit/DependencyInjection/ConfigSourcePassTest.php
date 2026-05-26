@@ -24,15 +24,14 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class ConfigSourcePassTest extends TestCase
 {
-    /** @var ContainerBuilder */
-    private $container;
+    private ContainerBuilder $container;
 
     protected function setUp(): void
     {
         $this->container = new ContainerBuilder();
     }
 
-    public function testProcessWithoutConfigManager()
+    public function testProcessWithoutConfigManager(): void
     {
         $configManagerDefinition = new Definition(ConfigManager::class);
         $configManagerDefinition->addArgument([]);
@@ -49,7 +48,7 @@ class ConfigSourcePassTest extends TestCase
         $this->assertSame([], $this->container->getDefinition('fos_elastica.config_manager.index_templates')->getArgument(0));
     }
 
-    public function testProcessWithConfigManager()
+    public function testProcessWithConfigManager(): void
     {
         $configManagerDefinition = new Definition(ConfigManager::class);
         $configManagerDefinition->addArgument([]);

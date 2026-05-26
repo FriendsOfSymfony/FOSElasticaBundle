@@ -24,24 +24,24 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class FilterObjectsListenerTest extends TestCase
 {
-    public function testShouldImplementEventSubscriberInterface()
+    public function testShouldImplementEventSubscriberInterface(): void
     {
         $rc = new \ReflectionClass(FilterObjectsListener::class);
 
         $this->assertTrue($rc->implementsInterface(EventSubscriberInterface::class));
     }
 
-    public function testShouldSubscribeOnPreInsertObjectsEvent()
+    public function testShouldSubscribeOnPreInsertObjectsEvent(): void
     {
         $this->assertSame([PreInsertObjectsEvent::class => 'filterObjects'], FilterObjectsListener::getSubscribedEvents());
     }
 
-    public function testCouldBeConstructedWithIndexableAsFirstArgument()
+    public function testCouldBeConstructedWithIndexableAsFirstArgument(): void
     {
         new FilterObjectsListener($this->createIndexableMock());
     }
 
-    public function testShouldFilterOutEverything()
+    public function testShouldFilterOutEverything(): void
     {
         $objects = [new \stdClass(), new \stdClass(), new \stdClass()];
 
@@ -71,7 +71,7 @@ class FilterObjectsListenerTest extends TestCase
         $this->assertEmpty($event->getObjects());
     }
 
-    public function testShouldFilterSecondObject()
+    public function testShouldFilterSecondObject(): void
     {
         $objects = [new \stdClass(), new \stdClass(), new \stdClass()];
 
@@ -101,7 +101,7 @@ class FilterObjectsListenerTest extends TestCase
         $this->assertSame([$objects[0], $objects[2]], $event->getObjects());
     }
 
-    public function testShouldSkipIndexableCheckIfOptionTrue()
+    public function testShouldSkipIndexableCheckIfOptionTrue(): void
     {
         $objects = [new \stdClass(), new \stdClass(), new \stdClass()];
 
@@ -128,7 +128,7 @@ class FilterObjectsListenerTest extends TestCase
     /**
      * @return ObjectPersisterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createObjectPersisterMock()
+    private function createObjectPersisterMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(ObjectPersisterInterface::class);
     }
@@ -136,7 +136,7 @@ class FilterObjectsListenerTest extends TestCase
     /**
      * @return PagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createPagerMock()
+    private function createPagerMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(PagerInterface::class);
     }
@@ -144,7 +144,7 @@ class FilterObjectsListenerTest extends TestCase
     /**
      * @return IndexableInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createIndexableMock()
+    private function createIndexableMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(IndexableInterface::class);
     }

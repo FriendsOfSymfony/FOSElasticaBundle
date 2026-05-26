@@ -22,18 +22,13 @@ class HybridResult
      * @var Result
      */
     protected $result;
-    /**
-     * @var T|null
-     */
-    protected $transformed;
 
     /**
      * @param T|null $transformed
      */
-    public function __construct(Result $result, $transformed = null)
+    public function __construct(Result $result, protected $transformed = null)
     {
         $this->result = $result;
-        $this->transformed = $transformed;
     }
 
     /**

@@ -23,14 +23,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DeleteCommand extends Command
 {
-    private IndexManager $indexManager;
-
     public function __construct(
-        IndexManager $indexManager,
+        private readonly IndexManager $indexManager,
     ) {
         parent::__construct();
-
-        $this->indexManager = $indexManager;
     }
 
     protected function configure(): void

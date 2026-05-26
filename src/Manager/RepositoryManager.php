@@ -27,7 +27,7 @@ class RepositoryManager implements RepositoryManagerInterface
     /**
      * @var array<string, array{finder: FinderInterface, repositoryName: ?class-string}>
      */
-    private $indexes = [];
+    private array $indexes = [];
 
     /**
      * @var array<string, Repository>

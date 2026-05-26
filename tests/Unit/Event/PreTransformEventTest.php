@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PreTransformEventTest extends TestCase
 {
-    public function testDocument()
+    public function testDocument(): void
     {
         $event = new PreTransformEvent($document = new Document(), [], new \stdClass());
         $this->assertSame($document, $event->getDocument());
@@ -29,13 +29,13 @@ class PreTransformEventTest extends TestCase
         $this->assertSame($newDocument, $event->getDocument());
     }
 
-    public function testFields()
+    public function testFields(): void
     {
         $event = new PreTransformEvent(new Document(), $fields = ['abc', '123'], new \stdClass());
         $this->assertSame($fields, $event->getFields());
     }
 
-    public function testObject()
+    public function testObject(): void
     {
         $event = new PreTransformEvent(new Document(), [], $object = new \stdClass());
         $this->assertSame($object, $event->getObject());

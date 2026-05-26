@@ -36,29 +36,9 @@ class ObjectPersister implements ObjectPersisterInterface
      */
     protected $index;
     /**
-     * @var ModelToElasticaTransformerInterface
-     */
-    protected $transformer;
-    /**
-     * @var class-string
-     */
-    protected $objectClass;
-    /**
-     * @var array
-     *
-     * @phpstan-var TFields
-     */
-    protected $fields;
-    /**
      * @var ?LoggerInterface
      */
     protected $logger;
-    /**
-     * @var array
-     *
-     * @phpstan-var TOptions
-     */
-    private $options;
 
     /**
      * @param class-string $objectClass
@@ -66,13 +46,15 @@ class ObjectPersister implements ObjectPersisterInterface
      * @phpstan-param TFields $fields
      * @phpstan-param TOptions $options
      */
-    public function __construct(Index $index, ModelToElasticaTransformerInterface $transformer, string $objectClass, array $fields, array $options = [])
+    public function __construct(Index $index, protected ModelToElasticaTransformerInterface $transformer, protected string $objectClass, /**
+     * @phpstan-var TFields
+     */
+        protected array $fields, /**
+     * @phpstan-var TOptions
+     */
+        private readonly array $options = [])
     {
         $this->index = $index;
-        $this->transformer = $transformer;
-        $this->objectClass = $objectClass;
-        $this->fields = $fields;
-        $this->options = $options;
     }
 
     public function handlesObject($object): bool
@@ -80,35 +62,32 @@ class ObjectPersister implements ObjectPersisterInterface
         return $object instanceof $this->objectClass;
     }
 
-    /**
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }
 
-    public function insertOne($object)
+    public function insertOne($object): void
     {
         $this->insertMany([$object]);
     }
 
-    public function replaceOne($object)
+    public function replaceOne($object): void
     {
         $this->replaceMany([$object]);
     }
 
-    public function deleteOne($object)
+    public function deleteOne($object): void
     {
         $this->deleteMany([$object]);
     }
 
-    public function deleteById($id, $routing = false)
+    public function deleteById($id, $routing = false): void
     {
         $this->deleteManyByIdentifiers([(string) $id], $routing);
     }
 
-    public function insertMany(array $objects)
+    public function insertMany(array $objects): void
     {
         $documents = [];
         foreach ($objects as $object) {
@@ -121,7 +100,7 @@ class ObjectPersister implements ObjectPersisterInterface
         }
     }
 
-    public function replaceMany(array $objects)
+    public function replaceMany(array $objects): void
     {
         $documents = [];
         foreach ($objects as $object) {
@@ -137,7 +116,7 @@ class ObjectPersister implements ObjectPersisterInterface
         }
     }
 
-    public function deleteMany(array $objects)
+    public function deleteMany(array $objects): void
     {
         $documents = [];
         foreach ($objects as $object) {
@@ -150,7 +129,7 @@ class ObjectPersister implements ObjectPersisterInterface
         }
     }
 
-    public function deleteManyByIdentifiers(array $identifiers, $routing = false)
+    public function deleteManyByIdentifiers(array $identifiers, $routing = false): void
     {
         try {
             $this->index->getClient()->deleteIds($identifiers, $this->index->getName(), $routing);
@@ -170,11 +149,9 @@ class ObjectPersister implements ObjectPersisterInterface
     /**
      * Log exception if logger defined for persister belonging to the current listener, otherwise re-throw.
      *
-     * @return void
-     *
      * @throws BulkException
      */
-    private function log(BulkException $e)
+    private function log(BulkException $e): void
     {
         if (!$this->logger) {
             throw $e;

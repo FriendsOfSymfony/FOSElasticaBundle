@@ -21,20 +21,16 @@ use Pagerfanta\Adapter\AdapterInterface;
 class FantaPaginatorAdapter implements AdapterInterface
 {
     /**
-     * @var PaginatorAdapterInterface<T>
-     *
-     * @phpstan-ignore-next-line todo: make PaginatorAdapterInterface generic
-     */
-    private $adapter;
-
-    /**
      * @param PaginatorAdapterInterface<T> $adapter
      *
      * @phpstan-ignore-next-line todo: make PaginatorAdapterInterface generic
      */
-    public function __construct(PaginatorAdapterInterface $adapter)
-    {
-        $this->adapter = $adapter;
+    public function __construct(
+        /**
+         * @phpstan-ignore-next-line todo: make PaginatorAdapterInterface generic
+         */
+        private readonly PaginatorAdapterInterface $adapter
+    ) {
     }
 
     /**

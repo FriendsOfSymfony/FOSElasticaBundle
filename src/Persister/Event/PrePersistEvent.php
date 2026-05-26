@@ -18,28 +18,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 final class PrePersistEvent extends Event implements PersistEvent
 {
     /**
-     * @var PagerInterface
-     */
-    private $pager;
-
-    /**
-     * @var ObjectPersisterInterface
-     */
-    private $objectPersister;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private $options;
-
-    /**
      * @param array<string, mixed> $options
      */
-    public function __construct(PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $options)
+    public function __construct(private PagerInterface $pager, private ObjectPersisterInterface $objectPersister, private array $options)
     {
-        $this->pager = $pager;
-        $this->objectPersister = $objectPersister;
-        $this->options = $options;
     }
 
     public function getPager(): PagerInterface
@@ -47,10 +29,7 @@ final class PrePersistEvent extends Event implements PersistEvent
         return $this->pager;
     }
 
-    /**
-     * @return void
-     */
-    public function setPager(PagerInterface $pager)
+    public function setPager(PagerInterface $pager): void
     {
         $this->pager = $pager;
     }
@@ -62,10 +41,8 @@ final class PrePersistEvent extends Event implements PersistEvent
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @return void
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
@@ -75,10 +52,7 @@ final class PrePersistEvent extends Event implements PersistEvent
         return $this->objectPersister;
     }
 
-    /**
-     * @return void
-     */
-    public function setObjectPersister(ObjectPersisterInterface $objectPersister)
+    public function setObjectPersister(ObjectPersisterInterface $objectPersister): void
     {
         $this->objectPersister = $objectPersister;
     }

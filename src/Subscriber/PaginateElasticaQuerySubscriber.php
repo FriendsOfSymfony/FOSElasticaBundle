@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 {
-    public function __construct(private RequestStack $requestStack)
+    public function __construct(private readonly RequestStack $requestStack)
     {
     }
 
@@ -109,7 +109,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
             $sortDirection = $options['defaultSortDirection'];
         }
 
-        if (null !== $sortDirection && 'desc' === \strtolower($sortDirection)) {
+        if (null !== $sortDirection && 'desc' === \strtolower((string) $sortDirection)) {
             $dir = 'desc';
         }
 
@@ -128,7 +128,7 @@ class PaginateElasticaQuerySubscriber implements EventSubscriberInterface
 
     private function getFromRequest(?string $key): mixed
     {
-        if (null !== $key && null !== $request = $this->getRequest()) {
+        if (null !== $key && ($request = $this->getRequest()) instanceof Request) {
             return $request->query->get($key);
         }
 

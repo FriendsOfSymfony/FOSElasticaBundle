@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PreIndexResetEventTest extends TestCase
 {
-    public function testReset()
+    public function testReset(): void
     {
         $event = new PreIndexResetEvent('index', false, false);
 
@@ -28,14 +28,14 @@ class PreIndexResetEventTest extends TestCase
         $this->assertFalse($event->isForce());
     }
 
-    public function testPopulatingReset()
+    public function testPopulatingReset(): void
     {
         $event = new PreIndexResetEvent('index', true, false);
 
         $this->assertTrue($event->isPopulating());
     }
 
-    public function testForceReset()
+    public function testForceReset(): void
     {
         $event = new PreIndexResetEvent('index', false, true);
         $this->assertTrue($event->isForce());

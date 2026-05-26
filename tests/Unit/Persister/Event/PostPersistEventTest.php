@@ -23,33 +23,33 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class PostPersistEventTest extends TestCase
 {
-    public function testShouldBeSubClassOfEventClass()
+    public function testShouldBeSubClassOfEventClass(): void
     {
         $rc = new \ReflectionClass(PostPersistEvent::class);
 
         $this->assertTrue($rc->isSubclassOf(Event::class));
     }
 
-    public function testShouldImplementPersistEventInterface()
+    public function testShouldImplementPersistEventInterface(): void
     {
         $rc = new \ReflectionClass(PostPersistEvent::class);
 
         $this->assertTrue($rc->implementsInterface(PersistEvent::class));
     }
 
-    public function testShouldFinal()
+    public function testShouldFinal(): void
     {
         $rc = new \ReflectionClass(PostPersistEvent::class);
 
         $this->assertTrue($rc->isFinal());
     }
 
-    public function testCouldBeConstructedWithPagerAndObjectPersisterAndOptions()
+    public function testCouldBeConstructedWithPagerAndObjectPersisterAndOptions(): void
     {
         new PostPersistEvent($this->createPagerMock(), $this->createObjectPersisterMock(), []);
     }
 
-    public function testShouldAllowGetPagerSetInConstructor()
+    public function testShouldAllowGetPagerSetInConstructor(): void
     {
         $expectedPager = $this->createPagerMock();
 
@@ -58,7 +58,7 @@ final class PostPersistEventTest extends TestCase
         $this->assertSame($expectedPager, $event->getPager());
     }
 
-    public function testShouldAllowGetObjectPersisterSetInConstructor()
+    public function testShouldAllowGetObjectPersisterSetInConstructor(): void
     {
         $expectedPersister = $this->createObjectPersisterMock();
 
@@ -67,7 +67,7 @@ final class PostPersistEventTest extends TestCase
         $this->assertSame($expectedPersister, $event->getObjectPersister());
     }
 
-    public function testShouldAllowGetOptionsSetInConstructor()
+    public function testShouldAllowGetOptionsSetInConstructor(): void
     {
         $expectedOptions = ['foo' => 'fooVal', 'bar' => 'barVal'];
 
@@ -79,7 +79,7 @@ final class PostPersistEventTest extends TestCase
     /**
      * @return ObjectPersisterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createObjectPersisterMock()
+    private function createObjectPersisterMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(ObjectPersisterInterface::class);
     }
@@ -87,7 +87,7 @@ final class PostPersistEventTest extends TestCase
     /**
      * @return PagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createPagerMock()
+    private function createPagerMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(PagerInterface::class);
     }

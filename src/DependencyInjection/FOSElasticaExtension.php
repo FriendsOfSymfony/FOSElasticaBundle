@@ -42,25 +42,21 @@ class FOSElasticaExtension extends Extension
      *
      * @var array<string, array{id: string, reference: Reference}>
      */
-    private $clients = [];
+    private array $clients = [];
 
     /**
      * An array of indexes as configured by the extension.
      *
-     * @var array
-     *
      * @phpstan-var array<string, TIndexConfig>
      */
-    private $indexConfigs = [];
+    private array $indexConfigs = [];
 
     /**
      * An array of index templates as configured by the extension.
      *
-     * @var array
-     *
      * @phpstan-var array<string, TIndexTemplateConfig>
      */
-    private $indexTemplateConfigs = [];
+    private array $indexTemplateConfigs = [];
 
     /**
      * If we've encountered a type mapped to a specific persistence driver, it will be loaded
@@ -68,7 +64,7 @@ class FOSElasticaExtension extends Extension
      *
      * @var list<string>
      */
-    private $loadedDrivers = [];
+    private array $loadedDrivers = [];
 
     /**
      * Custom repository service references keyed by index name.
@@ -397,7 +393,7 @@ class FOSElasticaExtension extends Extension
         }
     }
 
-    private function buildCallback($indexCallback, $indexName)
+    private function buildCallback($indexCallback, int|string $indexName)
     {
         if (\is_array($indexCallback)) {
             if (!isset($indexCallback[0])) {
@@ -425,7 +421,7 @@ class FOSElasticaExtension extends Extension
 
     private function transformServiceReference($classOrService)
     {
-        return 0 === \strpos($classOrService, '@') ? new Reference(\substr($classOrService, 1)) : $classOrService;
+        return \str_starts_with((string) $classOrService, '@') ? new Reference(\substr((string) $classOrService, 1)) : $classOrService;
     }
 
     private function loadIndexSerializerIntegration(array $config, ContainerBuilder $container, Reference $indexRef): void
@@ -664,22 +660,17 @@ class FOSElasticaExtension extends Extension
 
     /**
      * Map Elastica to Doctrine events for the current driver.
+     *
+     * @return mixed[]
      */
-    private function getDoctrineEvents(array $indexConfig)
+    private function getDoctrineEvents(array $indexConfig): array
     {
-        switch ($indexConfig['driver']) {
-            case 'orm':
-                $eventsClass = '\Doctrine\ORM\Events';
-                break;
-            case 'phpcr':
-                $eventsClass = '\Doctrine\ODM\PHPCR\Event';
-                break;
-            case 'mongodb':
-                $eventsClass = '\Doctrine\ODM\MongoDB\Events';
-                break;
-            default:
-                throw new \InvalidArgumentException(\sprintf('Cannot determine events for driver "%s"', $indexConfig['driver']));
-        }
+        $eventsClass = match ($indexConfig['driver']) {
+            'orm' => '\Doctrine\ORM\Events',
+            'phpcr' => '\Doctrine\ODM\PHPCR\Event',
+            'mongodb' => '\Doctrine\ODM\MongoDB\Events',
+            default => throw new \InvalidArgumentException(\sprintf('Cannot determine events for driver "%s"', $indexConfig['driver'])),
+        };
 
         $events = [];
         $eventMapping = [
@@ -749,9 +740,7 @@ class FOSElasticaExtension extends Extension
      */
     private function loadIndexManager(ContainerBuilder $container): void
     {
-        $indexRefs = \array_map(static function ($index) {
-            return $index['reference'];
-        }, $this->indexConfigs);
+        $indexRefs = \array_map(static fn (array $index) => $index['reference'], $this->indexConfigs);
 
         $managerDef = $container->getDefinition('fos_elastica.index_manager');
         $managerDef->replaceArgument(0, $indexRefs);
@@ -762,9 +751,7 @@ class FOSElasticaExtension extends Extension
      */
     private function loadIndexTemplateManager(ContainerBuilder $container): void
     {
-        $indexTemplateRefs = \array_map(static function ($index) {
-            return $index['reference'];
-        }, $this->indexTemplateConfigs);
+        $indexTemplateRefs = \array_map(static fn (array $index) => $index['reference'], $this->indexTemplateConfigs);
 
         $managerDef = $container->getDefinition('fos_elastica.index_template_manager');
         $managerDef->replaceArgument(0, $indexTemplateRefs);
@@ -806,7 +793,7 @@ class FOSElasticaExtension extends Extension
      */
     private function createDefaultManagerAlias(string $defaultManager, ContainerBuilder $container): void
     {
-        if (0 == \count($this->loadedDrivers)) {
+        if (0 === \count($this->loadedDrivers)) {
             return;
         }
 

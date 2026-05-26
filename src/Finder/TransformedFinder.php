@@ -30,12 +30,10 @@ use Pagerfanta\Pagerfanta;
 class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderInterface, PaginatedHybridFinderInterface
 {
     protected SearchableInterface $searchable;
-    protected ElasticaToModelTransformerInterface $transformer;
 
-    public function __construct(SearchableInterface $searchable, ElasticaToModelTransformerInterface $transformer)
+    public function __construct(SearchableInterface $searchable, protected ElasticaToModelTransformerInterface $transformer)
     {
         $this->searchable = $searchable;
-        $this->transformer = $transformer;
     }
 
     public function find($query, ?int $limit = null, array $options = [])
@@ -78,21 +76,21 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
-    public function createPaginatorAdapter($query, array $options = [])
+    public function createPaginatorAdapter($query, array $options = []): TransformedPaginatorAdapter
     {
         $query = Query::create($query);
 
         return new TransformedPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
     }
 
-    public function createHybridPaginatorAdapter($query, array $options = [])
+    public function createHybridPaginatorAdapter($query, array $options = []): HybridPaginatorAdapter
     {
         $query = Query::create($query);
 
         return new HybridPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
     }
 
-    public function createRawPaginatorAdapter($query, array $options = [])
+    public function createRawPaginatorAdapter($query, array $options = []): RawPaginatorAdapter
     {
         $query = Query::create($query);
 

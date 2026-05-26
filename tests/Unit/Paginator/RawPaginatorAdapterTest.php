@@ -21,7 +21,7 @@ use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
  */
 class RawPaginatorAdapterTest extends UnitTestHelper
 {
-    public function testGetTotalHits()
+    public function testGetTotalHits(): void
     {
         $adapter = $this->createAdapterWithCount(123);
         $this->assertEquals(123, $adapter->getTotalHits());
@@ -30,7 +30,7 @@ class RawPaginatorAdapterTest extends UnitTestHelper
         $this->assertEquals(100, $adapter->getTotalHits());
     }
 
-    public function testGetTotalHitsGenuineTotal()
+    public function testGetTotalHitsGenuineTotal(): void
     {
         $adapter = $this->createAdapterWithCount(123);
         $this->assertEquals(123, $adapter->getTotalHits(true));
@@ -39,30 +39,30 @@ class RawPaginatorAdapterTest extends UnitTestHelper
         $this->assertEquals(123, $adapter->getTotalHits(true));
     }
 
-    public function testGetAggregations()
+    public function testGetAggregations(): void
     {
         $value = [];
         $adapter = $this->createAdapterWithSearch('getAggregations', $value);
         $this->assertEquals($value, $adapter->getAggregations());
     }
 
-    public function testGetSuggests()
+    public function testGetSuggests(): void
     {
         $value = [];
         $adapter = $this->createAdapterWithSearch('getSuggests', $value);
         $this->assertEquals($value, $adapter->getSuggests());
     }
 
-    public function testGetMaxScore()
+    public function testGetMaxScore(): void
     {
         $value = 1.0;
         $adapter = $this->createAdapterWithSearch('getMaxScore', $value);
         $this->assertEquals($value, $adapter->getMaxScore());
     }
 
-    public function testGetQuery()
+    public function testGetQuery(): void
     {
-        $resultSet = $this->mockResultSet();
+        $this->mockResultSet();
 
         $query = new Query();
         $options = [];
@@ -84,7 +84,7 @@ class RawPaginatorAdapterTest extends UnitTestHelper
         ;
     }
 
-    private function createAdapterWithSearch($methodName, $value)
+    private function createAdapterWithSearch(string $methodName, array|float $value): RawPaginatorAdapter
     {
         $resultSet = $this->mockResultSet();
         $resultSet
@@ -106,7 +106,7 @@ class RawPaginatorAdapterTest extends UnitTestHelper
         return new RawPaginatorAdapter($searchable, $query, $options);
     }
 
-    private function createAdapterWithCount($totalHits, $querySize = null)
+    private function createAdapterWithCount(int $totalHits, $querySize = null): RawPaginatorAdapter
     {
         $query = new Query();
         if ($querySize) {

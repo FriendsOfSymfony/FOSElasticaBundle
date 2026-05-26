@@ -32,7 +32,7 @@ class Entity
  */
 class RepositoryManagerTest extends TestCase
 {
-    public function testThatGetRepositoryReturnsDefaultRepository()
+    public function testThatGetRepositoryReturnsDefaultRepository(): void
     {
         $finderMock = $this->createMock(TransformedFinder::class);
 
@@ -44,7 +44,7 @@ class RepositoryManagerTest extends TestCase
         $this->assertInstanceOf(Repository::class, $repository);
     }
 
-    public function testThatGetRepositoryReturnsCustomRepositoryFromLocator()
+    public function testThatGetRepositoryReturnsCustomRepositoryFromLocator(): void
     {
         $finderMock = $this->createMock(TransformedFinder::class);
         $customRepository = new CustomRepository($finderMock);
@@ -81,7 +81,7 @@ class RepositoryManagerTest extends TestCase
         $this->assertSame($first, $second);
     }
 
-    public function testThatGetRepositoryThrowsExceptionIfEntityNotConfigured()
+    public function testThatGetRepositoryThrowsExceptionIfEntityNotConfigured(): void
     {
         $finderMock = $this->createMock(TransformedFinder::class);
 
@@ -94,7 +94,7 @@ class RepositoryManagerTest extends TestCase
         $manager->getRepository('Missing type');
     }
 
-    public function testThatLocatorIsPreferredOverDefaultRepository()
+    public function testThatLocatorIsPreferredOverDefaultRepository(): void
     {
         $finderMock = $this->createMock(TransformedFinder::class);
         $customRepository = new CustomRepository($finderMock);

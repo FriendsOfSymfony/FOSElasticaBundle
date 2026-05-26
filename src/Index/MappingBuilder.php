@@ -22,7 +22,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class MappingBuilder
 {
-    private EventDispatcherInterface $dispatcher;
+    private readonly EventDispatcherInterface $dispatcher;
 
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
@@ -43,11 +43,11 @@ class MappingBuilder
         $mapping = $event->getMapping();
         $settings = $indexConfig->getSettings();
 
-        if ($mapping) {
+        if ([] !== $mapping) {
             $mappingIndex['mappings'] = $mapping;
         }
 
-        if ($settings) {
+        if ([] !== $settings) {
             $mappingIndex['settings'] = $settings;
         }
 
@@ -120,9 +120,9 @@ class MappingBuilder
      */
     private function fixProperties(array &$properties): void
     {
-        foreach ($properties as $name => &$property) {
+        foreach ($properties as &$property) {
             unset($property['property_path']);
-            $property['type'] = $property['type'] ?? 'text';
+            $property['type'] ??= 'text';
 
             if (isset($property['fields'])) {
                 $this->fixProperties($property['fields']);

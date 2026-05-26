@@ -20,7 +20,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  */
 class AbstractElasticaToModelTransformerTest extends UnitTestHelper
 {
-    public function testSetPropertyAccessor()
+    public function testSetPropertyAccessor(): void
     {
         $propertyAccessor = $this->mockPropertyAccesor();
         $transformer = $this->mockAbstractElasticaToModelTransformer();
@@ -36,7 +36,7 @@ class AbstractElasticaToModelTransformerTest extends UnitTestHelper
         ;
     }
 
-    protected function mockPropertyAccesor()
+    protected function mockPropertyAccesor(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(PropertyAccessorInterface::class);
     }

@@ -26,25 +26,14 @@ abstract class AbstractTransformEvent extends Event
     protected $document;
 
     /**
-     * @var array
-     *
-     * @phpstan-var TFields
-     */
-    private $fields;
-
-    /**
-     * @var object
-     */
-    private $object;
-
-    /**
      * @phpstan-param TFields $fields
      */
-    public function __construct(Document $document, array $fields, object $object)
+    public function __construct(Document $document, /**
+     * @phpstan-var TFields
+     */
+        private readonly array $fields, private readonly object $object)
     {
         $this->document = $document;
-        $this->fields = $fields;
-        $this->object = $object;
     }
 
     public function getDocument(): Document

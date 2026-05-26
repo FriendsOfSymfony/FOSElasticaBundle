@@ -21,35 +21,31 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  */
 class PagerProviderRegistryTest extends TestCase
 {
-    public function testGetProviders()
+    public function testGetProviders(): void
     {
         $service = $this->createMock(PagerProviderInterface::class);
 
         $providers = new ServiceLocator([
-            'index' => static function () use ($service) {
-                return $service;
-            },
+            'index' => static fn () => $service,
         ]);
 
         $registry = new PagerProviderRegistry($providers);
         $this->assertEquals(['index' => $service], $registry->getProviders());
     }
 
-    public function testGetProviderValid()
+    public function testGetProviderValid(): void
     {
         $service = $this->createMock(PagerProviderInterface::class);
 
         $providers = new ServiceLocator([
-            'index' => static function () use ($service) {
-                return $service;
-            },
+            'index' => static fn () => $service,
         ]);
 
         $registry = new PagerProviderRegistry($providers);
         $this->assertEquals($service, $registry->getProvider('index'));
     }
 
-    public function testGetProviderInvalid()
+    public function testGetProviderInvalid(): void
     {
         $registry = new PagerProviderRegistry(new ServiceLocator([]));
         $this->expectException(\InvalidArgumentException::class);

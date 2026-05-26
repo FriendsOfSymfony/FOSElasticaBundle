@@ -37,7 +37,7 @@ class POPO4
  */
 class ModelToElasticaIdentifierTransformerTest extends TestCase
 {
-    public function testGetDocumentWithIdentifierOnly()
+    public function testGetDocumentWithIdentifierOnly(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO4(), []);
@@ -48,7 +48,7 @@ class ModelToElasticaIdentifierTransformerTest extends TestCase
         $this->assertCount(0, $data);
     }
 
-    public function testGetDocumentWithIdentifierOnlyWithFields()
+    public function testGetDocumentWithIdentifierOnlyWithFields(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO4(), ['name' => []]);
@@ -59,10 +59,7 @@ class ModelToElasticaIdentifierTransformerTest extends TestCase
         $this->assertCount(0, $data);
     }
 
-    /**
-     * @return ModelToElasticaIdentifierTransformer
-     */
-    private function getTransformer()
+    private function getTransformer(): ModelToElasticaIdentifierTransformer
     {
         $transformer = new ModelToElasticaIdentifierTransformer();
         $transformer->setPropertyAccessor(PropertyAccess::createPropertyAccessor());

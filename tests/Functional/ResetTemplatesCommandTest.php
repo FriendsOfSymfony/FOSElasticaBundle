@@ -41,7 +41,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         $this->elasticClient = self::getContainer()->get('fos_elastica.client');
     }
 
-    public function testResetAllTemplates()
+    public function testResetAllTemplates(): void
     {
         $this->clearTemplates();
 
@@ -59,7 +59,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         $this->assertArrayHasKey('index_template_1_name', $templates);
     }
 
-    public function testResetAllTemplatesAndForceDelete()
+    public function testResetAllTemplatesAndForceDelete(): void
     {
         $this->clearTemplates();
 
@@ -83,7 +83,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         $this->assertArrayHasKey('index_template_1_name', $templates);
     }
 
-    public function testResetExactTemplate()
+    public function testResetExactTemplate(): void
     {
         $this->clearTemplates();
 
@@ -102,7 +102,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         $this->assertArrayHasKey('index_template_1_name', $templates);
     }
 
-    public function testResetExactTemplateAndForceDelete()
+    public function testResetExactTemplateAndForceDelete(): void
     {
         $this->clearTemplates();
 
@@ -124,7 +124,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         $this->assertArrayHasKey('index_template_3_name', $templates);
     }
 
-    private function clearTemplates()
+    private function clearTemplates(): void
     {
         $this->elasticClient->indices()->deleteTemplate(['name' => '*']);
     }

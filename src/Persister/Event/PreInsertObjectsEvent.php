@@ -17,38 +17,14 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class PreInsertObjectsEvent extends Event implements PersistEvent
 {
-    /**
-     * @var PagerInterface
-     */
-    private $pager;
-
-    /**
-     * @var ObjectPersisterInterface
-     */
-    private $objectPersister;
-
-    /**
-     * @var list<object>
-     */
-    private $objects;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private $options;
-
     private int $filteredObjectCount = 0;
 
     /**
      * @param list<object>         $objects
      * @param array<string, mixed> $options
      */
-    public function __construct(PagerInterface $pager, ObjectPersisterInterface $objectPersister, array $objects, array $options)
+    public function __construct(private PagerInterface $pager, private ObjectPersisterInterface $objectPersister, private array $objects, private array $options)
     {
-        $this->pager = $pager;
-        $this->objectPersister = $objectPersister;
-        $this->objects = $objects;
-        $this->options = $options;
     }
 
     public function getPager(): PagerInterface
@@ -56,10 +32,7 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
         return $this->pager;
     }
 
-    /**
-     * @return void
-     */
-    public function setPager(PagerInterface $pager)
+    public function setPager(PagerInterface $pager): void
     {
         $this->pager = $pager;
     }
@@ -71,10 +44,8 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @return void
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
@@ -84,10 +55,7 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
         return $this->objectPersister;
     }
 
-    /**
-     * @return void
-     */
-    public function setObjectPersister(ObjectPersisterInterface $objectPersister)
+    public function setObjectPersister(ObjectPersisterInterface $objectPersister): void
     {
         $this->objectPersister = $objectPersister;
     }
@@ -102,10 +70,8 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
 
     /**
      * @param list<object> $objects
-     *
-     * @return void
      */
-    public function setObjects($objects)
+    public function setObjects($objects): void
     {
         $this->objects = $objects;
     }

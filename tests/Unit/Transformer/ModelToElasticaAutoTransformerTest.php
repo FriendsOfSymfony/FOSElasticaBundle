@@ -28,16 +28,20 @@ class POPO3
     public $float = 7.2;
     public $bool = true;
     public $falseBool = false;
+    /**
+     * @var \DateTime
+     */
     public $date;
+    /**
+     * @var \DateInterval
+     */
     public $duration;
     public $nullValue;
+    /**
+     * @var \SplFileInfo
+     */
     public $file;
     public $fileContents;
-
-    /**
-     * test non-accessible private property.
-     */
-    private $desc = 'desc';
 
     public function __construct()
     {
@@ -57,7 +61,7 @@ class POPO3
         return $this->name;
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         $iterator = new \ArrayIterator();
         $iterator->append('value1');
@@ -65,7 +69,7 @@ class POPO3
         return $iterator;
     }
 
-    public function getArray()
+    public function getArray(): array
     {
         return [
             'key1' => 'value1',
@@ -73,7 +77,7 @@ class POPO3
         ];
     }
 
-    public function getMultiArray()
+    public function getMultiArray(): array
     {
         return [
             'key1' => 'value1',
@@ -121,7 +125,7 @@ class POPO3
         return $this->fileContents;
     }
 
-    public function getSub()
+    public function getSub(): array
     {
         return [
             (object) ['foo' => 'foo', 'bar' => 'foo', 'id' => 1],
@@ -129,12 +133,12 @@ class POPO3
         ];
     }
 
-    public function getObj()
+    public function getObj(): array
     {
         return ['foo' => 'foo', 'bar' => 'foo', 'id' => 1];
     }
 
-    public function getNestedObject()
+    public function getNestedObject(): array
     {
         return ['key1' => (object) ['id' => 1, 'key1sub1' => 'value1sub1', 'key1sub2' => 'value1sub2']];
     }
@@ -154,7 +158,7 @@ class POPO3
         return (object) ['foo' => 'foo', 'bar' => 'foo'];
     }
 
-    public function getSubWithoutIdentifier()
+    public function getSubWithoutIdentifier(): array
     {
         return [
             (object) ['foo' => 'foo', 'bar' => 'foo'],
@@ -163,13 +167,13 @@ class POPO3
     }
 }
 
-class CastableObject
+class CastableObject implements \Stringable
 {
     public $foo;
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->foo;
+        return (string) $this->foo;
     }
 }
 
@@ -178,7 +182,7 @@ class CastableObject
  */
 class ModelToElasticaAutoTransformerTest extends TestCase
 {
-    public function testTransformerDispatches()
+    public function testTransformerDispatches(): void
     {
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
 
@@ -198,7 +202,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $transformer->transform(new POPO3(), []);
     }
 
-    public function testPropertyPath()
+    public function testPropertyPath(): void
     {
         $transformer = $this->getTransformer();
 
@@ -212,7 +216,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertSame('someName', $document->get('realName'));
     }
 
-    public function testThatCanTransformObject()
+    public function testThatCanTransformObject(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), ['name' => []]);
@@ -223,7 +227,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertSame('someName', $data['name']);
     }
 
-    public function testThatCanTransformObjectWithCorrectTypes()
+    public function testThatCanTransformObjectWithCorrectTypes(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(
@@ -250,7 +254,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertSame('P1Y1M1DT1H1M1S', $data['duration']);
     }
 
-    public function testThatCanTransformObjectWithIteratorValue()
+    public function testThatCanTransformObjectWithIteratorValue(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), ['iterator' => []]);
@@ -259,7 +263,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertSame(['value1'], $data['iterator']);
     }
 
-    public function testThatCanTransformObjectWithArrayValue()
+    public function testThatCanTransformObjectWithArrayValue(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), ['array' => []]);
@@ -274,7 +278,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         );
     }
 
-    public function testThatCanTransformObjectWithMultiDimensionalArrayValue()
+    public function testThatCanTransformObjectWithMultiDimensionalArrayValue(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), ['multiArray' => []]);
@@ -291,7 +295,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         );
     }
 
-    public function testThatNullValuesAreNotFilteredOut()
+    public function testThatNullValuesAreNotFilteredOut(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), ['nullValue' => []]);
@@ -300,7 +304,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertArrayHasKey('nullValue', $data);
     }
 
-    public function testThatCannotTransformObjectWhenGetterDoesNotExistForPrivateMethod()
+    public function testThatCannotTransformObjectWhenGetterDoesNotExistForPrivateMethod(): void
     {
         $transformer = $this->getTransformer();
 
@@ -308,7 +312,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $transformer->transform(new POPO3(), ['desc' => []]);
     }
 
-    public function testFileAddedForAttachmentMapping()
+    public function testFileAddedForAttachmentMapping(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), ['file' => ['type' => 'attachment']]);
@@ -317,7 +321,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertSame(\base64_encode(\file_get_contents(__DIR__.'/fixtures/attachment.odt')), $data['file']);
     }
 
-    public function testFileContentsAddedForAttachmentMapping()
+    public function testFileContentsAddedForAttachmentMapping(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), ['fileContents' => ['type' => 'attachment']]);
@@ -329,7 +333,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         );
     }
 
-    public function testNestedMapping()
+    public function testNestedMapping(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), [
@@ -348,7 +352,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ], $data['sub']);
     }
 
-    public function tesObjectMapping()
+    public function tesObjectMapping(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), [
@@ -367,7 +371,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ], $data['sub']);
     }
 
-    public function testObjectDoesNotRequireProperties()
+    public function testObjectDoesNotRequireProperties(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), [
@@ -386,7 +390,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ], $data['obj']);
     }
 
-    public function testObjectsMappingOfAtLeastOneAutoMappedObjectAndAtLeastOneManuallyMappedObject()
+    public function testObjectsMappingOfAtLeastOneAutoMappedObjectAndAtLeastOneManuallyMappedObject(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(
@@ -431,7 +435,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         );
     }
 
-    public function testThatMappedObjectsDontNeedAnIdentifierField()
+    public function testThatMappedObjectsDontNeedAnIdentifierField(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), [
@@ -453,7 +457,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ], $data['objWithoutIdentifier']);
     }
 
-    public function testThatNestedObjectsDontNeedAnIdentifierField()
+    public function testThatNestedObjectsDontNeedAnIdentifierField(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), [
@@ -475,7 +479,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         ], $data['subWithoutIdentifier']);
     }
 
-    public function testNestedTransformHandlesSingleObjects()
+    public function testNestedTransformHandlesSingleObjects(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), [
@@ -489,7 +493,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertSame('a random name', $data['upper']['name']);
     }
 
-    public function testNestedTransformReturnsAnEmptyArrayForNullValues()
+    public function testNestedTransformReturnsAnEmptyArrayForNullValues(): void
     {
         $transformer = $this->getTransformer();
         $document = $transformer->transform(new POPO3(), [
@@ -507,7 +511,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertEmpty($data['nullValue']);
     }
 
-    public function testUnmappedFieldValuesAreNormalisedToStrings()
+    public function testUnmappedFieldValuesAreNormalisedToStrings(): void
     {
         $object = new \stdClass();
         $value = new CastableObject();
@@ -523,7 +527,7 @@ class ModelToElasticaAutoTransformerTest extends TestCase
         $this->assertSame('bar', $data['unmappedValue']);
     }
 
-    public function testIdentifierIsCastedToString()
+    public function testIdentifierIsCastedToString(): void
     {
         $idObject = new CastableObject();
         $idObject->foo = '00000000-0000-0000-0000-000000000000';
@@ -556,10 +560,8 @@ class ModelToElasticaAutoTransformerTest extends TestCase
 
     /**
      * @param EventDispatcherInterface|null $dispatcher
-     *
-     * @return ModelToElasticaAutoTransformer
      */
-    private function getTransformer($dispatcher = null)
+    private function getTransformer($dispatcher = null): ModelToElasticaAutoTransformer
     {
         $transformer = new ModelToElasticaAutoTransformer([], $dispatcher);
         $transformer->setPropertyAccessor(PropertyAccess::createPropertyAccessor());

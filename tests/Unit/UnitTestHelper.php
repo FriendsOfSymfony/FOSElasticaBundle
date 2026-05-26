@@ -27,11 +27,10 @@ class UnitTestHelper extends TestCase
      * @param object $object   instance in which protected value is being modified
      * @param string $property property on instance being modified
      */
-    protected function getProtectedProperty($object, string $property)
+    protected function getProtectedProperty($object, string $property): mixed
     {
         $reflection = new \ReflectionClass($object);
         $reflectionProperty = $reflection->getProperty($property);
-        $reflectionProperty->setAccessible(true);
 
         return $reflectionProperty->getValue($object);
     }

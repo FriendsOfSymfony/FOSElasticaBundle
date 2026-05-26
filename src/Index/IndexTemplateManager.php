@@ -21,18 +21,14 @@ use Elastica\IndexTemplate;
 class IndexTemplateManager
 {
     /**
-     * Templates.
-     *
-     * @var array<string, IndexTemplate>
-     */
-    private $templates;
-
-    /**
      * @param array<string, IndexTemplate> $templates
      */
-    public function __construct(array $templates)
-    {
-        $this->templates = $templates;
+    public function __construct(
+        /**
+         * Templates.
+         */
+        private array $templates
+    ) {
     }
 
     /**

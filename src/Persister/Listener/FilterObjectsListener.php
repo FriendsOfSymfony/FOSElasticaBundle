@@ -17,17 +17,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class FilterObjectsListener implements EventSubscriberInterface
 {
-    private IndexableInterface $indexable;
-
-    public function __construct(IndexableInterface $indexable)
+    public function __construct(private readonly IndexableInterface $indexable)
     {
-        $this->indexable = $indexable;
     }
 
     public function filterObjects(PreInsertObjectsEvent $event): void
     {
         $options = $event->getOptions();
-        if (false == empty($options['skip_indexable_check'])) {
+        if (false === empty($options['skip_indexable_check'])) {
             return;
         }
 

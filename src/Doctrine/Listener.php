@@ -39,10 +39,6 @@ class Listener
      * IDs of objects scheduled for removal.
      */
     public array $scheduledForDeletion = [];
-    /**
-     * Object persister.
-     */
-    protected ObjectPersisterInterface $objectPersister;
 
     /**
      * PropertyAccessor instance.
@@ -54,11 +50,12 @@ class Listener
      */
     private array $config;
 
-    private IndexableInterface $indexable;
-
     public function __construct(
-        ObjectPersisterInterface $objectPersister,
-        IndexableInterface $indexable,
+        /**
+         * Object persister.
+         */
+        protected ObjectPersisterInterface $objectPersister,
+        private readonly IndexableInterface $indexable,
         array $config = [],
         ?LoggerInterface $logger = null,
     ) {
@@ -66,8 +63,6 @@ class Listener
             'identifier' => 'id',
             'defer' => false,
         ], $config);
-        $this->indexable = $indexable;
-        $this->objectPersister = $objectPersister;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         if ($logger && $this->objectPersister instanceof ObjectPersister) {
@@ -79,7 +74,7 @@ class Listener
      * Handler for the "kernel.terminate" and "console.terminate" Symfony events.
      * These event are subscribed to if the listener is configured to persist asynchronously.
      */
-    public function onTerminate()
+    public function onTerminate(): void
     {
         if ($this->config['defer']) {
             $this->config['defer'] = false;
@@ -91,21 +86,19 @@ class Listener
     /**
      * Looks for new objects that should be indexed.
      */
-    public function postPersist(LifecycleEventArgs $eventArgs)
+    public function postPersist(LifecycleEventArgs $eventArgs): void
     {
         $entity = $eventArgs->getObject();
 
-        if ($this->objectPersister->handlesObject($entity) && $this->isObjectIndexable($entity)) {
-            if (!$entity instanceof ConditionalUpdate || $entity->shouldBeUpdated()) {
-                $this->scheduledForInsertion[] = $entity;
-            }
+        if ($this->objectPersister->handlesObject($entity) && $this->isObjectIndexable($entity) && (!$entity instanceof ConditionalUpdate || $entity->shouldBeUpdated())) {
+            $this->scheduledForInsertion[] = $entity;
         }
     }
 
     /**
      * Looks for objects being updated that should be indexed or removed from the index.
      */
-    public function postUpdate(LifecycleEventArgs $eventArgs)
+    public function postUpdate(LifecycleEventArgs $eventArgs): void
     {
         $entity = $eventArgs->getObject();
 
@@ -125,7 +118,7 @@ class Listener
      * Delete objects preRemove instead of postRemove so that we have access to the id.  Because this is called
      * preRemove, first check that the entity is managed by Doctrine.
      */
-    public function preRemove(LifecycleEventArgs $eventArgs)
+    public function preRemove(LifecycleEventArgs $eventArgs): void
     {
         $entity = $eventArgs->getObject();
 
@@ -145,7 +138,7 @@ class Listener
      *             on the behaviour that entities are indexed regardless of if a
      *             flush is successful
      */
-    public function preFlush()
+    public function preFlush(): void
     {
         $this->persistScheduled();
     }
@@ -154,17 +147,15 @@ class Listener
      * Iterating through scheduled actions *after* flushing ensures that the
      * ElasticSearch index will be affected only if the query is successful.
      */
-    public function postFlush()
+    public function postFlush(): void
     {
         $this->persistScheduled();
     }
 
     /**
      * Determines whether or not it is okay to persist now.
-     *
-     * @return bool
      */
-    private function shouldPersist()
+    private function shouldPersist(): bool
     {
         return !$this->config['defer'];
     }
@@ -173,7 +164,7 @@ class Listener
      * Persist scheduled objects to ElasticSearch
      * After persisting, clear the scheduled queue to prevent multiple data updates when using multiple flush calls.
      */
-    private function persistScheduled()
+    private function persistScheduled(): void
     {
         if ($this->shouldPersist()) {
             if (\count($this->scheduledForInsertion)) {
@@ -196,7 +187,7 @@ class Listener
      *
      * @param object $object
      */
-    private function scheduleForDeletion($object)
+    private function scheduleForDeletion($object): void
     {
         if ($identifierValue = $this->propertyAccessor->getValue($object, $this->config['identifier'])) {
             $this->scheduledForDeletion[] = (string) $identifierValue;
@@ -205,12 +196,8 @@ class Listener
 
     /**
      * Checks if the object is indexable or not.
-     *
-     * @param object $object
-     *
-     * @return bool
      */
-    private function isObjectIndexable($object)
+    private function isObjectIndexable(object $object): bool
     {
         return $this->indexable->isObjectIndexable(
             $this->config['indexName'],

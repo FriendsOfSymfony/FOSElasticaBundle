@@ -22,20 +22,16 @@ use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 class ContainerSource implements SourceInterface
 {
     /**
-     * The internal container representation of information.
-     *
-     * @var array
-     *
-     * @phpstan-var list<TConfig>
-     */
-    private $configArray;
-
-    /**
      * @param list<TConfig> $configArray
      */
-    public function __construct(array $configArray)
-    {
-        $this->configArray = $configArray;
+    public function __construct(
+        /**
+         * The internal container representation of information.
+         *
+         * @phpstan-var list<TConfig>
+         */
+        private readonly array $configArray
+    ) {
     }
 
     /**

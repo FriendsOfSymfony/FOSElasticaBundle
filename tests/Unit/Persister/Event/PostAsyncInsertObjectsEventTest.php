@@ -25,28 +25,28 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class PostAsyncInsertObjectsEventTest extends TestCase
 {
-    public function testShouldBeSubClassOfEventClass()
+    public function testShouldBeSubClassOfEventClass(): void
     {
         $rc = new \ReflectionClass(PostAsyncInsertObjectsEvent::class);
 
         $this->assertTrue($rc->isSubclassOf(Event::class));
     }
 
-    public function testShouldImplementPersistEventInterface()
+    public function testShouldImplementPersistEventInterface(): void
     {
         $rc = new \ReflectionClass(PostAsyncInsertObjectsEvent::class);
 
         $this->assertTrue($rc->implementsInterface(PersistEvent::class));
     }
 
-    public function testShouldFinal()
+    public function testShouldFinal(): void
     {
         $rc = new \ReflectionClass(PostAsyncInsertObjectsEvent::class);
 
         $this->assertTrue($rc->isFinal());
     }
 
-    public function testCouldBeConstructedWithPagerAndObjectPersisterAndObjectsCountAndOptions()
+    public function testCouldBeConstructedWithPagerAndObjectPersisterAndObjectsCountAndOptions(): void
     {
         new PostAsyncInsertObjectsEvent(
             $this->createPagerMock(),
@@ -57,7 +57,7 @@ final class PostAsyncInsertObjectsEventTest extends TestCase
         );
     }
 
-    public function testShouldAllowGetPagerSetInConstructor()
+    public function testShouldAllowGetPagerSetInConstructor(): void
     {
         $expectedPager = $this->createPagerMock();
 
@@ -66,7 +66,7 @@ final class PostAsyncInsertObjectsEventTest extends TestCase
         $this->assertSame($expectedPager, $event->getPager());
     }
 
-    public function testShouldAllowGetObjectPersisterSetInConstructor()
+    public function testShouldAllowGetObjectPersisterSetInConstructor(): void
     {
         $expectedPersister = $this->createObjectPersisterMock();
 
@@ -75,7 +75,7 @@ final class PostAsyncInsertObjectsEventTest extends TestCase
         $this->assertSame($expectedPersister, $event->getObjectPersister());
     }
 
-    public function testShouldAllowGetOptionsSetInConstructor()
+    public function testShouldAllowGetOptionsSetInConstructor(): void
     {
         $expectedOptions = ['foo' => 'fooVal', 'bar' => 'barVal'];
 
@@ -84,7 +84,7 @@ final class PostAsyncInsertObjectsEventTest extends TestCase
         $this->assertSame($expectedOptions, $event->getOptions());
     }
 
-    public function testShouldAllowGetObjectsSetInConstructor()
+    public function testShouldAllowGetObjectsSetInConstructor(): void
     {
         $expectedObjectsCount = 321;
 
@@ -93,7 +93,7 @@ final class PostAsyncInsertObjectsEventTest extends TestCase
         $this->assertSame($expectedObjectsCount, $event->getObjectsCount());
     }
 
-    public function testShouldAllowGetErrorMessageSetInConstructor()
+    public function testShouldAllowGetErrorMessageSetInConstructor(): void
     {
         $expectedErrorMessage = 'theErrorMessage';
 
@@ -105,7 +105,7 @@ final class PostAsyncInsertObjectsEventTest extends TestCase
     /**
      * @return ObjectPersisterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createObjectPersisterMock()
+    private function createObjectPersisterMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(ObjectPersisterInterface::class);
     }
@@ -113,7 +113,7 @@ final class PostAsyncInsertObjectsEventTest extends TestCase
     /**
      * @return PagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createPagerMock()
+    private function createPagerMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(PagerInterface::class);
     }

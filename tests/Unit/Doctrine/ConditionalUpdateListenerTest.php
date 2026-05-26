@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ConditionalUpdateListenerTest extends TestCase
 {
-    public function testEntityWithConditionalUpdateTrueIsIndexed()
+    public function testEntityWithConditionalUpdateTrueIsIndexed(): void
     {
         $entity = $this->createMock(ConditionalUpdate::class);
         $entity->expects($this->once())
@@ -58,7 +58,7 @@ class ConditionalUpdateListenerTest extends TestCase
         $this->assertContains($entity, $listener->scheduledForInsertion);
     }
 
-    public function testEntityWithConditionalUpdateFalseIsNotIndexed()
+    public function testEntityWithConditionalUpdateFalseIsNotIndexed(): void
     {
         // Create a mock entity implementing ConditionalUpdate that returns false
         $entity = $this->createMock(ConditionalUpdate::class);
@@ -99,7 +99,7 @@ class ConditionalUpdateListenerTest extends TestCase
         $this->assertEmpty($listener->scheduledForInsertion);
     }
 
-    public function testEntityWithConditionalUpdateTrueIsUpdated()
+    public function testEntityWithConditionalUpdateTrueIsUpdated(): void
     {
         // Create a mock entity implementing ConditionalUpdate that returns true
         $entity = $this->createMock(ConditionalUpdate::class);
@@ -140,7 +140,7 @@ class ConditionalUpdateListenerTest extends TestCase
         $this->assertContains($entity, $listener->scheduledForUpdate);
     }
 
-    public function testEntityWithConditionalUpdateFalseIsNotUpdated()
+    public function testEntityWithConditionalUpdateFalseIsNotUpdated(): void
     {
         // Create a mock entity implementing ConditionalUpdate that returns false
         $entity = $this->createMock(ConditionalUpdate::class);

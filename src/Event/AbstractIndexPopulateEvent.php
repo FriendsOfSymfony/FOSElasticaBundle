@@ -31,26 +31,14 @@ namespace FOS\ElasticaBundle\Event;
 abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
 {
     /**
-     * @var bool
-     */
-    protected $reset;
-
-    /**
-     * @var array
-     *
-     * @phpstan-var TOptions
-     */
-    protected $options;
-
-    /**
      * @phpstan-param TOptions $options
      */
-    public function __construct(string $index, bool $reset, array $options)
+    public function __construct(string $index, protected bool $reset, /**
+     * @phpstan-var TOptions
+     */
+        protected array $options)
     {
         parent::__construct($index);
-
-        $this->reset = $reset;
-        $this->options = $options;
     }
 
     public function isReset(): bool

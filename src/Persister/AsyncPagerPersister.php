@@ -25,27 +25,15 @@ final class AsyncPagerPersister implements PagerPersisterInterface
     private const DEFAULT_PAGE_SIZE = 100;
 
     /**
-     * @var PagerPersisterRegistry
-     */
-    private $pagerPersisterRegistry;
-
-    /**
-     * @var PagerProviderRegistry
-     */
-    private $pagerProviderRegistry;
-
-    /**
      * @var MessageBusInterface
      */
     private $messageBus;
 
     public function __construct(
-        PagerPersisterRegistry $pagerPersisterRegistry,
-        PagerProviderRegistry $pagerProviderRegistry,
+        private readonly PagerPersisterRegistry $pagerPersisterRegistry,
+        private readonly PagerProviderRegistry $pagerProviderRegistry,
         MessageBusInterface $messageBus,
     ) {
-        $this->pagerPersisterRegistry = $pagerPersisterRegistry;
-        $this->pagerProviderRegistry = $pagerProviderRegistry;
         $this->messageBus = $messageBus;
     }
 

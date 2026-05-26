@@ -17,52 +17,14 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class OnExceptionEvent extends Event implements PersistEvent
 {
-    /**
-     * @var PagerInterface
-     */
-    private $pager;
-
-    /**
-     * @var ObjectPersisterInterface
-     */
-    private $objectPersister;
-
-    /**
-     * @var \Exception
-     */
-    private $exception;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private $options;
-
-    /**
-     * @var list<object>
-     */
-    private $objects;
-
-    /**
-     * @var bool
-     */
-    private $ignored = false;
+    private bool $ignored = false;
 
     /**
      * @param list<object>         $objects
      * @param array<string, mixed> $options
      */
-    public function __construct(
-        PagerInterface $pager,
-        ObjectPersisterInterface $objectPersister,
-        \Exception $exception,
-        array $objects,
-        array $options,
-    ) {
-        $this->pager = $pager;
-        $this->objectPersister = $objectPersister;
-        $this->exception = $exception;
-        $this->options = $options;
-        $this->objects = $objects;
+    public function __construct(private readonly PagerInterface $pager, private readonly ObjectPersisterInterface $objectPersister, private \Exception $exception, private readonly array $objects, private readonly array $options)
+    {
     }
 
     public function getPager(): PagerInterface
@@ -85,10 +47,7 @@ final class OnExceptionEvent extends Event implements PersistEvent
         return $this->exception;
     }
 
-    /**
-     * @return void
-     */
-    public function setException(\Exception $exception)
+    public function setException(\Exception $exception): void
     {
         $this->exception = $exception;
     }
@@ -98,10 +57,7 @@ final class OnExceptionEvent extends Event implements PersistEvent
         return $this->ignored;
     }
 
-    /**
-     * @return void
-     */
-    public function setIgnored(bool $ignored)
+    public function setIgnored(bool $ignored): void
     {
         $this->ignored = $ignored;
     }

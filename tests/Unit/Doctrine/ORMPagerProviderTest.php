@@ -30,14 +30,14 @@ use Symfony\Bridge\Doctrine\ManagerRegistry;
  */
 class ORMPagerProviderTest extends TestCase
 {
-    public function testShouldImplementPagerProviderInterface()
+    public function testShouldImplementPagerProviderInterface(): void
     {
         $rc = new \ReflectionClass(ORMPagerProvider::class);
 
         $this->assertTrue($rc->implementsInterface(PagerProviderInterface::class));
     }
 
-    public function testCouldBeConstructedWithExpectedArguments()
+    public function testCouldBeConstructedWithExpectedArguments(): void
     {
         $doctrine = $this->createDoctrineMock();
         $objectClass = 'anObjectClass';
@@ -46,7 +46,7 @@ class ORMPagerProviderTest extends TestCase
         new ORMPagerProvider($doctrine, $this->createRegisterListenersServiceMock(), $objectClass, $baseConfig);
     }
 
-    public function testShouldReturnPagerfantaPagerWithDoctrineORMAdapter()
+    public function testShouldReturnPagerfantaPagerWithDoctrineORMAdapter(): void
     {
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
@@ -90,7 +90,7 @@ class ORMPagerProviderTest extends TestCase
         $this->assertInstanceOf(QueryAdapter::class, $adapter);
     }
 
-    public function testShouldAllowCallCustomRepositoryMethod()
+    public function testShouldAllowCallCustomRepositoryMethod(): void
     {
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
@@ -131,7 +131,7 @@ class ORMPagerProviderTest extends TestCase
         $this->assertInstanceOf(PagerfantaPager::class, $pager);
     }
 
-    public function testShouldCallRegisterListenersService()
+    public function testShouldCallRegisterListenersService(): void
     {
         $objectClass = 'anObjectClass';
         $baseConfig = ['query_builder_method' => 'createQueryBuilder'];
@@ -180,7 +180,7 @@ class ORMPagerProviderTest extends TestCase
     /**
      * @return RegisterListenersService|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createRegisterListenersServiceMock()
+    private function createRegisterListenersServiceMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(RegisterListenersService::class);
     }
@@ -188,7 +188,7 @@ class ORMPagerProviderTest extends TestCase
     /**
      * @return \PHPUnit\Framework\MockObject\MockObject|ManagerRegistry
      */
-    private function createDoctrineMock()
+    private function createDoctrineMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(ManagerRegistry::class);
     }

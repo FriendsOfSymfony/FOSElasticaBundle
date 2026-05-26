@@ -22,19 +22,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class ConsoleProgressLogger
 {
     private ?ProgressBar $progress = null;
-    private OutputInterface $output;
-    private string $action;
-    private string $index;
-    private int $offset;
+    private readonly OutputInterface $output;
     private int $filteredCount = 0;
     private bool $finished = false;
 
-    public function __construct(OutputInterface $output, string $action, string $index, int $offset)
+    public function __construct(OutputInterface $output, private readonly string $action, private readonly string $index, private readonly int $offset)
     {
         $this->output = $output;
-        $this->action = $action;
-        $this->index = $index;
-        $this->offset = $offset;
     }
 
     public function call(int $increment, int $filteredIncrement, int $totalObjects, ?string $message = null): void
@@ -43,7 +37,7 @@ final class ConsoleProgressLogger
             return;
         }
 
-        if (null === $this->progress) {
+        if (!$this->progress instanceof ProgressBar) {
             $this->progress = new ProgressBar($this->output, $totalObjects);
             $this->progress->setMessage(\sprintf('<info>%s</info> <comment>%s</comment>', $this->action, $this->index));
             $this->progress->start();
@@ -68,7 +62,7 @@ final class ConsoleProgressLogger
     public function finish(): void
     {
         $this->finished = true;
-        if (!$this->progress) {
+        if (!$this->progress instanceof ProgressBar) {
             return;
         }
 

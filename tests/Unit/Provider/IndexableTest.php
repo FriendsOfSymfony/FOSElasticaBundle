@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  */
 class IndexableTest extends TestCase
 {
-    public function testIndexableUnknown()
+    public function testIndexableUnknown(): void
     {
         $indexable = new Indexable([]);
         $index = $indexable->isObjectIndexable('index', new Entity());
@@ -30,7 +30,7 @@ class IndexableTest extends TestCase
     /**
      * @dataProvider provideIsIndexableCallbacks
      */
-    public function testValidIndexableCallbacks($callback, $return)
+    public function testValidIndexableCallbacks(string|IndexableDecider|\Closure|array $callback, bool $return): void
     {
         $indexable = new Indexable([
             'index' => $callback,
@@ -43,7 +43,7 @@ class IndexableTest extends TestCase
     /**
      * @dataProvider provideInvalidIsIndexableCallbacks
      */
-    public function testInvalidIsIndexableCallbacks($callback)
+    public function testInvalidIsIndexableCallbacks(string|int|array $callback): void
     {
         $indexable = new Indexable([
             'index' => $callback,
@@ -53,7 +53,7 @@ class IndexableTest extends TestCase
         $indexable->isObjectIndexable('index', new Entity());
     }
 
-    public function provideInvalidIsIndexableCallbacks()
+    public function provideInvalidIsIndexableCallbacks(): array
     {
         return [
             ['nonexistentEntityMethod'],
@@ -63,15 +63,13 @@ class IndexableTest extends TestCase
         ];
     }
 
-    public function provideIsIndexableCallbacks()
+    public function provideIsIndexableCallbacks(): array
     {
         return [
             ['isIndexable', false],
             [[new IndexableDecider(), 'isIndexable'], true],
             [new IndexableDecider(), true],
-            [function (Entity $entity) {
-                return $entity->maybeIndex();
-            }, true],
+            [fn (Entity $entity) => $entity->maybeIndex(), true],
             ['entity.maybeIndex()', true],
             ['!object.isIndexable() && entity.property == "abc"', true],
             ['entity.property != "abc"', false],
@@ -85,12 +83,12 @@ class Entity
 {
     public $property = 'abc';
 
-    public function isIndexable()
+    public function isIndexable(): bool
     {
         return false;
     }
 
-    public function maybeIndex()
+    public function maybeIndex(): bool
     {
         return true;
     }
@@ -98,12 +96,12 @@ class Entity
 
 class IndexableDecider
 {
-    public function __invoke($object)
+    public function __invoke($object): bool
     {
         return true;
     }
 
-    public function isIndexable(Entity $entity)
+    public function isIndexable(Entity $entity): bool
     {
         return !$entity->isIndexable();
     }

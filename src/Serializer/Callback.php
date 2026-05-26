@@ -53,7 +53,7 @@ class Callback
     {
         $this->groups = $groups;
 
-        if (!empty($this->groups) && !$this->serializer instanceof SerializerInterface && !$this->serializer instanceof JMSSerializer) {
+        if ([] !== $this->groups && !$this->serializer instanceof SerializerInterface && !$this->serializer instanceof JMSSerializer) {
             throw new \RuntimeException(\sprintf('Setting serialization groups requires using a "%s" or "%s" serializer instance.', SerializerInterface::class, JMSSerializer::class));
         }
 
@@ -75,7 +75,7 @@ class Callback
     {
         $this->serializeNull = $serializeNull;
 
-        if (true === $this->serializeNull && !$this->serializer instanceof SerializerInterface && !$this->serializer instanceof JMSSerializer) {
+        if ($this->serializeNull && !$this->serializer instanceof SerializerInterface && !$this->serializer instanceof JMSSerializer) {
             throw new \RuntimeException(\sprintf('Setting null value serialization option requires using a "%s" or "%s" serializer instance.', SerializerInterface::class, JMSSerializer::class));
         }
 
@@ -86,7 +86,7 @@ class Callback
     {
         $context = $this->serializer instanceof JMSSerializer ? SerializationContext::create()->enableMaxDepthChecks() : [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true];
 
-        if (!empty($this->groups)) {
+        if ([] !== $this->groups) {
             if ($context instanceof SerializationContext) {
                 $context->setGroups($this->groups);
             } else {

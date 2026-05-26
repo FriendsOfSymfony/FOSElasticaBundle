@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -16,32 +18,22 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class PreElasticaRequestEvent extends Event
 {
-    private string $path;
-    private string $method;
-
     /**
-     * @var array<string, mixed>|string
+     * @param array<string, mixed>|string $data
      */
-    private $data;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private array $query;
-    private string $contentType;
-
     public function __construct(
-        string $path,
-        string $method,
-        $data,
-        array $query,
-        string $contentType = Request::DEFAULT_CONTENT_TYPE
+        private readonly string $path,
+        private readonly string $method,
+        /**
+         * @var array<string, mixed>|string
+         */
+        private $data,
+        /**
+         * @var array<string, mixed>
+         */
+        private readonly array $query,
+        private readonly string $contentType = Request::DEFAULT_CONTENT_TYPE
     ) {
-        $this->path = $path;
-        $this->method = $method;
-        $this->data = $data;
-        $this->query = $query;
-        $this->contentType = $contentType;
     }
 
     public function getPath(): string

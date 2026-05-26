@@ -21,14 +21,14 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  */
 class PagerPersisterRegistryTest extends TestCase
 {
-    public function testShouldBeFinal()
+    public function testShouldBeFinal(): void
     {
         $rc = new \ReflectionClass(PagerPersisterRegistry::class);
 
         $this->assertTrue($rc->isFinal());
     }
 
-    public function testThrowsIfThereIsNoSuchEntryInNameToServiceIdMap()
+    public function testThrowsIfThereIsNoSuchEntryInNameToServiceIdMap(): void
     {
         $serviceLocator = $this->createMock(ServiceLocator::class);
         $serviceLocator->expects($this->once())->method('has')->with('the_name')->willReturn(false);
@@ -39,7 +39,7 @@ class PagerPersisterRegistryTest extends TestCase
         (new PagerPersisterRegistry($serviceLocator))->getPagerPersister('the_name');
     }
 
-    public function testThrowsIfRelatedServiceDoesNotImplementPagerPersisterInterface()
+    public function testThrowsIfRelatedServiceDoesNotImplementPagerPersisterInterface(): void
     {
         $serviceLocator = $this->createMock(ServiceLocator::class);
         $serviceLocator->expects($this->once())->method('has')->with('the_name')->willReturn(true);
@@ -47,16 +47,12 @@ class PagerPersisterRegistryTest extends TestCase
 
         $this->expectException(\TypeError::class);
 
-        if (\PHP_VERSION_ID >= 80000) {
-            $this->expectExceptionMessage('FOS\ElasticaBundle\Persister\PagerPersisterRegistry::getPagerPersister(): Return value must be of type FOS\ElasticaBundle\Persister\PagerPersisterInterface, stdClass returned');
-        } else {
-            $this->expectExceptionMessage('Return value of FOS\ElasticaBundle\Persister\PagerPersisterRegistry::getPagerPersister() must implement interface FOS\ElasticaBundle\Persister\PagerPersisterInterface, instance of stdClass returned');
-        }
+        $this->expectExceptionMessage('FOS\ElasticaBundle\Persister\PagerPersisterRegistry::getPagerPersister(): Return value must be of type FOS\ElasticaBundle\Persister\PagerPersisterInterface, stdClass returned');
 
         (new PagerPersisterRegistry($serviceLocator))->getPagerPersister('the_name');
     }
 
-    public function testShouldReturnPagerPersisterByGivenName()
+    public function testShouldReturnPagerPersisterByGivenName(): void
     {
         $pagerPersisterMock = $this->createPagerPersisterMock();
 
@@ -74,7 +70,7 @@ class PagerPersisterRegistryTest extends TestCase
     /**
      * @return PagerPersisterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createPagerPersisterMock()
+    private function createPagerPersisterMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(PagerPersisterInterface::class);
     }

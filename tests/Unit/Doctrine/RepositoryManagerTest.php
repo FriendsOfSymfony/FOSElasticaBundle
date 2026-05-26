@@ -33,7 +33,7 @@ class NamespacedEntity
  */
 class RepositoryManagerTest extends TestCase
 {
-    public function testThatGetRepositoryCallsMainRepositoryManager()
+    public function testThatGetRepositoryCallsMainRepositoryManager(): void
     {
         $finderMock = $this->createMock(TransformedFinder::class);
         $registryMock = $this->createMock(ManagerRegistry::class);
@@ -50,7 +50,7 @@ class RepositoryManagerTest extends TestCase
         $this->assertInstanceOf(Repository::class, $repository);
     }
 
-    public function testGetRepositoryShouldResolveEntityShortName()
+    public function testGetRepositoryShouldResolveEntityShortName(): void
     {
         $finderMock = $this->createMock(TransformedFinder::class);
         $registryMock = $this->createMock(ManagerRegistry::class);

@@ -18,11 +18,8 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler]
 class AsyncPersistPageHandler
 {
-    private AsyncPagerPersister $persister;
-
-    public function __construct(AsyncPagerPersister $persister)
+    public function __construct(private readonly AsyncPagerPersister $persister)
     {
-        $this->persister = $persister;
     }
 
     public function __invoke(AsyncPersistPage $message): void

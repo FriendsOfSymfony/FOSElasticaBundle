@@ -29,18 +29,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var ?EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    /**
      * Optional parameters.
-     *
-     * @var array
      *
      * @phpstan-var TOptions
      */
-    protected $options = [
+    protected array $options = [
         'identifier' => 'id',
         'index' => '',
     ];
@@ -57,10 +50,9 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      *
      * @phpstan-param array<string, mixed> $options
      */
-    public function __construct(array $options = [], ?EventDispatcherInterface $dispatcher = null)
+    public function __construct(array $options = [], protected ?EventDispatcherInterface $dispatcher = null)
     {
         $this->options = \array_merge($this->options, $options);
-        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -119,7 +111,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected function normalizeValue($value)
     {
-        $normalizeValue = static function (&$v) {
+        $normalizeValue = static function (&$v): void {
             if ($v instanceof \DateTimeInterface) {
                 $v = $v->format('c');
             } elseif ($v instanceof \DateInterval) {

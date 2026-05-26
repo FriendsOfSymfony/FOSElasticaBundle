@@ -32,7 +32,7 @@ class InvalidObjectPersister extends ObjectPersister
  */
 class ObjectPersisterTest extends TestCase
 {
-    public function testThatCanReplaceObject()
+    public function testThatCanReplaceObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -47,7 +47,7 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->replaceOne(new POPO());
     }
 
-    public function testThatErrorIsHandledWhenCannotReplaceObject()
+    public function testThatErrorIsHandledWhenCannotReplaceObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -67,7 +67,7 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->replaceOne(new POPO());
     }
 
-    public function testThatCanInsertObject()
+    public function testThatCanInsertObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -85,7 +85,7 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->insertOne(new POPO());
     }
 
-    public function testThatErrorIsHandledWhenCannotInsertObject()
+    public function testThatErrorIsHandledWhenCannotInsertObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -105,7 +105,7 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->insertOne(new POPO());
     }
 
-    public function testThatCanDeleteObject()
+    public function testThatCanDeleteObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -123,7 +123,7 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->deleteOne(new POPO());
     }
 
-    public function testThatErrorIsHandledWhenCannotDeleteObject()
+    public function testThatErrorIsHandledWhenCannotDeleteObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -143,7 +143,7 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->deleteOne(new POPO());
     }
 
-    public function testThatCanInsertManyObjects()
+    public function testThatCanInsertManyObjects(): void
     {
         $transformer = $this->getTransformer();
 
@@ -164,7 +164,7 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 
-    public function testThatErrorIsHandledWhenCannotInsertManyObject()
+    public function testThatErrorIsHandledWhenCannotInsertManyObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -187,10 +187,7 @@ class ObjectPersisterTest extends TestCase
         $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 
-    /**
-     * @return ModelToElasticaAutoTransformer
-     */
-    private function getTransformer()
+    private function getTransformer(): ModelToElasticaAutoTransformer
     {
         $transformer = new ModelToElasticaAutoTransformer();
         $transformer->setPropertyAccessor(PropertyAccess::createPropertyAccessor());

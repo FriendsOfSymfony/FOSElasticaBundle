@@ -20,12 +20,9 @@ use PHPUnit\Framework\TestCase;
  */
 class IndexManagerTest extends TestCase
 {
-    private $indexes = [];
+    private array $indexes = [];
 
-    /**
-     * @var IndexManager
-     */
-    private $indexManager;
+    private IndexManager $indexManager;
 
     protected function setUp(): void
     {
@@ -43,25 +40,25 @@ class IndexManagerTest extends TestCase
         $this->indexManager = new IndexManager($this->indexes, $this->indexes['index2']);
     }
 
-    public function testGetAllIndexes()
+    public function testGetAllIndexes(): void
     {
         $this->assertSame($this->indexes, $this->indexManager->getAllIndexes());
     }
 
-    public function testGetIndex()
+    public function testGetIndex(): void
     {
         $this->assertSame($this->indexes['index1'], $this->indexManager->getIndex('index1'));
         $this->assertSame($this->indexes['index2'], $this->indexManager->getIndex('index2'));
         $this->assertSame($this->indexes['index3'], $this->indexManager->getIndex('index3'));
     }
 
-    public function testGetIndexShouldThrowExceptionForInvalidName()
+    public function testGetIndexShouldThrowExceptionForInvalidName(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->indexManager->getIndex('index4');
     }
 
-    public function testGetDefaultIndex()
+    public function testGetDefaultIndex(): void
     {
         $this->assertSame('index2', $this->indexManager->getIndex()->getName());
         $this->assertSame('index2', $this->indexManager->getDefaultIndex()->getName());

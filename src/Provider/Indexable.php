@@ -17,19 +17,10 @@ use Symfony\Component\ExpressionLanguage\SyntaxError;
 
 /**
  * @phpstan-type TCallbackInput = string|(callable(object):bool)
- * @phpstan-type TCallbackInternal = callable|string|ExpressionLanguage|null
+ * @phpstan-type TCallbackInternal = callable|string|Expression|null
  */
 class Indexable implements IndexableInterface
 {
-    /**
-     * An array of raw configured callbacks for all types.
-     *
-     * @var array
-     *
-     * @phpstan-var array<string, TCallbackInput>
-     */
-    private $callbacks = [];
-
     /**
      * An instance of ExpressionLanguage.
      *
@@ -40,18 +31,21 @@ class Indexable implements IndexableInterface
     /**
      * An array of initialised callbacks.
      *
-     * @var array
-     *
      * @phpstan-var array<string, TCallbackInternal>
      */
-    private $initialisedCallbacks = [];
+    private array $initialisedCallbacks = [];
 
     /**
      * @phpstan-param array<string, TCallbackInput> $callbacks
      */
-    public function __construct(array $callbacks)
-    {
-        $this->callbacks = $callbacks;
+    public function __construct(
+        /**
+         * An array of raw configured callbacks for all types.
+         *
+         * @phpstan-var array<string, TCallbackInput>
+         */
+        private array $callbacks
+    ) {
     }
 
     /**
@@ -78,11 +72,9 @@ class Indexable implements IndexableInterface
     /**
      * Builds and initialises a callback.
      *
-     * @return callable|string|ExpressionLanguage|null
-     *
      * @phpstan-return TCallbackInternal
      */
-    private function buildCallback(string $index, object $object)
+    private function buildCallback(string $index, object $object): callable|string|Expression|null
     {
         if (!\array_key_exists($index, $this->callbacks)) {
             return null;
@@ -107,7 +99,7 @@ class Indexable implements IndexableInterface
     private function buildExpressionCallback(string $index, object $object, string $callback): Expression
     {
         $expression = $this->getExpressionLanguage();
-        if (!$expression) {
+        if (!$expression instanceof ExpressionLanguage) {
             throw new \RuntimeException('Unable to process an expression without the ExpressionLanguage component.');
         }
 

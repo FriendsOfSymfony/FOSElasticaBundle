@@ -46,7 +46,7 @@ class PagerfantaPager implements PagerInterface
         return $this->pagerfanta->getCurrentPage();
     }
 
-    public function setCurrentPage(int $page)
+    public function setCurrentPage(int $page): void
     {
         $this->pagerfanta->setCurrentPage($page);
     }
@@ -56,7 +56,7 @@ class PagerfantaPager implements PagerInterface
         return $this->pagerfanta->getMaxPerPage();
     }
 
-    public function setMaxPerPage(int $perPage)
+    public function setMaxPerPage(int $perPage): void
     {
         $this->pagerfanta->setMaxPerPage($perPage);
     }

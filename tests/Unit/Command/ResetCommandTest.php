@@ -23,20 +23,17 @@ use Symfony\Component\Console\Output\NullOutput;
  */
 class ResetCommandTest extends TestCase
 {
-    /**
-     * @var ResetCommand
-     */
-    private $command;
+    private ResetCommand $command;
 
     /**
      * @var Resetter|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $resetter;
+    private \PHPUnit\Framework\MockObject\MockObject $resetter;
 
     /**
      * @var IndexManager|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $indexManager;
+    private \PHPUnit\Framework\MockObject\MockObject $indexManager;
 
     protected function setUp(): void
     {
@@ -46,7 +43,7 @@ class ResetCommandTest extends TestCase
         $this->command = new ResetCommand($this->indexManager, $this->resetter);
     }
 
-    public function testResetAllIndexes()
+    public function testResetAllIndexes(): void
     {
         $this->indexManager->expects($this->any())
             ->method('getAllIndexes')
@@ -67,7 +64,7 @@ class ResetCommandTest extends TestCase
         );
     }
 
-    public function testResetIndex()
+    public function testResetIndex(): void
     {
         $this->indexManager->expects($this->never())
             ->method('getAllIndexes')

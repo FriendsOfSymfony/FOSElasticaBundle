@@ -16,7 +16,7 @@ namespace FOS\ElasticaBundle\Tests\Functional;
  */
 class PersistenceRepositoryTest extends WebTestCase
 {
-    public function testRepositoryShouldBeSetCorrectly()
+    public function testRepositoryShouldBeSetCorrectly(): void
     {
         self::bootKernel(['test_case' => 'ORM']);
 

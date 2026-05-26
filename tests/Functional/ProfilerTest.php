@@ -33,14 +33,12 @@ use Twig\RuntimeLoader\RuntimeLoaderInterface;
  */
 class ProfilerTest extends WebTestCase
 {
-    /** @var ElasticaLogger */
-    private $logger;
+    private ?ElasticaLogger $logger = null;
 
     /** @var Environment */
     private $twig;
 
-    /** @var ElasticaDataCollector */
-    private $collector;
+    private ?ElasticaDataCollector $collector = null;
 
     public function setUp(): void
     {
@@ -78,7 +76,7 @@ class ProfilerTest extends WebTestCase
     /**
      * @dataProvider queryProvider
      */
-    public function testRender($query)
+    public function testRender($query): void
     {
         $connection = [
             'host' => 'localhost',

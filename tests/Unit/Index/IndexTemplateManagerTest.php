@@ -25,14 +25,9 @@ class IndexTemplateManagerTest extends TestCase
     /**
      * Test get index template.
      *
-     * @param string      $name
-     * @param string|null $expectedException
-     *
-     * @return void
-     *
      * @dataProvider provideTestGetIndexTemplate
      */
-    public function testGetIndexTemplate(array $templates, $name, $expectedTemplate, $expectedException = null)
+    public function testGetIndexTemplate(array $templates, string $name, $expectedTemplate, ?string $expectedException = null): void
     {
         if (null !== $expectedException) {
             $this->expectException($expectedException);
@@ -41,7 +36,7 @@ class IndexTemplateManagerTest extends TestCase
         $this->assertSame($expectedTemplate, $templateManager->getIndexTemplate($name));
     }
 
-    public function provideTestGetIndexTemplate()
+    public function provideTestGetIndexTemplate(): array
     {
         return [
             'empty templates' => [

@@ -24,14 +24,10 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 final class ResetTemplatesCommand extends Command
 {
-    private TemplateResetter $resetter;
-
     public function __construct(
-        TemplateResetter $resetter,
+        private readonly TemplateResetter $resetter,
     ) {
         parent::__construct();
-
-        $this->resetter = $resetter;
     }
 
     protected function configure(): void

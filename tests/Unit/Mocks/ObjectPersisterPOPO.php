@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -20,7 +22,7 @@ class ObjectPersisterPOPO
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'popoName';
     }
