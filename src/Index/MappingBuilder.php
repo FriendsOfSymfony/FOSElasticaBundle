@@ -13,6 +13,7 @@ namespace FOS\ElasticaBundle\Index;
 
 use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
+use FOS\ElasticaBundle\Elastica\ElasticsearchVersionDetector;
 use FOS\ElasticaBundle\Event\PostIndexMappingBuildEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -54,11 +55,27 @@ class MappingBuilder
     /**
      * Builds mappings for an entire index template.
      *
-     * @return array{mappings: TMapping, settings: TSettings, index_patterns: list<non-empty-string>}
+     * @return array{index_patterns: list<non-empty-string>, mappings?: TMapping, settings?: TSettings, template?: array{mappings?: TMapping, settings?: TSettings}}
      */
     public function buildIndexTemplateMapping(IndexTemplateConfig $indexTemplateConfig): array
     {
         $mapping = $this->buildIndexMapping($indexTemplateConfig);
+
+        if (ElasticsearchVersionDetector::usesNewIndexTemplateApi()) {
+            $template = [];
+            if (isset($mapping['mappings'])) {
+                $template['mappings'] = $mapping['mappings'];
+                unset($mapping['mappings']);
+            }
+            if (isset($mapping['settings'])) {
+                $template['settings'] = $mapping['settings'];
+                unset($mapping['settings']);
+            }
+            if ($template) {
+                $mapping['template'] = $template;
+            }
+        }
+
         $mapping['index_patterns'] = $indexTemplateConfig->getIndexPatterns();
 
         return $mapping;

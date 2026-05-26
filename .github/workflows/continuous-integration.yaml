@@ -48,6 +48,7 @@ jobs:
           - '8.0.*'
         elasticsearch:
           - '8.12.0'
+          - '9.0.0'
         dependencies:
           - 'highest'
         include:
@@ -55,6 +56,12 @@ jobs:
             dependencies: 'lowest'
             symfony: '6.4.*'
             elasticsearch: '8.12.0'
+            elastica: '^8.0'
+          # Pin Elastica to the major matching the Elasticsearch server version
+          - elasticsearch: '8.12.0'
+            elastica: '^8.0'
+          - elasticsearch: '9.0.0'
+            elastica: '^9.0'
         exclude:
           - php: '8.1'
             symfony: '7.4.*'
@@ -76,6 +83,9 @@ jobs:
           coverage: 'none'
           tools: 'pecl, composer:v2, flex'
           extensions: 'curl, json, mbstring, mongodb, openssl'
+
+      - name: 'Pin Elastica to ${{ matrix.elastica }}'
+        run: 'composer require --no-update "ruflin/elastica:${{ matrix.elastica }}"'
 
       - name: "Install Composer dependencies (${{ matrix.dependencies }})"
         uses: "ramsey/composer-install@v3"

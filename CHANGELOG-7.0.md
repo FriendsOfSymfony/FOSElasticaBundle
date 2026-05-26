@@ -5,6 +5,7 @@ This changelog references the relevant changes (bug and security fixes) done
 in 7.x versions.
 
 ### 7.1.1 (2026-xx-xx)
+* Added Elasticsearch 9 and Elastica 9 support.
 * Fix deprecated Symfony method call.
 * Instantiate custom repositories using the DI service locator.
 * Add compatibility with `doctrine/doctrine-bundle` 3.x, `doctrine/phpcr-odm` 3.x and Symfony 8.0 in highest-deps CI.

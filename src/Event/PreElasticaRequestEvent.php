@@ -13,11 +13,12 @@ declare(strict_types=1);
 
 namespace FOS\ElasticaBundle\Event;
 
-use Elastica\Request;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class PreElasticaRequestEvent extends Event
 {
+    public const DEFAULT_CONTENT_TYPE = 'application/json';
+
     /**
      * @param array<string, mixed>|string $data
      */
@@ -32,7 +33,7 @@ class PreElasticaRequestEvent extends Event
          * @var array<string, mixed>
          */
         private readonly array $query,
-        private readonly string $contentType = Request::DEFAULT_CONTENT_TYPE
+        private readonly string $contentType = self::DEFAULT_CONTENT_TYPE
     ) {
     }
 

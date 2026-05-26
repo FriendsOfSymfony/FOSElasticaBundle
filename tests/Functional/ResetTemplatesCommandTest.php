@@ -12,6 +12,7 @@
 namespace FOS\ElasticaBundle\Tests\Functional;
 
 use FOS\ElasticaBundle\Elastica\Client;
+use FOS\ElasticaBundle\Elastica\ElasticsearchVersionDetector;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -124,11 +125,32 @@ class ResetTemplatesCommandTest extends WebTestCase
 
     private function clearTemplates(): void
     {
+        if (ElasticsearchVersionDetector::usesNewIndexTemplateApi()) {
+            $reponse = $this->elasticClient->indices()->getIndexTemplate();
+            $data = $this->elasticClient->toElasticaResponse($reponse)->getData();
+            foreach ($data['index_templates'] ?? [] as $template) {
+                $this->elasticClient->indices()->deleteIndexTemplate(['name' => $template['name']]);
+            }
+
+            return;
+        }
+
         $this->elasticClient->indices()->deleteTemplate(['name' => '*']);
     }
 
     private function fetchAllTemplates(): array
     {
+        if (ElasticsearchVersionDetector::usesNewIndexTemplateApi()) {
+            $reponse = $this->elasticClient->indices()->getIndexTemplate();
+            $data = $this->elasticClient->toElasticaResponse($reponse)->getData();
+            $templates = [];
+            foreach ($data['index_templates'] ?? [] as $template) {
+                $templates[$template['name']] = $template['index_template'];
+            }
+
+            return $templates;
+        }
+
         $reponse = $this->elasticClient->indices()->getTemplate();
 
         return $this->elasticClient->toElasticaResponse($reponse)->getData();
