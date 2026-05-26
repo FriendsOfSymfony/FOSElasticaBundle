@@ -111,7 +111,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      */
     protected function normalizeValue($value)
     {
-        $normalizeValue = static function (&$v): void {
+        $normalizeValue = static function (mixed &$v): void {
             if ($v instanceof \DateTimeInterface) {
                 $v = $v->format('c');
             } elseif ($v instanceof \DateInterval) {

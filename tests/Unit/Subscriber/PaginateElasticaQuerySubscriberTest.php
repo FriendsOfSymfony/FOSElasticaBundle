@@ -181,7 +181,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             'defaultSortFieldName' => 'createdAt',
             'sortFieldParameterName' => 'ord',
             'sortDirectionParameterName' => 'az',
-            'sortNestedPath' => function ($sortField): string {
+            'sortNestedPath' => function (string $sortField): string {
                 $this->assertSame('owner.name', $sortField);
 
                 return 'owner';
@@ -261,7 +261,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             'sortFieldParameterName' => 'ord',
             'sortDirectionParameterName' => 'az',
             'sortNestedPath' => 'owner',
-            'sortNestedFilter' => function ($sortField): Query\Term {
+            'sortNestedFilter' => function (string $sortField): Query\Term {
                 $this->assertSame('owner.name', $sortField);
 
                 return new Query\Term(['enabled' => ['value' => true]]);

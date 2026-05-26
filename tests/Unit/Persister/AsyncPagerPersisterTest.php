@@ -42,7 +42,7 @@ class AsyncPagerPersisterTest extends TestCase
 
         $messageBus->expects($this->once())->method('dispatch')->with(
             $this->callback(
-                fn ($message) => $message instanceof AsyncPersistPage
+                fn (object $message) => $message instanceof AsyncPersistPage
             )
         )->willReturn(new Envelope(new AsyncPersistPage(0, [])));
 

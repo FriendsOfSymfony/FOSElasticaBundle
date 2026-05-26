@@ -58,7 +58,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager([new \stdClass(), new \stdClass()]);
 
         $called = false;
-        $dispatcher->addListener(PrePersistEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $options): void {
+        $dispatcher->addListener(PrePersistEvent::class, function (PrePersistEvent $event) use (&$called, $pager, $objectPersisterMock, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PrePersistEvent::class, $event);
@@ -91,7 +91,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(PreFetchObjectsEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $options): void {
+        $dispatcher->addListener(PreFetchObjectsEvent::class, function (PreFetchObjectsEvent $event) use (&$called, $pager, $objectPersisterMock, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PreFetchObjectsEvent::class, $event);
@@ -124,7 +124,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(PreInsertObjectsEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $objects, $options): void {
+        $dispatcher->addListener(PreInsertObjectsEvent::class, function (PreInsertObjectsEvent $event) use (&$called, $pager, $objectPersisterMock, $objects, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PreInsertObjectsEvent::class, $event);
@@ -158,7 +158,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(PostInsertObjectsEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $objects, $options): void {
+        $dispatcher->addListener(PostInsertObjectsEvent::class, function (PostInsertObjectsEvent $event) use (&$called, $pager, $objectPersisterMock, $objects, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PostInsertObjectsEvent::class, $event);
@@ -192,7 +192,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(PostPersistEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $options): void {
+        $dispatcher->addListener(PostPersistEvent::class, function (PostPersistEvent $event) use (&$called, $pager, $objectPersisterMock, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PostPersistEvent::class, $event);
@@ -318,7 +318,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(OnExceptionEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $exception, $options): void {
+        $dispatcher->addListener(OnExceptionEvent::class, function (OnExceptionEvent $event) use (&$called, $pager, $objectPersisterMock, $exception, $options): void {
             $called = true;
 
             $this->assertInstanceOf(OnExceptionEvent::class, $event);

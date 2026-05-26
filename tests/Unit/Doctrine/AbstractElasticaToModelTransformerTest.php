@@ -236,7 +236,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
 
     private function createMockPropertyAccessor()
     {
-        $callback = (fn ($object, $identifier) => $object->{$identifier});
+        $callback = (fn (object $object, string $identifier) => $object->{$identifier});
 
         $propertyAccessor = $this->createMock(PropertyAccessorInterface::class);
         $propertyAccessor

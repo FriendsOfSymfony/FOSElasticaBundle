@@ -71,7 +71,7 @@ class ClientTest extends TestCase
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects($invoke = $this->exactly(2))
             ->method('dispatch')
-            ->with($this->callback(function ($o) use ($invoke): bool {
+            ->with($this->callback(function (object $o) use ($invoke): bool {
                 $counter = $invoke->getInvocationCount() - 1;
 
                 if ($counter > 1) {
@@ -150,7 +150,7 @@ class ClientTest extends TestCase
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects($invoke = $this->exactly(2))
             ->method('dispatch')
-            ->with($this->callback(function ($o) use ($invoke): bool {
+            ->with($this->callback(function (object $o) use ($invoke): bool {
                 $counter = $invoke->getInvocationCount() - 1;
 
                 if ($counter > 1) {
