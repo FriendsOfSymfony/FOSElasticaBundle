@@ -32,7 +32,7 @@ class RepositoryManager implements RepositoryManagerInterface
     /**
      * @var array<string, Repository>
      */
-    private $repositories = [];
+    private array $repositories = [];
 
     private ContainerInterface $repositoryLocator;
 
@@ -84,10 +84,7 @@ class RepositoryManager implements RepositoryManagerInterface
         return $this->indexes[$indexName]['repositoryName'] ?? Repository::class;
     }
 
-    /**
-     * @return Repository
-     */
-    private function createRepository(string $indexName)
+    private function createRepository(string $indexName): Repository
     {
         if ($this->repositoryLocator->has($indexName)) {
             return $this->repositoryLocator->get($indexName);

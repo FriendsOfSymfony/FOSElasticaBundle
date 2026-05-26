@@ -35,7 +35,7 @@ class UnitTestHelper extends TestCase
         return $reflectionProperty->getValue($object);
     }
 
-    protected function mockElasticaToModelTransformer()
+    protected function mockElasticaToModelTransformer(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this
             ->getMockBuilder(ElasticaToModelTransformerInterface::class)
@@ -43,7 +43,7 @@ class UnitTestHelper extends TestCase
         ;
     }
 
-    protected function mockSearchable()
+    protected function mockSearchable(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this
             ->getMockBuilder(SearchableInterface::class)
@@ -51,7 +51,7 @@ class UnitTestHelper extends TestCase
         ;
     }
 
-    protected function mockResultSet()
+    protected function mockResultSet(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this
             ->getMockBuilder(ResultSet::class)

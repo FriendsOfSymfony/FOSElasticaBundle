@@ -20,14 +20,11 @@ class Entity
 {
     public $identifier;
 
-    /**
-     * @param int $id
-     */
-    public function __construct(private $id)
+    public function __construct(private readonly int $id)
     {
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -347,19 +344,13 @@ abstract class AbstractListenerTestCase extends TestCase
         $listener->postFlush($eventArgs);
     }
 
-    abstract protected function getLifecycleEventArgsClass();
+    abstract protected function getLifecycleEventArgsClass(): string;
 
-    abstract protected function getListenerClass();
+    abstract protected function getListenerClass(): string;
 
-    /**
-     * @return string
-     */
-    abstract protected function getObjectManagerClass();
+    abstract protected function getObjectManagerClass(): string;
 
-    /**
-     * @return string
-     */
-    abstract protected function getClassMetadataClass();
+    abstract protected function getClassMetadataClass(): string;
 
     private function createLifecycleEventArgs(): object
     {
@@ -385,7 +376,7 @@ abstract class AbstractListenerTestCase extends TestCase
         return $this->createMock($this->getObjectManagerClass());
     }
 
-    private function getMockPersister(Entity $object, string $indexName)
+    private function getMockPersister(Entity $object, string $indexName): \PHPUnit\Framework\MockObject\MockObject
     {
         $mock = $this->createMock(ObjectPersister::class);
 
@@ -404,7 +395,7 @@ abstract class AbstractListenerTestCase extends TestCase
         return $mock;
     }
 
-    private function getMockIndexable(?string $indexName, ?Entity $object = null, ?bool $return = null)
+    private function getMockIndexable(?string $indexName, ?Entity $object = null, ?bool $return = null): \PHPUnit\Framework\MockObject\MockObject
     {
         $mock = $this->createMock(IndexableInterface::class);
 

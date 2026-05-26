@@ -94,7 +94,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->validate()
-                    ->ifTrue(static fn (array $v) => 1 !== \count($v))
+                    ->ifTrue(static fn (array $v): bool => 1 !== \count($v))
                     ->thenInvalid('Dynamic template should consist of a single named object: %s.')
                 ->end()
             ->end()
@@ -178,16 +178,13 @@ class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    /**
-     * @return ArrayNodeDefinition
-     */
-    private function getPersistenceNode()
+    private function getPersistenceNode(): ArrayNodeDefinition
     {
         $node = $this->createTreeBuilderNode('persistence');
 
         $node
             ->validate()
-                ->ifTrue(fn (array $v) => isset($v['driver']) && 'orm' !== $v['driver'] && !empty($v['elastica_to_model_transformer']['hints']))
+                ->ifTrue(fn (array $v): bool => isset($v['driver']) && 'orm' !== $v['driver'] && !empty($v['elastica_to_model_transformer']['hints']))
                     ->thenInvalid('Hints are only supported by the "orm" driver')
             ->end()
             ->children()
@@ -280,10 +277,7 @@ class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    /**
-     * @return ArrayNodeDefinition
-     */
-    private function getSerializerNode()
+    private function getSerializerNode(): ArrayNodeDefinition
     {
         $node = $this->createTreeBuilderNode('serializer');
 
@@ -323,8 +317,8 @@ class Configuration implements ConfigurationInterface
                                 ->requiresAtLeastOneElement()
                                 ->prototype('scalar')
                                     ->validate()
-                                    ->ifTrue(fn (mixed $url) => $url && !\str_ends_with((string) $url, '/'))
-                                    ->then(fn (mixed $url) => $url.'/')
+                                    ->ifTrue(fn (mixed $url): bool => $url && !\str_ends_with((string) $url, '/'))
+                                    ->then(fn (mixed $url): string => $url.'/')
                                     ->end()
                                 ->end()
                             ->end()
@@ -336,8 +330,8 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('api_key')->end()
                             ->arrayNode('http_error_codes')
                                 ->beforeNormalization()
-                                    ->ifTrue(fn (mixed $v) => !\is_array($v))
-                                    ->then(fn (mixed $v) => [$v])
+                                    ->ifTrue(fn (mixed $v): bool => !\is_array($v))
+                                    ->then(fn (mixed $v): array => [$v])
                                 ->end()
                                 ->requiresAtLeastOneElement()
                                 ->defaultValue([400, 403])
@@ -433,7 +427,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return ArrayNodeDefinition
      */
-    private function createTreeBuilderNode(string $name)
+    private function createTreeBuilderNode(string $name): \Symfony\Component\Config\Definition\Builder\NodeDefinition
     {
         return (new TreeBuilder($name))->getRootNode();
     }
@@ -457,8 +451,8 @@ class Configuration implements ConfigurationInterface
                         // Support multiple dynamic_template formats to match the old bundle style
                         // and the way ElasticSearch expects them
                         ->beforeNormalization()
-                        ->ifTrue(fn (array $v) => isset($v['dynamic_templates']))
-                        ->then(function (array $v) {
+                        ->ifTrue(fn (array $v): bool => isset($v['dynamic_templates']))
+                        ->then(function (array $v): array {
                             $dt = [];
                             foreach ($v['dynamic_templates'] as $key => $type) {
                                 if (\is_int($key)) {

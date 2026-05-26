@@ -26,11 +26,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 final class InPlacePagerPersister implements PagerPersisterInterface
 {
     public const NAME = 'in_place';
-    private readonly EventDispatcherInterface $dispatcher;
 
-    public function __construct(private readonly PersisterRegistry $registry, EventDispatcherInterface $dispatcher)
+    public function __construct(private readonly PersisterRegistry $registry, private readonly EventDispatcherInterface $dispatcher)
     {
-        $this->dispatcher = $dispatcher;
     }
 
     public function insert(PagerInterface $pager, array $options = []): void

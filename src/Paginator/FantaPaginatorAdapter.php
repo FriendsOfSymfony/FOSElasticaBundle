@@ -48,7 +48,7 @@ class FantaPaginatorAdapter implements AdapterInterface
      *
      * @api
      */
-    public function getAggregations()
+    public function getAggregations(): array
     {
         return $this->adapter->getAggregations();
     }
@@ -60,26 +60,20 @@ class FantaPaginatorAdapter implements AdapterInterface
      *
      * @api
      */
-    public function getSuggests()
+    public function getSuggests(): array
     {
         return $this->adapter->getSuggests();
     }
 
     /**
      * Returns a slice of the results.
-     *
-     * @param int $offset The offset
-     * @param int $length The length
      */
-    public function getSlice($offset, $length): iterable
+    public function getSlice(int $offset, int $length): iterable
     {
         return $this->adapter->getResults($offset, $length)->toArray();
     }
 
-    /**
-     * @return float
-     */
-    public function getMaxScore()
+    public function getMaxScore(): float
     {
         return $this->adapter->getMaxScore();
     }

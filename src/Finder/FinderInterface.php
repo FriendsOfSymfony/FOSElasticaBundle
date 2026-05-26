@@ -41,5 +41,5 @@ interface FinderInterface
      *
      * @return array<object> results
      */
-    public function find($query, ?int $limit = null, array $options = []);
+    public function find(mixed $query, ?int $limit = null, array $options = []): array;
 }

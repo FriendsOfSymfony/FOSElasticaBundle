@@ -22,13 +22,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class ConsoleProgressLogger
 {
     private ?ProgressBar $progress = null;
-    private readonly OutputInterface $output;
     private int $filteredCount = 0;
     private bool $finished = false;
 
-    public function __construct(OutputInterface $output, private readonly string $action, private readonly string $index, private readonly int $offset)
+    public function __construct(private readonly OutputInterface $output, private readonly string $action, private readonly string $index, private readonly int $offset)
     {
-        $this->output = $output;
     }
 
     public function call(int $increment, int $filteredIncrement, int $totalObjects, ?string $message = null): void

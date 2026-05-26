@@ -18,15 +18,8 @@ use Psr\Http\Message\RequestInterface;
 
 class ElasticaRequestExceptionEvent
 {
-    private readonly RequestInterface $request;
-    private readonly ElasticsearchException $exception;
-
-    public function __construct(
-        RequestInterface $request,
-        ElasticsearchException $exception
-    ) {
-        $this->request = $request;
-        $this->exception = $exception;
+    public function __construct(private readonly RequestInterface $request, private readonly ElasticsearchException $exception)
+    {
     }
 
     public function getRequest(): RequestInterface

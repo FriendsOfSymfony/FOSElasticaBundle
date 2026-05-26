@@ -25,16 +25,10 @@ final class PHPCRPagerProvider implements PagerProviderInterface
     public const ENTITY_ALIAS = 'a';
 
     /**
-     * @var ManagerRegistry
-     */
-    private $doctrine;
-
-    /**
      * @param string $objectClass
      */
-    public function __construct(ManagerRegistry $doctrine, private readonly RegisterListenersService $registerListenersService, private $objectClass, private readonly array $baseOptions)
+    public function __construct(private readonly ManagerRegistry $doctrine, private readonly RegisterListenersService $registerListenersService, private $objectClass, private readonly array $baseOptions)
     {
-        $this->doctrine = $doctrine;
     }
 
     public function provide(array $options = []): PagerInterface

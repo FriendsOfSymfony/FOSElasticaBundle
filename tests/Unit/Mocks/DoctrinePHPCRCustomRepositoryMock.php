@@ -14,10 +14,12 @@ declare(strict_types=1);
 namespace FOS\ElasticaBundle\Tests\Unit\Mocks;
 
 use Doctrine\ODM\PHPCR\DocumentRepository;
+use Doctrine\ODM\PHPCR\Query\Builder\QueryBuilder;
 
 class DoctrinePHPCRCustomRepositoryMock extends DocumentRepository
 {
-    public function createCustomQueryBuilder()
+    public function createCustomQueryBuilder(): ?QueryBuilder
     {
+        return null;
     }
 }

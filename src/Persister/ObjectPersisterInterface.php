@@ -23,83 +23,56 @@ interface ObjectPersisterInterface
 {
     /**
      * Checks if this persister can handle the given object or not.
-     *
-     * @param object $object
      */
-    public function handlesObject($object): bool;
+    public function handlesObject(object $object): bool;
 
     /**
      * Insert one object into the type
      * The object will be transformed to an elastica document.
-     *
-     * @param object $object
-     *
-     * @return void
      */
-    public function insertOne($object);
+    public function insertOne(object $object): void;
 
     /**
      * Replaces one object in the type.
-     *
-     * @param object $object
-     *
-     * @return void
      */
-    public function replaceOne($object);
+    public function replaceOne(object $object): void;
 
     /**
      * Deletes one object in the type.
-     *
-     * @param object $object
-     *
-     * @return void
      */
-    public function deleteOne($object);
+    public function deleteOne(object $object): void;
 
     /**
      * Deletes one object in the type by id.
-     *
-     * @param string      $id
-     * @param string|bool $routing
-     *
-     * @return void
      */
-    public function deleteById($id, $routing = false);
+    public function deleteById(string $id, string|bool $routing = false): void;
 
     /**
      * Bulk inserts an array of objects in the type.
      *
      * @param list<object> $objects array of domain model objects
-     *
-     * @return void
      */
-    public function insertMany(array $objects);
+    public function insertMany(array $objects): void;
 
     /**
      * Bulk updates an array of objects in the type.
      *
      * @param list<object> $objects array of domain model objects
-     *
-     * @return void
      */
-    public function replaceMany(array $objects);
+    public function replaceMany(array $objects): void;
 
     /**
      * Bulk deletes an array of objects in the type.
      *
      * @param list<object> $objects array of domain model objects
-     *
-     * @return void
      */
-    public function deleteMany(array $objects);
+    public function deleteMany(array $objects): void;
 
     /**
      * Bulk deletes records from an array of identifiers.
      *
      * @param list<string> $identifiers array of domain model object identifiers
      * @param string|bool  $routing     optional routing key for all identifiers
-     *
-     * @return void
      */
-    public function deleteManyByIdentifiers(array $identifiers, $routing = false);
+    public function deleteManyByIdentifiers(array $identifiers, string|bool $routing = false): void;
 }

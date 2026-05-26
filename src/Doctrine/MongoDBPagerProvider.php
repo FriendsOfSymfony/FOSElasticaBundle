@@ -20,15 +20,8 @@ use Pagerfanta\Pagerfanta;
 
 final class MongoDBPagerProvider implements PagerProviderInterface
 {
-    private readonly ManagerRegistry $doctrine;
-
-    public function __construct(
-        ManagerRegistry $doctrine,
-        private readonly RegisterListenersService $registerListenersService,
-        private readonly string $objectClass,
-        private readonly array $baseOptions,
-    ) {
-        $this->doctrine = $doctrine;
+    public function __construct(private readonly ManagerRegistry $doctrine, private readonly RegisterListenersService $registerListenersService, private readonly string $objectClass, private readonly array $baseOptions)
+    {
     }
 
     public function provide(array $options = []): PagerInterface

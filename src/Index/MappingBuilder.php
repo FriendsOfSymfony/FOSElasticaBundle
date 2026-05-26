@@ -22,11 +22,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class MappingBuilder
 {
-    private readonly EventDispatcherInterface $dispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(private readonly EventDispatcherInterface $dispatcher)
     {
-        $this->dispatcher = $eventDispatcher;
     }
 
     /**

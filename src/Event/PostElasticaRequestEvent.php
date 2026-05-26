@@ -18,15 +18,8 @@ use Psr\Http\Message\RequestInterface;
 
 class PostElasticaRequestEvent
 {
-    private readonly RequestInterface $request;
-    private readonly Response $response;
-
-    public function __construct(
-        RequestInterface $request,
-        Response $response
-    ) {
-        $this->request = $request;
-        $this->response = $response;
+    public function __construct(private readonly RequestInterface $request, private readonly Response $response)
+    {
     }
 
     public function getRequest(): RequestInterface

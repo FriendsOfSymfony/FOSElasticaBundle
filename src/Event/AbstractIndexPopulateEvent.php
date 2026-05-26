@@ -57,7 +57,7 @@ abstract class AbstractIndexPopulateEvent extends AbstractIndexEvent
     /**
      * @throws \InvalidArgumentException if option does not exist
      */
-    public function getOption(string $name)
+    public function getOption(string $name): mixed
     {
         if (!isset($this->options[$name])) {
             throw new \InvalidArgumentException(\sprintf('The "%s" option does not exist.', $name));

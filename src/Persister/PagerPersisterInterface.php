@@ -25,8 +25,6 @@ interface PagerPersisterInterface
 {
     /**
      * @phpstan-param TPagerPersisterOptions $options
-     *
-     * @return void
      */
-    public function insert(PagerInterface $pager, array $options = []);
+    public function insert(PagerInterface $pager, array $options = []): void;
 }

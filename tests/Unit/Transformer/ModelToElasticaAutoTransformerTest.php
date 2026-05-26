@@ -51,12 +51,12 @@ class POPO3
         $this->fileContents = \file_get_contents(__DIR__.'/fixtures/attachment.odt');
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -85,42 +85,42 @@ class POPO3
         ];
     }
 
-    public function getBool()
+    public function getBool(): bool
     {
         return $this->bool;
     }
 
-    public function getFalseBool()
+    public function getFalseBool(): bool
     {
         return $this->falseBool;
     }
 
-    public function getFloat()
+    public function getFloat(): float
     {
         return $this->float;
     }
 
-    public function getDate()
+    public function getDate(): \DateTime
     {
         return $this->date;
     }
 
-    public function getDuration()
+    public function getDuration(): \DateInterval
     {
         return $this->duration;
     }
 
-    public function getNullValue()
+    public function getNullValue(): mixed
     {
         return $this->nullValue;
     }
 
-    public function getFile()
+    public function getFile(): \SplFileInfo
     {
         return $this->file;
     }
 
-    public function getFileContents()
+    public function getFileContents(): string|false
     {
         return $this->fileContents;
     }
@@ -143,17 +143,17 @@ class POPO3
         return ['key1' => (object) ['id' => 1, 'key1sub1' => 'value1sub1', 'key1sub2' => 'value1sub2']];
     }
 
-    public function getUpper()
+    public function getUpper(): object
     {
         return (object) ['id' => 'parent', 'name' => 'a random name'];
     }
 
-    public function getUpperAlias()
+    public function getUpperAlias(): object
     {
         return $this->getUpper();
     }
 
-    public function getObjWithoutIdentifier()
+    public function getObjWithoutIdentifier(): object
     {
         return (object) ['foo' => 'foo', 'bar' => 'foo'];
     }

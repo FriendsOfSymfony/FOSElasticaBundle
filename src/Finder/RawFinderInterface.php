@@ -29,5 +29,5 @@ interface RawFinderInterface
      *
      * @return Result[]
      */
-    public function findRaw($query, ?int $limit = null, array $options = []);
+    public function findRaw(mixed $query, ?int $limit = null, array $options = []): array;
 }

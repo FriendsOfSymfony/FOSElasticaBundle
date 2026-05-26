@@ -76,7 +76,7 @@ class TypeConfig
     /**
      * @phpstan-return ?TDynamic
      */
-    public function getDynamic()
+    public function getDynamic(): string|bool|null
     {
         return $this->config['dynamic'] ?? null;
     }

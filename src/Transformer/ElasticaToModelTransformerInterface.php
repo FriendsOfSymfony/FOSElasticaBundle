@@ -31,14 +31,14 @@ interface ElasticaToModelTransformerInterface
      *
      * @return array<object> of model objects
      */
-    public function transform(array $elasticaObjects);
+    public function transform(array $elasticaObjects): array;
 
     /**
      * @param Result[] $elasticaObjects
      *
      * @return list<HybridResult>
      */
-    public function hybridTransform(array $elasticaObjects);
+    public function hybridTransform(array $elasticaObjects): array;
 
     /**
      * Returns the object class used by the transformer.

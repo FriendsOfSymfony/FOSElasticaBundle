@@ -23,10 +23,8 @@ class Indexable implements IndexableInterface
 {
     /**
      * An instance of ExpressionLanguage.
-     *
-     * @var ExpressionLanguage
      */
-    private $expressionLanguage;
+    private ?ExpressionLanguage $expressionLanguage = null;
 
     /**
      * An array of initialised callbacks.
@@ -120,7 +118,7 @@ class Indexable implements IndexableInterface
      *
      * @phpstan-return TCallbackInternal
      */
-    private function getCallback(string $index, object $object)
+    private function getCallback(string $index, object $object): callable|string|Expression|null
     {
         if (!\array_key_exists($index, $this->initialisedCallbacks)) {
             $this->initialisedCallbacks[$index] = $this->buildCallback($index, $object);

@@ -21,19 +21,16 @@ use Symfony\Contracts\EventDispatcher\Event;
 abstract class AbstractTransformEvent extends Event
 {
     /**
-     * @var Document
-     */
-    protected $document;
-
-    /**
      * @phpstan-param TFields $fields
      */
-    public function __construct(Document $document, /**
-     * @phpstan-var TFields
-     */
-        private readonly array $fields, private readonly object $object)
-    {
-        $this->document = $document;
+    public function __construct(
+        protected Document $document,
+        /**
+         * @phpstan-var TFields
+         */
+        private readonly array $fields,
+        private readonly object $object
+    ) {
     }
 
     public function getDocument(): Document

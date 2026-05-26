@@ -234,9 +234,9 @@ class AbstractElasticaToModelTransformerTest extends TestCase
         $this->assertSame('id', $transformer->getIdentifierField());
     }
 
-    private function createMockPropertyAccessor()
+    private function createMockPropertyAccessor(): \PHPUnit\Framework\MockObject\MockObject
     {
-        $callback = (fn (object $object, string $identifier) => $object->{$identifier});
+        $callback = (fn (object $object, string $identifier): mixed => $object->{$identifier});
 
         $propertyAccessor = $this->createMock(PropertyAccessorInterface::class);
         $propertyAccessor
@@ -252,7 +252,7 @@ class AbstractElasticaToModelTransformerTest extends TestCase
     /**
      * @return \PHPUnit\Framework\MockObject\MockObject|AbstractElasticaToModelTransformer
      */
-    private function createMockTransformer(array $options = [])
+    private function createMockTransformer(array $options = []): \PHPUnit\Framework\MockObject\MockObject
     {
         $objectClass = Foo::class;
         $propertyAccessor = $this->createMockPropertyAccessor();
@@ -276,7 +276,7 @@ class Foo implements HighlightableModelInterface
     {
     }
 
-    public function getId()
+    public function getId(): mixed
     {
         return $this->id;
     }

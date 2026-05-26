@@ -22,11 +22,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RegisterListenersService
 {
-    private readonly EventDispatcherInterface $dispatcher;
-
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function __construct(private readonly EventDispatcherInterface $dispatcher)
     {
-        $this->dispatcher = $dispatcher;
     }
 
     public function register(ObjectManager $manager, PagerInterface $pager, array $options): void

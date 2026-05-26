@@ -31,15 +31,13 @@ interface PaginatedRawFinderInterface extends RawFinderInterface
      *
      * @return PagerfantaInterface<Result>
      */
-    public function findRawPaginated($query, array $options = []);
+    public function findRawPaginated(mixed $query, array $options = []): PagerfantaInterface;
 
     /**
      * Creates a raw paginator adapter for this query.
      *
      * @param TQuery   $query
      * @param TOptions $options
-     *
-     * @return PaginatorAdapterInterface
      */
-    public function createRawPaginatorAdapter($query, array $options = []);
+    public function createRawPaginatorAdapter(mixed $query, array $options = []): PaginatorAdapterInterface;
 }

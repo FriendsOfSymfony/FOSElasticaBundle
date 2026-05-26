@@ -257,7 +257,7 @@ class ConfigurationTest extends TestCase
         $this->assertArrayHasKey('some_field', $indexTemplate['properties']);
     }
 
-    private function getConfigs(array $configArray)
+    private function getConfigs(array $configArray): array
     {
         $configuration = new Configuration(true);
 

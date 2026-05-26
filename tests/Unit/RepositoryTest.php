@@ -77,7 +77,7 @@ class RepositoryTest extends TestCase
         $repository->findHybrid($testQuery);
     }
 
-    private function mockTransformedFinder(string $name, array $arguments)
+    private function mockTransformedFinder(string $name, array $arguments): \PHPUnit\Framework\MockObject\MockObject
     {
         $finderMock = $this->createMock(TransformedFinder::class);
         $finderMock->expects($this->once())

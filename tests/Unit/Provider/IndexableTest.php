@@ -69,7 +69,7 @@ class IndexableTest extends TestCase
             ['isIndexable', false],
             [[new IndexableDecider(), 'isIndexable'], true],
             [new IndexableDecider(), true],
-            [fn (Entity $entity) => $entity->maybeIndex(), true],
+            [fn (Entity $entity): bool => $entity->maybeIndex(), true],
             ['entity.maybeIndex()', true],
             ['!object.isIndexable() && entity.property == "abc"', true],
             ['entity.property != "abc"', false],
@@ -106,7 +106,7 @@ class IndexableDecider
         return !$entity->isIndexable();
     }
 
-    protected function internalMethod()
+    protected function internalMethod(): void
     {
     }
 }

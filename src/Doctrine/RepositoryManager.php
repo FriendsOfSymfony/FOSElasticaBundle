@@ -26,11 +26,9 @@ class RepositoryManager implements RepositoryManagerInterface
 {
     protected array $entities = [];
     protected array $repositories = [];
-    protected ManagerRegistry $managerRegistry;
 
-    public function __construct(ManagerRegistry $managerRegistry, private readonly RepositoryManagerInterface $repositoryManager)
+    public function __construct(protected ManagerRegistry $managerRegistry, private readonly RepositoryManagerInterface $repositoryManager)
     {
-        $this->managerRegistry = $managerRegistry;
     }
 
     public function addIndex(string $indexName, FinderInterface $finder, ?string $repositoryName = null): void

@@ -39,35 +39,29 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return Pagerfanta<object> paginated results
      */
-    public function findPaginated($query, array $options = []);
+    public function findPaginated(mixed $query, array $options = []): Pagerfanta;
 
     /**
      * Creates a paginator adapter for this query.
      *
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
-     *
-     * @return PaginatorAdapterInterface
      */
-    public function createPaginatorAdapter($query, array $options = []);
+    public function createPaginatorAdapter(mixed $query, array $options = []): PaginatorAdapterInterface;
 
     /**
      * Creates a hybrid paginator adapter for this query.
      *
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
-     *
-     * @return PaginatorAdapterInterface
      */
-    public function createHybridPaginatorAdapter($query, array $options = []);
+    public function createHybridPaginatorAdapter(mixed $query, array $options = []): PaginatorAdapterInterface;
 
     /**
      * Creates a raw paginator adapter for this query.
      *
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
-     *
-     * @return PaginatorAdapterInterface
      */
-    public function createRawPaginatorAdapter($query, array $options = []);
+    public function createRawPaginatorAdapter(mixed $query, array $options = []): PaginatorAdapterInterface;
 }

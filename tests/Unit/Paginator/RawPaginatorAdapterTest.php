@@ -72,7 +72,7 @@ class RawPaginatorAdapterTest extends UnitTestHelper
         $this->assertEquals($query, $adapter->getQuery());
     }
 
-    protected function mockResultSet()
+    protected function mockResultSet(): \PHPUnit\Framework\MockObject\MockObject
     {
         $methods = ['getTotalHits', 'getAggregations', 'getSuggests', 'getMaxScore'];
 

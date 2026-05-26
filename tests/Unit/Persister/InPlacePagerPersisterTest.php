@@ -403,7 +403,7 @@ class InPlacePagerPersisterTest extends TestCase
      *
      * @return PersisterRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createPersisterRegistryStub($objectPersister = null)
+    private function createPersisterRegistryStub($objectPersister = null): \PHPUnit\Framework\MockObject\MockObject
     {
         $registryMock = $this->createPersisterRegistryMock();
         $registryMock

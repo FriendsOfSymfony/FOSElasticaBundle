@@ -70,10 +70,8 @@ class SearchCommand extends Command
      * @param string $showSource
      * @param string $showId
      * @param string $explain
-     *
-     * @return string
      */
-    protected function formatResult(Result $result, $showField, $showSource, $showId, $explain)
+    protected function formatResult(Result $result, $showField, $showSource, $showId, $explain): string
     {
         $source = $result->getSource();
         $toString = $showField ? $source[$showField] ?? '-' : \reset($source);

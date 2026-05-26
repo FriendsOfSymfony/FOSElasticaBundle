@@ -26,7 +26,7 @@ class PagerProviderRegistryTest extends TestCase
         $service = $this->createMock(PagerProviderInterface::class);
 
         $providers = new ServiceLocator([
-            'index' => static fn () => $service,
+            'index' => static fn (): \PHPUnit\Framework\MockObject\MockObject => $service,
         ]);
 
         $registry = new PagerProviderRegistry($providers);
@@ -38,7 +38,7 @@ class PagerProviderRegistryTest extends TestCase
         $service = $this->createMock(PagerProviderInterface::class);
 
         $providers = new ServiceLocator([
-            'index' => static fn () => $service,
+            'index' => static fn (): \PHPUnit\Framework\MockObject\MockObject => $service,
         ]);
 
         $registry = new PagerProviderRegistry($providers);

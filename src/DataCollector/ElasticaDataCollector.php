@@ -33,12 +33,12 @@ class ElasticaDataCollector extends DataCollector
         $this->data['queries'] = $this->logger->getQueries();
     }
 
-    public function getQueryCount()
+    public function getQueryCount(): int
     {
         return $this->data['nb_queries'];
     }
 
-    public function getQueries()
+    public function getQueries(): array
     {
         return $this->data['queries'];
     }
@@ -46,7 +46,7 @@ class ElasticaDataCollector extends DataCollector
     /**
      * @return int
      */
-    public function getTime()
+    public function getTime(): int|float
     {
         $time = 0;
         foreach ($this->data['queries'] as $query) {
@@ -59,7 +59,7 @@ class ElasticaDataCollector extends DataCollector
     /**
      * @return int
      */
-    public function getExecutionTime()
+    public function getExecutionTime(): int|float
     {
         $time = 0;
         foreach ($this->data['queries'] as $query) {

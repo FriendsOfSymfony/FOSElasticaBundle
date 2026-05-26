@@ -35,8 +35,7 @@ class ProfilerTest extends WebTestCase
 {
     private ?ElasticaLogger $logger = null;
 
-    /** @var Environment */
-    private $twig;
+    private Environment $twig;
 
     private ?ElasticaDataCollector $collector = null;
 
@@ -76,7 +75,7 @@ class ProfilerTest extends WebTestCase
     /**
      * @dataProvider queryProvider
      */
-    public function testRender($query): void
+    public function testRender(string|array $query): void
     {
         $connection = [
             'host' => 'localhost',
@@ -100,7 +99,7 @@ class ProfilerTest extends WebTestCase
         $this->assertStringContainsString('localhost:9200', $output);
     }
 
-    public function queryProvider()
+    public function queryProvider(): array
     {
         return [
             [\json_decode('{"query":{"match_all":{}}}', true)],

@@ -27,7 +27,7 @@ class PreElasticaRequestEvent extends Event
         /**
          * @var array<string, mixed>|string
          */
-        private $data,
+        private array|string $data,
         /**
          * @var array<string, mixed>
          */
@@ -49,7 +49,7 @@ class PreElasticaRequestEvent extends Event
     /**
      * @return array<string, mixed>|string
      */
-    public function getData()
+    public function getData(): array|string
     {
         return $this->data;
     }

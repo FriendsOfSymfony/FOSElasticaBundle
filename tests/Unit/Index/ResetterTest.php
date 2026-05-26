@@ -204,7 +204,7 @@ class ResetterTest extends TestCase
             ->method('dispatch')
         ;
 
-        \call_user_func_array([$expectation, 'withConsecutive'], $events);
+        \call_user_func_array($expectation->withConsecutive(...), $events);
     }
 
     private function mockIndex(string $indexName, IndexConfig $config, array $mapping = []): Index&MockObject

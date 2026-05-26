@@ -35,7 +35,7 @@ class Repository
      *
      * @return array<object>
      */
-    public function find($query, ?int $limit = null, array $options = [])
+    public function find(mixed $query, ?int $limit = null, array $options = []): array
     {
         return $this->finder->find($query, $limit, $options);
     }
@@ -46,7 +46,7 @@ class Repository
      *
      * @return list<HybridResult>
      */
-    public function findHybrid($query, ?int $limit = null, array $options = [])
+    public function findHybrid(mixed $query, ?int $limit = null, array $options = []): array
     {
         return $this->finder->findHybrid($query, $limit, $options);
     }
@@ -57,7 +57,7 @@ class Repository
      *
      * @return \Pagerfanta\Pagerfanta<object>
      */
-    public function findPaginated($query, array $options = [])
+    public function findPaginated(mixed $query, array $options = []): \Pagerfanta\Pagerfanta
     {
         return $this->finder->findPaginated($query, $options);
     }
@@ -65,10 +65,8 @@ class Repository
     /**
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
-     *
-     * @return Paginator\PaginatorAdapterInterface
      */
-    public function createPaginatorAdapter($query, array $options = [])
+    public function createPaginatorAdapter(mixed $query, array $options = []): Paginator\PaginatorAdapterInterface
     {
         return $this->finder->createPaginatorAdapter($query, $options);
     }
@@ -76,10 +74,8 @@ class Repository
     /**
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
-     *
-     * @return Paginator\PaginatorAdapterInterface
      */
-    public function createHybridPaginatorAdapter($query, array $options = [])
+    public function createHybridPaginatorAdapter(mixed $query, array $options = []): Paginator\PaginatorAdapterInterface
     {
         return $this->finder->createHybridPaginatorAdapter($query, $options);
     }

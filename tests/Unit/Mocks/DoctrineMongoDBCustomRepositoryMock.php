@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace FOS\ElasticaBundle\Tests\Unit\Mocks;
 
+use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 
 class DoctrineMongoDBCustomRepositoryMock extends DocumentRepository
 {
-    public function createCustomQueryBuilder()
+    public function createCustomQueryBuilder(): ?Builder
     {
+        return null;
     }
 }

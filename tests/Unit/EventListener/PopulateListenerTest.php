@@ -45,7 +45,7 @@ class PopulateListenerTest extends TestCase
         $listener->onPostIndexPopulate($event);
     }
 
-    private function mockResetter(int $numberOfCalls, string $indexName, bool $deleteOption)
+    private function mockResetter(int $numberOfCalls, string $indexName, bool $deleteOption): \PHPUnit\Framework\MockObject\MockObject
     {
         $stub = $this
             ->getMockBuilder(Resetter::class)

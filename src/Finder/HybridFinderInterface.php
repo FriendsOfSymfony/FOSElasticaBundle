@@ -29,5 +29,5 @@ interface HybridFinderInterface
      *
      * @return HybridResult[]
      */
-    public function findHybrid($query, ?int $limit = null, array $options = []);
+    public function findHybrid(mixed $query, ?int $limit = null, array $options = []): array;
 }

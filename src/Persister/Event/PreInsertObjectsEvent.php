@@ -63,7 +63,7 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
     /**
      * @return list<object>
      */
-    public function getObjects()
+    public function getObjects(): array
     {
         return $this->objects;
     }
@@ -71,7 +71,7 @@ final class PreInsertObjectsEvent extends Event implements PersistEvent
     /**
      * @param list<object> $objects
      */
-    public function setObjects($objects): void
+    public function setObjects(array $objects): void
     {
         $this->objects = $objects;
     }

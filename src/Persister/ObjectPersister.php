@@ -32,10 +32,6 @@ use Psr\Log\LoggerInterface;
 class ObjectPersister implements ObjectPersisterInterface
 {
     /**
-     * @var Index
-     */
-    protected $index;
-    /**
      * @var ?LoggerInterface
      */
     protected $logger;
@@ -46,15 +42,19 @@ class ObjectPersister implements ObjectPersisterInterface
      * @phpstan-param TFields $fields
      * @phpstan-param TOptions $options
      */
-    public function __construct(Index $index, protected ModelToElasticaTransformerInterface $transformer, protected string $objectClass, /**
-     * @phpstan-var TFields
-     */
-        protected array $fields, /**
-     * @phpstan-var TOptions
-     */
-        private readonly array $options = [])
-    {
-        $this->index = $index;
+    public function __construct(
+        protected Index $index,
+        protected ModelToElasticaTransformerInterface $transformer,
+        protected string $objectClass,
+        /**
+         * @phpstan-var TFields
+         */
+        protected array $fields,
+        /**
+         * @phpstan-var TOptions
+         */
+        private readonly array $options = []
+    ) {
     }
 
     public function handlesObject($object): bool

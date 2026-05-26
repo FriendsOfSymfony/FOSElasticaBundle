@@ -106,10 +106,8 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
     /**
      * Attempts to convert any type to a string or an array of strings.
-     *
-     * @return string|list<string>
      */
-    protected function normalizeValue($value)
+    protected function normalizeValue(mixed $value): mixed
     {
         $normalizeValue = static function (mixed &$v): void {
             if ($v instanceof \DateTimeInterface) {
@@ -142,7 +140,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     {
         $document = new Document($identifier, [], $this->options['index']);
 
-        if ($this->dispatcher) {
+        if ($this->dispatcher instanceof EventDispatcherInterface) {
             $this->dispatcher->dispatch($event = new PreTransformEvent($document, $fields, $object));
 
             $document = $event->getDocument();
@@ -181,7 +179,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             $document->set($key, $this->normalizeValue($value));
         }
 
-        if ($this->dispatcher) {
+        if ($this->dispatcher instanceof EventDispatcherInterface) {
             $this->dispatcher->dispatch($event = new PostTransformEvent($document, $fields, $object));
 
             $document = $event->getDocument();

@@ -28,7 +28,7 @@ class AbstractElasticaToModelTransformerTest extends UnitTestHelper
         $this->assertEquals($propertyAccessor, $this->getProtectedProperty($transformer, 'propertyAccessor'));
     }
 
-    protected function mockAbstractElasticaToModelTransformer()
+    protected function mockAbstractElasticaToModelTransformer(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this
             ->getMockBuilder(AbstractElasticaToModelTransformer::class)

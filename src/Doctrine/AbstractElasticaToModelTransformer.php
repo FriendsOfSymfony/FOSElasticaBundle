@@ -25,11 +25,6 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 abstract class AbstractElasticaToModelTransformer extends BaseTransformer
 {
     /**
-     * Manager registry.
-     */
-    protected ManagerRegistry $registry;
-
-    /**
      * Optional parameters.
      */
     protected array $options = [
@@ -43,14 +38,17 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
     /**
      * Instantiates a new Mapper.
      */
-    public function __construct(ManagerRegistry $registry, /**
+    public function __construct(/**
+     * Manager registry.
+     */
+        protected ManagerRegistry $registry, /**
      * Class of the model to map to the elastica documents.
      *
      * @phpstan-var class-string
      */
-        protected string $objectClass, array $options = [])
-    {
-        $this->registry = $registry;
+        protected string $objectClass,
+        array $options = []
+    ) {
         $this->options = \array_merge($this->options, $options);
     }
 
@@ -68,11 +66,9 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      *
      * @param Result[] $elasticaObjects of elastica objects
      *
-     * @return array
-     *
      * @throws \RuntimeException
      */
-    public function transform(array $elasticaObjects)
+    public function transform(array $elasticaObjects): array
     {
         $ids = $highlights = [];
         foreach ($elasticaObjects as $elasticaObject) {
@@ -86,7 +82,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         $propertyAccessor = $this->propertyAccessor;
         $identifier = $this->options['identifier'];
         if (!$this->options['ignore_missing'] && $objectsCnt < $elasticaObjectsCnt) {
-            $missingIds = \array_diff($ids, \array_map(static fn (array|object $object) => $propertyAccessor->getValue($object, $identifier), $objects));
+            $missingIds = \array_diff($ids, \array_map(static fn (array|object $object): mixed => $propertyAccessor->getValue($object, $identifier), $objects));
 
             throw new \RuntimeException(\sprintf('Cannot find corresponding Doctrine objects (%d) for all Elastica results (%d). Missing IDs: %s. IDs: %s', $objectsCnt, $elasticaObjectsCnt, \implode(', ', $missingIds), \implode(', ', $ids)));
         }
@@ -117,7 +113,7 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
         return $objects;
     }
 
-    public function hybridTransform(array $elasticaObjects)
+    public function hybridTransform(array $elasticaObjects): array
     {
         $indexedElasticaResults = [];
         foreach ($elasticaObjects as $elasticaObject) {
@@ -152,5 +148,5 @@ abstract class AbstractElasticaToModelTransformer extends BaseTransformer
      *
      * @return array of objects or arrays
      */
-    abstract protected function findByIdentifiers(array $identifierValues, bool $hydrate);
+    abstract protected function findByIdentifiers(array $identifierValues, bool $hydrate): array;
 }

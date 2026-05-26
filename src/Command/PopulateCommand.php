@@ -39,19 +39,16 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class PopulateCommand extends Command
 {
-    private readonly EventDispatcherInterface $dispatcher;
     private PagerPersisterInterface $pagerPersister;
 
     public function __construct(
-        EventDispatcherInterface $dispatcher,
+        private readonly EventDispatcherInterface $dispatcher,
         private readonly IndexManager $indexManager,
         private readonly PagerProviderRegistry $pagerProviderRegistry,
         private readonly PagerPersisterRegistry $pagerPersisterRegistry,
         private readonly Resetter $resetter,
     ) {
         parent::__construct();
-
-        $this->dispatcher = $dispatcher;
     }
 
     protected function configure(): void

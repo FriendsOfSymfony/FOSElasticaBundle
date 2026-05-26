@@ -24,17 +24,8 @@ final class AsyncPagerPersister implements PagerPersisterInterface
     public const NAME = 'async';
     private const DEFAULT_PAGE_SIZE = 100;
 
-    /**
-     * @var MessageBusInterface
-     */
-    private $messageBus;
-
-    public function __construct(
-        private readonly PagerPersisterRegistry $pagerPersisterRegistry,
-        private readonly PagerProviderRegistry $pagerProviderRegistry,
-        MessageBusInterface $messageBus,
-    ) {
-        $this->messageBus = $messageBus;
+    public function __construct(private readonly PagerPersisterRegistry $pagerPersisterRegistry, private readonly PagerProviderRegistry $pagerProviderRegistry, private readonly MessageBusInterface $messageBus)
+    {
     }
 
     public function insert(PagerInterface $pager, array $options = []): void

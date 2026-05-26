@@ -26,10 +26,8 @@ class ResetTemplatesCommandTest extends WebTestCase
 
     /**
      * Application.
-     *
-     * @var Application
      */
-    private $application;
+    private Application $application;
 
     protected function setUp(): void
     {
@@ -129,7 +127,7 @@ class ResetTemplatesCommandTest extends WebTestCase
         $this->elasticClient->indices()->deleteTemplate(['name' => '*']);
     }
 
-    private function fetchAllTemplates()
+    private function fetchAllTemplates(): array
     {
         $reponse = $this->elasticClient->indices()->getTemplate();
 

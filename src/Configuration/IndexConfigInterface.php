@@ -70,9 +70,7 @@ interface IndexConfigInterface
     public function getNumericDetection(): ?bool;
 
     /**
-     * @return string|bool|null
-     *
      * @phpstan-return ?TDynamic
      */
-    public function getDynamic();
+    public function getDynamic(): string|bool|null;
 }

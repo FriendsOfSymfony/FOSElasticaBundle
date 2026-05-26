@@ -393,7 +393,7 @@ class FOSElasticaExtension extends Extension
         }
     }
 
-    private function buildCallback($indexCallback, int|string $indexName)
+    private function buildCallback(mixed $indexCallback, int|string $indexName): Reference|array|string
     {
         if (\is_array($indexCallback)) {
             if (!isset($indexCallback[0])) {
@@ -419,7 +419,7 @@ class FOSElasticaExtension extends Extension
         throw new \InvalidArgumentException(\sprintf('Invalid indexable_callback for index "%s"', $indexName));
     }
 
-    private function transformServiceReference($classOrService)
+    private function transformServiceReference(mixed $classOrService): mixed
     {
         return \str_starts_with((string) $classOrService, '@') ? new Reference(\substr((string) $classOrService, 1)) : $classOrService;
     }
@@ -666,9 +666,9 @@ class FOSElasticaExtension extends Extension
     private function getDoctrineEvents(array $indexConfig): array
     {
         $eventsClass = match ($indexConfig['driver']) {
-            'orm' => '\Doctrine\ORM\Events',
-            'phpcr' => '\Doctrine\ODM\PHPCR\Event',
-            'mongodb' => '\Doctrine\ODM\MongoDB\Events',
+            'orm' => \Doctrine\ORM\Events::class,
+            'phpcr' => \Doctrine\ODM\PHPCR\Event::class,
+            'mongodb' => \Doctrine\ODM\MongoDB\Events::class,
             default => throw new \InvalidArgumentException(\sprintf('Cannot determine events for driver "%s"', $indexConfig['driver'])),
         };
 
@@ -740,7 +740,7 @@ class FOSElasticaExtension extends Extension
      */
     private function loadIndexManager(ContainerBuilder $container): void
     {
-        $indexRefs = \array_map(static fn (array $index) => $index['reference'], $this->indexConfigs);
+        $indexRefs = \array_map(static fn (array $index): mixed => $index['reference'], $this->indexConfigs);
 
         $managerDef = $container->getDefinition('fos_elastica.index_manager');
         $managerDef->replaceArgument(0, $indexRefs);
@@ -751,7 +751,7 @@ class FOSElasticaExtension extends Extension
      */
     private function loadIndexTemplateManager(ContainerBuilder $container): void
     {
-        $indexTemplateRefs = \array_map(static fn (array $index) => $index['reference'], $this->indexTemplateConfigs);
+        $indexTemplateRefs = \array_map(static fn (array $index): mixed => $index['reference'], $this->indexTemplateConfigs);
 
         $managerDef = $container->getDefinition('fos_elastica.index_template_manager');
         $managerDef->replaceArgument(0, $indexTemplateRefs);

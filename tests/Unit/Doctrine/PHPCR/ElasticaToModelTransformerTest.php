@@ -36,7 +36,7 @@ class ElasticaToModelTransformerTest extends TestCase
     /**
      * @var DocumentRepository|\PHPUnit\Framework\MockObject\MockObject
      */
-    protected $repository;
+    protected \PHPUnit\Framework\MockObject\MockObject $repository;
 
     protected $objectClass = 'stdClass';
 

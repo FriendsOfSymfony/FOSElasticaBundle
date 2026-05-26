@@ -26,7 +26,7 @@ class AppKernel extends Kernel
     private $testCase;
     private $rootConfig;
 
-    public function __construct(private $varDir, $testCase, $rootConfig, $environment, $debug)
+    public function __construct(private $varDir, $testCase, $rootConfig, string $environment, bool $debug)
     {
         if (!\is_dir(__DIR__.'/'.$testCase)) {
             throw new \InvalidArgumentException(\sprintf('The test case "%s" does not exist.', $testCase));
