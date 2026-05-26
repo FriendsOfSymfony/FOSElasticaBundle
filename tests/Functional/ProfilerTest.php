@@ -64,7 +64,13 @@ class ProfilerTest extends WebTestCase
 
         $urlGeneratorMock->method('generate')->willReturn('');
         $fragmentHandlerMock->method('render')->willReturn('');
-        $loaderMock->method('load')->willReturn(new HttpKernelRuntime($fragmentHandlerMock));
+        $loaderMock->method('load')->willReturnCallback(static function (string $class) use ($fragmentHandlerMock) {
+            if (HttpKernelRuntime::class === $class) {
+                return new HttpKernelRuntime($fragmentHandlerMock);
+            }
+
+            return null;
+        });
 
         $this->twig->addRuntimeLoader($loaderMock);
     }
