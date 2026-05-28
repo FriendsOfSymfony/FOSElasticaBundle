@@ -69,9 +69,15 @@ class ElasticaToModelTransformerTest extends TestCase
             ])->getMock()
         ;
 
+        $documents = [new \stdClass(), new \stdClass()];
+        $findManyReturn = (new \ReflectionMethod(DocumentRepository::class, 'findMany'))->getReturnType();
+        $returnValue = $findManyReturn instanceof \ReflectionNamedType && 'array' === $findManyReturn->getName()
+            ? $documents
+            : new ArrayCollection($documents);
+
         $this->repository->expects($this->any())
             ->method('findMany')
-            ->will($this->returnValue(new ArrayCollection([new \stdClass(), new \stdClass()])))
+            ->will($this->returnValue($returnValue))
         ;
 
         $this->manager->expects($this->any())

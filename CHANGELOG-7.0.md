@@ -7,6 +7,8 @@ in 7.x versions.
 ### 7.1.1 (2026-xx-xx)
 * Fix deprecated Symfony method call.
 * Use DI service locator for custom repository instantiation.
+* Add compatibility with `doctrine/doctrine-bundle` 3.x, `doctrine/phpcr-odm` 3.x and Symfony 8.0 in highest-deps CI.
+* Raise minimum versions of `doctrine/doctrine-bundle` (^2.5), `doctrine/orm` (^2.17) and `jms/serializer-bundle` (^5.4) to fix lowest-deps CI.
 
 ### 7.1.0 (2026-04-24)
 * Added Symfony 8.0 support.
