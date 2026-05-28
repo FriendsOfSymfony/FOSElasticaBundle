@@ -14,6 +14,7 @@ namespace FOS\ElasticaBundle\Elastica;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ElasticsearchException;
 use Elastic\Elasticsearch\Response\Elasticsearch;
+use Elastic\Transport\Client\Curl;
 use Elastica\Client as BaseClient;
 use Elastica\Exception\ClientException;
 use FOS\ElasticaBundle\Event\ElasticaRequestExceptionEvent;
@@ -36,7 +37,55 @@ class Client extends BaseClient implements ResetInterface
 {
     public function __construct(array|string $config = [], private readonly array $forbiddenCodes = [400, 403, 404], ?LoggerInterface $logger = null)
     {
+        // Reroute deprecated http_client_options.headers via Transport::setHeader so it works for any
+        // PSR-18 client — elastic-transport's bundled Curl client ValueErrors on string keys in curl_setopt_array.
+        $headers = [];
+        if (\is_array($config) && \is_array($config['transport_config']['http_client_options']['headers'] ?? null)) {
+            $headers = $config['transport_config']['http_client_options']['headers'];
+            unset($config['transport_config']['http_client_options']['headers']);
+        }
+
         parent::__construct($config, $logger);
+
+        foreach ($headers as $name => $value) {
+            $this->getTransport()->setHeader($name, $value);
+        }
+
+        $this->translateOptionsForBundledCurl();
+    }
+
+    /**
+     * When the active transport client is elastic-transport's bundled Curl, swap any 'timeout' string
+     * key (deprecated bundle alias) to CURLOPT_TIMEOUT — otherwise curl_setopt_array ValueErrors on
+     * the unknown option.
+     */
+    private function translateOptionsForBundledCurl(): void
+    {
+        if (!\class_exists(Curl::class)) {
+            return;
+        }
+
+        $transportClient = $this->getTransport()->getClient();
+        if (!$transportClient instanceof Curl) {
+            return;
+        }
+
+        $optionsProperty = new \ReflectionProperty($transportClient, 'options');
+        $options = $optionsProperty->getValue($transportClient);
+
+        // `timeout` -> CURLOPT_TIMEOUT
+        if (isset($options['timeout'])) {
+            $options[\CURLOPT_TIMEOUT] = $options['timeout'];
+            unset($options['timeout']);
+        }
+
+        // `connect_timeout` -> CURLOPT_CONNECTTIMEOUT
+        if (isset($options['connect_timeout'])) {
+            $options[\CURLOPT_CONNECTTIMEOUT] = $options['connect_timeout'];
+            unset($options['connect_timeout']);
+        }
+
+        $transportClient->setOptions($options);
     }
 
     /**

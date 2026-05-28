@@ -1,0 +1,15 @@
+fos_elastica:
+    clients:
+        default:
+            hosts: [http://localhost:9200]
+            headers:
+                Authorization: 'Bearer xyz'
+            timeout: 10
+    indexes:
+        test_index:
+            client: default
+            properties:
+                text: ~
+            persistence:
+                driver: orm
+                model: foo_model

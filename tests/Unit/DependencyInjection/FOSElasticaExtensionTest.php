@@ -79,6 +79,28 @@ class FOSElasticaExtensionTest extends TestCase
         ], $defaultClientDefinition->getArgument('$config')['transport_config']);
     }
 
+    /**
+     * @group legacy
+     */
+    public function testDeprecatedHeadersAndTimeoutAreMergedIntoHttpClientOptionsForBC(): void
+    {
+        $containerBuilder = new ContainerBuilder();
+        $containerBuilder->registerExtension($extension = new FOSElasticaExtension());
+        $containerBuilder->setParameter('kernel.debug', true);
+
+        $loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__.'/fixtures'));
+        $loader->load('deprecated_headers_timeout.yml');
+
+        $extensionConfig = $containerBuilder->getExtensionConfig($extension->getAlias());
+        $extension->load($extensionConfig, $containerBuilder);
+
+        $defaultClientDefinition = $containerBuilder->findDefinition('fos_elastica.client.default');
+        $this->assertSame([
+            'headers' => ['Authorization' => 'Bearer xyz'],
+            'timeout' => 10,
+        ], $defaultClientDefinition->getArgument('$config')['transport_config']['http_client_options']);
+    }
+
     public function testShouldRegisterDoctrineORMPagerProviderIfEnabled(): void
     {
         $container = new ContainerBuilder();

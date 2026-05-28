@@ -28,15 +28,15 @@ Installation instructions can be found in the [documentation](doc/setup.md)
 Versions & Dependencies
 -----------------------
 
-Version 7 of the FOSElasticaBundle is compatible with Elasticsearch 8. It requires Symfony 6.4 or greater. When using
+Version 7 of the FOSElasticaBundle is compatible with Elasticsearch 8 and 9. It requires Symfony 6.4 or greater. When using
 Symfony Flex there is also a [recipe to ease the setup](https://github.com/symfony/recipes-contrib/tree/master/friendsofsymfony/elastica-bundle/5.0).
 Earlier versions of the FOSElasticaBundle are not maintained anymore and only work with older versions of the dependencies.
 The following table shows the compatibilities of different versions of the bundle.
 
-| FOSElasticaBundle | Elastica | Elasticsearch | Symfony    | PHP   |
-|-------------------|----------|---------------| ---------- | ----- |
-| [6.6] (6.x)       | ^7.1     | 7.\*          | ^5.4\|^6.4\|^7.1 | ^7.4\|^8.1 |
-| [7.1] (master)    | ^8.0     | 8.\*          | ^6.4\|^7.4\|^8.0 | ^8.1 |
+| FOSElasticaBundle | Elastica         | Elasticsearch | Symfony    | PHP   |
+|-------------------|------------------|---------------| ---------- | ----- |
+| [6.6] (6.x)       | ^7.1             | 7.\*          | ^5.4\|^6.4\|^7.1 | ^7.4\|^8.1 |
+| [7.1] (master)    | ^8.0 \|\| ^9.0   | 8.\* \|\| 9.\* | ^6.4\|^7.4\|^8.0 | ^8.1 |
 
 License
 -------

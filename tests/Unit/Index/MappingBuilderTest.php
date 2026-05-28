@@ -13,6 +13,7 @@ namespace FOS\ElasticaBundle\Tests\Unit\Index;
 
 use FOS\ElasticaBundle\Configuration\IndexConfig;
 use FOS\ElasticaBundle\Configuration\IndexTemplateConfig;
+use FOS\ElasticaBundle\Elastica\ElasticsearchVersionDetector;
 use FOS\ElasticaBundle\Index\MappingBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -71,11 +72,21 @@ class MappingBuilderTest extends TestCase
         $config = new IndexTemplateConfig(
             ['index_patterns' => ['index_template_*'], 'name' => 'some_template', 'config' => [], 'mapping' => $this->indexConfig->getMapping()]
         );
-        $this->assertEquals(
-            [
+
+        $expected = ElasticsearchVersionDetector::usesNewIndexTemplateApi()
+            ? [
+                'template' => [
+                    'mappings' => $this->indexConfig->getMapping(),
+                ],
+                'index_patterns' => ['index_template_*'],
+            ]
+            : [
                 'index_patterns' => ['index_template_*'],
                 'mappings' => $this->indexConfig->getMapping(),
-            ],
+            ];
+
+        $this->assertEquals(
+            $expected,
             $this->builder->buildIndexTemplateMapping($config)
         );
     }
