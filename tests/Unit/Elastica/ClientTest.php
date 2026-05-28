@@ -234,6 +234,63 @@ class ClientTest extends TestCase
         $this->assertSame($template, $client->getIndexTemplate('some_index'));
     }
 
+    /**
+     * Headers arriving via the deprecated http_client_options['headers'] passthrough are
+     * extracted in the constructor and re-applied via Transport::setHeader. This makes
+     * them work uniformly across Guzzle, Symfony HTTP Client, and elastic-transport's
+     * bundled Curl client (which would otherwise ValueError on the string key in
+     * curl_setopt_array).
+     */
+    public function testHeadersFromHttpClientOptionsAreReroutedViaTransport(): void
+    {
+        $client = new Client([
+            'transport_config' => [
+                'http_client_options' => [
+                    'headers' => ['X-Foo' => 'bar', 'Authorization' => 'Bearer xyz'],
+                    'timeout' => 5,
+                ],
+            ],
+        ]);
+
+        $headers = $client->getTransport()->getHeaders();
+        self::assertSame('bar', $headers['X-Foo'] ?? null);
+        self::assertSame('Bearer xyz', $headers['Authorization'] ?? null);
+        // timeout is left in place so the underlying HTTP client (Guzzle/Symfony) can consume it
+        self::assertSame(['timeout' => 5], $client->getConfig()['transport_config']['http_client_options']);
+    }
+
+    /**
+     * When the active transport client is elastic-transport's bundled Curl, the deprecated
+     * 'timeout' string key in http_client_options is translated to CURLOPT_TIMEOUT — otherwise
+     * curl_setopt_array ValueErrors on the unknown option.
+     */
+    public function testTimeoutIsTranslatedToCurlOptForBundledCurl(): void
+    {
+        if (!\class_exists(\Elastic\Transport\Client\Curl::class)) {
+            self::markTestSkipped('Bundled Elastic\Transport\Client\Curl is only available on Elastica 9+.');
+        }
+
+        $client = new Client([
+            'transport_config' => [
+                'http_client' => new \Elastic\Transport\Client\Curl(),
+                'http_client_options' => [
+                    'timeout' => 7,
+                    \CURLOPT_RANDOM_FILE => '/dev/urandom',
+                ],
+            ],
+        ]);
+
+        $transportClient = $client->getTransport()->getClient();
+        self::assertInstanceOf(\Elastic\Transport\Client\Curl::class, $transportClient);
+
+        $optionsProperty = new \ReflectionProperty($transportClient, 'options');
+        $options = $optionsProperty->getValue($transportClient);
+
+        self::assertSame(7, $options[\CURLOPT_TIMEOUT] ?? null);
+        self::assertArrayNotHasKey('timeout', $options);
+        self::assertSame('/dev/urandom', $options[\CURLOPT_RANDOM_FILE] ?? null, 'other curl options must be preserved');
+    }
+
     private function getClient(LoggerInterface $logger, \Nyholm\Psr7\Response $response): Client
     {
         $httpClient = $this->createMock(ClientInterface::class);

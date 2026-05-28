@@ -356,12 +356,22 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('scalar')->end()
                             ->end()
                             ->arrayNode('headers')
+                                ->setDeprecated(
+                                    'friendsofsymfony/elastica-bundle',
+                                    '7.1',
+                                    'The "%node%" option is deprecated. Configure headers via "client_options" instead — for Guzzle/Symfony HTTP Client use "headers", for elastic-transport\'s bundled Curl client use CURLOPT_HTTPHEADER.',
+                                )
                                 ->normalizeKeys(false)
                                 ->useAttributeAsKey('name')
                                 ->prototype('scalar')->end()
                             ->end()
                             ->scalarNode('timeout')
                                 ->defaultValue(30)
+                                ->setDeprecated(
+                                    'friendsofsymfony/elastica-bundle',
+                                    '7.1',
+                                    'The "%node%" option is deprecated. Configure your HTTP client directly via "client_options" instead — "timeout" for Guzzle/Symfony HTTP Client, CURLOPT_TIMEOUT for elastic-transport\'s bundled Curl client.',
+                                )
                             ->end()
                             ->scalarNode('retry_on_conflict')
                                 ->defaultValue(0)

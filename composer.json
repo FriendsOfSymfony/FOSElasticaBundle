@@ -59,6 +59,7 @@
         "phpstan/phpstan-symfony": "^1.4",
         "phpunit/phpunit": "^9.5",
         "symfony/expression-language": "^6.4 || ^7.4 || ^8.0",
+        "symfony/http-client": "^6.4 || ^7.4 || ^8.0",
         "symfony/messenger": "^6.4 || ^7.4 || ^8.0",
         "symfony/serializer": "^6.4 || ^7.4 || ^8.0",
         "symfony/twig-bundle": "^6.4 || ^7.4 || ^8.0",
@@ -86,6 +87,7 @@
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true,
+            "php-http/discovery": true,
             "phpstan/extension-installer": true
         }
     },

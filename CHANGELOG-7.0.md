@@ -6,6 +6,10 @@ in 7.x versions.
 
 ### 7.1.1 (2026-xx-xx)
 * Added Elasticsearch 9 and Elastica 9 support.
+* `headers` client config is now applied via `Transport::setHeader()` so it works uniformly across Guzzle, Symfony HTTP Client, and elastic-transport's bundled Curl client.
+* `timeout` client config is now translated to `CURLOPT_TIMEOUT` at runtime when the active transport client is elastic-transport's bundled Curl — Guzzle/Symfony HTTP Client keep consuming the original `'timeout'` key as before.
+* Default config no longer injects `'headers' => []` / `'timeout' => 30` into `http_client_options`, which would otherwise break elastic-transport's bundled Curl client (PHP 8+ `ValueError` on unknown `curl_setopt_array` keys).
+* **Deprecated** the top-level `headers` and `timeout` client config. Move them into `client_options` — for Guzzle/Symfony HTTP Client use `headers` / `timeout`, for the bundled Curl client use `CURLOPT_HTTPHEADER` / `CURLOPT_TIMEOUT`.
 * Fix deprecated Symfony method call.
 * Instantiate custom repositories using the DI service locator.
 * Add compatibility with `doctrine/doctrine-bundle` 3.x, `doctrine/phpcr-odm` 3.x and Symfony 8.0 in highest-deps CI.
