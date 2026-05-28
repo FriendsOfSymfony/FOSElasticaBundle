@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class CallbackTest extends TestCase
 {
-    public function testSerializerMustHaveSerializeMethod()
+    public function testSerializerMustHaveSerializeMethod(): void
     {
         $callback = new Callback();
         $this->expectException(\RuntimeException::class);
@@ -28,7 +28,7 @@ class CallbackTest extends TestCase
         $callback->setSerializer(new \stdClass());
     }
 
-    public function testSetGroupsWorksWithValidSerializer()
+    public function testSetGroupsWorksWithValidSerializer(): void
     {
         $callback = new Callback();
         $serializer = $this->createMock(SerializerInterface::class);
@@ -37,7 +37,7 @@ class CallbackTest extends TestCase
         $callback->setGroups(['foo']);
     }
 
-    public function testSetGroupsFailsWithInvalidSerializer()
+    public function testSetGroupsFailsWithInvalidSerializer(): void
     {
         $callback = new Callback();
         $serializer = $this->createMock(FakeSerializer::class);
@@ -54,7 +54,7 @@ class CallbackTest extends TestCase
 
 class FakeSerializer
 {
-    public function serialize()
+    public function serialize(): void
     {
     }
 }

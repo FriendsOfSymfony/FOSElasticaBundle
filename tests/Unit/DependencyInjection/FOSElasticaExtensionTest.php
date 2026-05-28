@@ -36,7 +36,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class FOSElasticaExtensionTest extends TestCase
 {
-    public function testExtensionSupportsDriverlessTypePersistence()
+    public function testExtensionSupportsDriverlessTypePersistence(): void
     {
         $config = Yaml::parse(\file_get_contents(__DIR__.'/fixtures/driverless_type.yml'));
 
@@ -51,7 +51,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertFalse($containerBuilder->hasDefinition('fos_elastica.object_persister.test_index'));
     }
 
-    public function testYamlConfiguration()
+    public function testYamlConfiguration(): void
     {
         $containerBuilder = new ContainerBuilder();
         $containerBuilder->registerExtension($extension = new FOSElasticaExtension());
@@ -79,7 +79,7 @@ class FOSElasticaExtensionTest extends TestCase
         ], $defaultClientDefinition->getArgument('$config')['transport_config']);
     }
 
-    public function testShouldRegisterDoctrineORMPagerProviderIfEnabled()
+    public function testShouldRegisterDoctrineORMPagerProviderIfEnabled(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
@@ -140,7 +140,7 @@ class FOSElasticaExtensionTest extends TestCase
         );
     }
 
-    public function testShouldRegisterDoctrineMongoDBPagerProviderIfEnabled()
+    public function testShouldRegisterDoctrineMongoDBPagerProviderIfEnabled(): void
     {
         if (!\class_exists(\Doctrine\ODM\MongoDB\DocumentManager::class)) {
             $this->markTestSkipped('Doctrine MongoDB ODM is not available.');
@@ -205,7 +205,7 @@ class FOSElasticaExtensionTest extends TestCase
         );
     }
 
-    public function testShouldRegisterDoctrinePHPCRPagerProviderIfEnabled()
+    public function testShouldRegisterDoctrinePHPCRPagerProviderIfEnabled(): void
     {
         if (!\class_exists(\Doctrine\ODM\PHPCR\DocumentManager::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');
@@ -270,7 +270,7 @@ class FOSElasticaExtensionTest extends TestCase
         );
     }
 
-    public function testShouldRegisterInPlacePagerPersister()
+    public function testShouldRegisterInPlacePagerPersister(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
@@ -318,7 +318,7 @@ class FOSElasticaExtensionTest extends TestCase
         );
     }
 
-    public function testShouldRegisterRegisterListenersServiceForDoctrineProvider()
+    public function testShouldRegisterRegisterListenersServiceForDoctrineProvider(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
@@ -356,7 +356,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertSame('event_dispatcher', (string) $definition->getArgument(0));
     }
 
-    public function testShouldRegisterFilterObjectsListener()
+    public function testShouldRegisterFilterObjectsListener(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
@@ -396,7 +396,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertEquals(['kernel.event_subscriber' => [[]]], $listener->getTags());
     }
 
-    public function testShouldRegisterPagerPersisterRegisterService()
+    public function testShouldRegisterPagerPersisterRegisterService(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
@@ -432,7 +432,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertCount(0, $registry->getArgument(0)->getTaggedIteratorArgument()->getValues());
     }
 
-    public function testShouldRegisterDoctrineORMListener()
+    public function testShouldRegisterDoctrineORMListener(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
@@ -464,7 +464,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertTrue($container->hasDefinition('fos_elastica.listener.acme_index'));
     }
 
-    public function testShouldNotRegisterDoctrineORMListenerIfDisabled()
+    public function testShouldNotRegisterDoctrineORMListenerIfDisabled(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);
@@ -498,7 +498,7 @@ class FOSElasticaExtensionTest extends TestCase
         $this->assertFalse($container->hasDefinition('fos_elastica.listener.acme_index'));
     }
 
-    public function testIndexTemplates()
+    public function testIndexTemplates(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.debug', true);

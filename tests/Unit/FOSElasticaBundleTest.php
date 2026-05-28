@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class FOSElasticaBundleTest extends TestCase
 {
-    public function testCompilerPassesAreRegistered()
+    public function testCompilerPassesAreRegistered(): void
     {
         $container = $this->createMock(ContainerBuilder::class);
 

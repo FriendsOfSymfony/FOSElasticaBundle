@@ -24,21 +24,8 @@ final class ORMPagerProvider implements PagerProviderInterface
 {
     public const ENTITY_ALIAS = 'a';
 
-    private string $objectClass;
-    private ManagerRegistry $doctrine;
-    private array $baseOptions;
-    private RegisterListenersService $registerListenersService;
-
-    public function __construct(
-        ManagerRegistry $doctrine,
-        RegisterListenersService $registerListenersService,
-        string $objectClass,
-        array $baseOptions,
-    ) {
-        $this->doctrine = $doctrine;
-        $this->objectClass = $objectClass;
-        $this->baseOptions = $baseOptions;
-        $this->registerListenersService = $registerListenersService;
+    public function __construct(private readonly ManagerRegistry $doctrine, private readonly RegisterListenersService $registerListenersService, private readonly string $objectClass, private readonly array $baseOptions)
+    {
     }
 
     public function provide(array $options = []): PagerInterface

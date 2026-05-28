@@ -24,17 +24,13 @@ use Psr\Log\LoggerInterface;
  */
 class ElasticaLogger extends AbstractLogger
 {
-    protected ?LoggerInterface $logger;
     /**
      * @var list<array<string, mixed>>
      */
     protected array $queries = [];
-    protected bool $debug;
 
-    public function __construct(?LoggerInterface $logger = null, bool $debug = false)
+    public function __construct(protected ?LoggerInterface $logger = null, protected bool $debug = false)
     {
-        $this->logger = $logger;
-        $this->debug = $debug;
     }
 
     /**
@@ -47,10 +43,8 @@ class ElasticaLogger extends AbstractLogger
      * @param array<mixed>        $connection Host, port, transport, and headers of the query
      * @param array<mixed>        $query      Arguments
      * @param int                 $engineTime
-     *
-     * @return void
      */
-    public function logQuery(string $path, string $method, $data, $queryTime, $connection = [], $query = [], $engineTime = 0, int $itemCount = 0)
+    public function logQuery(string $path, string $method, $data, $queryTime, $connection = [], $query = [], $engineTime = 0, int $itemCount = 0): void
     {
         $executionMS = $queryTime * 1000;
 
@@ -60,7 +54,7 @@ class ElasticaLogger extends AbstractLogger
                 $jsonStrings = \explode("\n", $data);
                 $data = [];
                 foreach ($jsonStrings as $json) {
-                    if ('' != $json) {
+                    if ('' !== $json) {
                         $data[] = \json_decode($json, true);
                     }
                 }
@@ -81,7 +75,7 @@ class ElasticaLogger extends AbstractLogger
             ];
         }
 
-        if (null !== $this->logger) {
+        if ($this->logger instanceof LoggerInterface) {
             $message = \sprintf('%s (%s) %0.2f ms', $path, $method, $executionMS);
             $this->logger->info($message, (array) $data);
         }

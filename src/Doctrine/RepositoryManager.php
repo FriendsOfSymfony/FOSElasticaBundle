@@ -26,13 +26,9 @@ class RepositoryManager implements RepositoryManagerInterface
 {
     protected array $entities = [];
     protected array $repositories = [];
-    protected ManagerRegistry $managerRegistry;
-    private RepositoryManagerInterface $repositoryManager;
 
-    public function __construct(ManagerRegistry $managerRegistry, RepositoryManagerInterface $repositoryManager)
+    public function __construct(protected ManagerRegistry $managerRegistry, private readonly RepositoryManagerInterface $repositoryManager)
     {
-        $this->managerRegistry = $managerRegistry;
-        $this->repositoryManager = $repositoryManager;
     }
 
     public function addIndex(string $indexName, FinderInterface $finder, ?string $repositoryName = null): void
@@ -53,7 +49,7 @@ class RepositoryManager implements RepositoryManagerInterface
     public function getRepository(string $entityName): Repository
     {
         $realEntityName = $entityName;
-        if (false !== \strpos($entityName, ':')) {
+        if (\str_contains($entityName, ':')) {
             [$namespaceAlias, $simpleClassName] = \explode(':', $entityName);
             // @link https://github.com/doctrine/persistence/pull/204
             if (\method_exists($this->managerRegistry, 'getAliasNamespace')) {

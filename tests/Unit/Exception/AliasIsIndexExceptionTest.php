@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -19,8 +21,8 @@ use PHPUnit\Framework\TestCase;
  */
 class AliasIsIndexExceptionTest extends TestCase
 {
-    public function testConstruct()
+    public function testConstruct(): void
     {
-        $exception = new AliasIsIndexException('indexName');
+        new AliasIsIndexException('indexName');
     }
 }

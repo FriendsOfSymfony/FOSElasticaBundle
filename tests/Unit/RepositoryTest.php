@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 class RepositoryTest extends TestCase
 {
-    public function testFind()
+    public function testFind(): void
     {
         $testQuery = 'Test Query';
 
@@ -31,7 +31,7 @@ class RepositoryTest extends TestCase
         $repository->find($testQuery);
     }
 
-    public function testFindWithLimit()
+    public function testFindWithLimit(): void
     {
         $testQuery = 'Test Query';
         $testLimit = 20;
@@ -41,7 +41,7 @@ class RepositoryTest extends TestCase
         $repository->find($testQuery, $testLimit);
     }
 
-    public function testFindPaginated()
+    public function testFindPaginated(): void
     {
         $testQuery = 'Test Query';
 
@@ -50,7 +50,7 @@ class RepositoryTest extends TestCase
         $repository->findPaginated($testQuery);
     }
 
-    public function testCreatePagitatorAdapter()
+    public function testCreatePagitatorAdapter(): void
     {
         $testQuery = 'Test Query';
 
@@ -59,7 +59,7 @@ class RepositoryTest extends TestCase
         $repository->createPaginatorAdapter($testQuery);
     }
 
-    public function testCreateHybridPaginatorAdapter()
+    public function testCreateHybridPaginatorAdapter(): void
     {
         $testQuery = 'Test Query';
 
@@ -68,7 +68,7 @@ class RepositoryTest extends TestCase
         $repository->createHybridPaginatorAdapter($testQuery);
     }
 
-    public function testFindHybrid()
+    public function testFindHybrid(): void
     {
         $testQuery = 'Test Query';
 
@@ -77,7 +77,7 @@ class RepositoryTest extends TestCase
         $repository->findHybrid($testQuery);
     }
 
-    private function mockTransformedFinder($name, $arguments)
+    private function mockTransformedFinder(string $name, array $arguments): \PHPUnit\Framework\MockObject\MockObject
     {
         $finderMock = $this->createMock(TransformedFinder::class);
         $finderMock->expects($this->once())

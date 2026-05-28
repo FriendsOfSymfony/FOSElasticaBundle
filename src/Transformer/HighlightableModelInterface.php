@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -21,7 +23,7 @@ interface HighlightableModelInterface
     /**
      * Returns a unique identifier for the model.
      */
-    public function getId();
+    public function getId(): mixed;
 
     /**
      * Set ElasticSearch highlight data.
@@ -29,8 +31,6 @@ interface HighlightableModelInterface
      * @param array $highlights array of highlight strings
      *
      * @phpstan-param list<THighlight> $highlights
-     *
-     * @return void
      */
-    public function setElasticHighlights(array $highlights);
+    public function setElasticHighlights(array $highlights): void;
 }

@@ -22,7 +22,7 @@ use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
  */
 class PropertyPathTest extends WebTestCase
 {
-    public function testContainerSource()
+    public function testContainerSource(): void
     {
         self::bootKernel(['test_case' => 'ORM']);
         /** @var ObjectPersisterInterface $persister */

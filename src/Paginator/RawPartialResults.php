@@ -19,14 +19,8 @@ use Elastica\ResultSet;
  */
 class RawPartialResults implements PartialResultsInterface
 {
-    /**
-     * @var ResultSet
-     */
-    protected $resultSet;
-
-    public function __construct(ResultSet $resultSet)
+    public function __construct(protected ResultSet $resultSet)
     {
-        $this->resultSet = $resultSet;
     }
 
     /**
@@ -34,9 +28,7 @@ class RawPartialResults implements PartialResultsInterface
      */
     public function toArray(): array
     {
-        return \array_map(static function (Result $result) {
-            return $result->getSource();
-        }, $this->resultSet->getResults());
+        return \array_map(static fn (Result $result): array => $result->getSource(), $this->resultSet->getResults());
     }
 
     public function getTotalHits(): int

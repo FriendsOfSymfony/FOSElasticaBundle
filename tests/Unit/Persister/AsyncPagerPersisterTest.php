@@ -27,13 +27,13 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 class AsyncPagerPersisterTest extends TestCase
 {
-    public function testShouldImplementPagerPersisterInterface()
+    public function testShouldImplementPagerPersisterInterface(): void
     {
         $reflectionClass = new \ReflectionClass(AsyncPagerPersister::class);
         $this->assertTrue($reflectionClass->implementsInterface(PagerPersisterInterface::class));
     }
 
-    public function testInsertDispatchAsyncPersistPageObject()
+    public function testInsertDispatchAsyncPersistPageObject(): void
     {
         $pagerPersisterRegistry = new PagerPersisterRegistry($this->createMock(ServiceLocator::class));
         $pagerProviderRegistry = $this->createMock(PagerProviderRegistry::class);
@@ -42,9 +42,7 @@ class AsyncPagerPersisterTest extends TestCase
 
         $messageBus->expects($this->once())->method('dispatch')->with(
             $this->callback(
-                function ($message) {
-                    return $message instanceof AsyncPersistPage;
-                }
+                fn (object $message): bool => $message instanceof AsyncPersistPage
             )
         )->willReturn(new Envelope(new AsyncPersistPage(0, [])));
 

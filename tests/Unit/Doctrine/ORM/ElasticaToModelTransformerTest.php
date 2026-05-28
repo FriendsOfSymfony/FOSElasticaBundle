@@ -31,17 +31,17 @@ class ElasticaToModelTransformerTest extends TestCase
     /**
      * @var ManagerRegistry&MockObject
      */
-    protected $registry;
+    protected MockObject $registry;
 
     /**
      * @var ObjectManager&MockObject
      */
-    protected $manager;
+    protected MockObject $manager;
 
     /**
      * @var ObjectRepository&MockObject
      */
-    protected $repository;
+    protected MockObject $repository;
 
     protected function setUp(): void
     {
@@ -78,7 +78,7 @@ class ElasticaToModelTransformerTest extends TestCase
      * Tests that the Transformer uses the query_builder_method configuration option
      * allowing configuration of createQueryBuilder call.
      */
-    public function testTransformUsesQueryBuilderMethodConfiguration()
+    public function testTransformUsesQueryBuilderMethodConfiguration(): void
     {
         $qb = $this->createMock(QueryBuilder::class);
 
@@ -97,7 +97,6 @@ class ElasticaToModelTransformerTest extends TestCase
 
         $class = new \ReflectionClass(ElasticaToModelTransformer::class);
         $method = $class->getMethod('getEntityQueryBuilder');
-        $method->setAccessible(true);
 
         $method->invokeArgs($transformer, []);
     }
@@ -106,7 +105,7 @@ class ElasticaToModelTransformerTest extends TestCase
      * Tests that the Transformer uses the query_builder_method configuration option
      * allowing configuration of createQueryBuilder call.
      */
-    public function testTransformUsesDefaultQueryBuilderMethodConfiguration()
+    public function testTransformUsesDefaultQueryBuilderMethodConfiguration(): void
     {
         $qb = $this->createMock(QueryBuilder::class);
 
@@ -123,7 +122,6 @@ class ElasticaToModelTransformerTest extends TestCase
 
         $class = new \ReflectionClass(ElasticaToModelTransformer::class);
         $method = $class->getMethod('getEntityQueryBuilder');
-        $method->setAccessible(true);
 
         $method->invokeArgs($transformer, []);
     }
@@ -131,7 +129,7 @@ class ElasticaToModelTransformerTest extends TestCase
     /**
      * Checks that the 'hints' parameter is used on the created query.
      */
-    public function testUsesHintsConfigurationIfGiven()
+    public function testUsesHintsConfigurationIfGiven(): void
     {
         $query = $this->getMockBuilder(Query::class)
             ->setMethods(['setHint', 'execute', 'setHydrationMode'])
@@ -139,6 +137,7 @@ class ElasticaToModelTransformerTest extends TestCase
             ->getMockForAbstractClass()
         ;
         $query->expects($this->any())->method('setHydrationMode')->willReturnSelf();
+        $query->expects($this->any())->method('execute')->willReturn([]);
         $query->expects($this->once())  //  check if the hint is set
             ->method('setHint')
             ->with('customHintName', 'Custom\Hint\Class')
@@ -164,7 +163,6 @@ class ElasticaToModelTransformerTest extends TestCase
 
         $class = new \ReflectionClass(ElasticaToModelTransformer::class);
         $method = $class->getMethod('findByIdentifiers');
-        $method->setAccessible(true);
 
         $method->invokeArgs($transformer, [[1, 2, 3], /* $hydrate */ true]);
     }

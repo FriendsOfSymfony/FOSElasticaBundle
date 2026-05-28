@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -18,12 +20,12 @@ class TypeObj
     public $field1;
     public $field2;
 
-    public function isIndexable()
+    public function isIndexable(): bool
     {
         return true;
     }
 
-    public function isntIndexable()
+    public function isntIndexable(): bool
     {
         return false;
     }

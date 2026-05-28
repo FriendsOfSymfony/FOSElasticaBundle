@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class IndexTemplateTest extends TestCase
 {
-    public function testInstantiate()
+    public function testInstantiate(): void
     {
         $template = new IndexTemplate($this->createStub(Client::class), 'some_name');
         $this->assertInstanceOf(BaseIndexTemplate::class, $template);

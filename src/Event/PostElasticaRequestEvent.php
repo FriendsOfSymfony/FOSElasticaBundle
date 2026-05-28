@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -16,15 +18,8 @@ use Psr\Http\Message\RequestInterface;
 
 class PostElasticaRequestEvent
 {
-    private RequestInterface $request;
-    private Response $response;
-
-    public function __construct(
-        RequestInterface $request,
-        Response $response
-    ) {
-        $this->request = $request;
-        $this->response = $response;
+    public function __construct(private readonly RequestInterface $request, private readonly Response $response)
+    {
     }
 
     public function getRequest(): RequestInterface

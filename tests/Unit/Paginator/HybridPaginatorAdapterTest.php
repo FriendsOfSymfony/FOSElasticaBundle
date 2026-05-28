@@ -20,7 +20,7 @@ use FOS\ElasticaBundle\Tests\Unit\UnitTestHelper;
  */
 class HybridPaginatorAdapterTest extends UnitTestHelper
 {
-    public function testGetResults()
+    public function testGetResults(): void
     {
         $searchable = $this->mockSearchable();
         $query = new Query();
@@ -30,7 +30,7 @@ class HybridPaginatorAdapterTest extends UnitTestHelper
         $adapter->getResults(0, 0);
     }
 
-    protected function mockHybridPaginatorAdapter($args)
+    protected function mockHybridPaginatorAdapter(array $args): \PHPUnit\Framework\MockObject\MockObject
     {
         $mock = $this
             ->getMockBuilder(HybridPaginatorAdapter::class)

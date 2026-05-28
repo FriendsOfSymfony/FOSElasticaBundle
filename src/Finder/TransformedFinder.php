@@ -29,70 +29,65 @@ use Pagerfanta\Pagerfanta;
  */
 class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderInterface, PaginatedHybridFinderInterface
 {
-    protected SearchableInterface $searchable;
-    protected ElasticaToModelTransformerInterface $transformer;
-
-    public function __construct(SearchableInterface $searchable, ElasticaToModelTransformerInterface $transformer)
+    public function __construct(protected SearchableInterface $searchable, protected ElasticaToModelTransformerInterface $transformer)
     {
-        $this->searchable = $searchable;
-        $this->transformer = $transformer;
     }
 
-    public function find($query, ?int $limit = null, array $options = [])
+    public function find(mixed $query, ?int $limit = null, array $options = []): array
     {
         $results = $this->search($query, $limit, $options);
 
         return $this->transformer->transform($results);
     }
 
-    public function findHybrid($query, ?int $limit = null, array $options = [])
+    public function findHybrid(mixed $query, ?int $limit = null, array $options = []): array
     {
         $results = $this->search($query, $limit, $options);
 
         return $this->transformer->hybridTransform($results);
     }
 
-    public function findRaw($query, ?int $limit = null, array $options = []): array
+    public function findRaw(mixed $query, ?int $limit = null, array $options = []): array
     {
         return $this->search($query, $limit, $options);
     }
 
-    public function findPaginated($query, array $options = [])
+    public function findPaginated(mixed $query, array $options = []): Pagerfanta
     {
         $paginatorAdapter = $this->createPaginatorAdapter($query, $options);
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
-    public function findHybridPaginated($query, array $options = [])
+    public function findHybridPaginated(mixed $query, array $options = []): Pagerfanta
     {
         $paginatorAdapter = $this->createHybridPaginatorAdapter($query, $options);
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
-    public function findRawPaginated($query, array $options = [])
+    public function findRawPaginated(mixed $query, array $options = []): Pagerfanta
     {
         $paginatorAdapter = $this->createRawPaginatorAdapter($query, $options);
 
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
-    public function createPaginatorAdapter($query, array $options = [])
+    public function createPaginatorAdapter(mixed $query, array $options = []): TransformedPaginatorAdapter
     {
         $query = Query::create($query);
 
         return new TransformedPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
     }
 
-    public function createHybridPaginatorAdapter($query, array $options = [])
+    public function createHybridPaginatorAdapter(mixed $query, array $options = []): HybridPaginatorAdapter
     {
         $query = Query::create($query);
 
         return new HybridPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
     }
 
-    public function createRawPaginatorAdapter($query, array $options = [])
+    public function createRawPaginatorAdapter(mixed $query, array $options = []): RawPaginatorAdapter
     {
         $query = Query::create($query);
 
@@ -105,7 +100,7 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
      *
      * @return Result[]
      */
-    protected function search($query, ?int $limit = null, array $options = [])
+    protected function search(mixed $query, ?int $limit = null, array $options = []): array
     {
         $queryObject = Query::create($query);
         if (null !== $limit) {

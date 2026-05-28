@@ -19,16 +19,10 @@ use Pagerfanta\Pagerfanta;
 class PagerfantaPager implements PagerInterface
 {
     /**
-     * @var Pagerfanta<T>
-     */
-    private $pagerfanta;
-
-    /**
      * @param Pagerfanta<T> $pagerfanta
      */
-    public function __construct(Pagerfanta $pagerfanta)
+    public function __construct(private readonly Pagerfanta $pagerfanta)
     {
-        $this->pagerfanta = $pagerfanta;
     }
 
     public function getNbResults(): int
@@ -46,7 +40,7 @@ class PagerfantaPager implements PagerInterface
         return $this->pagerfanta->getCurrentPage();
     }
 
-    public function setCurrentPage(int $page)
+    public function setCurrentPage(int $page): void
     {
         $this->pagerfanta->setCurrentPage($page);
     }
@@ -56,7 +50,7 @@ class PagerfantaPager implements PagerInterface
         return $this->pagerfanta->getMaxPerPage();
     }
 
-    public function setMaxPerPage(int $perPage)
+    public function setMaxPerPage(int $perPage): void
     {
         $this->pagerfanta->setMaxPerPage($perPage);
     }
@@ -64,7 +58,7 @@ class PagerfantaPager implements PagerInterface
     /**
      * @phpstan-return iterable<array-key, T>
      */
-    public function getCurrentPageResults()
+    public function getCurrentPageResults(): iterable
     {
         return $this->pagerfanta->getCurrentPageResults();
     }

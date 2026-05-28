@@ -24,7 +24,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
  */
 class ObjectSerializerPersisterTest extends TestCase
 {
-    public function testThatCanReplaceObject()
+    public function testThatCanReplaceObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -40,7 +40,7 @@ class ObjectSerializerPersisterTest extends TestCase
         $objectPersister->replaceOne(new POPO());
     }
 
-    public function testThatCanInsertObject()
+    public function testThatCanInsertObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -59,7 +59,7 @@ class ObjectSerializerPersisterTest extends TestCase
         $objectPersister->insertOne(new POPO());
     }
 
-    public function testThatCanDeleteObject()
+    public function testThatCanDeleteObject(): void
     {
         $transformer = $this->getTransformer();
 
@@ -78,7 +78,7 @@ class ObjectSerializerPersisterTest extends TestCase
         $objectPersister->deleteOne(new POPO());
     }
 
-    public function testThatCanInsertManyObjects()
+    public function testThatCanInsertManyObjects(): void
     {
         $transformer = $this->getTransformer();
 
@@ -97,10 +97,7 @@ class ObjectSerializerPersisterTest extends TestCase
         $objectPersister->insertMany([new POPO(), new POPO()]);
     }
 
-    /**
-     * @return ModelToElasticaIdentifierTransformer
-     */
-    private function getTransformer()
+    private function getTransformer(): ModelToElasticaIdentifierTransformer
     {
         $transformer = new ModelToElasticaIdentifierTransformer();
         $transformer->setPropertyAccessor(PropertyAccess::createPropertyAccessor());

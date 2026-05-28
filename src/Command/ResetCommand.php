@@ -23,17 +23,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ResetCommand extends Command
 {
-    private IndexManager $indexManager;
-    private Resetter $resetter;
-
     public function __construct(
-        IndexManager $indexManager,
-        Resetter $resetter,
+        private readonly IndexManager $indexManager,
+        private readonly Resetter $resetter,
     ) {
         parent::__construct();
-
-        $this->indexManager = $indexManager;
-        $this->resetter = $resetter;
     }
 
     protected function configure(): void

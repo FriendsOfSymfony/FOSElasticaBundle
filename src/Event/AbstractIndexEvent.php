@@ -15,14 +15,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class AbstractIndexEvent extends Event
 {
-    /**
-     * @var string
-     */
-    private $index;
-
-    public function __construct(string $index)
+    public function __construct(private readonly string $index)
     {
-        $this->index = $index;
     }
 
     public function getIndex(): string

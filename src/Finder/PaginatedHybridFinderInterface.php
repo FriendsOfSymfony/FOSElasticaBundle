@@ -30,15 +30,13 @@ interface PaginatedHybridFinderInterface extends HybridFinderInterface
      *
      * @return PagerfantaInterface<HybridResult>
      */
-    public function findHybridPaginated($query);
+    public function findHybridPaginated(mixed $query): PagerfantaInterface;
 
     /**
      * Creates a hybrid paginator adapter for this query.
      *
      * @param TQuery   $query
      * @param TOptions $options
-     *
-     * @return PaginatorAdapterInterface
      */
-    public function createHybridPaginatorAdapter($query, array $options = []);
+    public function createHybridPaginatorAdapter(mixed $query, array $options = []): PaginatorAdapterInterface;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -68,9 +70,7 @@ interface IndexConfigInterface
     public function getNumericDetection(): ?bool;
 
     /**
-     * @return string|bool|null
-     *
      * @phpstan-return ?TDynamic
      */
-    public function getDynamic();
+    public function getDynamic(): string|bool|null;
 }

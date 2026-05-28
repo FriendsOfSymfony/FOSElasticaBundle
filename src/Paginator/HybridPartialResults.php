@@ -20,16 +20,9 @@ use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
  */
 class HybridPartialResults extends RawPartialResults
 {
-    /**
-     * @var ElasticaToModelTransformerInterface
-     */
-    protected $transformer;
-
-    public function __construct(ResultSet $resultSet, ElasticaToModelTransformerInterface $transformer)
+    public function __construct(ResultSet $resultSet, protected ElasticaToModelTransformerInterface $transformer)
     {
         parent::__construct($resultSet);
-
-        $this->transformer = $transformer;
     }
 
     /**

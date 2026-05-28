@@ -32,7 +32,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class ClientTest extends TestCase
 {
-    public function testRequestsAreLogged()
+    public function testRequestsAreLogged(): void
     {
         $logger = $this->createMock(ElasticaLogger::class);
         $logger
@@ -71,7 +71,7 @@ class ClientTest extends TestCase
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects($invoke = $this->exactly(2))
             ->method('dispatch')
-            ->with($this->callback(function ($o) use ($invoke): bool {
+            ->with($this->callback(function (object $o) use ($invoke): bool {
                 $counter = $invoke->getInvocationCount() - 1;
 
                 if ($counter > 1) {
@@ -150,7 +150,7 @@ class ClientTest extends TestCase
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects($invoke = $this->exactly(2))
             ->method('dispatch')
-            ->with($this->callback(function ($o) use ($invoke): bool {
+            ->with($this->callback(function (object $o) use ($invoke): bool {
                 $counter = $invoke->getInvocationCount() - 1;
 
                 if ($counter > 1) {
@@ -207,7 +207,7 @@ class ClientTest extends TestCase
         ));
     }
 
-    public function testRequestsWithTransportInfoErrorsRaiseExceptions()
+    public function testRequestsWithTransportInfoErrorsRaiseExceptions(): void
     {
         $httpCode = 403;
         $responseString = JSON::stringify(['message' => 'some AWS error']);
@@ -228,7 +228,7 @@ class ClientTest extends TestCase
         ));
     }
 
-    public function testGetIndexTemplate()
+    public function testGetIndexTemplate(): void
     {
         $client = new Client();
         $template = $client->getIndexTemplate('some_index');

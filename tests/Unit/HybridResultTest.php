@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HybridResultTest extends TestCase
 {
-    public function testTransformedResultDefaultsToNull()
+    public function testTransformedResultDefaultsToNull(): void
     {
         $result = new Result([]);
 

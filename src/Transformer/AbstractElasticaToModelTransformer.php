@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -24,10 +26,8 @@ abstract class AbstractElasticaToModelTransformer implements ElasticaToModelTran
 
     /**
      * Set the PropertyAccessor instance.
-     *
-     * @return void
      */
-    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor): void
     {
         $this->propertyAccessor = $propertyAccessor;
     }

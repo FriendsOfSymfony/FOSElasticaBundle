@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -12,10 +14,12 @@
 namespace FOS\ElasticaBundle\Tests\Unit\Mocks;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 class DoctrineORMCustomRepositoryMock extends EntityRepository
 {
-    public function createCustomQueryBuilder()
+    public function createCustomQueryBuilder(): ?QueryBuilder
     {
+        return null;
     }
 }

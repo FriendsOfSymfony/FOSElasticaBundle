@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PreIndexPopulateEventTest extends TestCase
 {
-    public function testPopulate()
+    public function testPopulate(): void
     {
         $event = new PreIndexPopulateEvent('index', false, []);
 
@@ -28,7 +28,7 @@ class PreIndexPopulateEventTest extends TestCase
         $this->assertSame([], $event->getOptions());
     }
 
-    public function testPopulateReset()
+    public function testPopulateReset(): void
     {
         $event = new PreIndexPopulateEvent('index', false, []);
         $this->assertFalse($event->isReset());
@@ -37,7 +37,7 @@ class PreIndexPopulateEventTest extends TestCase
         $this->assertTrue($event->isReset());
     }
 
-    public function testPopulateOptions()
+    public function testPopulateOptions(): void
     {
         $event = new PreIndexPopulateEvent('index', false, [
             'option_1' => 'value_1',
@@ -51,7 +51,7 @@ class PreIndexPopulateEventTest extends TestCase
         $this->assertSame('value_2', $event->getOption('option_2'));
     }
 
-    public function testPopulateInvalidOption()
+    public function testPopulateInvalidOption(): void
     {
         $event = new PreIndexPopulateEvent('index', false, []);
 

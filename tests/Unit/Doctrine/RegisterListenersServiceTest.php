@@ -31,12 +31,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class RegisterListenersServiceTest extends TestCase
 {
-    public function testCouldBeConstructedWithDispatcherArgument()
+    public function testCouldBeConstructedWithDispatcherArgument(): void
     {
         new RegisterListenersService($this->createDispatcherMock());
     }
 
-    public function testShouldRegisterClearObjectManagerListenerByDefaultAndDispatchOnPostPersistEvent()
+    public function testShouldRegisterClearObjectManagerListenerByDefaultAndDispatchOnPostPersistEvent(): void
     {
         $dispatcher = $this->createDispatcher();
 
@@ -57,7 +57,7 @@ class RegisterListenersServiceTest extends TestCase
         );
     }
 
-    public function testShouldNotRegisterClearObjectManagerListenerIfOptionFalse()
+    public function testShouldNotRegisterClearObjectManagerListenerIfOptionFalse(): void
     {
         $dispatcher = $this->createDispatcher();
 
@@ -80,7 +80,7 @@ class RegisterListenersServiceTest extends TestCase
         );
     }
 
-    public function testShouldNotCallClearObjectManagerListenerForAnotherPagers()
+    public function testShouldNotCallClearObjectManagerListenerForAnotherPagers(): void
     {
         $dispatcher = $this->createDispatcher();
 
@@ -104,7 +104,7 @@ class RegisterListenersServiceTest extends TestCase
         );
     }
 
-    public function testShouldNotRegisterSleepListenerByDefault()
+    public function testShouldNotRegisterSleepListenerByDefault(): void
     {
         $dispatcher = $this->createDispatcherMock();
         $dispatcher
@@ -124,7 +124,7 @@ class RegisterListenersServiceTest extends TestCase
         ]);
     }
 
-    public function testShouldRegisterSleepListenerIfOptionNotZero()
+    public function testShouldRegisterSleepListenerIfOptionNotZero(): void
     {
         $dispatcher = $this->createDispatcher();
 
@@ -147,7 +147,7 @@ class RegisterListenersServiceTest extends TestCase
         $this->assertGreaterThan(1.5, \microtime(true) - $time);
     }
 
-    public function testShouldNotCallSleepListenerForAnotherPagers()
+    public function testShouldNotCallSleepListenerForAnotherPagers(): void
     {
         $dispatcher = $this->createDispatcher();
 
@@ -171,7 +171,7 @@ class RegisterListenersServiceTest extends TestCase
         $this->assertLessThan(1, \microtime(true) - $time);
     }
 
-    public function testShouldRegisterDisableDebugLoggingByDefaultForEntityManager()
+    public function testShouldRegisterDisableDebugLoggingByDefaultForEntityManager(): void
     {
         if (!\interface_exists('Doctrine\DBAL\Logging\SQLLogger')) {
             $this->markTestSkipped('This is only possible on doctrine/orm 2.');
@@ -211,7 +211,7 @@ class RegisterListenersServiceTest extends TestCase
         ]);
     }
 
-    public function testShouldNotRegisterDisableDebugLoggingIfOptionTrueForEntityManager()
+    public function testShouldNotRegisterDisableDebugLoggingIfOptionTrueForEntityManager(): void
     {
         $dispatcher = $this->createDispatcherMock();
         $dispatcher
@@ -236,7 +236,7 @@ class RegisterListenersServiceTest extends TestCase
         ]);
     }
 
-    public function testShouldIgnoreDebugLoggingOptionForMongoDBDocumentManager()
+    public function testShouldIgnoreDebugLoggingOptionForMongoDBDocumentManager(): void
     {
         if (!\class_exists(\Doctrine\ODM\MongoDB\DocumentManager::class)) {
             $this->markTestSkipped('Doctrine MongoDB ODM is not available.');
@@ -261,7 +261,7 @@ class RegisterListenersServiceTest extends TestCase
         ]);
     }
 
-    public function testShouldIgnoreDebugLoggingOptionForPHPCRManager()
+    public function testShouldIgnoreDebugLoggingOptionForPHPCRManager(): void
     {
         if (!\interface_exists(\Doctrine\ODM\PHPCR\DocumentManagerInterface::class)) {
             $this->markTestSkipped('Doctrine PHPCR is not present');

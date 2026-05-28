@@ -34,13 +34,9 @@ use Symfony\Contracts\Service\ResetInterface;
  */
 class Client extends BaseClient implements ResetInterface
 {
-    private array $forbiddenCodes;
-
-    public function __construct(array|string $config = [], array $forbiddenCodes = [400, 403, 404], ?LoggerInterface $logger = null)
+    public function __construct(array|string $config = [], private readonly array $forbiddenCodes = [400, 403, 404], ?LoggerInterface $logger = null)
     {
         parent::__construct($config, $logger);
-
-        $this->forbiddenCodes = $forbiddenCodes;
     }
 
     /**

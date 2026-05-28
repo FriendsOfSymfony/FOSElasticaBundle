@@ -21,30 +21,22 @@ use Elastica\IndexTemplate;
 class IndexTemplateManager
 {
     /**
-     * Templates.
-     *
-     * @var array<string, IndexTemplate>
-     */
-    private $templates;
-
-    /**
      * @param array<string, IndexTemplate> $templates
      */
-    public function __construct(array $templates)
-    {
-        $this->templates = $templates;
+    public function __construct(
+        /**
+         * Templates.
+         */
+        private array $templates
+    ) {
     }
 
     /**
      * Gets an index template by its name.
      *
-     * @param string $name Index template to return
-     *
-     * @return IndexTemplate
-     *
      * @throws \InvalidArgumentException if no index template exists for the given name
      */
-    public function getIndexTemplate($name)
+    public function getIndexTemplate(string $name): IndexTemplate
     {
         if (!isset($this->templates[$name])) {
             throw new \InvalidArgumentException(\sprintf('The index template "%s" does not exist', $name));

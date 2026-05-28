@@ -12,8 +12,8 @@
 namespace FOS\ElasticaBundle\Tests\Unit\Subscriber;
 
 use Elastica\Query;
-use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
+use FOS\ElasticaBundle\Paginator\RawPartialResults;
 use FOS\ElasticaBundle\Subscriber\PaginateElasticaQuerySubscriber;
 use Knp\Component\Pager\ArgumentAccess\ArgumentAccessInterface;
 use Knp\Component\Pager\Event\ItemsEvent;
@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class PaginateElasticaQuerySubscriberTest extends TestCase
 {
-    public function testShouldDoNothingIfSortParamIsEmpty()
+    public function testShouldDoNothingIfSortParamIsEmpty(): void
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request()));
 
@@ -44,7 +44,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         $subscriber->items($event);
     }
 
-    public function sortCases()
+    public function sortCases(): array
     {
         $tests = [];
 
@@ -75,7 +75,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
     /**
      * @dataProvider sortCases
      */
-    public function testShouldSort(array $expected, Request $request)
+    public function testShouldSort(array $expected, Request $request): void
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack($request));
 
@@ -102,7 +102,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         $this->assertSame($expected, $query->getParam('sort'));
     }
 
-    public function testShouldThrowIfFieldIsNotWhitelisted()
+    public function testShouldThrowIfFieldIsNotWhitelisted(): void
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner'])));
 
@@ -129,7 +129,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         $subscriber->items($event);
     }
 
-    public function testShouldAddNestedPath()
+    public function testShouldAddNestedPath(): void
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner.name'])));
 
@@ -161,7 +161,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         ], $query->getParam('sort'));
     }
 
-    public function testShouldInvokeCallableNestedPath()
+    public function testShouldInvokeCallableNestedPath(): void
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner.name'])));
 
@@ -181,7 +181,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             'defaultSortFieldName' => 'createdAt',
             'sortFieldParameterName' => 'ord',
             'sortDirectionParameterName' => 'az',
-            'sortNestedPath' => function ($sortField) {
+            'sortNestedPath' => function (string $sortField): string {
                 $this->assertSame('owner.name', $sortField);
 
                 return 'owner';
@@ -197,7 +197,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         ], $query->getParam('sort'));
     }
 
-    public function testShouldAddNestedFilter()
+    public function testShouldAddNestedFilter(): void
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner.name'])));
 
@@ -240,7 +240,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         ], $query->toArray());
     }
 
-    public function testShouldInvokeNestedFilterCallable()
+    public function testShouldInvokeNestedFilterCallable(): void
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack(new Request(['ord' => 'owner.name'])));
 
@@ -261,7 +261,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
             'sortFieldParameterName' => 'ord',
             'sortDirectionParameterName' => 'az',
             'sortNestedPath' => 'owner',
-            'sortNestedFilter' => function ($sortField) {
+            'sortNestedFilter' => function (string $sortField): Query\Term {
                 $this->assertSame('owner.name', $sortField);
 
                 return new Query\Term(['enabled' => ['value' => true]]);
@@ -287,7 +287,7 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         ], $query->toArray());
     }
 
-    public function testShouldDoNothingIfNoRequest()
+    public function testShouldDoNothingIfNoRequest(): void
     {
         $subscriber = new PaginateElasticaQuerySubscriber($this->getRequestStack());
 
@@ -305,21 +305,21 @@ class PaginateElasticaQuerySubscriberTest extends TestCase
         $subscriber->items($event);
     }
 
-    protected function getAdapterMock()
+    protected function getAdapterMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(RawPaginatorAdapter::class);
     }
 
-    protected function getResultSetMock()
+    protected function getResultSetMock(): \PHPUnit\Framework\MockObject\MockObject
     {
-        return $this->createMock(PartialResultsInterface::class);
+        return $this->createMock(RawPartialResults::class);
     }
 
-    private function getRequestStack(?Request $request = null)
+    private function getRequestStack(?Request $request = null): RequestStack
     {
         $stack = new RequestStack();
 
-        if ($request) {
+        if ($request instanceof Request) {
             $stack->push($request);
         }
 

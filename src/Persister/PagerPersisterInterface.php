@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -23,8 +25,6 @@ interface PagerPersisterInterface
 {
     /**
      * @phpstan-param TPagerPersisterOptions $options
-     *
-     * @return void
      */
-    public function insert(PagerInterface $pager, array $options = []);
+    public function insert(PagerInterface $pager, array $options = []): void;
 }

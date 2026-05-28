@@ -21,10 +21,8 @@ class AliasProcessor
 {
     /**
      * Sets the randomised root name for an index.
-     *
-     * @return void
      */
-    public function setRootName(IndexConfig $indexConfig, Index $index)
+    public function setRootName(IndexConfig $indexConfig, Index $index): void
     {
         $index->overrideName(
             \sprintf(
@@ -41,11 +39,9 @@ class AliasProcessor
      *
      * $force will delete an index encountered where an alias is expected.
      *
-     * @return void
-     *
      * @throws AliasIsIndexException
      */
-    public function switchIndexAlias(IndexConfig $indexConfig, Index $index, bool $force = false, bool $delete = true)
+    public function switchIndexAlias(IndexConfig $indexConfig, Index $index, bool $force = false, bool $delete = true): void
     {
         $client = $index->getClient();
 

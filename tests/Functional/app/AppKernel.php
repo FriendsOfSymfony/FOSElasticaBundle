@@ -23,16 +23,14 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class AppKernel extends Kernel
 {
-    private $varDir;
     private $testCase;
     private $rootConfig;
 
-    public function __construct($varDir, $testCase, $rootConfig, $environment, $debug)
+    public function __construct(private $varDir, $testCase, $rootConfig, string $environment, bool $debug)
     {
         if (!\is_dir(__DIR__.'/'.$testCase)) {
             throw new \InvalidArgumentException(\sprintf('The test case "%s" does not exist.', $testCase));
         }
-        $this->varDir = $varDir;
         $this->testCase = $testCase;
 
         $fs = new Filesystem();
@@ -70,7 +68,7 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
-        $loader->load(function (ContainerBuilder $container) {
+        $loader->load(function (ContainerBuilder $container): void {
             $container->setParameter('fos_elastica.host', $_SERVER['FOS_ELASTICA_HOST']);
             $container->setParameter('fos_elastica.port', $_SERVER['FOS_ELASTICA_PORT']);
         });

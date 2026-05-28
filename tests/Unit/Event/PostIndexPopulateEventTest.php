@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PostIndexPopulateEventTest extends TestCase
 {
-    public function testPopulate()
+    public function testPopulate(): void
     {
         $event = new PostIndexPopulateEvent('index', false, []);
 
@@ -28,14 +28,14 @@ class PostIndexPopulateEventTest extends TestCase
         $this->assertSame([], $event->getOptions());
     }
 
-    public function testPopulateReset()
+    public function testPopulateReset(): void
     {
         $event = new PostIndexPopulateEvent('index', true, []);
 
         $this->assertTrue($event->isReset());
     }
 
-    public function testPopulateOptions()
+    public function testPopulateOptions(): void
     {
         $event = new PostIndexPopulateEvent('index', false, [
             'option' => 'value',
@@ -45,7 +45,7 @@ class PostIndexPopulateEventTest extends TestCase
         $this->assertSame('value', $event->getOption('option'));
     }
 
-    public function testPopulateInvalidOption()
+    public function testPopulateInvalidOption(): void
     {
         $event = new PostIndexPopulateEvent('index', false, []);
 

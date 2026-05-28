@@ -113,7 +113,7 @@ trait IndexConfigTrait
         return $this->config['numeric_detection'] ?? null;
     }
 
-    public function getDynamic()
+    public function getDynamic(): string|bool|null
     {
         return $this->config['dynamic'] ?? null;
     }

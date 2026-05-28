@@ -32,19 +32,19 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class InPlacePagerPersisterTest extends TestCase
 {
-    public function testShouldImplementPagerPersisterInterface()
+    public function testShouldImplementPagerPersisterInterface(): void
     {
         $rc = new \ReflectionClass(InPlacePagerPersister::class);
 
         $this->assertTrue($rc->implementsInterface(PagerPersisterInterface::class));
     }
 
-    public function testCouldBeConstructedWithPersisterRegistryAndDispatcherAsArguments()
+    public function testCouldBeConstructedWithPersisterRegistryAndDispatcherAsArguments(): void
     {
         new InPlacePagerPersister($this->createPersisterRegistryMock(), new EventDispatcher());
     }
 
-    public function testShouldDispatchPrePersistEventWithExpectedArguments()
+    public function testShouldDispatchPrePersistEventWithExpectedArguments(): void
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
@@ -58,7 +58,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager([new \stdClass(), new \stdClass()]);
 
         $called = false;
-        $dispatcher->addListener(PrePersistEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $options) {
+        $dispatcher->addListener(PrePersistEvent::class, function (PrePersistEvent $event) use (&$called, $pager, $objectPersisterMock, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PrePersistEvent::class, $event);
@@ -75,7 +75,7 @@ class InPlacePagerPersisterTest extends TestCase
         $this->assertTrue($called);
     }
 
-    public function testShouldDispatchPreFetchObjectsEventWithExpectedArguments()
+    public function testShouldDispatchPreFetchObjectsEventWithExpectedArguments(): void
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
@@ -91,7 +91,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(PreFetchObjectsEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $options) {
+        $dispatcher->addListener(PreFetchObjectsEvent::class, function (PreFetchObjectsEvent $event) use (&$called, $pager, $objectPersisterMock, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PreFetchObjectsEvent::class, $event);
@@ -108,7 +108,7 @@ class InPlacePagerPersisterTest extends TestCase
         $this->assertTrue($called);
     }
 
-    public function testShouldDispatchPreInsertObjectsEventWithExpectedArguments()
+    public function testShouldDispatchPreInsertObjectsEventWithExpectedArguments(): void
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
@@ -124,7 +124,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(PreInsertObjectsEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $objects, $options) {
+        $dispatcher->addListener(PreInsertObjectsEvent::class, function (PreInsertObjectsEvent $event) use (&$called, $pager, $objectPersisterMock, $objects, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PreInsertObjectsEvent::class, $event);
@@ -142,7 +142,7 @@ class InPlacePagerPersisterTest extends TestCase
         $this->assertTrue($called);
     }
 
-    public function testShouldDispatchPostInsertObjectsEventWithExpectedArguments()
+    public function testShouldDispatchPostInsertObjectsEventWithExpectedArguments(): void
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
@@ -158,7 +158,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(PostInsertObjectsEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $objects, $options) {
+        $dispatcher->addListener(PostInsertObjectsEvent::class, function (PostInsertObjectsEvent $event) use (&$called, $pager, $objectPersisterMock, $objects, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PostInsertObjectsEvent::class, $event);
@@ -176,7 +176,7 @@ class InPlacePagerPersisterTest extends TestCase
         $this->assertTrue($called);
     }
 
-    public function testShouldDispatchPostPersistEventWithExpectedArguments()
+    public function testShouldDispatchPostPersistEventWithExpectedArguments(): void
     {
         $objectPersisterMock = $this->createObjectPersisterMock();
 
@@ -192,7 +192,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(PostPersistEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $options) {
+        $dispatcher->addListener(PostPersistEvent::class, function (PostPersistEvent $event) use (&$called, $pager, $objectPersisterMock, $options): void {
             $called = true;
 
             $this->assertInstanceOf(PostPersistEvent::class, $event);
@@ -209,7 +209,7 @@ class InPlacePagerPersisterTest extends TestCase
         $this->assertTrue($called);
     }
 
-    public function testShouldCallObjectPersisterInsertManyMethodForEachPage()
+    public function testShouldCallObjectPersisterInsertManyMethodForEachPage(): void
     {
         $options = ['indexName' => 'theIndex', 'max_per_page' => 2];
 
@@ -235,7 +235,7 @@ class InPlacePagerPersisterTest extends TestCase
         $persister->insert($pager, $options);
     }
 
-    public function testShouldCallObjectPersisterInsertManyMethodOnlyForSecondPage()
+    public function testShouldCallObjectPersisterInsertManyMethodOnlyForSecondPage(): void
     {
         $options = [
             'indexName' => 'theIndex',
@@ -266,7 +266,7 @@ class InPlacePagerPersisterTest extends TestCase
         $persister->insert($pager, $options);
     }
 
-    public function testShouldIterateToRealLastPageEvenIfLastPageOptionIsBigger()
+    public function testShouldIterateToRealLastPageEvenIfLastPageOptionIsBigger(): void
     {
         $options = [
             'indexName' => 'theIndex',
@@ -295,7 +295,7 @@ class InPlacePagerPersisterTest extends TestCase
         $persister->insert($pager, $options);
     }
 
-    public function testShouldDispatchOnExceptionEventWithExpectedArgumentsAndReThrowIt()
+    public function testShouldDispatchOnExceptionEventWithExpectedArgumentsAndReThrowIt(): void
     {
         $exception = new \LogicException();
 
@@ -318,7 +318,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(OnExceptionEvent::class, function ($event) use (&$called, $pager, $objectPersisterMock, $exception, $options) {
+        $dispatcher->addListener(OnExceptionEvent::class, function (OnExceptionEvent $event) use (&$called, $pager, $objectPersisterMock, $exception, $options): void {
             $called = true;
 
             $this->assertInstanceOf(OnExceptionEvent::class, $event);
@@ -343,7 +343,7 @@ class InPlacePagerPersisterTest extends TestCase
         $this->fail('The exception is expected to be thrown');
     }
 
-    public function testShouldDispatchOnExceptionEventButNotReThrowIt()
+    public function testShouldDispatchOnExceptionEventButNotReThrowIt(): void
     {
         $exception = new \LogicException();
 
@@ -366,7 +366,7 @@ class InPlacePagerPersisterTest extends TestCase
         $pager = $this->createPager($objects);
 
         $called = false;
-        $dispatcher->addListener(OnExceptionEvent::class, function (OnExceptionEvent $event) use (&$called) {
+        $dispatcher->addListener(OnExceptionEvent::class, function (OnExceptionEvent $event) use (&$called): void {
             $called = true;
 
             $event->setIgnored(true);
@@ -377,7 +377,7 @@ class InPlacePagerPersisterTest extends TestCase
         $this->assertTrue($called);
     }
 
-    private function createPager(array $objects)
+    private function createPager(array $objects): PagerfantaPager
     {
         return new PagerfantaPager(new Pagerfanta(new ArrayAdapter($objects)));
     }
@@ -385,7 +385,7 @@ class InPlacePagerPersisterTest extends TestCase
     /**
      * @return ObjectPersisterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createObjectPersisterMock()
+    private function createObjectPersisterMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(ObjectPersisterInterface::class);
     }
@@ -393,7 +393,7 @@ class InPlacePagerPersisterTest extends TestCase
     /**
      * @return PersisterRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createPersisterRegistryMock()
+    private function createPersisterRegistryMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(PersisterRegistry::class);
     }
@@ -403,7 +403,7 @@ class InPlacePagerPersisterTest extends TestCase
      *
      * @return PersisterRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createPersisterRegistryStub($objectPersister = null)
+    private function createPersisterRegistryStub($objectPersister = null): \PHPUnit\Framework\MockObject\MockObject
     {
         $registryMock = $this->createPersisterRegistryMock();
         $registryMock

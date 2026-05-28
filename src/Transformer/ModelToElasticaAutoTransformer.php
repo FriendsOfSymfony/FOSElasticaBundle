@@ -29,18 +29,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var ?EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    /**
      * Optional parameters.
-     *
-     * @var array
      *
      * @phpstan-var TOptions
      */
-    protected $options = [
+    protected array $options = [
         'identifier' => 'id',
         'index' => '',
     ];
@@ -57,10 +50,9 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      *
      * @phpstan-param array<string, mixed> $options
      */
-    public function __construct(array $options = [], ?EventDispatcherInterface $dispatcher = null)
+    public function __construct(array $options = [], protected ?EventDispatcherInterface $dispatcher = null)
     {
         $this->options = \array_merge($this->options, $options);
-        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -114,12 +106,10 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
     /**
      * Attempts to convert any type to a string or an array of strings.
-     *
-     * @return string|list<string>
      */
-    protected function normalizeValue($value)
+    protected function normalizeValue(mixed $value): mixed
     {
-        $normalizeValue = static function (&$v) {
+        $normalizeValue = static function (mixed &$v): void {
             if ($v instanceof \DateTimeInterface) {
                 $v = $v->format('c');
             } elseif ($v instanceof \DateInterval) {
@@ -150,7 +140,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
     {
         $document = new Document($identifier, [], $this->options['index']);
 
-        if ($this->dispatcher) {
+        if ($this->dispatcher instanceof EventDispatcherInterface) {
             $this->dispatcher->dispatch($event = new PreTransformEvent($document, $fields, $object));
 
             $document = $event->getDocument();
@@ -189,7 +179,7 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
             $document->set($key, $this->normalizeValue($value));
         }
 
-        if ($this->dispatcher) {
+        if ($this->dispatcher instanceof EventDispatcherInterface) {
             $this->dispatcher->dispatch($event = new PostTransformEvent($document, $fields, $object));
 
             $document = $event->getDocument();

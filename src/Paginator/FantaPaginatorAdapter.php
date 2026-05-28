@@ -21,20 +21,16 @@ use Pagerfanta\Adapter\AdapterInterface;
 class FantaPaginatorAdapter implements AdapterInterface
 {
     /**
-     * @var PaginatorAdapterInterface<T>
-     *
-     * @phpstan-ignore-next-line todo: make PaginatorAdapterInterface generic
-     */
-    private $adapter;
-
-    /**
      * @param PaginatorAdapterInterface<T> $adapter
      *
      * @phpstan-ignore-next-line todo: make PaginatorAdapterInterface generic
      */
-    public function __construct(PaginatorAdapterInterface $adapter)
-    {
-        $this->adapter = $adapter;
+    public function __construct(
+        /**
+         * @phpstan-ignore-next-line todo: make PaginatorAdapterInterface generic
+         */
+        private readonly PaginatorAdapterInterface $adapter
+    ) {
     }
 
     /**
@@ -52,7 +48,7 @@ class FantaPaginatorAdapter implements AdapterInterface
      *
      * @api
      */
-    public function getAggregations()
+    public function getAggregations(): array
     {
         return $this->adapter->getAggregations();
     }
@@ -64,26 +60,20 @@ class FantaPaginatorAdapter implements AdapterInterface
      *
      * @api
      */
-    public function getSuggests()
+    public function getSuggests(): array
     {
         return $this->adapter->getSuggests();
     }
 
     /**
      * Returns a slice of the results.
-     *
-     * @param int $offset The offset
-     * @param int $length The length
      */
-    public function getSlice($offset, $length): iterable
+    public function getSlice(int $offset, int $length): iterable
     {
         return $this->adapter->getResults($offset, $length)->toArray();
     }
 
-    /**
-     * @return float
-     */
-    public function getMaxScore()
+    public function getMaxScore(): float
     {
         return $this->adapter->getMaxScore();
     }

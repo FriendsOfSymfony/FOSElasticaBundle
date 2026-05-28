@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the FOSElasticaBundle package.
  *
@@ -39,5 +41,5 @@ interface FinderInterface
      *
      * @return array<object> results
      */
-    public function find($query, ?int $limit = null, array $options = []);
+    public function find(mixed $query, ?int $limit = null, array $options = []): array;
 }

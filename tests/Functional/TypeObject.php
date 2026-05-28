@@ -19,17 +19,17 @@ class TypeObject
     public $field2;
     public $field3;
 
-    public function isIndexable()
+    public function isIndexable(): bool
     {
         return true;
     }
 
-    public function isntIndexable()
+    public function isntIndexable(): bool
     {
         return false;
     }
 
-    public function getSerializableColl()
+    public function getSerializableColl(): array
     {
         return \iterator_to_array($this->coll, false);
     }

@@ -22,17 +22,17 @@ use Psr\Log\LoggerInterface;
  */
 class ElasticaLoggerTest extends TestCase
 {
-    public function testGetZeroIfNoQueriesAdded()
+    public function testGetZeroIfNoQueriesAdded(): void
     {
         $elasticaLogger = new ElasticaLogger();
         $this->assertSame(0, $elasticaLogger->getNbQueries());
     }
 
-    public function testCorrectAmountIfRandomNumberOfQueriesAdded()
+    public function testCorrectAmountIfRandomNumberOfQueriesAdded(): void
     {
         $elasticaLogger = new ElasticaLogger(null, true);
 
-        $total = \rand(1, 15);
+        $total = \random_int(1, 15);
         for ($i = 0; $i < $total; ++$i) {
             $elasticaLogger->logQuery('testPath', 'testMethod', ['data'], 12);
         }
@@ -40,7 +40,7 @@ class ElasticaLoggerTest extends TestCase
         $this->assertSame($total, $elasticaLogger->getNbQueries());
     }
 
-    public function testCorrectlyFormattedQueryReturned()
+    public function testCorrectlyFormattedQueryReturned(): void
     {
         $elasticaLogger = new ElasticaLogger(null, true);
 
@@ -70,11 +70,11 @@ class ElasticaLoggerTest extends TestCase
         $this->assertSame($expected, $returnedQueries[0]);
     }
 
-    public function testNoQueriesStoredIfDebugFalseAdded()
+    public function testNoQueriesStoredIfDebugFalseAdded(): void
     {
         $elasticaLogger = new ElasticaLogger(null, false);
 
-        $total = \rand(1, 15);
+        $total = \random_int(1, 15);
         for ($i = 0; $i < $total; ++$i) {
             $elasticaLogger->logQuery('testPath', 'testMethod', ['data'], 12);
         }
@@ -82,7 +82,7 @@ class ElasticaLoggerTest extends TestCase
         $this->assertSame(0, $elasticaLogger->getNbQueries());
     }
 
-    public function testQueryIsLogged()
+    public function testQueryIsLogged(): void
     {
         $loggerMock = $this->getMockLogger();
 
@@ -106,10 +106,7 @@ class ElasticaLoggerTest extends TestCase
         $elasticaLogger->logQuery($path, $method, $data, $time);
     }
 
-    /**
-     * @return array
-     */
-    public function logLevels()
+    public function logLevels(): array
     {
         return [
             ['emergency'],
@@ -126,7 +123,7 @@ class ElasticaLoggerTest extends TestCase
     /**
      * @dataProvider logLevels
      */
-    public function testMessagesCanBeLoggedAtSpecificLogLevels($level)
+    public function testMessagesCanBeLoggedAtSpecificLogLevels(string $level): void
     {
         $message = 'foo';
         $context = ['data'];
@@ -136,7 +133,7 @@ class ElasticaLoggerTest extends TestCase
         \call_user_func([$loggerMock, $level], $message, $context);
     }
 
-    public function testMessagesCanBeLoggedToArbitraryLevels()
+    public function testMessagesCanBeLoggedToArbitraryLevels(): void
     {
         $loggerMock = $this->getMockLogger();
 
@@ -158,7 +155,7 @@ class ElasticaLoggerTest extends TestCase
         $elasticaLogger->log($level, $message, $context);
     }
 
-    public function testQueryCanBeMultilineStrings()
+    public function testQueryCanBeMultilineStrings(): void
     {
         $elasticaLogger = new ElasticaLogger(null, true);
 
@@ -168,7 +165,7 @@ class ElasticaLoggerTest extends TestCase
         $this->assertEquals(['foo' => 'bar'], $elasticaLogger->getQueries()[0]['data'][0]);
     }
 
-    public function testQueryCanBeAnArray()
+    public function testQueryCanBeAnArray(): void
     {
         $elasticaLogger = new ElasticaLogger(null, true);
 
@@ -181,19 +178,12 @@ class ElasticaLoggerTest extends TestCase
     /**
      * @return \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
      */
-    private function getMockLogger()
+    private function getMockLogger(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock(LoggerInterface::class);
     }
 
-    /**
-     * @param string $level
-     * @param string $message
-     * @param array  $context
-     *
-     * @return ElasticaLogger
-     */
-    private function getMockLoggerForLevelMessageAndContext($level, $message, $context)
+    private function getMockLoggerForLevelMessageAndContext(string $level, string $message, array $context): ElasticaLogger
     {
         $loggerMock = $this->createMock(LoggerInterface::class);
 

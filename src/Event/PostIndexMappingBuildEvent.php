@@ -19,26 +19,14 @@ use FOS\ElasticaBundle\Configuration\IndexConfigInterface;
 final class PostIndexMappingBuildEvent extends AbstractIndexEvent
 {
     /**
-     * @var IndexConfigInterface
-     */
-    private $indexConfig;
-
-    /**
-     * @var array
-     *
-     * @phpstan-var TMapping
-     */
-    private $mapping;
-
-    /**
      * @phpstan-param TMapping $mapping
      */
-    public function __construct(IndexConfigInterface $indexConfig, array $mapping)
+    public function __construct(private readonly IndexConfigInterface $indexConfig, /**
+     * @phpstan-var TMapping
+     */
+        private array $mapping)
     {
-        $this->indexConfig = $indexConfig;
-        $this->mapping = $mapping;
-
-        parent::__construct($indexConfig->getName());
+        parent::__construct($this->indexConfig->getName());
     }
 
     public function getIndexConfig(): IndexConfigInterface

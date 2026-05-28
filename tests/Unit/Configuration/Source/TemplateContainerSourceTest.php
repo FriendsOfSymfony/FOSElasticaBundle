@@ -22,14 +22,14 @@ use PHPUnit\Framework\TestCase;
  */
 class TemplateContainerSourceTest extends TestCase
 {
-    public function testGetEmptyConfiguration()
+    public function testGetEmptyConfiguration(): void
     {
         $containerSource = new TemplateContainerSource([]);
         $indexes = $containerSource->getConfiguration();
         $this->assertSame([], $indexes);
     }
 
-    public function testGetConfiguration()
+    public function testGetConfiguration(): void
     {
         $containerSource = new TemplateContainerSource(
             [

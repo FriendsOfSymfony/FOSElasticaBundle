@@ -22,40 +22,12 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class MappingBuilderTest extends TestCase
 {
-    /**
-     * @var MappingBuilder
-     */
-    private $builder;
+    private MappingBuilder $builder;
 
-    /**
-     * @var array
-     */
-    private $mapping;
-
-    /**
-     * @var IndexConfig
-     */
-    private $indexConfig;
+    private IndexConfig $indexConfig;
 
     protected function setUp(): void
     {
-        $this->mapping = [
-            'mapping' => [
-                'properties' => [
-                    'storeless' => [
-                        'type' => 'text',
-                    ],
-                    'stored' => [
-                        'type' => 'text',
-                        'store' => true,
-                    ],
-                    'unstored' => [
-                        'type' => 'text',
-                        'store' => false,
-                    ],
-                ],
-            ],
-        ];
         $this->indexConfig = new IndexConfig(
             [
                 'name' => 'name',
@@ -83,7 +55,7 @@ class MappingBuilderTest extends TestCase
         $this->builder = new MappingBuilder($dispatcher);
     }
 
-    public function testMappingBuilderStoreProperty()
+    public function testMappingBuilderStoreProperty(): void
     {
         $mapping = $this->builder->buildMapping(null, $this->indexConfig);
 
@@ -94,7 +66,7 @@ class MappingBuilderTest extends TestCase
         $this->assertFalse($mapping['properties']['unstored']['store']);
     }
 
-    public function testBuildIndexTemplateMapping()
+    public function testBuildIndexTemplateMapping(): void
     {
         $config = new IndexTemplateConfig(
             ['index_patterns' => ['index_template_*'], 'name' => 'some_template', 'config' => [], 'mapping' => $this->indexConfig->getMapping()]

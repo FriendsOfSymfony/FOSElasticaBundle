@@ -20,19 +20,19 @@ use PHPUnit\Framework\TestCase;
  */
 class PostTransformEventTest extends TestCase
 {
-    public function testDocument()
+    public function testDocument(): void
     {
         $event = new PostTransformEvent($document = new Document(), [], new \stdClass());
         $this->assertSame($document, $event->getDocument());
     }
 
-    public function testFields()
+    public function testFields(): void
     {
         $event = new PostTransformEvent(new Document(), $fields = ['abc', '123'], new \stdClass());
         $this->assertSame($fields, $event->getFields());
     }
 
-    public function testObject()
+    public function testObject(): void
     {
         $event = new PostTransformEvent(new Document(), [], $object = new \stdClass());
         $this->assertSame($object, $event->getObject());

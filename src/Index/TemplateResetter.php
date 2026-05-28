@@ -23,18 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TemplateResetter implements ResetterInterface
 {
-    private ManagerInterface $configManager;
-    private MappingBuilder $mappingBuilder;
-    private IndexTemplateManager $indexTemplateManager;
-
-    public function __construct(
-        ManagerInterface $configManager,
-        MappingBuilder $mappingBuilder,
-        IndexTemplateManager $indexTemplateManager,
-    ) {
-        $this->configManager = $configManager;
-        $this->mappingBuilder = $mappingBuilder;
-        $this->indexTemplateManager = $indexTemplateManager;
+    public function __construct(private readonly ManagerInterface $configManager, private readonly MappingBuilder $mappingBuilder, private readonly IndexTemplateManager $indexTemplateManager)
+    {
     }
 
     public function resetAllIndexes(bool $deleteIndexes = false): void
@@ -48,7 +38,7 @@ class TemplateResetter implements ResetterInterface
     {
         $indexTemplateConfig = $this->configManager->getIndexConfiguration($indexName);
         if (!$indexTemplateConfig instanceof IndexTemplateConfig) {
-            throw new \RuntimeException(\sprintf('Incorrect index configuration object. Expecting IndexTemplateConfig, but got: %s ', \get_class($indexTemplateConfig)));
+            throw new \RuntimeException(\sprintf('Incorrect index configuration object. Expecting IndexTemplateConfig, but got: %s ', $indexTemplateConfig::class));
         }
         $indexTemplate = $this->indexTemplateManager->getIndexTemplate($indexName);
 

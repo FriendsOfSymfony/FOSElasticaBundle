@@ -26,17 +26,17 @@ class ElasticaToModelTransformerTest extends TestCase
     /**
      * @var ManagerRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
-    protected $registry;
+    protected \PHPUnit\Framework\MockObject\MockObject $registry;
 
     /**
      * @var DocumentManager|\PHPUnit\Framework\MockObject\MockObject
      */
-    protected $manager;
+    protected \PHPUnit\Framework\MockObject\MockObject $manager;
 
     /**
      * @var DocumentRepository|\PHPUnit\Framework\MockObject\MockObject
      */
-    protected $repository;
+    protected \PHPUnit\Framework\MockObject\MockObject $repository;
 
     protected $objectClass = 'stdClass';
 
@@ -87,7 +87,7 @@ class ElasticaToModelTransformerTest extends TestCase
         ;
     }
 
-    public function testTransformUsesFindByIdentifier()
+    public function testTransformUsesFindByIdentifier(): void
     {
         $this->registry->expects($this->any())
             ->method('getManager')
@@ -98,7 +98,6 @@ class ElasticaToModelTransformerTest extends TestCase
 
         $class = new \ReflectionClass(ElasticaToModelTransformer::class);
         $method = $class->getMethod('findByIdentifiers');
-        $method->setAccessible(true);
 
         $method->invokeArgs($transformer, [
             ['c8f23994-d897-4c77-bcc3-bc6910e52a34', 'f1083287-a67e-480e-a426-e8427d00eae4'],

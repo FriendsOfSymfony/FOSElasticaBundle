@@ -31,9 +31,9 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
      *
      * @return array of objects or arrays
      */
-    protected function findByIdentifiers(array $identifierValues, $hydrate)
+    protected function findByIdentifiers(array $identifierValues, bool $hydrate): array
     {
-        if (empty($identifierValues)) {
+        if ([] === $identifierValues) {
             return [];
         }
         $hydrationMode = $hydrate ? Query::HYDRATE_OBJECT : Query::HYDRATE_ARRAY;
@@ -54,10 +54,8 @@ class ElasticaToModelTransformer extends AbstractElasticaToModelTransformer
 
     /**
      * Retrieves a query builder to be used for querying by identifiers.
-     *
-     * @return \Doctrine\ORM\QueryBuilder
      */
-    protected function getEntityQueryBuilder()
+    protected function getEntityQueryBuilder(): \Doctrine\ORM\QueryBuilder
     {
         $repository = $this->registry
             ->getManagerForClass($this->objectClass)

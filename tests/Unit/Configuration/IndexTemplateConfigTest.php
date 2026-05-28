@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  */
 class IndexTemplateConfigTest extends TestCase
 {
-    public function testInstantiate()
+    public function testInstantiate(): void
     {
         $name = 'index_template1';
         $config = [
@@ -45,7 +45,7 @@ class IndexTemplateConfigTest extends TestCase
         );
     }
 
-    public function testIncorrectInstantiate()
+    public function testIncorrectInstantiate(): void
     {
         $config = [
             'elasticsearch_name' => 'index_template1',
