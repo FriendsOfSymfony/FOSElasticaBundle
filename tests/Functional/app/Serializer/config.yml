@@ -6,7 +6,6 @@ doctrine:
         path: "%kernel.cache_dir%/db.sqlite"
         charset:  UTF8
     orm:
-        auto_generate_proxy_classes: false
         auto_mapping: false
 
 services:
