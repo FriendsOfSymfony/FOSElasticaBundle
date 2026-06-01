@@ -12,7 +12,6 @@ Symfony. Features include:
 [![Build Status](https://github.com/FriendsOfSymfony/FOSElasticaBundle/workflows/Continuous%20integration/badge.svg?branch=master)](https://github.com/FriendsOfSymfony/FOSElasticaBundle/actions?query=workflow%3A%22Continuous%20integration%22%20branch%3Amaster)
 [![Total Downloads](https://poser.pugx.org/friendsofsymfony/elastica-bundle/downloads.png)](https://packagist.org/packages/friendsofsymfony/elastica-bundle)
 [![Latest Stable Version](https://poser.pugx.org/friendsofsymfony/elastica-bundle/v/stable.png)](https://packagist.org/packages/friendsofsymfony/elastica-bundle)
-[![Latest Unstable Version](https://poser.pugx.org/friendsofsymfony/elastica-bundle/v/unstable.svg)](https://packagist.org/packages/friendsofsymfony/elastica-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FriendsOfSymfony/FOSElasticaBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/FriendsOfSymfony/FOSElasticaBundle/?branch=master)
 
 Documentation
@@ -35,7 +34,6 @@ The following table shows the compatibilities of different versions of the bundl
 
 | FOSElasticaBundle | Elastica         | Elasticsearch | Symfony    | PHP   |
 |-------------------|------------------|---------------| ---------- | ----- |
-| [6.6] (6.x)       | ^7.1             | 7.\*          | ^5.4\|^6.4\|^7.1 | ^7.4\|^8.1 |
 | [7.2] (master)    | ^8.0 \|\| ^9.0   | 8.\* \|\| 9.\* | ^6.4\|^7.4\|^8.0 | ^8.1 |
 
 License
