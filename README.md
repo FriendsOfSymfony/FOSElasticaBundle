@@ -36,7 +36,7 @@ The following table shows the compatibilities of different versions of the bundl
 | FOSElasticaBundle | Elastica         | Elasticsearch | Symfony    | PHP   |
 |-------------------|------------------|---------------| ---------- | ----- |
 | [6.6] (6.x)       | ^7.1             | 7.\*          | ^5.4\|^6.4\|^7.1 | ^7.4\|^8.1 |
-| [7.1] (master)    | ^8.0 \|\| ^9.0   | 8.\* \|\| 9.\* | ^6.4\|^7.4\|^8.0 | ^8.1 |
+| [7.2] (master)    | ^8.0 \|\| ^9.0   | 8.\* \|\| 9.\* | ^6.4\|^7.4\|^8.0 | ^8.1 |
 
 License
 -------
