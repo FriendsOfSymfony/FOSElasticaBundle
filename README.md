@@ -9,7 +9,7 @@ Symfony. Features include:
 - Index configuration for Elasticsearch, or send data without configuration to use the dynamic mapping feature of Elasticsearch
 - Listeners for Doctrine events for automatic indexing
 
-[![Build Status](https://github.com/FriendsOfSymfony/FOSElasticaBundle/workflows/Continuous%20integration/badge.svg?branch=master)](https://github.com/FriendsOfSymfony/FOSElasticaBundle/actions?query=workflow%3A%22Continuous%20integration%22%20branch%3Amaster)
+[![Build Status](https://github.com/FriendsOfSymfony/FOSElasticaBundle/actions/workflows/continuous-integration.yaml/badge.svg)](https://github.com/FriendsOfSymfony/FOSElasticaBundle/actions)
 [![Total Downloads](https://poser.pugx.org/friendsofsymfony/elastica-bundle/downloads.png)](https://packagist.org/packages/friendsofsymfony/elastica-bundle)
 [![Latest Stable Version](https://poser.pugx.org/friendsofsymfony/elastica-bundle/v/stable.png)](https://packagist.org/packages/friendsofsymfony/elastica-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FriendsOfSymfony/FOSElasticaBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/FriendsOfSymfony/FOSElasticaBundle/?branch=master)
