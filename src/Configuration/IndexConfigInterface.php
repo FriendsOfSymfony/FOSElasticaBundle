@@ -31,6 +31,7 @@ namespace FOS\ElasticaBundle\Configuration;
  *     mapping: TMapping,
  *     model: mixed,
  *     index_patterns?: list<non-empty-string>,
+ *     priority?: int,
  * }
  * @phpstan-type TElasticConfig = array{
  *     date_detection?: bool,

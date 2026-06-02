@@ -55,7 +55,7 @@ class MappingBuilder
     /**
      * Builds mappings for an entire index template.
      *
-     * @return array{index_patterns: list<non-empty-string>, mappings?: TMapping, settings?: TSettings, template?: array{mappings?: TMapping, settings?: TSettings}}
+     * @return array{index_patterns: list<non-empty-string>, mappings?: TMapping, settings?: TSettings, template?: array{mappings?: TMapping, settings?: TSettings}, priority: int}
      */
     public function buildIndexTemplateMapping(IndexTemplateConfig $indexTemplateConfig): array
     {
@@ -74,6 +74,8 @@ class MappingBuilder
             if ($template) {
                 $mapping['template'] = $template;
             }
+
+            $mapping['priority'] = $indexTemplateConfig->getPriority();
         }
 
         $mapping['index_patterns'] = $indexTemplateConfig->getIndexPatterns();
