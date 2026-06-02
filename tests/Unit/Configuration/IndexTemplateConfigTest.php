@@ -29,6 +29,7 @@ class IndexTemplateConfigTest extends TestCase
             'index_patterns' => ['t*'],
             'config' => [],
             'mapping' => [],
+            'priority' => 0,
         ];
         $indexTemplate = new IndexTemplateConfig($config);
         $this->assertEquals($name, $indexTemplate->getName());
@@ -39,6 +40,7 @@ class IndexTemplateConfigTest extends TestCase
                 'name' => $indexTemplate->getName(),
                 'settings' => $indexTemplate->getSettings(),
                 'index_patterns' => $indexTemplate->getIndexPatterns(),
+                'priority' => $indexTemplate->getPriority(),
                 'config' => [],
                 'mapping' => [],
             ]
@@ -53,6 +55,7 @@ class IndexTemplateConfigTest extends TestCase
             'settings' => [1],
             'config' => [],
             'mapping' => [],
+            'priority' => 0,
         ];
 
         $this->expectException(\InvalidArgumentException::class);

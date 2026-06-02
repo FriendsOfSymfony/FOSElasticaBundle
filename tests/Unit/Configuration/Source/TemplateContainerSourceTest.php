@@ -46,6 +46,7 @@ class TemplateContainerSourceTest extends TestCase
                         'some_setting' => 'setting_value',
                     ],
                     'index_patterns' => ['some_index_config_*'],
+                    'priority' => 0,
                 ],
             ]
         );

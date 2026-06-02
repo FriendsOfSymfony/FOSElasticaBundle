@@ -486,6 +486,7 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('scalar')
                                 ->end()
                             ->end()
+                            ->integerNode('priority')->defaultValue(0)->end()
                             ->scalarNode('client')->end()
                             ->variableNode('settings')->defaultValue([])->end()
                             ->booleanNode('date_detection')->end()

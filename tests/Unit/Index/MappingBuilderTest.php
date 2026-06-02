@@ -69,9 +69,13 @@ class MappingBuilderTest extends TestCase
 
     public function testBuildIndexTemplateMapping(): void
     {
-        $config = new IndexTemplateConfig(
-            ['index_patterns' => ['index_template_*'], 'name' => 'some_template', 'config' => [], 'mapping' => $this->indexConfig->getMapping()]
-        );
+        $config = new IndexTemplateConfig([
+            'index_patterns' => ['index_template_*'],
+            'name' => 'some_template',
+            'config' => [],
+            'mapping' => $this->indexConfig->getMapping(),
+            'priority' => 0,
+        ]);
 
         $expected = ElasticsearchVersionDetector::usesNewIndexTemplateApi()
             ? [
@@ -79,6 +83,7 @@ class MappingBuilderTest extends TestCase
                     'mappings' => $this->indexConfig->getMapping(),
                 ],
                 'index_patterns' => ['index_template_*'],
+                'priority' => 0,
             ]
             : [
                 'index_patterns' => ['index_template_*'],
